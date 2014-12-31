@@ -1,0 +1,5 @@
+werkzeug
+flask
+flask-restful
+Flask-Testing
+requests==2.4.3
