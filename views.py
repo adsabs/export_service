@@ -55,16 +55,15 @@ class Export(Resource):
                   'sort' : 'NONE'
                   }
     headers = {'User-Agent':'ADS Script Request Agent'}
-    
-    #actual request
-    r = current_app.client.session.post(current_app.config.get("CLASSIC_EXPORT_URL"), data=parameters, headers=headers)
 
     #check for errors
     try:
+        #actual request
+        r = current_app.client.session.post(current_app.config.get("CLASSIC_EXPORT_URL"), data=parameters, headers=headers)
         r.raise_for_status()
     except Exception, e:
         exc_info = sys.exc_info()
-        return "Classic export http request error: %s %s\n%s" % (exc_info[0], exc_info[1], traceback.format_exc())
+        return "Classic export http request error: %s" % (exc_info[1]), 503
             
     #get all the lines of the response
     result = r.text.split('\n')
