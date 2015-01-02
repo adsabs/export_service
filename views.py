@@ -36,7 +36,7 @@ class Resources(Resource):
 
 class Export(Resource):
   '''Returns export data for a list of bibcodes'''
-  scopes = ['oauth:api:search'] 
+  scopes = ['api:search'] 
   rate_limit = [1000,60*60*24]
 
   def post(self):
