@@ -2,7 +2,7 @@
 
 
 #### Make a request:
-curl -H "Content-Type: application/json" -X POST -d '{"bibcodes":["1980ApJS...44..137K","1980ApJS...44..489B"], "export_format" : "BIBTEX" }' http://localhost:5000/export
+curl -H "Content-Type: application/json" -X POST -d '{"bibcodes":["1980ApJS...44..137K","1980ApJS...44..489B"], "export_format" : "BIBTEX" }' http://localhost:5000/
 
 
 #### Accepted Export Formats (parameter name):
