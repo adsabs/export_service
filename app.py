@@ -19,7 +19,7 @@ def create_app(blueprint_only=False):
 
   api = Api(blueprint)
   api.add_resource(Resources, '/resources')
-  api.add_resource(Export, '/export')
+  api.add_resource(Export, '/')
 
   if blueprint_only:
     return blueprint

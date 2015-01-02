@@ -41,12 +41,15 @@ class Export(Resource):
 
   def post(self):
 
-    if not request.get_json() or not 'bibcodes' in request.get_json():
+    request_json = request.get_json()
+
+    if not request_json or not 'bibcodes' in request_json:
       return {'msg': 'no bibcodes found in POST body'}, 400
 
-    bibcodes = map(str, request.get_json()['bibcodes'])
+    bibcodes = map(str, request_json['bibcodes'])
 
-    export_format = request.get_json().get("export_format")
+    export_format = request_json.get("export_format")
+
     if not export_format:
       return {'msg': 'no export format specified'}, 400
 
