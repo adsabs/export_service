@@ -41,7 +41,8 @@ class Export(Resource):
 
   def post(self):
 
-    request_json = request.get_json()
+    #"force=True" means it will attempt to retrieve json even if contentType is something different
+    request_json = request.get_json(force=True)
 
     if not request_json or not 'bibcodes' in request_json:
       return {'msg': 'no bibcodes found in POST body'}, 400
