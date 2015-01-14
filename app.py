@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, Flask
 from flask import Flask, g
-from views import blueprint, Resources, Export
+from views import blueprint, Resources, Aastex, Bibtex, Endnote
 from flask.ext.restful import Api
 from client import Client
 
@@ -19,7 +19,10 @@ def create_app(blueprint_only=False):
 
   api = Api(blueprint)
   api.add_resource(Resources, '/resources')
-  api.add_resource(Export, '/')
+  api.add_resource(Aastex,'/aastex')  
+  api.add_resource(Bibtex,'/bibtex')
+  api.add_resource(Endnote,'/endnote')
+
 
   if blueprint_only:
     return blueprint

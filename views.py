@@ -39,31 +39,36 @@ class Export(Resource):
   scopes = ['api:search'] 
   rate_limit = [1000,60*60*24]
 
+  def get(self):
+
+    payload = dict(request.args)
+    return self.get_data_from_classic(payload)
+
+
   def post(self):
 
-    #"force=True" means it will attempt to retrieve json even if contentType is something different
-    request_json = request.get_json(force=True)
+    try:
+      payload =request.get_json(force=True) #post data in json
+    except:
+      payload = dict(request.form) #post data in form encoding
+    return self.get_data_from_classic(payload)
+ 
 
-    if not request_json or not 'bibcodes' in request_json:
-      return {'msg': 'no bibcodes found in POST body'}, 400
+  def get_data_from_classic(self, payload):
 
-    bibcodes = map(str, request_json['bibcodes'])
+    if not payload:
+      return {'msg': 'no information received'}, 400
+    elif not 'bibcode' in payload:
+      return {'msg': 'no bibcodes found in POST body (parameter name is "bibcode")'}, 400
 
-    export_format = request_json.get("export_format")
-
-    if not export_format:
-      return {'msg': 'no export format specified'}, 400
-
-    parameters = {'bibcode' : ';'.join(bibcodes),
-                  'data_type' : export_format,
-                  'sort' : 'NONE'
-                  }
     headers = {'User-Agent':'ADS Script Request Agent'}
+    #assign data type based on endpoint
+    payload["data_type"] = self.data_type
 
     #check for errors
     try:
         #actual request
-        r = current_app.client.session.post(current_app.config.get("CLASSIC_EXPORT_URL"), data=parameters, headers=headers)
+        r = current_app.client.session.post(current_app.config.get("CLASSIC_EXPORT_URL"),  data=payload, headers=headers)
         r.raise_for_status()
     except Exception, e:
         exc_info = sys.exc_info()
@@ -76,4 +81,27 @@ class Export(Resource):
     if len(result) > 5:
         result = result[5:]
     
+    if ('callback' in payload): # for jsonp
+        ret = payload['callback'][0] + u'('+ ret + u');'
+    
     return '\n'.join(result), 200
+
+class Aastex(Export):
+  '''Return AASTeX'''
+  scopes = ['ads:default']
+  rate_limit = [100,60*60*24]
+  data_type = 'AASTeX'
+
+class Endnote(Export):
+  '''Return Endnote'''
+  scopes = ['ads:default']
+  rate_limit = [100,60*60*24]
+  data_type = 'ENDNOTE'
+
+class Bibtex(Export):
+  '''Return Bibtex'''
+  scopes = ['ads:default']
+  rate_limit = [100,60*60*24]
+  data_type = 'BIBTEX'
+
+
