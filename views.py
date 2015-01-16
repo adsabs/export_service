@@ -1,15 +1,9 @@
 import json
-from flask import current_app, Blueprint, jsonify, request
-from flask.ext.restful import Resource, reqparse
+from flask import current_app, request
+import requests
+from flask.ext.restful import Resource
 import inspect
 import sys
-
-
-blueprint = Blueprint(
-    'export',
-    __name__,
-    static_folder=None,
-)
 
 #This resource must be available for every adsabs webservice.
 class Resources(Resource):
@@ -18,7 +12,6 @@ class Resources(Resource):
   rate_limit = [1000,60*60*24]
   def get(self):
     func_list = {}
-
     clsmembers = [i[1] for i in inspect.getmembers(sys.modules[__name__], inspect.isclass)]
     for rule in current_app.url_map.iter_rules():
       f = current_app.view_functions[rule.endpoint]
@@ -32,30 +25,20 @@ class Resources(Resource):
       func_list[rule.rule] = {'methods':methods,'scopes': scopes,'description': description,'rate_limit':rate_limit}
     return func_list, 200
 
-
-
 class Export(Resource):
   '''Returns export data for a list of bibcodes'''
-  scopes = ['api:search'] 
-  rate_limit = [1000,60*60*24]
-
   def get(self):
-
     payload = dict(request.args)
     return self.get_data_from_classic(payload)
 
-
   def post(self):
-
     try:
       payload =request.get_json(force=True) #post data in json
     except:
       payload = dict(request.form) #post data in form encoding
     return self.get_data_from_classic(payload)
- 
 
   def get_data_from_classic(self, payload):
-
     if not payload:
       return {'msg': 'no information received'}, 400
     elif not 'bibcode' in payload:
@@ -68,7 +51,7 @@ class Export(Resource):
     #check for errors
     try:
         #actual request
-        r = current_app.client.session.post(current_app.config.get("CLASSIC_EXPORT_URL"),  data=payload, headers=headers)
+        r = requests.post(current_app.config.get("CLASSIC_EXPORT_URL"),  data=payload, headers=headers)
         r.raise_for_status()
     except Exception, e:
         exc_info = sys.exc_info()
@@ -82,8 +65,7 @@ class Export(Resource):
         result = result[5:]
     
     if ('callback' in payload): # for jsonp
-        ret = payload['callback'][0] + u'('+ ret + u');'
-    
+        ret = payload['callback'][0] + u'('+ ret + u');'    
     return '\n'.join(result), 200
 
 class Aastex(Export):
