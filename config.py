@@ -7,3 +7,14 @@ CLIENT = {
 
 CLASSIC_EXPORT_URL = 'http://adsabs.harvard.edu/cgi-bin/nph-abs_connect'
 
+CLASSIC_EXPORT_SUCCESS_STRINGS = {
+  'BIBTEX':'''Query Results from the ADS Database
+
+
+Retrieved \d+ abstracts, starting with number \d+\.  Total number selected: \d+\.
+
+''',
+  'AASTeX':'',
+  'ENDNOTE':'',
+
+}
