@@ -1,0 +1,121 @@
+import sys, os
+PROJECT_HOME = os.path.abspath(os.path.join(os.path.dirname(__file__),'../../'))
+sys.path.append(PROJECT_HOME)
+from flask.ext.testing import TestCase
+from flask import url_for
+import unittest
+import requests
+import json
+from app import create_app
+import httpretty
+
+class TestExports(TestCase):
+  '''Tests that each route as an http response'''
+  
+  def tearDown(self):
+    httpretty.disable()
+    httpretty.reset()
+
+  def setUp(self):
+    def request_callback(request, uri, headers):
+      if 'data_type' not in request.parsed_body or not request.parsed_body['data_type']:
+        return (200,headers,"This is a 200 response from classic, but actually no data_type was found")
+
+      resp = {
+        'BIBTEX':  "bibcode response",
+        'AASTeX':   "aastex response",
+        'ENDNOTE':  "endnote response",
+      }
+      data_type = request.parsed_body['data_type'][0]
+      response = resp[data_type]
+
+      #Set up the proper "success" header
+      if "real" in request.parsed_body['bibcode']:
+        hdr = self.app.config['CLASSIC_EXPORT_SUCCESS_STRING']
+        hdr = hdr.replace('\d+',str(len(request.parsed_body['bibcode'])))
+        hdr = hdr.replace('\.','.')
+        response = '%s%s' % (hdr,response)
+      return (200, headers, response)
+
+    httpretty.enable()
+    httpretty.register_uri(
+      httpretty.POST, 
+      self.app.config.get('CLASSIC_EXPORT_URL'),
+      body=request_callback
+    )
+
+  def create_app(self):
+    '''Start the wsgi application'''
+    return create_app()
+
+  def test_emptypayload(self):
+    for route in map(url_for,['export.bibtex','export.aastex','export.endnote']):
+      for f in [self.client.get,self.client.post]:
+        r = f(route)
+        self.assertStatus(r,400)
+        self.assertEqual(r.json,{'msg': 'no information received'})
+
+  def test_BibtexRoute(self):
+    u = url_for('export.bibtex')
+    r = self.client.get(u+'?bibcode=fake')
+    self.assertStatus(r,400)
+    self.assertEqual(r.json,{u'msg': u'No records returned from ADS-Classic'})
+
+    r = self.client.get(u+'?bibcode=real')
+    self.assertStatus(r,200)
+    self.assertEqual(r.json,'bibcode response')
+
+    r = self.client.post(u,data={'bibcode':'fake'})
+    self.assertStatus(r,400)
+    self.assertEqual(r.json,{u'msg': u'No records returned from ADS-Classic'})
+
+    r = self.client.post(u,data={'bibcode':'real'})
+    self.assertStatus(r,200)
+    self.assertEqual(r.json,'bibcode response')
+
+  def test_EndnoteRoute(self):
+    u = url_for('export.endnote')
+    r = self.client.get(u+'?bibcode=fake')
+    self.assertStatus(r,400)
+    self.assertEqual(r.json,{u'msg': u'No records returned from ADS-Classic'})
+
+    r = self.client.get(u+'?bibcode=real')
+    self.assertStatus(r,200)
+    self.assertEqual(r.json,'endnote response')
+
+    r = self.client.post(u,data={'bibcode':'fake'})
+    self.assertStatus(r,400)
+    self.assertEqual(r.json,{u'msg': u'No records returned from ADS-Classic'})
+
+    r = self.client.post(u,data={'bibcode':'real'})
+    self.assertStatus(r,200)
+    self.assertEqual(r.json,'endnote response')
+
+  def test_AastextRoute(self):
+    u = url_for('export.aastex')
+    r = self.client.get(u+'?bibcode=fake')
+    self.assertStatus(r,400)
+    self.assertEqual(r.json,{u'msg': u'No records returned from ADS-Classic'})
+
+    r = self.client.get(u+'?bibcode=real')
+    self.assertStatus(r,200)
+    self.assertEqual(r.json,'aastex response')
+
+    r = self.client.post(u,data={'bibcode':'fake'})
+    self.assertStatus(r,400)
+    self.assertEqual(r.json,{u'msg': u'No records returned from ADS-Classic'})
+
+    r = self.client.post(u,data={'bibcode':'real'})
+    self.assertStatus(r,200)
+    self.assertEqual(r.json,'aastex response')
+
+  def test_jsonp(self):
+    u = url_for('export.aastex')
+    r = self.client.get(u+'?bibcode=real&callback=JSONP_CALLBACK')
+    self.assertEqual(r.json,"JSONP_CALLBACK(aastex response);")
+
+    r = self.client.post(u,data={'bibcode':'real','callback':'JSONP_CALLBACK'})
+    self.assertEqual(r.json,"JSONP_CALLBACK(aastex response);")
+
+if __name__ == '__main__':
+  unittest.main()
