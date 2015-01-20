@@ -53,12 +53,12 @@ class Export(Resource):
     r = requests.post(current_app.config.get("CLASSIC_EXPORT_URL"),  data=payload, headers=headers)
     r.raise_for_status()
 
-    hdr = re.match(current_app.config['CLASSIC_EXPORT_SUCCESS_STRINGS'][self.data_type],r.text)
+    hdr = re.match(current_app.config['CLASSIC_EXPORT_SUCCESS_STRING'],r.text)
     if not hdr:
       return {"msg":"No records returned from ADS-Classic"}, 400
 
     result = r.text.replace(hdr.group(),'')
-    
+
     if ('callback' in payload): # for jsonp
         result = payload['callback'][0] + u'('+ result + u');'    
     return result, 200
