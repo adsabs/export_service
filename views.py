@@ -57,7 +57,9 @@ class Export(Resource):
     if not hdr:
       return {"msg":"No records returned from ADS-Classic"}, 400
 
-    result = r.text.replace(hdr.group(),'')
+    result = {"export" : r.text.replace(hdr.group(),''),
+              "msg" : hdr.group().strip().split("\n")[::-1][0]
+            }
 
     if ('callback' in payload): # for jsonp
         result = payload['callback'][0] + u'('+ result + u');'    
