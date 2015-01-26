@@ -62,7 +62,7 @@ class Export(Resource):
             }
 
     if ('callback' in payload): # for jsonp
-        result = payload['callback'][0] + u'('+ result + u');'    
+        result = payload['callback'][0] + u'('+ unicode(result) + u');'    
     return result, 200
 
 class Aastex(Export):
