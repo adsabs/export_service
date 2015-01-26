@@ -22,7 +22,7 @@ class TestExports(TestCase):
         return (200,headers,"This is a 200 response from classic, but actually no data_type was found")
 
       resp = {
-        'BIBTEX':  "bibcode response",
+        'BIBTEX':  "bibtex response",
         'AASTeX':   "aastex response",
         'ENDNOTE':  "endnote response",
       }
@@ -63,7 +63,7 @@ class TestExports(TestCase):
 
     r = self.client.get(u+'?bibcode=real')
     self.assertStatus(r,200)
-    self.assertEqual(r.json,'bibcode response')
+    self.assertEqual(r.json,{u'msg': u'Retrieved 1 abstracts, starting with number 1.  Total number selected: 1.', u'export': u'bibtex response'})
 
     r = self.client.post(u,data={'bibcode':'fake'})
     self.assertStatus(r,400)
@@ -71,7 +71,7 @@ class TestExports(TestCase):
 
     r = self.client.post(u,data={'bibcode':'real'})
     self.assertStatus(r,200)
-    self.assertEqual(r.json,'bibcode response')
+    self.assertEqual(r.json, {u'msg': u'Retrieved 1 abstracts, starting with number 1.  Total number selected: 1.', u'export': u'bibtex response'})
 
   def test_EndnoteRoute(self):
     u = url_for('export.endnote')
@@ -81,7 +81,7 @@ class TestExports(TestCase):
 
     r = self.client.get(u+'?bibcode=real')
     self.assertStatus(r,200)
-    self.assertEqual(r.json,'endnote response')
+    self.assertEqual(r.json,{u'msg': u'Retrieved 1 abstracts, starting with number 1.  Total number selected: 1.', u'export': u'endnote response'})
 
     r = self.client.post(u,data={'bibcode':'fake'})
     self.assertStatus(r,400)
@@ -89,7 +89,7 @@ class TestExports(TestCase):
 
     r = self.client.post(u,data={'bibcode':'real'})
     self.assertStatus(r,200)
-    self.assertEqual(r.json,'endnote response')
+    self.assertEqual(r.json, {u'msg': u'Retrieved 1 abstracts, starting with number 1.  Total number selected: 1.', u'export': u'endnote response'})
 
   def test_AastextRoute(self):
     u = url_for('export.aastex')
@@ -99,7 +99,7 @@ class TestExports(TestCase):
 
     r = self.client.get(u+'?bibcode=real')
     self.assertStatus(r,200)
-    self.assertEqual(r.json,'aastex response')
+    self.assertEqual(r.json, {u'msg': u'Retrieved 1 abstracts, starting with number 1.  Total number selected: 1.', u'export': u'aastex response'})
 
     r = self.client.post(u,data={'bibcode':'fake'})
     self.assertStatus(r,400)
@@ -107,15 +107,15 @@ class TestExports(TestCase):
 
     r = self.client.post(u,data={'bibcode':'real'})
     self.assertStatus(r,200)
-    self.assertEqual(r.json,'aastex response')
+    self.assertEqual(r.json,{u'msg': u'Retrieved 1 abstracts, starting with number 1.  Total number selected: 1.', u'export': u'aastex response'})
 
   def test_jsonp(self):
     u = url_for('export.aastex')
     r = self.client.get(u+'?bibcode=real&callback=JSONP_CALLBACK')
-    self.assertEqual(r.json,"JSONP_CALLBACK(aastex response);")
+    self.assertEqual(r.json, u"JSONP_CALLBACK({'msg': u'Retrieved 1 abstracts, starting with number 1.  Total number selected: 1.', 'export': u'aastex response'});")
 
     r = self.client.post(u,data={'bibcode':'real','callback':'JSONP_CALLBACK'})
-    self.assertEqual(r.json,"JSONP_CALLBACK(aastex response);")
+    self.assertEqual(r.json, u"JSONP_CALLBACK({'msg': u'Retrieved 1 abstracts, starting with number 1.  Total number selected: 1.', 'export': u'aastex response'});")
 
 if __name__ == '__main__':
   unittest.main()
