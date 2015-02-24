@@ -67,19 +67,19 @@ class Export(Resource):
 
 class Aastex(Export):
   '''Return AASTeX'''
-  scopes = ['ads:default']
+  scopes = []
   rate_limit = [100,60*60*24]
   data_type = 'AASTeX'
 
 class Endnote(Export):
   '''Return Endnote'''
-  scopes = ['ads:default']
+  scopes = []
   rate_limit = [100,60*60*24]
   data_type = 'ENDNOTE'
 
 class Bibtex(Export):
   '''Return Bibtex'''
-  scopes = ['ads:default']
+  scopes = []
   rate_limit = [100,60*60*24]
   data_type = 'BIBTEX'
 
