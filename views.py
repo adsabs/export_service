@@ -48,6 +48,8 @@ class Export(Resource):
     headers = {'User-Agent':'ADS Script Request Agent'}
     #assign data type based on endpoint
     payload["data_type"] = self.data_type
+    #without this, classic defaults to only showing 200 records
+    payload["nr_to_return"] = len(payload["bibcode"])
 
     #actual request
     r = requests.post(current_app.config.get("CLASSIC_EXPORT_URL"),  data=payload, headers=headers)
