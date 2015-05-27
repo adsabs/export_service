@@ -1,38 +1,60 @@
-import os
-from flask import Flask, Blueprint
-from views import Resources, Aastex, Bibtex, Endnote
+from flask import Flask
+from views import Aastex, Bibtex, Endnote
+import logging.config
 from flask.ext.restful import Api
-from client import Client
+from flask.ext.discoverer import Discoverer
+from flask.ext.consulate import Consul, ConsulConnectionError
 
-def _create_blueprint_():
-  return Blueprint(
-    'export',
-    __name__,
-    static_folder=None,
-  )
 
-def create_app(blueprint_only=False):  
-  app = Flask(__name__, static_folder=None) 
-  app.url_map.strict_slashes = False
-  app.config.from_pyfile('config.py')
-  try:
-    app.config.from_pyfile('local_config.py')
-  except IOError:
-    pass
-  app.client = Client(app.config['CLIENT'])
+def create_app():
+    """
+    Create the application and return it to the user
 
-  blueprint = _create_blueprint_()
-  api = Api(blueprint)
-  api.add_resource(Resources, '/resources')
-  api.add_resource(Aastex,'/aastex')
-  api.add_resource(Bibtex,'/bibtex')
-  api.add_resource(Endnote,'/endnote')
+    :return: flask.Flask application
+    """
 
-  if blueprint_only:
-    return blueprint
-  app.register_blueprint(blueprint)
-  return app
+    app = Flask(__name__, static_folder=None)
+    app.url_map.strict_slashes = False
+
+    # Load config and logging
+    Consul(app)  # load_config expects consul to be registered
+    load_config(app)
+    logging.config.dictConfig(
+        app.config['EXPORT_SERVICE_LOGGING']
+    )
+
+    # Register extensions
+    api = Api(app)
+    Discoverer(app)
+
+    api.add_resource(Aastex, '/aastex')
+    api.add_resource(Bibtex, '/bibtex')
+    api.add_resource(Endnote, '/endnote')
+
+    return app
+
+
+def load_config(app):
+    """
+    Loads configuration in the following order:
+        1. config.py
+        2. local_config.py (ignore failures)
+        3. consul (ignore failures)
+    :param app: flask.Flask application instance
+    :return: None
+    """
+
+    app.config.from_pyfile('config.py')
+
+    try:
+        app.config.from_pyfile('local_config.py')
+    except IOError:
+        app.logger.warning("Could not load local_config.py")
+    try:
+        app.extensions['consul'].apply_remote_config()
+    except ConsulConnectionError, e:
+        app.logger.warning("Could not apply config from consul: {}".format(e))
 
 if __name__ == '__main__':
-  app = create_app()
-  app.run(debug=True)
+    app = create_app()
+    app.run(debug=True, use_reloader=False)
