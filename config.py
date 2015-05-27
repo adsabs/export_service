@@ -1,16 +1,47 @@
-SECRET_KEY = 'this should be changed'
-
-#This section configures this application to act as a client, for example to query solr via adsws
-CLIENT = {
-  'TOKEN': 'we will provide an api key token for this application'
-}
-
-CLASSIC_EXPORT_URL = 'http://adsabs.harvard.edu/cgi-bin/nph-abs_connect'
+EXPORT_SERVICE_CLASSIC_EXPORT_URL = 'http://adsabs.harvard.edu/cgi-bin/nph-abs_connect'
 
 
-CLASSIC_EXPORT_SUCCESS_STRING = '''Query Results from the ADS Database
+EXPORT_SERVICE_CLASSIC_SUCCESS_STRING = '''Query Results from the ADS Database
 
 
 Retrieved \d+ abstracts, starting with number \d+\.  Total number selected: \d+\.
 
 '''
+
+EXPORT_SERVICE_LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': '%(levelname)s\t%(process)d '
+                      '[%(asctime)s]:\t%(message)s',
+            'datefmt': '%m/%d/%Y %H:%M:%S',
+        }
+    },
+    'handlers': {
+        'file': {
+            'formatter': 'default',
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': '/tmp/export_service.log',
+        },
+        'console': {
+            'formatter': 'default',
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler'
+        },
+        # 'syslog': {
+        #     'formatter': 'default',
+        #     'level': 'DEBUG',
+        #     'class': 'logging.handlers.SysLogHandler',
+        #     'address': '/dev/log'
+        # }
+    },
+    'loggers': {
+        '': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
