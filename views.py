@@ -47,11 +47,10 @@ class Export(Resource):
         if not hdr:
             return {"error": "No records returned from ADS-Classic"}, 400
 
-        result = r.text.replace(hdr.group(), '')
-
-        if 'callback' in payload:  # for jsonp
-            result = payload['callback'][0] + u'(' + result + u');'
-        return result, 200
+        return {
+            "export": r.text.replace(hdr.group(), ''),
+            "msg": hdr.group().strip().split("\n")[::-1][0]
+        }
 
 
 class Aastex(Export):
