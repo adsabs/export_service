@@ -5,4 +5,4 @@ flask-restful
 Flask-Testing
 requests==2.4.3
 flask-discoverer
--e git+https://github.com/adsabs/flask-consulate@8d7e60122cbc73693ac37a5468b9be78bea774a1#egg=flask-consulate
+git+https://github.com/adsabs/flask-consulate@d25eb26154d9c55cd4d0f580744b6fc1add15b5e#egg=flask-consulate
