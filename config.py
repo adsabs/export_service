@@ -23,7 +23,7 @@ EXPORT_SERVICE_LOGGING = {
             'formatter': 'default',
             'level': 'INFO',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '/tmp/export_service.log',
+            'filename': '/tmp/export_service_app.log',
         },
         'console': {
             'formatter': 'default',
