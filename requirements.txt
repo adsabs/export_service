@@ -5,4 +5,3 @@ flask-restful
 Flask-Testing
 requests==2.4.3
 flask-discoverer
-flask-consulate
