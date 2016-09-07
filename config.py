@@ -1,13 +1,13 @@
+# This is the URL to communicate with ADS Classic
 EXPORT_SERVICE_CLASSIC_EXPORT_URL = 'http://adsabs.harvard.edu/cgi-bin/nph-abs_connect'
-
-
+# The string in the results sent back from Classic indicating success
 EXPORT_SERVICE_CLASSIC_SUCCESS_STRING = '''Query Results from the ADS Database
 
 
 Retrieved \d+ abstracts, starting with number \d+\.  Total number selected: \d+\.
 
 '''
-
+# Configure logging
 EXPORT_SERVICE_LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
