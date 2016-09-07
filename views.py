@@ -31,7 +31,8 @@ class Export(Resource):
 
         # assign data type based on endpoint
         payload["data_type"] = self.data_type
-
+        # log what we are about to do
+        current_app.logger.info('Sending a request to Classic to retrieve %s for %s records'%(self.data_type, len(payload["bibcode"])))
         # actual request
         r = requests.post(
             current_app.config.get("EXPORT_SERVICE_CLASSIC_EXPORT_URL"),
@@ -45,11 +46,14 @@ class Export(Resource):
             r.text
         )
         if not hdr:
+            current_app.logger.warning('No records were returned from Classic')
             return {"error": "No records returned from ADS-Classic"}, 400
 
+        msg = hdr.group().strip().split("\n")[::-1][0]
+        current_app.logger.info('Export from Classic was successful: %s'%msg)
         return {
             "export": r.text.replace(hdr.group(), ''),
-            "msg": hdr.group().strip().split("\n")[::-1][0]
+            "msg": msg
         }
 
 
