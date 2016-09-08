@@ -31,6 +31,8 @@ class Export(Resource):
 
         # assign data type based on endpoint
         payload["data_type"] = self.data_type
+        # to tell Classic not to return the default of 200 records
+        payload["nr_to_return"] = '3000'
         # log what we are about to do
         current_app.logger.info('Sending a request to Classic to retrieve %s for %s records'%(self.data_type, len(payload["bibcode"])))
         # actual request
