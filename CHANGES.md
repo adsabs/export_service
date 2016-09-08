@@ -1,6 +1,9 @@
+### 1.0.3
+
+* add nr_to_return to request to Classic
+
 ### 1.0.2
 
-* add nr_to_return to Classic query
 * a bit more verbose logging
 * introduce CHANGES.md file
 
