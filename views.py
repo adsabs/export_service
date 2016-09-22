@@ -79,4 +79,8 @@ class Bibtex(Export):
     rate_limit = [200, 60*60*24]
     data_type = 'BIBTEX'
 
-
+class RIS(Export):
+    """Return Bibtex"""
+    scopes = []
+    rate_limit = [200, 60*60*24]
+    data_type = 'REFMAN'
