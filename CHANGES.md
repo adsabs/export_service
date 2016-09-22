@@ -1,3 +1,7 @@
+### 1.0.5
+
+* more export formats: Icarus, MNRAS, SoPh
+
 ### 1.0.4
 
 * add RIS export format

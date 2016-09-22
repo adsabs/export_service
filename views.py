@@ -79,8 +79,26 @@ class Bibtex(Export):
     rate_limit = [200, 60*60*24]
     data_type = 'BIBTEX'
 
-class RIS(Export):
-    """Return Bibtex"""
+class Ris(Export):
+    """Return RIS (REFMAN)"""
     scopes = []
     rate_limit = [200, 60*60*24]
     data_type = 'REFMAN'
+
+class Icarus(Export):
+    """Return Icarus"""
+    scopes = []
+    rate_limit = [200, 60*60*24]
+    data_type = 'Icarus'
+
+class Mnras(Export):
+    """Return MNRAS"""
+    scopes = []
+    rate_limit = [200, 60*60*24]
+    data_type = 'MNRAS'
+
+class SoPh(Export):
+    """Return SoPh"""
+    scopes = []
+    rate_limit = [200, 60*60*24]
+    data_type = 'SoPh'
