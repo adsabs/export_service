@@ -1,3 +1,7 @@
+### 1.0.4
+
+* add RIS export format
+
 ### 1.0.3
 
 * add nr_to_return to request to Classic

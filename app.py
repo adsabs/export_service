@@ -1,5 +1,5 @@
 from flask import Flask
-from views import Aastex, Bibtex, Endnote
+from views import Aastex, Bibtex, Endnote, RIS
 import logging.config
 from flask.ext.restful import Api
 from flask.ext.discoverer import Discoverer
@@ -28,6 +28,7 @@ def create_app():
     api.add_resource(Aastex, '/aastex')
     api.add_resource(Bibtex, '/bibtex')
     api.add_resource(Endnote, '/endnote')
+    api.add_resource(RIS, '/ris')
 
     return app
 
