@@ -1,3 +1,7 @@
+### 1.0.6
+
+* additional formats: Dublin Core XML, VOTables
+
 ### 1.0.5
 
 * more export formats: Icarus, MNRAS, SoPh

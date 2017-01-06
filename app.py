@@ -1,5 +1,5 @@
 from flask import Flask
-from views import Aastex, Bibtex, Endnote, Ris, Icarus, Mnras, SoPh
+from views import Aastex, Bibtex, Endnote, Ris, Icarus, Mnras, SoPh, DCXML, VOTables
 import logging.config
 from flask.ext.restful import Api
 from flask.ext.discoverer import Discoverer
@@ -32,6 +32,8 @@ def create_app():
     api.add_resource(Icarus, '/icarus')
     api.add_resource(Mnras, '/mnras')
     api.add_resource(SoPh, '/soph')
+    api.add_resource(DCXML, '/dcxml')
+    api.add_resource(VOTables, '/votables')
 
     return app
 
