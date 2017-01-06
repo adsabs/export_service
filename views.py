@@ -43,6 +43,21 @@ class Export(Resource):
         )
         r.raise_for_status()
 
+        if self.data_type in ['DUBLINCORE','VOTABLE']:
+            if self.data_type == 'DUBLINCORE':
+                nrecs = r.text.count('<record>')
+            else:
+                nrecs = r.text.count('<TR>')
+            if nrecs == 0:
+                current_app.logger.warning('No records were returned from Classic')
+                return {"error": "No records returned from ADS-Classic"}, 400
+            msg = "Exported %s records in %s format" % (nrecs, self.data_type)
+            current_app.logger.info('Export from Classic was successful: %s'%msg)
+            return {
+                "export": r.text.strip(),
+                "msg": msg
+            }
+
         hdr = re.match(
             current_app.config['EXPORT_SERVICE_CLASSIC_SUCCESS_STRING'],
             r.text
@@ -102,3 +117,15 @@ class SoPh(Export):
     scopes = []
     rate_limit = [200, 60*60*24]
     data_type = 'SoPh'
+
+class DCXML(Export):
+    """Return Dublin Core XML"""
+    scopes = []
+    rate_limit = [200, 60*60*24]
+    data_type = 'DUBLINCORE'
+
+class VOTables(Export):
+    """Return VOTables"""
+    scopes = []
+    rate_limit = [200, 60*60*24]
+    data_type = 'VOTABLE'
