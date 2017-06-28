@@ -1,4 +1,5 @@
 *.py[co]
 local_config.py
+venv
 # Mac specific files
 .DS_Store

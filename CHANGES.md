@@ -1,3 +1,7 @@
+### 1.0.7
+
+* update requirements.txt and code cleanup
+
 ### 1.0.6
 
 * additional formats: Dublin Core XML, VOTables
