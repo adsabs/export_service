@@ -1,8 +1,8 @@
 from flask import Flask
 from views import Aastex, Bibtex, Endnote, Ris, Icarus, Mnras, SoPh, DCXML, VOTables
 import logging.config
-from flask.ext.restful import Api
-from flask.ext.discoverer import Discoverer
+from flask_restful import Api
+from flask_discoverer import Discoverer
 
 
 def create_app():

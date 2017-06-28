@@ -1,7 +1,7 @@
 from flask import current_app, request
 import requests
-from flask.ext.restful import Resource
-from flask.ext.discoverer import advertise
+from flask_restful import Resource
+from flask_discoverer import advertise
 import re
 
 
