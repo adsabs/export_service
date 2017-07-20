@@ -4,7 +4,7 @@ PROJECT_HOME = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '../../'))
 sys.path.append(PROJECT_HOME)
 
-from flask.ext.testing import TestCase
+from flask_testing import TestCase
 import unittest
 import app
 

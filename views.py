@@ -1,131 +1,188 @@
-from flask import current_app, request
-import requests
-from flask.ext.restful import Resource
-from flask.ext.discoverer import advertise
-import re
+#!/usr/bin/env python
+
+from flask import current_app, request, Blueprint, Response
+from flask_discoverer import advertise
+from flask_restful import Resource
+
+import json
+
+from solrData import getSolrData
+from formatter.ads import adsFormatter, adsCSLStyle
+from formatter.cslJson import CSLJson
+from formatter.csl import CSL
+from formatter.xmlFormat import XMLFormat
+from formatter.bibTexFormat import BibTexFormat
+from formatter.fieldedFormat import FieldedFormat
+from formatter.customFormat import CustomFormat
+
+bp = Blueprint('export_service', __name__)
+
+def __defaultFields():
+    return current_app.config['EXPORT_SERVICE_QUERY_DEFAULT_FIELDS']
+
+def __returnResponse(response, status):
+    r = Response(response=response, status=status)
+    r.headers['content-type'] = 'application/json'
+    return r
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/bibtex', methods=['POST'])
+def bibTexFormatExport():
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return __returnResponse('error: no information received', 400)
+    elif 'bibcode' not in payload:
+        return __returnResponse('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+    elif 'style' not in payload:
+        return __returnResponse('error: no style found in payload (parameter name is "style")', 400)
+
+    bibcodes = payload['bibcode']
+    bibTexStyle = payload['style']
+
+    bibTexExport = BibTexFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
+    if (bibTexStyle == 'BibTex'):
+        return __returnResponse(bibTexExport.get(includeAbs=False), 200)
+    if (bibTexStyle == 'BibTexAbs'):
+        return __returnResponse(bibTexExport.get(includeAbs=True), 200)
+    return __returnResponse('error: unrecognizable style (supprted styles are: BibTex, BibTexAbs)', 503)
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/fielded', methods=['POST'])
+def fieldedFormatExport():
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return __returnResponse('error: no information received', 400)
+    elif 'bibcode' not in payload:
+        return __returnResponse('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+    elif 'style' not in payload:
+        return __returnResponse('error: no style found in payload (parameter name is "style")', 400)
+
+    bibcodes = payload['bibcode']
+    fieldedStyle = payload['style']
+
+    fieldedExport = FieldedFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
+    if (fieldedStyle == 'ADS'):
+        return __returnResponse(fieldedExport.getADSFielded(), 200)
+    if (fieldedStyle == 'EndNote'):
+        return __returnResponse(fieldedExport.getEndNoteFielded(), 200)
+    if (fieldedStyle == 'ProCite'):
+        return __returnResponse(fieldedExport.getProCiteFielded(), 200)
+    if (fieldedStyle == 'Refman'):
+        return __returnResponse(fieldedExport.getRefmanFielded(), 200)
+    if (fieldedStyle == 'RefWorks'):
+        return __returnResponse(fieldedExport.getRefWorksFielded(), 200)
+    if (fieldedStyle == 'MEDLARS'):
+        return __returnResponse(fieldedExport.getMEDLARSFielded(), 200)
+    return __returnResponse('error: unrecognizable style (supprted styles are: ADS, EndNote, ProCite, Refman, RefWorks, MEDLARS)', 503)
 
 
-class Export(Resource):
-    """Returns export data for a list of bibcodes"""
-    decorators = [advertise('scopes', 'rate_limit')]
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/xml', methods=['POST'])
+def xmlFormatExport():
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
 
-    def get(self):
-        payload = dict(request.args)
-        return self.get_data_from_classic(payload)
+    if not payload:
+        return __returnResponse('error: no information received', 400)
+    elif 'bibcode' not in payload:
+        return __returnResponse('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+    elif 'style' not in payload:
+        return __returnResponse('error: no style found in payload (parameter name is "style")', 400)
 
-    def post(self):
-        try:
-            payload = request.get_json(force=True)  # post data in json
-        except:
-            payload = dict(request.form)  # post data in form encoding
-        return self.get_data_from_classic(payload)
+    bibcodes = payload['bibcode']
+    xmlStyle = payload['style']
 
-    def get_data_from_classic(self, payload):
-        if not payload:
-            return {'error': 'no information received'}, 400
-        elif 'bibcode' not in payload:
-            return {'error': 'no bibcodes found in payload (parameter '
-                             'name is "bibcode")'}, 400
+    xmlExport = XMLFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
+    if (xmlStyle == 'Dublin'):
+        return __returnResponse(xmlExport.getDublinXML(), 200)
+    if (xmlStyle == 'Reference'):
+        return __returnResponse(xmlExport.getReferenceXML(includeAsb=False), 200)
+    if (xmlStyle == 'ReferenceAbs'):
+        return __returnResponse(xmlExport.getReferenceXML(includeAsb=True), 200)
+    return __returnResponse('error: unrecognizable style (supprted styles are: Dublin, Reference, ReferenceAbs)', 503)
 
-        headers = {'User-Agent': 'ADS Script Request Agent'}
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/csl', methods=['POST'])
+def cslFormatExport():
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
 
-        # assign data type based on endpoint
-        payload["data_type"] = self.data_type
-        # to tell Classic not to return the default of 200 records
-        payload["nr_to_return"] = '3000'
-        # log what we are about to do
-        current_app.logger.info('Sending a request to Classic to retrieve %s for %s records'%(self.data_type, len(payload["bibcode"])))
-        # actual request
-        r = requests.post(
-            current_app.config.get("EXPORT_SERVICE_CLASSIC_EXPORT_URL"),
-            data=payload,
-            headers=headers
-        )
-        r.raise_for_status()
+    if not payload:
+        return __returnResponse('error: no information received', 400)
+    elif 'bibcode' not in payload:
+        return __returnResponse('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+    elif 'style' not in payload:
+        return __returnResponse('error: no style found in payload (parameter name is "style")', 400)
+    elif 'format' not in payload:
+        return __returnResponse('error: no output format found in payload (parameter name is "format")', 400)
 
-        if self.data_type in ['DUBLINCORE','VOTABLE']:
-            if self.data_type == 'DUBLINCORE':
-                nrecs = r.text.count('<record>')
-            else:
-                nrecs = r.text.count('<TR>')
-            if nrecs == 0:
-                current_app.logger.warning('No records were returned from Classic')
-                return {"error": "No records returned from ADS-Classic"}, 400
-            msg = "Exported %s records in %s format" % (nrecs, self.data_type)
-            current_app.logger.info('Export from Classic was successful: %s'%msg)
-            return {
-                "export": r.text.strip(),
-                "msg": msg
-            }
+    bibcodes = payload['bibcode']
+    cslStyle = payload['style']
+    exportFormat = payload['format']
 
-        hdr = re.match(
-            current_app.config['EXPORT_SERVICE_CLASSIC_SUCCESS_STRING'],
-            r.text
-        )
-        if not hdr:
-            current_app.logger.warning('No records were returned from Classic')
-            return {"error": "No records returned from ADS-Classic"}, 400
+    # if (not adsCSLStyle().verify(cslStyle)):
+    #     return __returnResponse('error: unrecognizable style (supprted formats are: ' + adsCSLStyle().get() + ')', 503)
+    # if (not adsFormatter.verify(exportFormat)):
+    #     return __returnResponse('error: unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)', 503)
 
-        msg = hdr.group().strip().split("\n")[::-1][0]
-        current_app.logger.info('Export from Classic was successful: %s'%msg)
-        return {
-            "export": r.text.replace(hdr.group(), ''),
-            "msg": msg
-        }
+    fromSolr = getSolrData(bibcodes=bibcodes, fields=__defaultFields())
+    return __returnResponse(CSL(CSLJson(fromSolr).get(), cslStyle, exportFormat).get(), 200)
 
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/custom', methods=['POST'])
+def customFormatExport():
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
 
-class Aastex(Export):
-    """Return AASTeX"""
-    scopes = []
-    rate_limit = [200, 60*60*24]
-    data_type = 'AASTeX'
+    if not payload:
+        return __returnResponse('error: no information received', 400)
+    elif 'bibcode' not in payload:
+        return __returnResponse('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+    elif 'format' not in payload:
+        return __returnResponse('error: no custom format found in payload (parameter name is "format")', 400)
 
+    bibcodes = payload['bibcode']
+    format = payload['format']
 
-class Endnote(Export):
-    """Return Endnote"""
-    scopes = []
-    rate_limit = [200, 60*60*24]
-    data_type = 'ENDNOTE'
+    # pass the user defined format to CustomFormat to parse and we would be able to get which fields
+    # in Solr we need to query on
+    customExport = CustomFormat(customFormat=format)
+    fields = customExport.getSolrFields()
+    # now get the required data from Solr and send it to customFormat for formatting
+    fromSolr = getSolrData(bibcodes=bibcodes, fields=fields)
+    customExport.setJSONFromSolr(fromSolr)
 
+    return __returnResponse(customExport.get(), 200)
 
-class Bibtex(Export):
-    """Return Bibtex"""
-    scopes = []
-    rate_limit = [200, 60*60*24]
-    data_type = 'BIBTEX'
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/', methods=['POST'])
+def home():
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
 
-class Ris(Export):
-    """Return RIS (REFMAN)"""
-    scopes = []
-    rate_limit = [200, 60*60*24]
-    data_type = 'REFMAN'
+    if not payload:
+        return __returnResponse('error: no information received', 400)
+    elif 'bibcode' not in payload:
+        return __returnResponse('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
 
-class Icarus(Export):
-    """Return Icarus"""
-    scopes = []
-    rate_limit = [200, 60*60*24]
-    data_type = 'Icarus'
+    bibcodes = payload['bibcode']
 
-class Mnras(Export):
-    """Return MNRAS"""
-    scopes = []
-    rate_limit = [200, 60*60*24]
-    data_type = 'MNRAS'
+    fromSolr = getSolrData(bibcodes=bibcodes, fields=__defaultFields())
+    return __returnResponse(json.dumps(fromSolr['response'].get('docs')), 200)
 
-class SoPh(Export):
-    """Return SoPh"""
-    scopes = []
-    rate_limit = [200, 60*60*24]
-    data_type = 'SoPh'
-
-class DCXML(Export):
-    """Return Dublin Core XML"""
-    scopes = []
-    rate_limit = [200, 60*60*24]
-    data_type = 'DUBLINCORE'
-
-class VOTables(Export):
-    """Return VOTables"""
-    scopes = []
-    rate_limit = [200, 60*60*24]
-    data_type = 'VOTABLE'
