@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" and="text" initialize="false">
+  <info>
+    <title>ADS Author Custom Format G</title>
+    <title-short>ADS Author Custom Format G</title-short>
+    <id>https://ui.adsabs.harvard.edu</id>
+    <category citation-format="author"/>
+    <category field="generic-base"/>
+    <summary>Format G: First Author has the format: lastname f. i., Second Author on has the format: lastname f. i., Before Last Author there no and, and when shorten has the format: n author(s), et al.</summary>
+    <updated>2017-07-12T18:59:05+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
+  </info>
+  <locale xml:lang="en"/>
+  <macro name="author"/>
+  <citation>
+    <layout/>
+  </citation>
+  <bibliography sort-separator=" " entry-spacing="0" hanging-indent="true">
+    <layout>
+      <text macro="author"/>
+      <names variable="author">
+        <name delimiter=" " delimiter-precedes-last="never" initialize-with=". " name-as-sort-order="all" sort-separator=" "/>
+        <label prefix=", "/>
+      </names>
+    </layout>
+  </bibliography>
+</style>
+

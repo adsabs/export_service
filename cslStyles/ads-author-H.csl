@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" name-form="short" and="text" initialize="false" name-as-sort-order="all" initialize-with-hyphen="false">
+  <info>
+    <title>ADS Author Custom Format H</title>
+    <title-short>ADS Author Custom Format H</title-short>
+    <id>https://ui.adsabs.harvard.edu</id>
+    <category citation-format="author"/>
+    <category field="generic-base"/>
+    <summary>Format H: Author Last name only, with 'and' before the last author</summary>
+    <updated>2017-06-22T17:57:55+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
+  </info>
+  <locale xml:lang="en"/>
+  <macro name="author"/>
+  <citation>
+    <layout/>
+  </citation>
+  <bibliography hanging-indent="true" entry-spacing="0">
+    <layout>
+      <text macro="author"/>
+      <names variable="author">
+        <name form="short" delimiter=" " and="text" delimiter-precedes-last="always" et-al-use-last="true" initialize="false" name-as-sort-order="all"/>
+        <label form="short" prefix=", "/>
+      </names>
+    </layout>
+  </bibliography>
+</style>
+

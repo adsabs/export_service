@@ -1,11 +1,10 @@
 from flask import Flask
-from views import Aastex, Bibtex, Endnote, Ris, Icarus, Mnras, SoPh, DCXML, VOTables
 import logging.config
+from views import bp
 from flask_restful import Api
 from flask_discoverer import Discoverer
 
-
-def create_app():
+def create_app(config=None):
     """
     Create the application and return it to the user
 
@@ -16,7 +15,7 @@ def create_app():
     app.url_map.strict_slashes = False
 
     # Load config and logging
-    load_config(app)
+    load_config(app, config)
     logging.config.dictConfig(
         app.config['EXPORT_SERVICE_LOGGING']
     )
@@ -25,20 +24,11 @@ def create_app():
     api = Api(app)
     Discoverer(app)
 
-    api.add_resource(Aastex, '/aastex')
-    api.add_resource(Bibtex, '/bibtex')
-    api.add_resource(Endnote, '/endnote')
-    api.add_resource(Ris, '/ris')
-    api.add_resource(Icarus, '/icarus')
-    api.add_resource(Mnras, '/mnras')
-    api.add_resource(SoPh, '/soph')
-    api.add_resource(DCXML, '/dcxml')
-    api.add_resource(VOTables, '/votables')
-
+    app.register_blueprint(bp)
     return app
 
 
-def load_config(app):
+def load_config(app, config=None):
     """
     Loads configuration in the following order:
         1. config.py
