@@ -7,8 +7,8 @@ from flask import current_app
 from textwrap import fill
 from itertools import product
 from string import ascii_uppercase
-
 import re
+import ast
 
 # Fielded (formerly known as tagged)
 EXPORT_FORMAT_ADS = 'ADS'
@@ -115,7 +115,7 @@ class FieldedFormat:
             return (OrderedDict([('bibcode', '%R'), ('title', '%T'), ('author', '%A'),
                                  ('aff', '%F'), ('pub', '%J'), ('volume', '%V'),
                                  ('date', '%D'), ('page', '%P'), ('keyword', '%K'),
-                                 ('', '%G'), ('copyright', '%C'), ('', '%I'),
+                                 ('', '%G'), ('copyright', '%C'), ('links', '%I'),
                                  ('url', '%U'), ('comment', '%X'), ('', '%S'),
                                  ('abstract', '%B'), ('doi', '%Y DOI:')]))
         if (exportFormat == EXPORT_FORMAT_ENDNOTE):
@@ -198,6 +198,76 @@ class FieldedFormat:
 
         return affiliationList + '\n'
 
+    # format links_data
+    def __addLinksDataDocLinks(self, aDoc, tag):
+        linkList = ''
+        linkDict = OrderedDict([
+                    ('data',['DATA','On-line Data']),
+                    ('electr',['EJOURNAL','Electronic On-line Article (HTML)']),
+                    ('gif',['GIF','Scanned Article (GIF)']),
+                    ('article',['ARTICLE','Full Printable Article (PDF/Postscript)']),
+                    ('preprint',['PREPRINT','arXiv e-print']),
+                    ('arXiv',['','']),
+                    ('simbad',['SIMBAD','SIMBAD Objects']),
+                    ('ned',['NED','NED Objects']),
+                    ('openurl',['OPENURL','Library Link Server']),
+                ])
+
+        nextLine = ';\n'
+        linksType = ''
+        count = 1
+        for linksData in aDoc['links_data']:
+            link = ast.literal_eval(linksData)
+            if (link['type'] in linkDict.keys()):
+                # need to count the items for multiple ones (i.e., data)
+                if (linksType == link['type']):
+                    count += 1
+                else:
+                    count = 1
+                linksType = link['type']
+                linkList += tag + ' ' + linkDict[linksType][0] + ': ' + linkDict[linksType][1] + nextLine
+
+        return linkList
+
+    # format links
+    def __addDocLinks(self, aDoc, tag):
+        linkList = ''
+        linkDict =  OrderedDict([
+                        #(key:[link type, name])
+                        ('abstract',['ABSTRACT','Abstract']),
+                        ('citation_count', ['CITATIONS', 'Citations to the Article']),
+                        ('reference',['REFERENCES','References in the Article']),
+                        ('coreads',['Co-Reads','Co-Reads']),
+                        ('refereed_citation',['REFCIT', 'Refereed Citations to the Article']),
+                        ('links_data', []),
+                    ])
+        nextLine = ';\n'
+        for link in linkDict:
+            if (link == 'abstract'):
+                if (len(aDoc.get(link, '')) > 0):
+                    linkList += tag + ' ' + linkDict[link][0] + ': ' + linkDict[link][1] + nextLine
+            elif (link == 'citation_count'):
+                count = aDoc.get(link, '')
+                if (count > 0):
+                    linkList += tag + ' ' + linkDict[link][0] + ': ' + linkDict[link][1] + nextLine
+            elif (link == 'reference'):
+                count = len(aDoc.get(link, ''))
+                if (count > 0):
+                    linkList += tag + ' ' + linkDict[link][0] + ': ' + linkDict[link][1] + nextLine
+            elif (link == 'coreads'):
+                count = aDoc.get('read_count', '')
+                if (count > 0):
+                    linkList += tag + ' ' + linkDict[link][0] + ': ' + linkDict[link][1] + nextLine
+            elif (link == 'refereed_citation'):
+                count = aDoc.get('citation_count', '')
+                if (count > 0):
+                    linkList += tag + ' ' + linkDict[link][0] + ': ' + linkDict[link][1] + nextLine
+            elif (link == 'links_data'):
+                if 'links_data' in aDoc:
+                    linkList += self.__addLinksDataDocLinks(aDoc, tag)
+
+        return linkList
+
     # format keywords
     def __addKeywords(self, aDoc, exportFormat, tag):
         if 'keyword' not in aDoc:
@@ -275,6 +345,8 @@ class FieldedFormat:
                 result += self.__addIn(fields[field], ' ')
             elif (field == 'pub_raw'):
                 result += self.__addIn(fields[field], self.__addCleanPubRaw(aDoc))
+            elif (field == 'links'):
+                result += self.__addDocLinks(aDoc, fields[field])
             else:
                 result += self.__addIn(fields[field], aDoc.get(field, ''))
 
@@ -283,14 +355,14 @@ class FieldedFormat:
 
     # for each document from Solr, get the fields, and format them accordingly
     def __getFielded(self, exportFormat):
-        results = ''
+        results = []
         if (self.status == 0):
             fields = self.__getTags(exportFormat)
             numDocs = self.getNumDocs()
-            results = ('\n\nRetrieved {} abstracts, starting with number 1.\n\n\n'.format(numDocs))
+            results.append('\n\nRetrieved {} abstracts, starting with number 1.\n\n\n'.format(numDocs))
             for index in range(numDocs):
                 results += self.__getDoc(index, fields, exportFormat)
-        return results
+        return ''.join(result for result in results)
 
     def getADSFielded(self):
         return self.__getFielded(EXPORT_FORMAT_ADS)

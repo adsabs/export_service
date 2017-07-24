@@ -44,9 +44,6 @@ EXPORT_SERVICE_LOGGING = {
 #EXPORT_SERVICE_BIGQUERY_PATH = None
 #EXPORT_SERVICE_ADSWS_API_TOKEN = 'this is a secret api token!'
 
-# curl -H 'Authorization: Bearer:rCCi5v3Xb3eReNsG5mTz7tWBNh4Z2rPMGNShne2d' 'http://devapi.adsabs.harvard.edu/v1/search/query?q=star&fl=bibcode'
-#EXPORT_SERVICE_BIGQUERY_PATH = 'https://devapi.adsabs.harvard.edu/v1/search/bigquery'
-#EXPORT_SERVICE_ADSWS_API_TOKEN = 'Bearer:rCCi5v3Xb3eReNsG5mTz7tWBNh4Z2rPMGNShne2d'
 EXPORT_SERVICE_BIGQUERY_PATH = 'http://api.adsabs.harvard.edu/v1/search/bigquery'
 EXPORT_SERVICE_ADSWS_API_TOKEN = 'Bearer:eQhhOLITyCD1B2Afuxf2b5LdTpFTl5WaepVI7Dn0'
 

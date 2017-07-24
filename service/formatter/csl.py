@@ -74,7 +74,7 @@ class CSL:
                     journal = abbreviation[0][1].strip('.')
                 data['container-title'] = journal
         # for AASTex we need a macro of the journal names
-        if (self.cslStyle == 'aastex'):
+        if (self.cslStyle == 'aastex') or (self.cslStyle == 'aasj') or (self.cslStyle == 'aspc'):
             journalMacros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
             for data in self.forCSL:
                 data['container-title'] = journalMacros.get(data['container-title'].replace('The ', ''), data['container-title'])
@@ -103,14 +103,6 @@ class CSL:
                 return author.replace('et al.', '\emph{et al.}')
         return author
 
-    def __updateBeforeLastAuthor(self, author):
-        # there is a bug in CSL that does not insert the last comma, so we have to do it ourselves.
-        if (self.cslStyle == 'mnras') or (self.cslStyle == 'aastex'):
-            return author.replace(' et al.', ', et al.')
-        if (self.cslStyle == 'soph'):
-            return author.replace(' and', ', and')
-        return author
-
     def __tokenizeCita(self, cita):
         regex = re.compile(r'^(.*)\(?(\d{4})\)?')
         # cita (citation) is author(s) followed by year inside a parentheses
@@ -126,16 +118,21 @@ class CSL:
         biblioAuthor, biblioRest = biblio[0]
         return biblioAuthor, biblioRest.strip(' ')
 
-    def __formatOutput(self, cita, biblio, bibcode):
-        # not yet verified that CLS is formatted correctly
-        if (self.cslStyle == 'apsj') or (self.cslStyle == 'aspc') or (self.cslStyle == 'aasj'):
-            return ''
+    def __formatOutput(self, cita, biblio, bibcode, index):
+        # apsj is a special case, display biblio as csl has format, just adjust translate characters for LaTex
+        if (self.cslStyle == 'apsj'):
+            citaAuthor, citaYear = '', ''
+            biblioAuthor = cita
+            biblioRest = biblio.replace(cita,'')
+            # do not need this, but since we are sending the format all the fields, empty bibcode
+            bibcode = ''
+        else:
+            citaAuthor, citaYear = self.__tokenizeCita(cita)
+            biblioAuthor, biblioRest = self.__tokenizeBiblio(biblio)
 
-        citaAuthor, citaYear = self.__tokenizeCita(cita)
-        biblioAuthor, biblioRest = self.__tokenizeBiblio(biblio)
         # some adjustments to the what is returned from CSL that we can not do with CSL
-        citaAuthor = htmlToLaTex(self.__updateBeforeLastAuthor(self.__updateAuthorEtAlAddEmph(citaAuthor)))
-        biblioAuthor = htmlToLaTex(self.__updateBeforeLastAuthor(self.__updateAuthorEtAl(str(biblioAuthor), bibcode)))
+        citaAuthor = htmlToLaTex(self.__updateAuthorEtAlAddEmph(citaAuthor))
+        biblioAuthor = htmlToLaTex(self.__updateAuthorEtAl(str(biblioAuthor), bibcode))
         biblioRest = htmlToLaTex(biblioRest)
 
         # encode latex stuff
@@ -149,26 +146,24 @@ class CSL:
             'Icarus': u'\\bibitem[{}({})]{{{}}} {}{}',
             'soph': u'\\bibitem[{}({})]{{{}}}{}{}',
             'aastex': u'\\bibitem[{}({})]{{{}}} {}{}',
-            'apsj': u'({}{}){{{}}}{}{}',
-            'aspc': u'({}{}){{{}}}{}{}',
-            'aasj': u'({}{}){{{}}}{}{}',
+            'aspc': u'\\bibitem[{}({})]{{{}}} {}{}',
+            'aasj': u'\\bibitem[{}({})]{{{}}} {}{}',
+            'apsj': u'{}{}{}{}{}'
         }
         return formatStyle[self.cslStyle].format(citaAuthor, citaYear, bibcode, biblioAuthor, biblioRest)
 
     def get(self, exportOrganizer=adsOrganizer.plain):
+        results = []
         if (exportOrganizer == adsOrganizer.plain):
             if (self.exportFormat == adsFormatter.unicode) or (self.exportFormat == adsFormatter.latex):
-                results = ''
-                for cita, item, bibcode in zip(self.citationItem, self.bibliography.bibliography(), self.bibcodeList):
-                    results += (self.__formatOutput(str(self.bibliography.cite(cita, '')), str(item), bibcode)) + '\n'
-                return results
-        elif (exportOrganizer == adsOrganizer.citationANDbibliography):
-            results = ''
+                for cita, item, bibcode, i in zip(self.citationItem, self.bibliography.bibliography(), self.bibcodeList, range(len(self.bibcodeList))):
+                    results.append(self.__formatOutput(str(self.bibliography.cite(cita, '')), str(item), bibcode, i+1) + '\n')
+                return ''.join(result for result in results)
+        if (exportOrganizer == adsOrganizer.citationANDbibliography):
             for cita, item, bibcode in zip(self.citationItem, self.bibliography.bibliography(), self.bibcodeList):
-                results += (bibcode + '\n' + str(self.bibliography.cite(cita, '')) + '\n' + str(item)) + '\n'
-            return results
-        elif (exportOrganizer == adsOrganizer.bibliography):
-            results = []
+                results.append(bibcode + '\n' + str(self.bibliography.cite(cita, '')) + '\n' + str(item) + '\n')
+            return ''.join(result for result in results)
+        if (exportOrganizer == adsOrganizer.bibliography):
             for item in self.bibliography.bibliography():
                 results.append(htmlToLaTex(str(item)))
             return results

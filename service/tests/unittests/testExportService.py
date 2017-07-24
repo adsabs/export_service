@@ -1,18 +1,24 @@
+import sys
+import os
+PROJECT_HOME = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '../../'))
+sys.path.append(PROJECT_HOME)
+
 from flask_testing import TestCase
 import unittest
-from app import create_app
-import json
+import service.app as app
+
 from stubdata import solrdata, bibTexTest, fieldedTest, xmlTest, cslTest, customTest
-from formatter.bibTexFormat import BibTexFormat
-from formatter.fieldedFormat import FieldedFormat
-from formatter.xmlFormat import XMLFormat
-from formatter.cslJson import CSLJson
-from formatter.csl import CSL, adsFormatter
-from formatter.customFormat import CustomFormat
+from service.formatter.bibTexFormat import BibTexFormat
+from service.formatter.fieldedFormat import FieldedFormat
+from service.formatter.xmlFormat import XMLFormat
+from service.formatter.cslJson import CSLJson
+from service.formatter.csl import CSL, adsFormatter
+from service.formatter.customFormat import CustomFormat
 
 class TestExports(TestCase):
     def create_app(self):
-        app_ = create_app()
+        app_ = app.create_app()
         return app_
 
     def test_bibtex(self):
@@ -125,7 +131,7 @@ class TestExports(TestCase):
 
     def test_custom(self):
         # format the stubdata using the code
-        customFormat = CustomFormat(customFormat=r'\\bibitem[%m\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p\n')
+        customFormat = CustomFormat(customFormat=r'\\bibitem[%m\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p \n')
         customFormat.setJSONFromSolr(solrdata.data)
         # now compare it with an already formatted data that we know is correct
         assert (customFormat.get() == customTest.data)

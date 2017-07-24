@@ -43,8 +43,9 @@ class BibTexFormat:
                   'book':'@BOOK', 
                   'inbook':'@INBOOK',
                   'proceedings':'@PROCEEDINGS', 
-                  'inproceedings':'@INPROCEEDINGS', 'abstract':'@INPROCEEDINGS', 'talk':'@INPROCEEDINGS', 
+                  'inproceedings':'@INPROCEEDINGS', 'abstract':'@INPROCEEDINGS',
                   'misc':'@MISC', 'software':'@MISC','proposal':'@MISC', 'pressrelease':'@MISC',
+                  'talk':'@INPROCEEDINGS',
                   'phdthesis':'@PHDTHESIS','mastersthesis':'@MASTERSTHESIS',
                   'techreport':'@TECHREPORT', 'intechreport':'@TECHREPORT'}
         return fields.get(solrType, '')
@@ -215,10 +216,10 @@ class BibTexFormat:
         return text + '}\n\n'
 
     def get(self, includeAbs=False):
-        refBibTex = ''
+        refBibTex = []
         if (self.status == 0):
             numDocs = self.getNumDocs()
-            refBibTex = ('\n\nRetrieved {} abstracts, starting with number 1.\n\n\n'.format(numDocs))
+            refBibTex.append('\n\nRetrieved {} abstracts, starting with number 1.\n\n\n'.format(numDocs))
             for index in range(numDocs):
-                refBibTex += self.__getDoc(index, includeAbs)
-        return refBibTex
+                refBibTex.append(self.__getDoc(index, includeAbs))
+        return ''.join(record for record in refBibTex)

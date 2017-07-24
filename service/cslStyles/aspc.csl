@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" demote-non-dropping-particle="sort-only" page-range-format="expanded" default-locale="en-US">
   <info>
-    <title>Astronomy and Astrophysics</title>
-    <title-short>A&amp;A</title-short>
-    <id>https://www.aanda.org/</id>
+    <title>Astronomical Society of the Pacific (ASP)</title>
+    <title-short>ASP</title-short>
+    <id>www.astrosociety.org</id>
     <category citation-format="note"/>
     <category field="astronomy"/>
-    <updated>2017-07-05T20:53:45+00:00</updated>
+    <updated>2017-06-02T16:29:38+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <macro name="container">
@@ -43,7 +43,7 @@
   </macro>
   <macro name="author">
     <names variable="author">
-      <name and="symbol" delimiter-precedes-et-al="never" delimiter-precedes-last="never" et-al-min="4" et-al-use-first="3" et-al-subsequent-min="4" et-al-subsequent-use-first="3" initialize-with=". " name-as-sort-order="all"/>
+      <name delimiter=", " and="symbol" delimiter-precedes-et-al="always" delimiter-precedes-last="always" et-al-min="4" et-al-use-first="3" et-al-subsequent-min="4" et-al-subsequent-use-first="3" initialize-with=". " name-as-sort-order="all"/>
       <label form="short" prefix=" (" suffix=")" text-case="capitalize-first"/>
       <substitute>
         <names variable="editor"/>
@@ -54,7 +54,7 @@
   </macro>
   <macro name="author-short">
     <names variable="author">
-      <name form="short" and="symbol" delimiter-precedes-et-al="never" delimiter-precedes-last="never" et-al-min="3" et-al-use-first="1" et-al-subsequent-min="3" et-al-subsequent-use-first="1" initialize-with=". " name-as-sort-order="all"/>
+      <name delimiter=", " form="short" and="symbol" delimiter-precedes-et-al="always" delimiter-precedes-last="always" et-al-min="3" et-al-use-first="1" et-al-subsequent-min="3" et-al-subsequent-use-first="1" initialize-with=". " name-as-sort-order="all"/>
       <substitute>
         <names variable="editor"/>
         <names variable="translator"/>

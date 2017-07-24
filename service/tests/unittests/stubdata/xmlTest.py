@@ -33,6 +33,21 @@ low cost free-space setup using the improved lens.</dc:description>
 </record>
 
 <record>
+<dc:identifier>2017CBET.4403....2G</dc:identifier>
+<dc:title>Potential New Meteor Shower from Comet C/2015 D4 (Borisov)</dc:title>
+<dc:creator>Green, D. W. E.</dc:creator>
+<dc:source>Central Bureau Electronic Telegrams, 4403, 2 (2017). Edited by Green, D.
+W. E.</dc:source>
+<dc:date>2017-06-01</dc:date>
+<dc:relation>https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G</dc:relation>
+<dc:description>A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
+= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
+predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
+29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
+125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).</dc:description>
+</record>
+
+<record>
 <dc:identifier>2017nova.pres.2388K</dc:identifier>
 <dc:title>A 3D View of a Supernova Remnant</dc:title>
 <dc:creator>Kohler, Susanna</dc:creator>
@@ -97,6 +112,55 @@ future with additional observations from Chandra, as well as with new
 data from future X-ray observatories that will be able to detect fainter
 emission.CitationBrian J. Williams et al 2017 ApJ 842 28.
 doi:10.3847/1538-4357/aa7384</dc:description>
+</record>
+
+<record>
+<dc:identifier>2017wfc..rept...16R</dc:identifier>
+<dc:title>Possible Overlaps Between Blobs, Grism Apertures, and Dithers</dc:title>
+<dc:creator>Ryan, R. E.</dc:creator>
+<dc:creator>McCullough, P. R.</dc:creator>
+<dc:source>Instrument Science Report WFC3 2017-16, 6 pages</dc:source>
+<dc:date>2017-06-01</dc:date>
+<dc:subject>Hubble Space Telescope, HST, Space Telescope Science Institute, STScI,
+WFC3, infrared blobs, IR blobs</dc:subject>
+<dc:relation>https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R</dc:relation>
+<dc:description>We present a investigation into possible overlaps between the known IR
+blobs with the grism aperture reference positions and the IR dither
+patterns. Each aperture was designed to place the science target (e.g. a
+specific star) on a cosmetically clean area of the IR detector.
+Similarly, the dither patterns were designed to mitigate cosmetic
+defects by rarely (or ideally never) placing such targets on known
+defects. Because blobs accumulate with time, the originally defined
+apertures and dither patterns may no longer accomplish their goals, it
+is important to reverify these combinations. We find two potential
+overlaps between the blob, aperture, and dither combinations, but do not
+recommend any changes to the current suite of aperture references
+positions and/or dither patterns for two reasons. First, one of the
+overlaps occurs with a dither/aperture combination that is seldom used
+for high-value science operations, but rather more common for wide-field
+surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
+has a fiducial radius of 10 pix, which already represents a very
+conservative distance. We conclude that a similar analysis should be
+repeated as new blobs occur, to continue to ensure ideal operations for
+high-value science targets. The purpose of this report is to document
+the analysis in order to facilitate its repetition in the future.</dc:description>
+</record>
+
+<record>
+<dc:identifier>2017ascl.soft06009C</dc:identifier>
+<dc:title>sick: Spectroscopic inference crank</dc:title>
+<dc:creator>Casey, Andrew R.</dc:creator>
+<dc:source>Astrophysics Source Code Library, record ascl:1706.009</dc:source>
+<dc:date>2017-06-01</dc:date>
+<dc:subject>Software</dc:subject>
+<dc:relation>https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C</dc:relation>
+<dc:description>sick infers astrophysical parameters from noisy observed spectra.
+Phenomena that can alter the data (e.g., redshift, continuum,
+instrumental broadening, outlier pixels) are modeled and simultaneously
+inferred with the astrophysical parameters of interest. This package
+relies on emcee (ascl:1303.002); it is best suited for situations where
+a grid of model spectra already exists, and one would like to infer
+model parameters given some data.</dc:description>
 </record>
 
 <record>
@@ -187,67 +251,32 @@ poor gas or outflow of metal enriched gas.</dc:description>
 </record>
 
 <record>
-<dc:identifier>2017CBET.4403....2G</dc:identifier>
-<dc:title>Potential New Meteor Shower from Comet C/2015 D4 (Borisov)</dc:title>
-<dc:creator>Green, D. W. E.</dc:creator>
-<dc:source>Central Bureau Electronic Telegrams, 4403, 2 (2017). Edited by Green, D.
-W. E.</dc:source>
-<dc:date>2017-06-01</dc:date>
-<dc:relation>https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G</dc:relation>
-<dc:description>A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
-= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
-predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
-29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
-125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).</dc:description>
-</record>
-
-<record>
-<dc:identifier>2017wfc..rept...16R</dc:identifier>
-<dc:title>Possible Overlaps Between Blobs, Grism Apertures, and Dithers</dc:title>
-<dc:creator>Ryan, R. E.</dc:creator>
-<dc:creator>McCullough, P. R.</dc:creator>
-<dc:source>Instrument Science Report WFC3 2017-16, 6 pages</dc:source>
-<dc:date>2017-06-01</dc:date>
-<dc:subject>Hubble Space Telescope, HST, Space Telescope Science Institute, STScI,
-WFC3, infrared blobs, IR blobs</dc:subject>
-<dc:relation>https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R</dc:relation>
-<dc:description>We present a investigation into possible overlaps between the known IR
-blobs with the grism aperture reference positions and the IR dither
-patterns. Each aperture was designed to place the science target (e.g. a
-specific star) on a cosmetically clean area of the IR detector.
-Similarly, the dither patterns were designed to mitigate cosmetic
-defects by rarely (or ideally never) placing such targets on known
-defects. Because blobs accumulate with time, the originally defined
-apertures and dither patterns may no longer accomplish their goals, it
-is important to reverify these combinations. We find two potential
-overlaps between the blob, aperture, and dither combinations, but do not
-recommend any changes to the current suite of aperture references
-positions and/or dither patterns for two reasons. First, one of the
-overlaps occurs with a dither/aperture combination that is seldom used
-for high-value science operations, but rather more common for wide-field
-surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
-has a fiducial radius of 10 pix, which already represents a very
-conservative distance. We conclude that a similar analysis should be
-repeated as new blobs occur, to continue to ensure ideal operations for
-high-value science targets. The purpose of this report is to document
-the analysis in order to facilitate its repetition in the future.</dc:description>
-</record>
-
-<record>
-<dc:identifier>2017ascl.soft06009C</dc:identifier>
-<dc:title>sick: Spectroscopic inference crank</dc:title>
-<dc:creator>Casey, Andrew R.</dc:creator>
-<dc:source>Astrophysics Source Code Library, record ascl:1706.009</dc:source>
-<dc:date>2017-06-01</dc:date>
-<dc:subject>Software</dc:subject>
-<dc:relation>https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C</dc:relation>
-<dc:description>sick infers astrophysical parameters from noisy observed spectra.
-Phenomena that can alter the data (e.g., redshift, continuum,
-instrumental broadening, outlier pixels) are modeled and simultaneously
-inferred with the astrophysical parameters of interest. This package
-relies on emcee (ascl:1303.002); it is best suited for situations where
-a grid of model spectra already exists, and one would like to infer
-model parameters given some data.</dc:description>
+<dc:identifier>2017yCat.113380453S</dc:identifier>
+<dc:title>VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)</dc:title>
+<dc:creator>Siltala, J.</dc:creator>
+<dc:creator>Jetsu, L.</dc:creator>
+<dc:creator>Hackman, T.</dc:creator>
+<dc:creator>Henry, G. W.</dc:creator>
+<dc:creator>Immonen, L.</dc:creator>
+<dc:creator>Kajatkari, P.</dc:creator>
+<dc:creator>Lankinen, J.</dc:creator>
+<dc:creator>Lehtinen, J.</dc:creator>
+<dc:creator>Monira, S.</dc:creator>
+<dc:creator>Nikbakhsh, S.</dc:creator>
+<dc:creator>Viitanen, A.</dc:creator>
+<dc:creator>Viuho, J.</dc:creator>
+<dc:creator>Willamo, T.</dc:creator>
+<dc:source>VizieR On-line Data Catalog: J/AN/338/453. Originally published in:
+2017AN....338..453S</dc:source>
+<dc:date>2017-05-01</dc:date>
+<dc:subject>Stars: variable</dc:subject>
+<dc:relation>https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S</dc:relation>
+<dc:description>The included files present the numerical data of our analysis of the BM
+CVn photometry. The data consists of differential Johnson V-band
+photometry using the star HD 116010 as the comparison star. The analysis
+has been performed using the previously published continuous period
+search (CPS) method, described in detail in Lehtinen et al.,
+2011A&amp;A...527A.136L, Cat. J/A+A/527/A136. (4 data files).</dc:description>
 </record>
 
 <record>
@@ -299,35 +328,6 @@ charts with sequence may be created using the AAVSO Variable Star
 Plotter (https://www.aavso.org/vsp). Photometry should be submitted to
 the AAVSO International Database. See full Special Notice for more
 details.</dc:description>
-</record>
-
-<record>
-<dc:identifier>2017yCat.113380453S</dc:identifier>
-<dc:title>VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)</dc:title>
-<dc:creator>Siltala, J.</dc:creator>
-<dc:creator>Jetsu, L.</dc:creator>
-<dc:creator>Hackman, T.</dc:creator>
-<dc:creator>Henry, G. W.</dc:creator>
-<dc:creator>Immonen, L.</dc:creator>
-<dc:creator>Kajatkari, P.</dc:creator>
-<dc:creator>Lankinen, J.</dc:creator>
-<dc:creator>Lehtinen, J.</dc:creator>
-<dc:creator>Monira, S.</dc:creator>
-<dc:creator>Nikbakhsh, S.</dc:creator>
-<dc:creator>Viitanen, A.</dc:creator>
-<dc:creator>Viuho, J.</dc:creator>
-<dc:creator>Willamo, T.</dc:creator>
-<dc:source>VizieR On-line Data Catalog: J/AN/338/453. Originally published in:
-2017AN....338..453S</dc:source>
-<dc:date>2017-05-01</dc:date>
-<dc:subject>Stars: variable</dc:subject>
-<dc:relation>https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S</dc:relation>
-<dc:description>The included files present the numerical data of our analysis of the BM
-CVn photometry. The data consists of differential Johnson V-band
-photometry using the star HD 116010 as the comparison star. The analysis
-has been performed using the previously published continuous period
-search (CPS) method, described in detail in Lehtinen et al.,
-2011A&amp;A...527A.136L, Cat. J/A+A/527/A136. (4 data files).</dc:description>
 </record>
 
 <record>
@@ -474,8 +474,7 @@ of a model organism.</dc:description>
 <dc:creator>NCSA</dc:creator>
 <dc:creator>Indiana</dc:creator>
 <dc:creator>, . . .</dc:creator>
-<dc:source>American Astronomical Society Meeting 210, id.21.04; Bulletin of the
-American Astronomical Society, Vol. 39, p.124</dc:source>
+<dc:source>American Astronomical Society Meeting 210, id.21.04</dc:source>
 <dc:date>2007-05-01</dc:date>
 <dc:relation>https://ui.adsabs.harvard.edu/#abs/2007AAS...210.2104M</dc:relation>
 <dc:description>Palomar-QUEST (PQ) synoptic sky survey has now been routinely processing
@@ -657,9 +656,38 @@ AC(Department of Electronics and Informatics, Ryukoku University)</affiliation>
 <url>https://ui.adsabs.harvard.edu/#abs/2017SenIm..18...17Z/references</url>
 <count>9</count>
 </link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017SenIm..18...17Z/coreads</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
+</link>
 <url>https://ui.adsabs.harvard.edu/#abs/2017SenIm..18...17Z</url>
 <citations>0</citations>
 <DOI>10.1007/s11220-017-0166-7</DOI>
+</record>
+
+<record>
+<bibcode>2017CBET.4403....2G</bibcode>
+<title>Potential New Meteor Shower from Comet C/2015 D4 (Borisov)</title>
+<author>Green, D. W. E.</author>
+<affiliation>AA(-)</affiliation>
+<journal>Central Bureau Electronic Telegrams</journal>
+<volume>4403</volume>
+<pubdate>Jun 2017</pubdate>
+<page>2</page>
+<link type="ABSTRACT">
+<name>Abstract</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G/abstract</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
+</link>
+<url>https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G</url>
+<citations>0</citations>
 </record>
 
 <record>
@@ -683,45 +711,15 @@ AC(Department of Electronics and Informatics, Ryukoku University)</affiliation>
 <name>Abstract</name>
 <url>https://ui.adsabs.harvard.edu/#abs/2017nova.pres.2388K/abstract</url>
 </link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017nova.pres.2388K/coreads</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
+</link>
 <url>https://ui.adsabs.harvard.edu/#abs/2017nova.pres.2388K</url>
-<citations>0</citations>
-</record>
-
-<record>
-<bibcode>2017PhDT........14C</bibcode>
-<title>Resolving Gas-Phase Metallicity In Galaxies</title>
-<author>Carton, David</author>
-<affiliation>AA(Leiden University)</affiliation>
-<journal>Ph.D. Thesis</journal>
-<pubdate>Jun 2017</pubdate>
-<keywords>
-<keyword>galaxies: evolution</keyword>
-<keyword>galaxies: abundances</keyword>
-<keyword>galaxies: ISM</keyword>
-</keywords>
-<link type="ABSTRACT">
-<name>Abstract</name>
-<url>https://ui.adsabs.harvard.edu/#abs/2017PhDT........14C/abstract</url>
-</link>
-<url>https://ui.adsabs.harvard.edu/#abs/2017PhDT........14C</url>
-<citations>0</citations>
-<DOI>10.5281/zenodo.581221</DOI>
-</record>
-
-<record>
-<bibcode>2017CBET.4403....2G</bibcode>
-<title>Potential New Meteor Shower from Comet C/2015 D4 (Borisov)</title>
-<author>Green, D. W. E.</author>
-<affiliation>AA(-)</affiliation>
-<journal>Central Bureau Electronic Telegrams</journal>
-<volume>4403</volume>
-<pubdate>Jun 2017</pubdate>
-<page>2</page>
-<link type="ABSTRACT">
-<name>Abstract</name>
-<url>https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G/abstract</url>
-</link>
-<url>https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G</url>
 <citations>0</citations>
 </record>
 
@@ -767,37 +765,50 @@ Institute)</affiliation>
 <name>Abstract</name>
 <url>https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C/abstract</url>
 </link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C/coreads</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
+</link>
 <url>https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C</url>
 <citations>0</citations>
 </record>
 
 <record>
-<bibcode>2017AAVSN.429....1W</bibcode>
-<title>V694 Mon (MWC 560) spectroscopy requested</title>
-<author>Waagen, Elizabeth O.</author>
-<affiliation>AA(AAVSO)</affiliation>
-<journal>AAVSO Special Notice</journal>
-<volume>429</volume>
-<pubdate>May 2017</pubdate>
-<page>1</page>
+<bibcode>2017PhDT........14C</bibcode>
+<title>Resolving Gas-Phase Metallicity In Galaxies</title>
+<author>Carton, David</author>
+<affiliation>AA(Leiden University)</affiliation>
+<journal>Ph.D. Thesis</journal>
+<pubdate>Jun 2017</pubdate>
 <keywords>
-<keyword>astronomical databases: miscellaneous</keyword>
-<keyword>binaries: symbiotic</keyword>
-<keyword>stars: individual (V694 Mon</keyword>
-<keyword>MWC 560)</keyword>
+<keyword>galaxies: evolution</keyword>
+<keyword>galaxies: abundances</keyword>
+<keyword>galaxies: ISM</keyword>
 </keywords>
-<copyright>(C) AAVSO 2017</copyright>
 <link type="ABSTRACT">
 <name>Abstract</name>
-<url>https://ui.adsabs.harvard.edu/#abs/2017AAVSN.429....1W/abstract</url>
+<url>https://ui.adsabs.harvard.edu/#abs/2017PhDT........14C/abstract</url>
 </link>
 <link type="REFERENCES">
 <name>References in the Article</name>
-<url>https://ui.adsabs.harvard.edu/#abs/2017AAVSN.429....1W/references</url>
-<count>6</count>
+<url>https://ui.adsabs.harvard.edu/#abs/2017PhDT........14C/references</url>
+<count>1</count>
 </link>
-<url>https://ui.adsabs.harvard.edu/#abs/2017AAVSN.429....1W</url>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017PhDT........14C/coreads</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
+</link>
+<url>https://ui.adsabs.harvard.edu/#abs/2017PhDT........14C</url>
 <citations>0</citations>
+<DOI>10.5281/zenodo.581221</DOI>
 </record>
 
 <record>
@@ -829,7 +840,53 @@ AK(-), AL(-), AM(-)</affiliation>
 <name>Abstract</name>
 <url>https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S/abstract</url>
 </link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S/coreads</url>
+</link>
+<link type="DATA">
+<name>On-line Data</name>
+<url>later</url>
+<count>1</count>
+</link>
 <url>https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S</url>
+<citations>0</citations>
+</record>
+
+<record>
+<bibcode>2017AAVSN.429....1W</bibcode>
+<title>V694 Mon (MWC 560) spectroscopy requested</title>
+<author>Waagen, Elizabeth O.</author>
+<affiliation>AA(AAVSO)</affiliation>
+<journal>AAVSO Special Notice</journal>
+<volume>429</volume>
+<pubdate>May 2017</pubdate>
+<page>1</page>
+<keywords>
+<keyword>astronomical databases: miscellaneous</keyword>
+<keyword>binaries: symbiotic</keyword>
+<keyword>stars: individual (V694 Mon</keyword>
+<keyword>MWC 560)</keyword>
+</keywords>
+<copyright>(C) AAVSO 2017</copyright>
+<link type="ABSTRACT">
+<name>Abstract</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017AAVSN.429....1W/abstract</url>
+</link>
+<link type="REFERENCES">
+<name>References in the Article</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017AAVSN.429....1W/references</url>
+<count>6</count>
+</link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017AAVSN.429....1W/coreads</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
+</link>
+<url>https://ui.adsabs.harvard.edu/#abs/2017AAVSN.429....1W</url>
 <citations>0</citations>
 </record>
 
@@ -844,6 +901,15 @@ AK(-), AL(-), AM(-)</affiliation>
 <link type="ABSTRACT">
 <name>Abstract</name>
 <url>https://ui.adsabs.harvard.edu/#abs/2017sptz.prop13168Y/abstract</url>
+</link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017sptz.prop13168Y/coreads</url>
+</link>
+<link type="DATA">
+<name>On-line Data</name>
+<url>later</url>
+<count>1</count>
 </link>
 <url>https://ui.adsabs.harvard.edu/#abs/2017sptz.prop13168Y</url>
 <citations>0</citations>
@@ -907,6 +973,14 @@ Romania), AC(Private Astronomical Observatory, Ploiesti, Romania)</affiliation>
 <url>https://ui.adsabs.harvard.edu/#abs/2016iac..talk..872V/references</url>
 <count>1</count>
 </link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2016iac..talk..872V/coreads</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
+</link>
 <url>https://ui.adsabs.harvard.edu/#abs/2016iac..talk..872V</url>
 <citations>0</citations>
 </record>
@@ -969,6 +1043,10 @@ Stanford University)</affiliation>
 <name>Abstract</name>
 <url>https://ui.adsabs.harvard.edu/#abs/2009bcet.book...65L/abstract</url>
 </link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
+</link>
 <url>https://ui.adsabs.harvard.edu/#abs/2009bcet.book...65L</url>
 <citations>0</citations>
 <DOI>10.1007/978-90-481-2368-1_5</DOI>
@@ -1015,6 +1093,10 @@ AJ(-), AK(-), AL(-), AM(-), AN(-)</affiliation>
 <volume>1</volume>
 <pubdate>Jan 2007</pubdate>
 <page>35</page>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
+</link>
 <url>https://ui.adsabs.harvard.edu/#abs/2007RJPh....1...35.</url>
 <citations>0</citations>
 <DOI>10.3923/rjp.2007.35.41</DOI>
@@ -1041,6 +1123,14 @@ AJ(-), AK(-), AL(-), AM(-), AN(-)</affiliation>
 <link type="ABSTRACT">
 <name>Abstract</name>
 <url>https://ui.adsabs.harvard.edu/#abs/2000astro.ph..3081G/abstract</url>
+</link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2000astro.ph..3081G/coreads</url>
+</link>
+<link type="PREPRINT">
+<name>arXiv e-print</name>
+<url>later</url>
 </link>
 <url>https://ui.adsabs.harvard.edu/#abs/2000astro.ph..3081G</url>
 <citations>0</citations>
@@ -1091,6 +1181,15 @@ AJ(-), AK(-), AL(-), AM(-), AN(-)</affiliation>
 <link type="CITATIONS">
 <name>Citations to the Article</name>
 <url>https://ui.adsabs.harvard.edu/#abs/1995anda.book.....N/citations</url>
+<count>114</count>
+</link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/1995anda.book.....N/coreads</url>
+</link>
+<link type="REFCIT">
+<name>Refereed Citations to the Article</name>
+<url>https://ui.adsabs.harvard.edu/#abs/1995anda.book.....N/noendpointyet</url>
 <count>114</count>
 </link>
 <url>https://ui.adsabs.harvard.edu/#abs/1995anda.book.....N</url>
@@ -1174,6 +1273,14 @@ AC(Department of Electronics and Informatics, Ryukoku University)</affiliation>
 <url>https://ui.adsabs.harvard.edu/#abs/2017SenIm..18...17Z/references</url>
 <count>9</count>
 </link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017SenIm..18...17Z/coreads</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
+</link>
 <url>https://ui.adsabs.harvard.edu/#abs/2017SenIm..18...17Z</url>
 <citations>0</citations>
 <abstract>This paper describes a microwave free-space method using flat artificial
@@ -1191,6 +1298,32 @@ interface has been reduced. The proposed AR lens antenna is flat and
 very small in the size. It is possible to construct a very compact and
 low cost free-space setup using the improved lens.</abstract>
 <DOI>10.1007/s11220-017-0166-7</DOI>
+</record>
+
+<record>
+<bibcode>2017CBET.4403....2G</bibcode>
+<title>Potential New Meteor Shower from Comet C/2015 D4 (Borisov)</title>
+<author>Green, D. W. E.</author>
+<affiliation>AA(-)</affiliation>
+<journal>Central Bureau Electronic Telegrams</journal>
+<volume>4403</volume>
+<pubdate>Jun 2017</pubdate>
+<page>2</page>
+<link type="ABSTRACT">
+<name>Abstract</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G/abstract</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
+</link>
+<url>https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G</url>
+<citations>0</citations>
+<abstract>A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
+= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
+predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
+29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
+125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).</abstract>
 </record>
 
 <record>
@@ -1213,6 +1346,14 @@ low cost free-space setup using the improved lens.</abstract>
 <link type="ABSTRACT">
 <name>Abstract</name>
 <url>https://ui.adsabs.harvard.edu/#abs/2017nova.pres.2388K/abstract</url>
+</link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017nova.pres.2388K/coreads</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
 </link>
 <url>https://ui.adsabs.harvard.edu/#abs/2017nova.pres.2388K</url>
 <citations>0</citations>
@@ -1275,6 +1416,87 @@ doi:10.3847/1538-4357/aa7384</abstract>
 </record>
 
 <record>
+<bibcode>2017wfc..rept...16R</bibcode>
+<title>Possible Overlaps Between Blobs, Grism Apertures, and Dithers</title>
+<author>Ryan, R. E.</author>
+<author>McCullough, P. R.</author>
+<affiliation>AA(Space Telescope Science Institute), AB(Space Telescope Science
+Institute)</affiliation>
+<journal>Space Telescope WFC Instrument Science Report</journal>
+<pubdate>Jun 2017</pubdate>
+<page>16</page>
+<keywords>
+<keyword>Hubble Space Telescope</keyword>
+<keyword>HST</keyword>
+<keyword>Space Telescope Science Institute</keyword>
+<keyword>STScI</keyword>
+<keyword>WFC3</keyword>
+<keyword>infrared blobs</keyword>
+<keyword>IR blobs</keyword>
+</keywords>
+<link type="ABSTRACT">
+<name>Abstract</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R/abstract</url>
+</link>
+<url>https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R</url>
+<citations>0</citations>
+<abstract>We present a investigation into possible overlaps between the known IR
+blobs with the grism aperture reference positions and the IR dither
+patterns. Each aperture was designed to place the science target (e.g. a
+specific star) on a cosmetically clean area of the IR detector.
+Similarly, the dither patterns were designed to mitigate cosmetic
+defects by rarely (or ideally never) placing such targets on known
+defects. Because blobs accumulate with time, the originally defined
+apertures and dither patterns may no longer accomplish their goals, it
+is important to reverify these combinations. We find two potential
+overlaps between the blob, aperture, and dither combinations, but do not
+recommend any changes to the current suite of aperture references
+positions and/or dither patterns for two reasons. First, one of the
+overlaps occurs with a dither/aperture combination that is seldom used
+for high-value science operations, but rather more common for wide-field
+surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
+has a fiducial radius of 10 pix, which already represents a very
+conservative distance. We conclude that a similar analysis should be
+repeated as new blobs occur, to continue to ensure ideal operations for
+high-value science targets. The purpose of this report is to document
+the analysis in order to facilitate its repetition in the future.</abstract>
+</record>
+
+<record>
+<bibcode>2017ascl.soft06009C</bibcode>
+<title>sick: Spectroscopic inference crank</title>
+<author>Casey, Andrew R.</author>
+<affiliation>AA(-)</affiliation>
+<journal>Astrophysics Source Code Library</journal>
+<pubdate>Jun 2017</pubdate>
+<page>ascl:1706.009</page>
+<keywords>
+<keyword>Software</keyword>
+</keywords>
+<link type="ABSTRACT">
+<name>Abstract</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C/abstract</url>
+</link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C/coreads</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
+</link>
+<url>https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C</url>
+<citations>0</citations>
+<abstract>sick infers astrophysical parameters from noisy observed spectra.
+Phenomena that can alter the data (e.g., redshift, continuum,
+instrumental broadening, outlier pixels) are modeled and simultaneously
+inferred with the astrophysical parameters of interest. This package
+relies on emcee (ascl:1303.002); it is best suited for situations where
+a grid of model spectra already exists, and one would like to infer
+model parameters given some data.</abstract>
+</record>
+
+<record>
 <bibcode>2017PhDT........14C</bibcode>
 <title>Resolving Gas-Phase Metallicity In Galaxies</title>
 <author>Carton, David</author>
@@ -1289,6 +1511,19 @@ doi:10.3847/1538-4357/aa7384</abstract>
 <link type="ABSTRACT">
 <name>Abstract</name>
 <url>https://ui.adsabs.harvard.edu/#abs/2017PhDT........14C/abstract</url>
+</link>
+<link type="REFERENCES">
+<name>References in the Article</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017PhDT........14C/references</url>
+<count>1</count>
+</link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017PhDT........14C/coreads</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
 </link>
 <url>https://ui.adsabs.harvard.edu/#abs/2017PhDT........14C</url>
 <citations>0</citations>
@@ -1372,98 +1607,51 @@ poor gas or outflow of metal enriched gas.</abstract>
 </record>
 
 <record>
-<bibcode>2017CBET.4403....2G</bibcode>
-<title>Potential New Meteor Shower from Comet C/2015 D4 (Borisov)</title>
-<author>Green, D. W. E.</author>
-<affiliation>AA(-)</affiliation>
-<journal>Central Bureau Electronic Telegrams</journal>
-<volume>4403</volume>
-<pubdate>Jun 2017</pubdate>
-<page>2</page>
-<link type="ABSTRACT">
-<name>Abstract</name>
-<url>https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G/abstract</url>
-</link>
-<url>https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G</url>
-<citations>0</citations>
-<abstract>A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
-= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
-predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
-29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
-125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).</abstract>
-</record>
-
-<record>
-<bibcode>2017wfc..rept...16R</bibcode>
-<title>Possible Overlaps Between Blobs, Grism Apertures, and Dithers</title>
-<author>Ryan, R. E.</author>
-<author>McCullough, P. R.</author>
-<affiliation>AA(Space Telescope Science Institute), AB(Space Telescope Science
-Institute)</affiliation>
-<journal>Space Telescope WFC Instrument Science Report</journal>
-<pubdate>Jun 2017</pubdate>
-<page>16</page>
+<bibcode>2017yCat.113380453S</bibcode>
+<title>VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)</title>
+<author>Siltala, J.</author>
+<author>Jetsu, L.</author>
+<author>Hackman, T.</author>
+<author>Henry, G. W.</author>
+<author>Immonen, L.</author>
+<author>Kajatkari, P.</author>
+<author>Lankinen, J.</author>
+<author>Lehtinen, J.</author>
+<author>Monira, S.</author>
+<author>Nikbakhsh, S.</author>
+<author>Viitanen, A.</author>
+<author>Viuho, J.</author>
+<author>Willamo, T.</author>
+<affiliation>AA(-), AB(-), AC(-), AD(-), AE(-), AF(-), AG(-), AH(-), AI(-), AJ(-),
+AK(-), AL(-), AM(-)</affiliation>
+<journal>VizieR Online Data Catalog</journal>
+<volume>1133</volume>
+<pubdate>May 2017</pubdate>
+<page>80453</page>
 <keywords>
-<keyword>Hubble Space Telescope</keyword>
-<keyword>HST</keyword>
-<keyword>Space Telescope Science Institute</keyword>
-<keyword>STScI</keyword>
-<keyword>WFC3</keyword>
-<keyword>infrared blobs</keyword>
-<keyword>IR blobs</keyword>
+<keyword>Stars: variable</keyword>
 </keywords>
 <link type="ABSTRACT">
 <name>Abstract</name>
-<url>https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R/abstract</url>
+<url>https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S/abstract</url>
 </link>
-<url>https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R</url>
-<citations>0</citations>
-<abstract>We present a investigation into possible overlaps between the known IR
-blobs with the grism aperture reference positions and the IR dither
-patterns. Each aperture was designed to place the science target (e.g. a
-specific star) on a cosmetically clean area of the IR detector.
-Similarly, the dither patterns were designed to mitigate cosmetic
-defects by rarely (or ideally never) placing such targets on known
-defects. Because blobs accumulate with time, the originally defined
-apertures and dither patterns may no longer accomplish their goals, it
-is important to reverify these combinations. We find two potential
-overlaps between the blob, aperture, and dither combinations, but do not
-recommend any changes to the current suite of aperture references
-positions and/or dither patterns for two reasons. First, one of the
-overlaps occurs with a dither/aperture combination that is seldom used
-for high-value science operations, but rather more common for wide-field
-surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
-has a fiducial radius of 10 pix, which already represents a very
-conservative distance. We conclude that a similar analysis should be
-repeated as new blobs occur, to continue to ensure ideal operations for
-high-value science targets. The purpose of this report is to document
-the analysis in order to facilitate its repetition in the future.</abstract>
-</record>
-
-<record>
-<bibcode>2017ascl.soft06009C</bibcode>
-<title>sick: Spectroscopic inference crank</title>
-<author>Casey, Andrew R.</author>
-<affiliation>AA(-)</affiliation>
-<journal>Astrophysics Source Code Library</journal>
-<pubdate>Jun 2017</pubdate>
-<page>ascl:1706.009</page>
-<keywords>
-<keyword>Software</keyword>
-</keywords>
-<link type="ABSTRACT">
-<name>Abstract</name>
-<url>https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C/abstract</url>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S/coreads</url>
 </link>
-<url>https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C</url>
+<link type="DATA">
+<name>On-line Data</name>
+<url>later</url>
+<count>1</count>
+</link>
+<url>https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S</url>
 <citations>0</citations>
-<abstract>sick infers astrophysical parameters from noisy observed spectra.
-Phenomena that can alter the data (e.g., redshift, continuum,
-instrumental broadening, outlier pixels) are modeled and simultaneously
-inferred with the astrophysical parameters of interest. This package
-relies on emcee (ascl:1303.002); it is best suited for situations where
-a grid of model spectra already exists, and one would like to infer
-model parameters given some data.</abstract>
+<abstract>The included files present the numerical data of our analysis of the BM
+CVn photometry. The data consists of differential Johnson V-band
+photometry using the star HD 116010 as the comparison star. The analysis
+has been performed using the previously published continuous period
+search (CPS) method, described in detail in Lehtinen et al.,
+2011A&amp;A...527A.136L, Cat. J/A+A/527/A136. (4 data files).</abstract>
 </record>
 
 <record>
@@ -1490,6 +1678,14 @@ model parameters given some data.</abstract>
 <name>References in the Article</name>
 <url>https://ui.adsabs.harvard.edu/#abs/2017AAVSN.429....1W/references</url>
 <count>6</count>
+</link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017AAVSN.429....1W/coreads</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
 </link>
 <url>https://ui.adsabs.harvard.edu/#abs/2017AAVSN.429....1W</url>
 <citations>0</citations>
@@ -1535,45 +1731,6 @@ details.</abstract>
 </record>
 
 <record>
-<bibcode>2017yCat.113380453S</bibcode>
-<title>VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)</title>
-<author>Siltala, J.</author>
-<author>Jetsu, L.</author>
-<author>Hackman, T.</author>
-<author>Henry, G. W.</author>
-<author>Immonen, L.</author>
-<author>Kajatkari, P.</author>
-<author>Lankinen, J.</author>
-<author>Lehtinen, J.</author>
-<author>Monira, S.</author>
-<author>Nikbakhsh, S.</author>
-<author>Viitanen, A.</author>
-<author>Viuho, J.</author>
-<author>Willamo, T.</author>
-<affiliation>AA(-), AB(-), AC(-), AD(-), AE(-), AF(-), AG(-), AH(-), AI(-), AJ(-),
-AK(-), AL(-), AM(-)</affiliation>
-<journal>VizieR Online Data Catalog</journal>
-<volume>1133</volume>
-<pubdate>May 2017</pubdate>
-<page>80453</page>
-<keywords>
-<keyword>Stars: variable</keyword>
-</keywords>
-<link type="ABSTRACT">
-<name>Abstract</name>
-<url>https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S/abstract</url>
-</link>
-<url>https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S</url>
-<citations>0</citations>
-<abstract>The included files present the numerical data of our analysis of the BM
-CVn photometry. The data consists of differential Johnson V-band
-photometry using the star HD 116010 as the comparison star. The analysis
-has been performed using the previously published continuous period
-search (CPS) method, described in detail in Lehtinen et al.,
-2011A&amp;A...527A.136L, Cat. J/A+A/527/A136. (4 data files).</abstract>
-</record>
-
-<record>
 <bibcode>2017sptz.prop13168Y</bibcode>
 <title>Confirm the Nature of a TDE Candidate in ULIRG F01004-2237 Using Spitzer mid-IR Light Curves</title>
 <author>Yan, Lin</author>
@@ -1584,6 +1741,15 @@ search (CPS) method, described in detail in Lehtinen et al.,
 <link type="ABSTRACT">
 <name>Abstract</name>
 <url>https://ui.adsabs.harvard.edu/#abs/2017sptz.prop13168Y/abstract</url>
+</link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2017sptz.prop13168Y/coreads</url>
+</link>
+<link type="DATA">
+<name>On-line Data</name>
+<url>later</url>
+<count>1</count>
 </link>
 <url>https://ui.adsabs.harvard.edu/#abs/2017sptz.prop13168Y</url>
 <citations>0</citations>
@@ -1686,6 +1852,14 @@ maximum phase of the Eclipse, while another give the reddened Moon.</abstract>
 <url>https://ui.adsabs.harvard.edu/#abs/2016iac..talk..872V/references</url>
 <count>1</count>
 </link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2016iac..talk..872V/coreads</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
+</link>
 <url>https://ui.adsabs.harvard.edu/#abs/2016iac..talk..872V</url>
 <citations>0</citations>
 </record>
@@ -1747,6 +1921,10 @@ Stanford University)</affiliation>
 <link type="ABSTRACT">
 <name>Abstract</name>
 <url>https://ui.adsabs.harvard.edu/#abs/2009bcet.book...65L/abstract</url>
+</link>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
 </link>
 <url>https://ui.adsabs.harvard.edu/#abs/2009bcet.book...65L</url>
 <citations>0</citations>
@@ -1834,6 +2012,10 @@ U.S. National Science Foundation (NSF).</abstract>
 <volume>1</volume>
 <pubdate>Jan 2007</pubdate>
 <page>35</page>
+<link type="EJOURNAL">
+<name>Electronic On-line Article (HTML)</name>
+<url>later</url>
+</link>
 <url>https://ui.adsabs.harvard.edu/#abs/2007RJPh....1...35.</url>
 <citations>0</citations>
 <DOI>10.3923/rjp.2007.35.41</DOI>
@@ -1860,6 +2042,14 @@ U.S. National Science Foundation (NSF).</abstract>
 <link type="ABSTRACT">
 <name>Abstract</name>
 <url>https://ui.adsabs.harvard.edu/#abs/2000astro.ph..3081G/abstract</url>
+</link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/2000astro.ph..3081G/coreads</url>
+</link>
+<link type="PREPRINT">
+<name>arXiv e-print</name>
+<url>later</url>
 </link>
 <url>https://ui.adsabs.harvard.edu/#abs/2000astro.ph..3081G</url>
 <citations>0</citations>
@@ -1941,6 +2131,15 @@ survivability and performance (accuracy).</abstract>
 <link type="CITATIONS">
 <name>Citations to the Article</name>
 <url>https://ui.adsabs.harvard.edu/#abs/1995anda.book.....N/citations</url>
+<count>114</count>
+</link>
+<link type="Co-Reads">
+<name>Co-Reads</name>
+<url>https://ui.adsabs.harvard.edu/#abs/1995anda.book.....N/coreads</url>
+</link>
+<link type="REFCIT">
+<name>Refereed Citations to the Article</name>
+<url>https://ui.adsabs.harvard.edu/#abs/1995anda.book.....N/noendpointyet</url>
 <count>114</count>
 </link>
 <url>https://ui.adsabs.harvard.edu/#abs/1995anda.book.....N</url>

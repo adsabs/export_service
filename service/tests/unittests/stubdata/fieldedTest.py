@@ -19,6 +19,10 @@ AC(Department of Electronics and Informatics, Ryukoku University)
 %K Free-space method, Artificial material, Anti-reflection layer,
 Attenuation, Phase shift
 %C (c) 2017: Springer Science+Business Media New York
+%I ABSTRACT: Abstract;
+%I REFERENCES: References in the Article;
+%I Co-Reads: Co-Reads;
+%I EJOURNAL: Electronic On-line Article (HTML);
 %U https://ui.adsabs.harvard.edu/#abs/2017SenIm..18...17Z
 %B This paper describes a microwave free-space method using flat artificial
 lens antennas with anti-reflection layer. The lens antenna is made of an
@@ -37,6 +41,24 @@ low cost free-space setup using the improved lens.
 %Y DOI: 10.1007/s11220-017-0166-7
 
 
+%R 2017CBET.4403....2G
+%T Potential New Meteor Shower from Comet C/2015 D4 (Borisov)
+%A Green, D. W. E.
+%F AA(-)
+%J Central Bureau Electronic Telegrams
+%V 4403
+%D 06/2017
+%P 2
+%I ABSTRACT: Abstract;
+%I EJOURNAL: Electronic On-line Article (HTML);
+%U https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G
+%B A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
+= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
+predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
+29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
+125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).
+
+
 %R 2017nova.pres.2388K
 %T A 3D View of a Supernova Remnant
 %A Kohler, Susanna
@@ -46,6 +68,9 @@ low cost free-space setup using the improved lens.
 %P 2388
 %K Features, Highlights, interstellar medium, stellar evolution,
 supernova remnant, supernovae, white dwarfs
+%I ABSTRACT: Abstract;
+%I Co-Reads: Co-Reads;
+%I EJOURNAL: Electronic On-line Article (HTML);
 %U https://ui.adsabs.harvard.edu/#abs/2017nova.pres.2388K
 %B The outlined regions mark the 57 knots in Tycho selected by the authors
 for velocity measurements. Magenta regions have redshifted line-of-sight
@@ -105,6 +130,61 @@ emission.CitationBrian J. Williams et al 2017 ApJ 842 28.
 doi:10.3847/1538-4357/aa7384
 
 
+%R 2017wfc..rept...16R
+%T Possible Overlaps Between Blobs, Grism Apertures, and Dithers
+%A Ryan, R. E.;McCullough, P. R.
+%F AA(Space Telescope Science Institute), AB(Space Telescope Science
+Institute)
+%J Space Telescope WFC Instrument Science Report
+%D 06/2017
+%P 16
+%K Hubble Space Telescope, HST, Space Telescope Science Institute,
+STScI, WFC3, infrared blobs, IR blobs
+%I ABSTRACT: Abstract;
+%U https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R
+%B We present a investigation into possible overlaps between the known IR
+blobs with the grism aperture reference positions and the IR dither
+patterns. Each aperture was designed to place the science target (e.g. a
+specific star) on a cosmetically clean area of the IR detector.
+Similarly, the dither patterns were designed to mitigate cosmetic
+defects by rarely (or ideally never) placing such targets on known
+defects. Because blobs accumulate with time, the originally defined
+apertures and dither patterns may no longer accomplish their goals, it
+is important to reverify these combinations. We find two potential
+overlaps between the blob, aperture, and dither combinations, but do not
+recommend any changes to the current suite of aperture references
+positions and/or dither patterns for two reasons. First, one of the
+overlaps occurs with a dither/aperture combination that is seldom used
+for high-value science operations, but rather more common for wide-field
+surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
+has a fiducial radius of 10 pix, which already represents a very
+conservative distance. We conclude that a similar analysis should be
+repeated as new blobs occur, to continue to ensure ideal operations for
+high-value science targets. The purpose of this report is to document
+the analysis in order to facilitate its repetition in the future.
+
+
+%R 2017ascl.soft06009C
+%T sick: Spectroscopic inference crank
+%A Casey, Andrew R.
+%F AA(-)
+%J Astrophysics Source Code Library
+%D 06/2017
+%P ascl:1706.009
+%K Software
+%I ABSTRACT: Abstract;
+%I Co-Reads: Co-Reads;
+%I EJOURNAL: Electronic On-line Article (HTML);
+%U https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C
+%B sick infers astrophysical parameters from noisy observed spectra.
+Phenomena that can alter the data (e.g., redshift, continuum,
+instrumental broadening, outlier pixels) are modeled and simultaneously
+inferred with the astrophysical parameters of interest. This package
+relies on emcee (ascl:1303.002); it is best suited for situations where
+a grid of model spectra already exists, and one would like to infer
+model parameters given some data.
+
+
 %R 2017PhDT........14C
 %T Resolving Gas-Phase Metallicity In Galaxies
 %A Carton, David
@@ -112,6 +192,10 @@ doi:10.3847/1538-4357/aa7384
 %J Ph.D. Thesis
 %D 06/2017
 %K galaxies: evolution, galaxies: abundances, galaxies: ISM
+%I ABSTRACT: Abstract;
+%I REFERENCES: References in the Article;
+%I Co-Reads: Co-Reads;
+%I EJOURNAL: Electronic On-line Article (HTML);
 %U https://ui.adsabs.harvard.edu/#abs/2017PhDT........14C
 %B Chapter 2: As part of the Bluedisk survey we analyse the radial gas-
 phase metallicity profiles of 50 late-type galaxies. We compare the
@@ -192,71 +276,32 @@ poor gas or outflow of metal enriched gas.
 %Y DOI: 10.5281/zenodo.581221
 
 
-%R 2017CBET.4403....2G
-%T Potential New Meteor Shower from Comet C/2015 D4 (Borisov)
-%A Green, D. W. E.
-%F AA(-)
-%J Central Bureau Electronic Telegrams
-%V 4403
-%D 06/2017
-%P 2
-%U https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G
-%B A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
-= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
-predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
-29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
-125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).
-
-
-%R 2017wfc..rept...16R
-%T Possible Overlaps Between Blobs, Grism Apertures, and Dithers
-%A Ryan, R. E.;McCullough, P. R.
-%F AA(Space Telescope Science Institute), AB(Space Telescope Science
-Institute)
-%J Space Telescope WFC Instrument Science Report
-%D 06/2017
-%P 16
-%K Hubble Space Telescope, HST, Space Telescope Science Institute,
-STScI, WFC3, infrared blobs, IR blobs
-%U https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R
-%B We present a investigation into possible overlaps between the known IR
-blobs with the grism aperture reference positions and the IR dither
-patterns. Each aperture was designed to place the science target (e.g. a
-specific star) on a cosmetically clean area of the IR detector.
-Similarly, the dither patterns were designed to mitigate cosmetic
-defects by rarely (or ideally never) placing such targets on known
-defects. Because blobs accumulate with time, the originally defined
-apertures and dither patterns may no longer accomplish their goals, it
-is important to reverify these combinations. We find two potential
-overlaps between the blob, aperture, and dither combinations, but do not
-recommend any changes to the current suite of aperture references
-positions and/or dither patterns for two reasons. First, one of the
-overlaps occurs with a dither/aperture combination that is seldom used
-for high-value science operations, but rather more common for wide-field
-surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
-has a fiducial radius of 10 pix, which already represents a very
-conservative distance. We conclude that a similar analysis should be
-repeated as new blobs occur, to continue to ensure ideal operations for
-high-value science targets. The purpose of this report is to document
-the analysis in order to facilitate its repetition in the future.
-
-
-%R 2017ascl.soft06009C
-%T sick: Spectroscopic inference crank
-%A Casey, Andrew R.
-%F AA(-)
-%J Astrophysics Source Code Library
-%D 06/2017
-%P ascl:1706.009
-%K Software
-%U https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C
-%B sick infers astrophysical parameters from noisy observed spectra.
-Phenomena that can alter the data (e.g., redshift, continuum,
-instrumental broadening, outlier pixels) are modeled and simultaneously
-inferred with the astrophysical parameters of interest. This package
-relies on emcee (ascl:1303.002); it is best suited for situations where
-a grid of model spectra already exists, and one would like to infer
-model parameters given some data.
+%R 2017yCat.113380453S
+%T VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)
+%A Siltala, J.;Jetsu, L.;Hackman, T.;Henry, G. W.;Immonen, L.;Kajatkari,
+P.;Lankinen, J.;Lehtinen, J.;Monira, S.;Nikbakhsh, S.;Viitanen,
+A.;Viuho, J.;Willamo, T.
+%F AA(-), AB(-), AC(-), AD(-), AE(-), AF(-), AG(-), AH(-), AI(-), AJ(-),
+AK(-), AL(-), AM(-)
+%J VizieR Online Data Catalog
+%V 1133
+%D 05/2017
+%P 80453
+%K Stars: variable
+%I ABSTRACT: Abstract;
+%I Co-Reads: Co-Reads;
+%I DATA: On-line Data;
+%U https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S
+%X phot.dat 2930x19 Differential photometry of BM CVn; phot_mlc.dat 2930x19
+Differential photometry of BM CVn with MLC removed; res.dat 1319x185
+*Numerical results of the CPS analysis; res_mlc.dat 1319x185 *Results of
+the CPS analysis with MLC removed
+%B The included files present the numerical data of our analysis of the BM
+CVn photometry. The data consists of differential Johnson V-band
+photometry using the star HD 116010 as the comparison star. The analysis
+has been performed using the previously published continuous period
+search (CPS) method, described in detail in Lehtinen et al.,
+2011A&A...527A.136L, Cat. J/A+A/527/A136. (4 data files).
 
 
 %R 2017AAVSN.429....1W
@@ -270,6 +315,10 @@ model parameters given some data.
 %K astronomical databases: miscellaneous, binaries: symbiotic, stars:
 individual (V694 Mon, MWC 560)
 %C (C) AAVSO 2017
+%I ABSTRACT: Abstract;
+%I REFERENCES: References in the Article;
+%I Co-Reads: Co-Reads;
+%I EJOURNAL: Electronic On-line Article (HTML);
 %U https://ui.adsabs.harvard.edu/#abs/2017AAVSN.429....1W
 %B The observing campaign from 2016 on V694 Mon (MWC 560) (AAVSO Alert
 Notice 538) has been continued, but with different requirements.
@@ -312,31 +361,6 @@ the AAVSO International Database. See full Special Notice for more
 details.
 
 
-%R 2017yCat.113380453S
-%T VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)
-%A Siltala, J.;Jetsu, L.;Hackman, T.;Henry, G. W.;Immonen, L.;Kajatkari,
-P.;Lankinen, J.;Lehtinen, J.;Monira, S.;Nikbakhsh, S.;Viitanen,
-A.;Viuho, J.;Willamo, T.
-%F AA(-), AB(-), AC(-), AD(-), AE(-), AF(-), AG(-), AH(-), AI(-), AJ(-),
-AK(-), AL(-), AM(-)
-%J VizieR Online Data Catalog
-%V 1133
-%D 05/2017
-%P 80453
-%K Stars: variable
-%U https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S
-%X phot.dat 2930x19 Differential photometry of BM CVn; phot_mlc.dat 2930x19
-Differential photometry of BM CVn with MLC removed; res.dat 1319x185
-*Numerical results of the CPS analysis; res_mlc.dat 1319x185 *Results of
-the CPS analysis with MLC removed
-%B The included files present the numerical data of our analysis of the BM
-CVn photometry. The data consists of differential Johnson V-band
-photometry using the star HD 116010 as the comparison star. The analysis
-has been performed using the previously published continuous period
-search (CPS) method, described in detail in Lehtinen et al.,
-2011A&A...527A.136L, Cat. J/A+A/527/A136. (4 data files).
-
-
 %R 2017sptz.prop13168Y
 %T Confirm the Nature of a TDE Candidate in ULIRG F01004-2237 Using Spitzer mid-IR Light Curves
 %A Yan, Lin
@@ -344,6 +368,9 @@ search (CPS) method, described in detail in Lehtinen et al.,
 %J Spitzer Proposal
 %D 04/2017
 %P 13168
+%I ABSTRACT: Abstract;
+%I Co-Reads: Co-Reads;
+%I DATA: On-line Data;
 %U https://ui.adsabs.harvard.edu/#abs/2017sptz.prop13168Y
 %B ULIRG F01004-2237 had a strong optical flare, peaked in 2010, and the
 follow-up optical spectra classified this event as a TDE candidate
@@ -371,6 +398,8 @@ this transient event.
 %J Masters Thesis
 %D 03/2017
 %P 2
+%I ABSTRACT: Abstract;
+%I REFERENCES: References in the Article;
 %U https://ui.adsabs.harvard.edu/#abs/2017MsT..........2A
 %B The African Very-long-baseline interferometry Network (AVN) is a joint
 project between South Africa and eight partner African countries aimed
@@ -399,6 +428,7 @@ thermal loads.
 Romania), AC(Private Astronomical Observatory, Ploiesti, Romania)
 %D 10/2016
 %K THE MOON, ECLIPSES, PARTIAL, PENUMBRAL, ASTROPHOTOGRAPHY
+%I ABSTRACT: Abstract;
 %U https://ui.adsabs.harvard.edu/#abs/2016emo6.rept.....R
 %B The web page represents circumstances and photographs from the Moon's
 partial/penumbral eclipse from 16 September 2016 obtained from few
@@ -413,6 +443,9 @@ maximum phase of the Eclipse, while another give the reddened Moon.
 %J IAC Talks, Astronomy and Astrophysics Seminars from the Instituto de Astrof&iacute;sica de Canarias
 %D 03/2016
 %P 872
+%I REFERENCES: References in the Article;
+%I Co-Reads: Co-Reads;
+%I EJOURNAL: Electronic On-line Article (HTML);
 %U https://ui.adsabs.harvard.edu/#abs/2016iac..talk..872V
 
 
@@ -455,6 +488,8 @@ Stanford University)
 %P 65
 %K Physics
 %C (c) 2009: Springer Netherlands
+%I ABSTRACT: Abstract;
+%I EJOURNAL: Electronic On-line Article (HTML);
 %U https://ui.adsabs.harvard.edu/#abs/2009bcet.book...65L
 %B The discovery of the physical phenomenon of Nuclear Magnetic Resonance
 (NMR) in 1946 gave rise to the spectroscopic technique that has become a
@@ -488,6 +523,7 @@ AJ(-), AK(-), AL(-), AM(-), AN(-)
 %V 210
 %D 05/2007
 %P 21
+%I ABSTRACT: Abstract;
 %U https://ui.adsabs.harvard.edu/#abs/2007AAS...210.2104M
 %B Palomar-QUEST (PQ) synoptic sky survey has now been routinely processing
 data from driftscans in real-time. As four photometric bandpasses are
@@ -521,6 +557,7 @@ U.S. National Science Foundation (NSF).
 %V 1
 %D 01/2007
 %P 35
+%I EJOURNAL: Electronic On-line Article (HTML);
 %U https://ui.adsabs.harvard.edu/#abs/2007RJPh....1...35.
 %Y DOI: 10.3923/rjp.2007.35.41
 
@@ -535,6 +572,9 @@ Doug
 %D 03/2000
 %P astro-ph/0003081
 %K Astrophysics
+%I ABSTRACT: Abstract;
+%I Co-Reads: Co-Reads;
+%I PREPRINT: arXiv e-print;
 %U https://ui.adsabs.harvard.edu/#abs/2000astro.ph..3081G
 %B The Dominion Radio Astrophysical Observatory's Synthesis Telescope
 provides the highest resolution data (1 arcmin and 0.82 km/s) to date of
@@ -564,6 +604,7 @@ Assessment, Technology Utilization, Ascent Trajectories, Reentry
 Trajectories, Spacecraft, Spacecraft Performance, Spacecraft
 Survivability, Tradeoffs, Weight (Mass), Space Communications,
 Spacecraft Communications, Command and Tracking
+%I ABSTRACT: Abstract;
 %U https://ui.adsabs.harvard.edu/#abs/1995ans..agar..390M
 %B Spacecraft operation depends upon knowledge of vehicular position and,
 consequently, navigational support has been required for all such
@@ -589,6 +630,9 @@ survivability and performance (accuracy).
 %A Nayfeh, Ali H.;Balachandran, Balakumar
 %F AA(-), AB(-)
 %D 01/1995
+%I CITATIONS: Citations to the Article;
+%I Co-Reads: Co-Reads;
+%I REFCIT: Refereed Citations to the Article;
 %U https://ui.adsabs.harvard.edu/#abs/1995anda.book.....N
 
 
@@ -609,6 +653,7 @@ Pasadena, CA)
 Lunar Communication, Radio Beacons, Radio Navigation, Space Navigation,
 Doppler Navigation, Least Squares Method, Orbit Calculation, Space
 Communications, Spacecraft Communications, Command and Tracking
+%I ABSTRACT: Abstract;
 %U https://ui.adsabs.harvard.edu/#abs/1983aiaa.meetY....K
 %B The concept of using lunar beacon signal transmission for on-board
 navigation for earth satellites and near-earth spacecraft is described.
@@ -664,6 +709,22 @@ interface has been reduced. The proposed AR lens antenna is flat and
 very small in the size. It is possible to construct a very compact and
 low cost free-space setup using the improved lens.
 %3 10.1007/s11220-017-0166-7
+
+
+%0 Journal Article
+%T Potential New Meteor Shower from Comet C/2015 D4 (Borisov)
+%A Green, D. W. E.
+%+ AA(-)
+%B Central Bureau Electronic Telegrams
+%V 4403
+%D 2017
+%8 June 01, 2017
+%U https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G
+%X A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
+= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
+predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
+29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
+125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).
 
 
 %0 Journal Article
@@ -732,6 +793,57 @@ future with additional observations from Chandra, as well as with new
 data from future X-ray observatories that will be able to detect fainter
 emission.CitationBrian J. Williams et al 2017 ApJ 842 28.
 doi:10.3847/1538-4357/aa7384
+
+
+%0 Report
+%T Possible Overlaps Between Blobs, Grism Apertures, and Dithers
+%A Ryan, R. E.
+%A McCullough, P. R.
+%+ AA(Space Telescope Science Institute), AB(Space Telescope Science Institute)
+%B Space Telescope WFC Instrument Science Report
+%D 2017
+%8 June 01, 2017
+%K Hubble Space Telescope; HST; Space Telescope Science Institute;
+STScI; WFC3; infrared blobs; IR blobs
+%U https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R
+%X We present a investigation into possible overlaps between the known IR
+blobs with the grism aperture reference positions and the IR dither
+patterns. Each aperture was designed to place the science target (e.g. a
+specific star) on a cosmetically clean area of the IR detector.
+Similarly, the dither patterns were designed to mitigate cosmetic
+defects by rarely (or ideally never) placing such targets on known
+defects. Because blobs accumulate with time, the originally defined
+apertures and dither patterns may no longer accomplish their goals, it
+is important to reverify these combinations. We find two potential
+overlaps between the blob, aperture, and dither combinations, but do not
+recommend any changes to the current suite of aperture references
+positions and/or dither patterns for two reasons. First, one of the
+overlaps occurs with a dither/aperture combination that is seldom used
+for high-value science operations, but rather more common for wide-field
+surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
+has a fiducial radius of 10 pix, which already represents a very
+conservative distance. We conclude that a similar analysis should be
+repeated as new blobs occur, to continue to ensure ideal operations for
+high-value science targets. The purpose of this report is to document
+the analysis in order to facilitate its repetition in the future.
+
+
+%0 Miscellaneous
+%T sick: Spectroscopic inference crank
+%A Casey, Andrew R.
+%+ AA(-)
+%B Astrophysics Source Code Library
+%D 2017
+%8 June 01, 2017
+%K Software
+%U https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C
+%X sick infers astrophysical parameters from noisy observed spectra.
+Phenomena that can alter the data (e.g., redshift, continuum,
+instrumental broadening, outlier pixels) are modeled and simultaneously
+inferred with the astrophysical parameters of interest. This package
+relies on emcee (ascl:1303.002); it is best suited for situations where
+a grid of model spectra already exists, and one would like to infer
+model parameters given some data.
 
 
 %0 Thesis
@@ -823,70 +935,37 @@ poor gas or outflow of metal enriched gas.
 
 
 %0 Journal Article
-%T Potential New Meteor Shower from Comet C/2015 D4 (Borisov)
-%A Green, D. W. E.
-%+ AA(-)
-%B Central Bureau Electronic Telegrams
-%V 4403
+%T VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)
+%A Siltala, J.
+%A Jetsu, L.
+%A Hackman, T.
+%A Henry, G. W.
+%A Immonen, L.
+%A Kajatkari, P.
+%A Lankinen, J.
+%A Lehtinen, J.
+%A Monira, S.
+%A Nikbakhsh, S.
+%A Viitanen, A.
+%A Viuho, J.
+%A Willamo, T.
+%+ AA(-), AB(-), AC(-), AD(-), AE(-), AF(-), AG(-), AH(-), AI(-), AJ(-), AK(-), AL(-), AM(-)
+%B VizieR Online Data Catalog
+%V 1133
 %D 2017
-%8 June 01, 2017
-%U https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G
-%X A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
-= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
-predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
-29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
-125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).
-
-
-%0 Report
-%T Possible Overlaps Between Blobs, Grism Apertures, and Dithers
-%A Ryan, R. E.
-%A McCullough, P. R.
-%+ AA(Space Telescope Science Institute), AB(Space Telescope Science Institute)
-%B Space Telescope WFC Instrument Science Report
-%D 2017
-%8 June 01, 2017
-%K Hubble Space Telescope; HST; Space Telescope Science Institute;
-STScI; WFC3; infrared blobs; IR blobs
-%U https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R
-%X We present a investigation into possible overlaps between the known IR
-blobs with the grism aperture reference positions and the IR dither
-patterns. Each aperture was designed to place the science target (e.g. a
-specific star) on a cosmetically clean area of the IR detector.
-Similarly, the dither patterns were designed to mitigate cosmetic
-defects by rarely (or ideally never) placing such targets on known
-defects. Because blobs accumulate with time, the originally defined
-apertures and dither patterns may no longer accomplish their goals, it
-is important to reverify these combinations. We find two potential
-overlaps between the blob, aperture, and dither combinations, but do not
-recommend any changes to the current suite of aperture references
-positions and/or dither patterns for two reasons. First, one of the
-overlaps occurs with a dither/aperture combination that is seldom used
-for high-value science operations, but rather more common for wide-field
-surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
-has a fiducial radius of 10 pix, which already represents a very
-conservative distance. We conclude that a similar analysis should be
-repeated as new blobs occur, to continue to ensure ideal operations for
-high-value science targets. The purpose of this report is to document
-the analysis in order to facilitate its repetition in the future.
-
-
-%0 Miscellaneous
-%T sick: Spectroscopic inference crank
-%A Casey, Andrew R.
-%+ AA(-)
-%B Astrophysics Source Code Library
-%D 2017
-%8 June 01, 2017
-%K Software
-%U https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C
-%X sick infers astrophysical parameters from noisy observed spectra.
-Phenomena that can alter the data (e.g., redshift, continuum,
-instrumental broadening, outlier pixels) are modeled and simultaneously
-inferred with the astrophysical parameters of interest. This package
-relies on emcee (ascl:1303.002); it is best suited for situations where
-a grid of model spectra already exists, and one would like to infer
-model parameters given some data.
+%8 May 01, 2017
+%K Stars: variable
+%U https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S
+%Z phot.dat 2930x19 Differential photometry of BM CVn; phot_mlc.dat 2930x19
+Differential photometry of BM CVn with MLC removed; res.dat 1319x185
+*Numerical results of the CPS analysis; res_mlc.dat 1319x185 *Results of
+the CPS analysis with MLC removed
+%X The included files present the numerical data of our analysis of the BM
+CVn photometry. The data consists of differential Johnson V-band
+photometry using the star HD 116010 as the comparison star. The analysis
+has been performed using the previously published continuous period
+search (CPS) method, described in detail in Lehtinen et al.,
+2011A&A...527A.136L, Cat. J/A+A/527/A136. (4 data files).
 
 
 %0 Journal Article
@@ -939,40 +1018,6 @@ charts with sequence may be created using the AAVSO Variable Star
 Plotter (https://www.aavso.org/vsp). Photometry should be submitted to
 the AAVSO International Database. See full Special Notice for more
 details.
-
-
-%0 Journal Article
-%T VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)
-%A Siltala, J.
-%A Jetsu, L.
-%A Hackman, T.
-%A Henry, G. W.
-%A Immonen, L.
-%A Kajatkari, P.
-%A Lankinen, J.
-%A Lehtinen, J.
-%A Monira, S.
-%A Nikbakhsh, S.
-%A Viitanen, A.
-%A Viuho, J.
-%A Willamo, T.
-%+ AA(-), AB(-), AC(-), AD(-), AE(-), AF(-), AG(-), AH(-), AI(-), AJ(-), AK(-), AL(-), AM(-)
-%B VizieR Online Data Catalog
-%V 1133
-%D 2017
-%8 May 01, 2017
-%K Stars: variable
-%U https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S
-%Z phot.dat 2930x19 Differential photometry of BM CVn; phot_mlc.dat 2930x19
-Differential photometry of BM CVn with MLC removed; res.dat 1319x185
-*Numerical results of the CPS analysis; res_mlc.dat 1319x185 *Results of
-the CPS analysis with MLC removed
-%X The included files present the numerical data of our analysis of the BM
-CVn photometry. The data consists of differential Johnson V-band
-photometry using the star HD 116010 as the comparison star. The analysis
-has been performed using the previously published continuous period
-search (CPS) method, described in detail in Lehtinen et al.,
-2011A&A...527A.136L, Cat. J/A+A/527/A136. (4 data files).
 
 
 %0 Miscellaneous
@@ -1308,6 +1353,22 @@ ER  -
 
 
 TY  - Journal
+T1  - Potential New Meteor Shower from Comet C/2015 D4 (Borisov)
+A1  - Green, D. W. E.
+JO  - Central Bureau Electronic Telegrams
+VL  - 4403
+Y1  - 2017/06/1
+SP  - 2
+UR  - https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G
+N2  - A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
+= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
+predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
+29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
+125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).
+ER  -  
+
+
+TY  - Journal
 T1  - A 3D View of a Supernova Remnant
 A1  - Kohler, Susanna
 JO  - AAS Nova Highlights
@@ -1372,6 +1433,57 @@ future with additional observations from Chandra, as well as with new
 data from future X-ray observatories that will be able to detect fainter
 emission.CitationBrian J. Williams et al 2017 ApJ 842 28.
 doi:10.3847/1538-4357/aa7384
+ER  -  
+
+
+TY  - Report
+T1  - Possible Overlaps Between Blobs, Grism Apertures, and Dithers
+A1  - Ryan, R. E.
+A1  - McCullough, P. R.
+JO  - Space Telescope WFC Instrument Science Report
+Y1  - 2017/06/1
+SP  - 16
+KW  - Hubble Space Telescope/ HST/ Space Telescope Science Institute/
+STScI/ WFC3/ infrared blobs/ IR blobs
+UR  - https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R
+N2  - We present a investigation into possible overlaps between the known IR
+blobs with the grism aperture reference positions and the IR dither
+patterns. Each aperture was designed to place the science target (e.g. a
+specific star) on a cosmetically clean area of the IR detector.
+Similarly, the dither patterns were designed to mitigate cosmetic
+defects by rarely (or ideally never) placing such targets on known
+defects. Because blobs accumulate with time, the originally defined
+apertures and dither patterns may no longer accomplish their goals, it
+is important to reverify these combinations. We find two potential
+overlaps between the blob, aperture, and dither combinations, but do not
+recommend any changes to the current suite of aperture references
+positions and/or dither patterns for two reasons. First, one of the
+overlaps occurs with a dither/aperture combination that is seldom used
+for high-value science operations, but rather more common for wide-field
+surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
+has a fiducial radius of 10 pix, which already represents a very
+conservative distance. We conclude that a similar analysis should be
+repeated as new blobs occur, to continue to ensure ideal operations for
+high-value science targets. The purpose of this report is to document
+the analysis in order to facilitate its repetition in the future.
+ER  -  
+
+
+TY  - Miscellaneous
+T1  - sick: Spectroscopic inference crank
+A1  - Casey, Andrew R.
+JO  - Astrophysics Source Code Library
+Y1  - 2017/06/1
+SP  - ascl:1706.009
+KW  - Software
+UR  - https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C
+N2  - sick infers astrophysical parameters from noisy observed spectra.
+Phenomena that can alter the data (e.g., redshift, continuum,
+instrumental broadening, outlier pixels) are modeled and simultaneously
+inferred with the astrophysical parameters of interest. This package
+relies on emcee (ascl:1303.002); it is best suited for situations where
+a grid of model spectra already exists, and one would like to infer
+model parameters given some data.
 ER  -  
 
 
@@ -1463,69 +1575,32 @@ ER  -
 
 
 TY  - Journal
-T1  - Potential New Meteor Shower from Comet C/2015 D4 (Borisov)
-A1  - Green, D. W. E.
-JO  - Central Bureau Electronic Telegrams
-VL  - 4403
-Y1  - 2017/06/1
-SP  - 2
-UR  - https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G
-N2  - A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
-= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
-predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
-29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
-125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).
-ER  -  
-
-
-TY  - Report
-T1  - Possible Overlaps Between Blobs, Grism Apertures, and Dithers
-A1  - Ryan, R. E.
-A1  - McCullough, P. R.
-JO  - Space Telescope WFC Instrument Science Report
-Y1  - 2017/06/1
-SP  - 16
-KW  - Hubble Space Telescope/ HST/ Space Telescope Science Institute/
-STScI/ WFC3/ infrared blobs/ IR blobs
-UR  - https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R
-N2  - We present a investigation into possible overlaps between the known IR
-blobs with the grism aperture reference positions and the IR dither
-patterns. Each aperture was designed to place the science target (e.g. a
-specific star) on a cosmetically clean area of the IR detector.
-Similarly, the dither patterns were designed to mitigate cosmetic
-defects by rarely (or ideally never) placing such targets on known
-defects. Because blobs accumulate with time, the originally defined
-apertures and dither patterns may no longer accomplish their goals, it
-is important to reverify these combinations. We find two potential
-overlaps between the blob, aperture, and dither combinations, but do not
-recommend any changes to the current suite of aperture references
-positions and/or dither patterns for two reasons. First, one of the
-overlaps occurs with a dither/aperture combination that is seldom used
-for high-value science operations, but rather more common for wide-field
-surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
-has a fiducial radius of 10 pix, which already represents a very
-conservative distance. We conclude that a similar analysis should be
-repeated as new blobs occur, to continue to ensure ideal operations for
-high-value science targets. The purpose of this report is to document
-the analysis in order to facilitate its repetition in the future.
-ER  -  
-
-
-TY  - Miscellaneous
-T1  - sick: Spectroscopic inference crank
-A1  - Casey, Andrew R.
-JO  - Astrophysics Source Code Library
-Y1  - 2017/06/1
-SP  - ascl:1706.009
-KW  - Software
-UR  - https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C
-N2  - sick infers astrophysical parameters from noisy observed spectra.
-Phenomena that can alter the data (e.g., redshift, continuum,
-instrumental broadening, outlier pixels) are modeled and simultaneously
-inferred with the astrophysical parameters of interest. This package
-relies on emcee (ascl:1303.002); it is best suited for situations where
-a grid of model spectra already exists, and one would like to infer
-model parameters given some data.
+T1  - VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)
+A1  - Siltala, J.
+A1  - Jetsu, L.
+A1  - Hackman, T.
+A1  - Henry, G. W.
+A1  - Immonen, L.
+A1  - Kajatkari, P.
+A1  - Lankinen, J.
+A1  - Lehtinen, J.
+A1  - Monira, S.
+A1  - Nikbakhsh, S.
+A1  - Viitanen, A.
+A1  - Viuho, J.
+A1  - Willamo, T.
+JO  - VizieR Online Data Catalog
+VL  - 1133
+Y1  - 2017/05/1
+SP  - 80453
+KW  - Stars: variable
+UR  - https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S
+N2  - The included files present the numerical data of our analysis of the BM
+CVn photometry. The data consists of differential Johnson V-band
+photometry using the star HD 116010 as the comparison star. The analysis
+has been performed using the previously published continuous period
+search (CPS) method, described in detail in Lehtinen et al.,
+2011A&A...527A.136L, Cat. J/A+A/527/A136. (4 data files).
 ER  -  
 
 
@@ -1578,36 +1653,6 @@ charts with sequence may be created using the AAVSO Variable Star
 Plotter (https://www.aavso.org/vsp). Photometry should be submitted to
 the AAVSO International Database. See full Special Notice for more
 details.
-ER  -  
-
-
-TY  - Journal
-T1  - VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)
-A1  - Siltala, J.
-A1  - Jetsu, L.
-A1  - Hackman, T.
-A1  - Henry, G. W.
-A1  - Immonen, L.
-A1  - Kajatkari, P.
-A1  - Lankinen, J.
-A1  - Lehtinen, J.
-A1  - Monira, S.
-A1  - Nikbakhsh, S.
-A1  - Viitanen, A.
-A1  - Viuho, J.
-A1  - Willamo, T.
-JO  - VizieR Online Data Catalog
-VL  - 1133
-Y1  - 2017/05/1
-SP  - 80453
-KW  - Stars: variable
-UR  - https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S
-N2  - The included files present the numerical data of our analysis of the BM
-CVn photometry. The data consists of differential Johnson V-band
-photometry using the star HD 116010 as the comparison star. The analysis
-has been performed using the previously published continuous period
-search (CPS) method, described in detail in Lehtinen et al.,
-2011A&A...527A.136L, Cat. J/A+A/527/A136. (4 data files).
 ER  -  
 
 
@@ -1944,6 +1989,22 @@ ER  -
 
 
 TY  - JOUR
+T1  - Potential New Meteor Shower from Comet C/2015 D4 (Borisov)
+A1  - Green, D. W. E.
+JO  - Central Bureau Electronic Telegrams
+VL  - 4403
+Y1  - 2017/06/1
+SP  - 2
+UR  - https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G
+N2  - A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
+= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
+predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
+29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
+125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).
+ER  -  
+
+
+TY  - JOUR
 T1  - A 3D View of a Supernova Remnant
 A1  - Kohler, Susanna
 JO  - AAS Nova Highlights
@@ -2013,6 +2074,62 @@ future with additional observations from Chandra, as well as with new
 data from future X-ray observatories that will be able to detect fainter
 emission.CitationBrian J. Williams et al 2017 ApJ 842 28.
 doi:10.3847/1538-4357/aa7384
+ER  -  
+
+
+TY  - RPRT
+T1  - Possible Overlaps Between Blobs, Grism Apertures, and Dithers
+A1  - Ryan, R. E.
+A1  - McCullough, P. R.
+JO  - Space Telescope WFC Instrument Science Report
+Y1  - 2017/06/1
+SP  - 16
+KW  - Hubble Space Telescope
+KW  - HST
+KW  - Space Telescope Science Institute
+KW  - STScI
+KW  - WFC3
+KW  - infrared blobs
+KW  - IR blobs
+UR  - https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R
+N2  - We present a investigation into possible overlaps between the known IR
+blobs with the grism aperture reference positions and the IR dither
+patterns. Each aperture was designed to place the science target (e.g. a
+specific star) on a cosmetically clean area of the IR detector.
+Similarly, the dither patterns were designed to mitigate cosmetic
+defects by rarely (or ideally never) placing such targets on known
+defects. Because blobs accumulate with time, the originally defined
+apertures and dither patterns may no longer accomplish their goals, it
+is important to reverify these combinations. We find two potential
+overlaps between the blob, aperture, and dither combinations, but do not
+recommend any changes to the current suite of aperture references
+positions and/or dither patterns for two reasons. First, one of the
+overlaps occurs with a dither/aperture combination that is seldom used
+for high-value science operations, but rather more common for wide-field
+surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
+has a fiducial radius of 10 pix, which already represents a very
+conservative distance. We conclude that a similar analysis should be
+repeated as new blobs occur, to continue to ensure ideal operations for
+high-value science targets. The purpose of this report is to document
+the analysis in order to facilitate its repetition in the future.
+ER  -  
+
+
+TY  - MISC
+T1  - sick: Spectroscopic inference crank
+A1  - Casey, Andrew R.
+JO  - Astrophysics Source Code Library
+Y1  - 2017/06/1
+SP  - ascl:1706.009
+KW  - Software
+UR  - https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C
+N2  - sick infers astrophysical parameters from noisy observed spectra.
+Phenomena that can alter the data (e.g., redshift, continuum,
+instrumental broadening, outlier pixels) are modeled and simultaneously
+inferred with the astrophysical parameters of interest. This package
+relies on emcee (ascl:1303.002); it is best suited for situations where
+a grid of model spectra already exists, and one would like to infer
+model parameters given some data.
 ER  -  
 
 
@@ -2106,74 +2223,32 @@ ER  -
 
 
 TY  - JOUR
-T1  - Potential New Meteor Shower from Comet C/2015 D4 (Borisov)
-A1  - Green, D. W. E.
-JO  - Central Bureau Electronic Telegrams
-VL  - 4403
-Y1  - 2017/06/1
-SP  - 2
-UR  - https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G
-N2  - A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
-= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
-predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
-29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
-125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).
-ER  -  
-
-
-TY  - RPRT
-T1  - Possible Overlaps Between Blobs, Grism Apertures, and Dithers
-A1  - Ryan, R. E.
-A1  - McCullough, P. R.
-JO  - Space Telescope WFC Instrument Science Report
-Y1  - 2017/06/1
-SP  - 16
-KW  - Hubble Space Telescope
-KW  - HST
-KW  - Space Telescope Science Institute
-KW  - STScI
-KW  - WFC3
-KW  - infrared blobs
-KW  - IR blobs
-UR  - https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R
-N2  - We present a investigation into possible overlaps between the known IR
-blobs with the grism aperture reference positions and the IR dither
-patterns. Each aperture was designed to place the science target (e.g. a
-specific star) on a cosmetically clean area of the IR detector.
-Similarly, the dither patterns were designed to mitigate cosmetic
-defects by rarely (or ideally never) placing such targets on known
-defects. Because blobs accumulate with time, the originally defined
-apertures and dither patterns may no longer accomplish their goals, it
-is important to reverify these combinations. We find two potential
-overlaps between the blob, aperture, and dither combinations, but do not
-recommend any changes to the current suite of aperture references
-positions and/or dither patterns for two reasons. First, one of the
-overlaps occurs with a dither/aperture combination that is seldom used
-for high-value science operations, but rather more common for wide-field
-surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
-has a fiducial radius of 10 pix, which already represents a very
-conservative distance. We conclude that a similar analysis should be
-repeated as new blobs occur, to continue to ensure ideal operations for
-high-value science targets. The purpose of this report is to document
-the analysis in order to facilitate its repetition in the future.
-ER  -  
-
-
-TY  - MISC
-T1  - sick: Spectroscopic inference crank
-A1  - Casey, Andrew R.
-JO  - Astrophysics Source Code Library
-Y1  - 2017/06/1
-SP  - ascl:1706.009
-KW  - Software
-UR  - https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C
-N2  - sick infers astrophysical parameters from noisy observed spectra.
-Phenomena that can alter the data (e.g., redshift, continuum,
-instrumental broadening, outlier pixels) are modeled and simultaneously
-inferred with the astrophysical parameters of interest. This package
-relies on emcee (ascl:1303.002); it is best suited for situations where
-a grid of model spectra already exists, and one would like to infer
-model parameters given some data.
+T1  - VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)
+A1  - Siltala, J.
+A1  - Jetsu, L.
+A1  - Hackman, T.
+A1  - Henry, G. W.
+A1  - Immonen, L.
+A1  - Kajatkari, P.
+A1  - Lankinen, J.
+A1  - Lehtinen, J.
+A1  - Monira, S.
+A1  - Nikbakhsh, S.
+A1  - Viitanen, A.
+A1  - Viuho, J.
+A1  - Willamo, T.
+JO  - VizieR Online Data Catalog
+VL  - 1133
+Y1  - 2017/05/1
+SP  - 80453
+KW  - Stars: variable
+UR  - https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S
+N2  - The included files present the numerical data of our analysis of the BM
+CVn photometry. The data consists of differential Johnson V-band
+photometry using the star HD 116010 as the comparison star. The analysis
+has been performed using the previously published continuous period
+search (CPS) method, described in detail in Lehtinen et al.,
+2011A&A...527A.136L, Cat. J/A+A/527/A136. (4 data files).
 ER  -  
 
 
@@ -2228,36 +2303,6 @@ charts with sequence may be created using the AAVSO Variable Star
 Plotter (https://www.aavso.org/vsp). Photometry should be submitted to
 the AAVSO International Database. See full Special Notice for more
 details.
-ER  -  
-
-
-TY  - JOUR
-T1  - VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)
-A1  - Siltala, J.
-A1  - Jetsu, L.
-A1  - Hackman, T.
-A1  - Henry, G. W.
-A1  - Immonen, L.
-A1  - Kajatkari, P.
-A1  - Lankinen, J.
-A1  - Lehtinen, J.
-A1  - Monira, S.
-A1  - Nikbakhsh, S.
-A1  - Viitanen, A.
-A1  - Viuho, J.
-A1  - Willamo, T.
-JO  - VizieR Online Data Catalog
-VL  - 1133
-Y1  - 2017/05/1
-SP  - 80453
-KW  - Stars: variable
-UR  - https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S
-N2  - The included files present the numerical data of our analysis of the BM
-CVn photometry. The data consists of differential Johnson V-band
-photometry using the star HD 116010 as the comparison star. The analysis
-has been performed using the previously published continuous period
-search (CPS) method, described in detail in Lehtinen et al.,
-2011A&A...527A.136L, Cat. J/A+A/527/A136. (4 data files).
 ER  -  
 
 
@@ -2617,6 +2662,23 @@ DO DOI: 10.1007/s11220-017-0166-7
 
 
 RT Journal
+T1 Potential New Meteor Shower from Comet C/2015 D4 (Borisov)
+A1 Green, D. W. E.
+AD AA(-)
+JF Central Bureau Electronic Telegrams
+VO 4403
+YR 2017
+FD 2017/06/1
+SP 2
+LK https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G
+AB A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
+= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
+predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
+29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
+125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).
+
+
+RT Journal
 T1 A 3D View of a Supernova Remnant
 A1 Kohler, Susanna
 AD AA(-)
@@ -2688,6 +2750,64 @@ future with additional observations from Chandra, as well as with new
 data from future X-ray observatories that will be able to detect fainter
 emission.CitationBrian J. Williams et al 2017 ApJ 842 28.
 doi:10.3847/1538-4357/aa7384
+
+
+RT Report
+T1 Possible Overlaps Between Blobs, Grism Apertures, and Dithers
+A1 Ryan, R. E.
+A1 McCullough, P. R.
+AD AA(Space Telescope Science Institute), AB(Space Telescope Science Institute)
+JF Space Telescope WFC Instrument Science Report
+YR 2017
+FD 2017/06/1
+SP 16
+K1 Hubble Space Telescope
+K1 HST
+K1 Space Telescope Science Institute
+K1 STScI
+K1 WFC3
+K1 infrared blobs
+K1 IR blobs
+LK https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R
+AB We present a investigation into possible overlaps between the known IR
+blobs with the grism aperture reference positions and the IR dither
+patterns. Each aperture was designed to place the science target (e.g. a
+specific star) on a cosmetically clean area of the IR detector.
+Similarly, the dither patterns were designed to mitigate cosmetic
+defects by rarely (or ideally never) placing such targets on known
+defects. Because blobs accumulate with time, the originally defined
+apertures and dither patterns may no longer accomplish their goals, it
+is important to reverify these combinations. We find two potential
+overlaps between the blob, aperture, and dither combinations, but do not
+recommend any changes to the current suite of aperture references
+positions and/or dither patterns for two reasons. First, one of the
+overlaps occurs with a dither/aperture combination that is seldom used
+for high-value science operations, but rather more common for wide-field
+surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
+has a fiducial radius of 10 pix, which already represents a very
+conservative distance. We conclude that a similar analysis should be
+repeated as new blobs occur, to continue to ensure ideal operations for
+high-value science targets. The purpose of this report is to document
+the analysis in order to facilitate its repetition in the future.
+
+
+RT Generic
+T1 sick: Spectroscopic inference crank
+A1 Casey, Andrew R.
+AD AA(-)
+JF Astrophysics Source Code Library
+YR 2017
+FD 2017/06/1
+SP ascl:1706.009
+K1 Software
+LK https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C
+AB sick infers astrophysical parameters from noisy observed spectra.
+Phenomena that can alter the data (e.g., redshift, continuum,
+instrumental broadening, outlier pixels) are modeled and simultaneously
+inferred with the astrophysical parameters of interest. This package
+relies on emcee (ascl:1303.002); it is best suited for situations where
+a grid of model spectra already exists, and one would like to infer
+model parameters given some data.
 
 
 RT Thesis/Dissertation
@@ -2781,78 +2901,38 @@ DO DOI: 10.5281/zenodo.581221
 
 
 RT Journal
-T1 Potential New Meteor Shower from Comet C/2015 D4 (Borisov)
-A1 Green, D. W. E.
-AD AA(-)
-JF Central Bureau Electronic Telegrams
-VO 4403
+T1 VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)
+A1 Siltala, J.
+A1 Jetsu, L.
+A1 Hackman, T.
+A1 Henry, G. W.
+A1 Immonen, L.
+A1 Kajatkari, P.
+A1 Lankinen, J.
+A1 Lehtinen, J.
+A1 Monira, S.
+A1 Nikbakhsh, S.
+A1 Viitanen, A.
+A1 Viuho, J.
+A1 Willamo, T.
+AD AA(-), AB(-), AC(-), AD(-), AE(-), AF(-), AG(-), AH(-), AI(-), AJ(-), AK(-), AL(-), AM(-)
+JF VizieR Online Data Catalog
+VO 1133
 YR 2017
-FD 2017/06/1
-SP 2
-LK https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G
-AB A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
-= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
-predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
-29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
-125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).
-
-
-RT Report
-T1 Possible Overlaps Between Blobs, Grism Apertures, and Dithers
-A1 Ryan, R. E.
-A1 McCullough, P. R.
-AD AA(Space Telescope Science Institute), AB(Space Telescope Science Institute)
-JF Space Telescope WFC Instrument Science Report
-YR 2017
-FD 2017/06/1
-SP 16
-K1 Hubble Space Telescope
-K1 HST
-K1 Space Telescope Science Institute
-K1 STScI
-K1 WFC3
-K1 infrared blobs
-K1 IR blobs
-LK https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R
-AB We present a investigation into possible overlaps between the known IR
-blobs with the grism aperture reference positions and the IR dither
-patterns. Each aperture was designed to place the science target (e.g. a
-specific star) on a cosmetically clean area of the IR detector.
-Similarly, the dither patterns were designed to mitigate cosmetic
-defects by rarely (or ideally never) placing such targets on known
-defects. Because blobs accumulate with time, the originally defined
-apertures and dither patterns may no longer accomplish their goals, it
-is important to reverify these combinations. We find two potential
-overlaps between the blob, aperture, and dither combinations, but do not
-recommend any changes to the current suite of aperture references
-positions and/or dither patterns for two reasons. First, one of the
-overlaps occurs with a dither/aperture combination that is seldom used
-for high-value science operations, but rather more common for wide-field
-surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
-has a fiducial radius of 10 pix, which already represents a very
-conservative distance. We conclude that a similar analysis should be
-repeated as new blobs occur, to continue to ensure ideal operations for
-high-value science targets. The purpose of this report is to document
-the analysis in order to facilitate its repetition in the future.
-
-
-RT Generic
-T1 sick: Spectroscopic inference crank
-A1 Casey, Andrew R.
-AD AA(-)
-JF Astrophysics Source Code Library
-YR 2017
-FD 2017/06/1
-SP ascl:1706.009
-K1 Software
-LK https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C
-AB sick infers astrophysical parameters from noisy observed spectra.
-Phenomena that can alter the data (e.g., redshift, continuum,
-instrumental broadening, outlier pixels) are modeled and simultaneously
-inferred with the astrophysical parameters of interest. This package
-relies on emcee (ascl:1303.002); it is best suited for situations where
-a grid of model spectra already exists, and one would like to infer
-model parameters given some data.
+FD 2017/05/1
+SP 80453
+K1 Stars: variable
+LK https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S
+NO phot.dat 2930x19 Differential photometry of BM CVn; phot_mlc.dat 2930x19
+Differential photometry of BM CVn with MLC removed; res.dat 1319x185
+*Numerical results of the CPS analysis; res_mlc.dat 1319x185 *Results of
+the CPS analysis with MLC removed
+AB The included files present the numerical data of our analysis of the BM
+CVn photometry. The data consists of differential Johnson V-band
+photometry using the star HD 116010 as the comparison star. The analysis
+has been performed using the previously published continuous period
+search (CPS) method, described in detail in Lehtinen et al.,
+2011A&A...527A.136L, Cat. J/A+A/527/A136. (4 data files).
 
 
 RT Journal
@@ -2908,41 +2988,6 @@ charts with sequence may be created using the AAVSO Variable Star
 Plotter (https://www.aavso.org/vsp). Photometry should be submitted to
 the AAVSO International Database. See full Special Notice for more
 details.
-
-
-RT Journal
-T1 VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)
-A1 Siltala, J.
-A1 Jetsu, L.
-A1 Hackman, T.
-A1 Henry, G. W.
-A1 Immonen, L.
-A1 Kajatkari, P.
-A1 Lankinen, J.
-A1 Lehtinen, J.
-A1 Monira, S.
-A1 Nikbakhsh, S.
-A1 Viitanen, A.
-A1 Viuho, J.
-A1 Willamo, T.
-AD AA(-), AB(-), AC(-), AD(-), AE(-), AF(-), AG(-), AH(-), AI(-), AJ(-), AK(-), AL(-), AM(-)
-JF VizieR Online Data Catalog
-VO 1133
-YR 2017
-FD 2017/05/1
-SP 80453
-K1 Stars: variable
-LK https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S
-NO phot.dat 2930x19 Differential photometry of BM CVn; phot_mlc.dat 2930x19
-Differential photometry of BM CVn with MLC removed; res.dat 1319x185
-*Numerical results of the CPS analysis; res_mlc.dat 1319x185 *Results of
-the CPS analysis with MLC removed
-AB The included files present the numerical data of our analysis of the BM
-CVn photometry. The data consists of differential Johnson V-band
-photometry using the star HD 116010 as the comparison star. The analysis
-has been performed using the previously published continuous period
-search (CPS) method, described in detail in Lehtinen et al.,
-2011A&A...527A.136L, Cat. J/A+A/527/A136. (4 data files).
 
 
 RT Generic
@@ -3283,7 +3328,7 @@ AU  - Zhang, Yangjun
 AU  - Aratani, Yuki
 AU  - Nakazima, Hironari
 TA  - Sensing and Imaging
-SO  - Sensing and Imaging, Volume 18, Issue 1, article id. #17, <NUMPAGES>12</NUMPAGES> pp.
+SO  - Sensing and Imaging, Volume 18, Issue 1, article id. #17, 12 pp.
 VI  - 18
 DP  - 2017 Dec 01
 4099- https://ui.adsabs.harvard.edu/#abs/2017SenIm..18...17Z
@@ -3301,6 +3346,21 @@ the free-space method becomes small, because the reflection on air-lens
 interface has been reduced. The proposed AR lens antenna is flat and
 very small in the size. It is possible to construct a very compact and
 low cost free-space setup using the improved lens.
+
+
+PT  - Journal Article
+TI  - Potential New Meteor Shower from Comet C/2015 D4 (Borisov)
+AU  - Green, D. W. E.
+TA  - Central Bureau Electronic Telegrams
+SO  - Central Bureau Electronic Telegrams, 4403, 2 (2017). Edited by Green, D. W. E.
+VI  - 4403
+DP  - 2017 Jun 01
+4099- https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G
+AB  - A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
+= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
+predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
+29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
+125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).
 
 
 PT  - Journal Article
@@ -3366,6 +3426,52 @@ future with additional observations from Chandra, as well as with new
 data from future X-ray observatories that will be able to detect fainter
 emission.CitationBrian J. Williams et al 2017 ApJ 842 28.
 doi:10.3847/1538-4357/aa7384
+
+
+PT  - Report
+TI  - Possible Overlaps Between Blobs, Grism Apertures, and Dithers
+AU  - Ryan, R. E.
+AU  - McCullough, P. R.
+TA  - Space Telescope WFC Instrument Science Report
+SO  - Instrument Science Report WFC3 2017-16, 6 pages
+DP  - 2017 Jun 01
+4099- https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R
+AB  - We present a investigation into possible overlaps between the known IR
+blobs with the grism aperture reference positions and the IR dither
+patterns. Each aperture was designed to place the science target (e.g. a
+specific star) on a cosmetically clean area of the IR detector.
+Similarly, the dither patterns were designed to mitigate cosmetic
+defects by rarely (or ideally never) placing such targets on known
+defects. Because blobs accumulate with time, the originally defined
+apertures and dither patterns may no longer accomplish their goals, it
+is important to reverify these combinations. We find two potential
+overlaps between the blob, aperture, and dither combinations, but do not
+recommend any changes to the current suite of aperture references
+positions and/or dither patterns for two reasons. First, one of the
+overlaps occurs with a dither/aperture combination that is seldom used
+for high-value science operations, but rather more common for wide-field
+surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
+has a fiducial radius of 10 pix, which already represents a very
+conservative distance. We conclude that a similar analysis should be
+repeated as new blobs occur, to continue to ensure ideal operations for
+high-value science targets. The purpose of this report is to document
+the analysis in order to facilitate its repetition in the future.
+
+
+PT  - Miscellaneous
+TI  - sick: Spectroscopic inference crank
+AU  - Casey, Andrew R.
+TA  - Astrophysics Source Code Library
+SO  - Astrophysics Source Code Library, record ascl:1706.009
+DP  - 2017 Jun 01
+4099- https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C
+AB  - sick infers astrophysical parameters from noisy observed spectra.
+Phenomena that can alter the data (e.g., redshift, continuum,
+instrumental broadening, outlier pixels) are modeled and simultaneously
+inferred with the astrophysical parameters of interest. This package
+relies on emcee (ascl:1303.002); it is best suited for situations where
+a grid of model spectra already exists, and one would like to infer
+model parameters given some data.
 
 
 PT  - Thesis
@@ -3454,64 +3560,31 @@ poor gas or outflow of metal enriched gas.
 
 
 PT  - Journal Article
-TI  - Potential New Meteor Shower from Comet C/2015 D4 (Borisov)
-AU  - Green, D. W. E.
-TA  - Central Bureau Electronic Telegrams
-SO  - Central Bureau Electronic Telegrams, 4403, 2 (2017). Edited by Green, D. W. E.
-VI  - 4403
-DP  - 2017 Jun 01
-4099- https://ui.adsabs.harvard.edu/#abs/2017CBET.4403....2G
-AB  - A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta
-= +0.0003 AU, solar long. = 125.841 deg). Future encounters are
-predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July
-29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU,
-125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).
-
-
-PT  - Report
-TI  - Possible Overlaps Between Blobs, Grism Apertures, and Dithers
-AU  - Ryan, R. E.
-AU  - McCullough, P. R.
-TA  - Space Telescope WFC Instrument Science Report
-SO  - Instrument Science Report WFC3 2017-16, 6 pages
-DP  - 2017 Jun 01
-4099- https://ui.adsabs.harvard.edu/#abs/2017wfc..rept...16R
-AB  - We present a investigation into possible overlaps between the known IR
-blobs with the grism aperture reference positions and the IR dither
-patterns. Each aperture was designed to place the science target (e.g. a
-specific star) on a cosmetically clean area of the IR detector.
-Similarly, the dither patterns were designed to mitigate cosmetic
-defects by rarely (or ideally never) placing such targets on known
-defects. Because blobs accumulate with time, the originally defined
-apertures and dither patterns may no longer accomplish their goals, it
-is important to reverify these combinations. We find two potential
-overlaps between the blob, aperture, and dither combinations, but do not
-recommend any changes to the current suite of aperture references
-positions and/or dither patterns for two reasons. First, one of the
-overlaps occurs with a dither/aperture combination that is seldom used
-for high-value science operations, but rather more common for wide-field
-surveys/mosaics. Second, the other overlap is 8.7 pix from a blob that
-has a fiducial radius of 10 pix, which already represents a very
-conservative distance. We conclude that a similar analysis should be
-repeated as new blobs occur, to continue to ensure ideal operations for
-high-value science targets. The purpose of this report is to document
-the analysis in order to facilitate its repetition in the future.
-
-
-PT  - Miscellaneous
-TI  - sick: Spectroscopic inference crank
-AU  - Casey, Andrew R.
-TA  - Astrophysics Source Code Library
-SO  - Astrophysics Source Code Library, record ascl:1706.009
-DP  - 2017 Jun 01
-4099- https://ui.adsabs.harvard.edu/#abs/2017ascl.soft06009C
-AB  - sick infers astrophysical parameters from noisy observed spectra.
-Phenomena that can alter the data (e.g., redshift, continuum,
-instrumental broadening, outlier pixels) are modeled and simultaneously
-inferred with the astrophysical parameters of interest. This package
-relies on emcee (ascl:1303.002); it is best suited for situations where
-a grid of model spectra already exists, and one would like to infer
-model parameters given some data.
+TI  - VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)
+AU  - Siltala, J.
+AU  - Jetsu, L.
+AU  - Hackman, T.
+AU  - Henry, G. W.
+AU  - Immonen, L.
+AU  - Kajatkari, P.
+AU  - Lankinen, J.
+AU  - Lehtinen, J.
+AU  - Monira, S.
+AU  - Nikbakhsh, S.
+AU  - Viitanen, A.
+AU  - Viuho, J.
+AU  - Willamo, T.
+TA  - VizieR Online Data Catalog
+SO  - VizieR On-line Data Catalog: J/AN/338/453. Originally published in: 2017AN....338..453S
+VI  - 1133
+DP  - 2017 May 01
+4099- https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S
+AB  - The included files present the numerical data of our analysis of the BM
+CVn photometry. The data consists of differential Johnson V-band
+photometry using the star HD 116010 as the comparison star. The analysis
+has been performed using the previously published continuous period
+search (CPS) method, described in detail in Lehtinen et al.,
+2011A&A...527A.136L, Cat. J/A+A/527/A136. (4 data files).
 
 
 PT  - Journal Article
@@ -3561,34 +3634,6 @@ charts with sequence may be created using the AAVSO Variable Star
 Plotter (https://www.aavso.org/vsp). Photometry should be submitted to
 the AAVSO International Database. See full Special Notice for more
 details.
-
-
-PT  - Journal Article
-TI  - VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)
-AU  - Siltala, J.
-AU  - Jetsu, L.
-AU  - Hackman, T.
-AU  - Henry, G. W.
-AU  - Immonen, L.
-AU  - Kajatkari, P.
-AU  - Lankinen, J.
-AU  - Lehtinen, J.
-AU  - Monira, S.
-AU  - Nikbakhsh, S.
-AU  - Viitanen, A.
-AU  - Viuho, J.
-AU  - Willamo, T.
-TA  - VizieR Online Data Catalog
-SO  - VizieR On-line Data Catalog: J/AN/338/453. Originally published in: 2017AN....338..453S
-VI  - 1133
-DP  - 2017 May 01
-4099- https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S
-AB  - The included files present the numerical data of our analysis of the BM
-CVn photometry. The data consists of differential Johnson V-band
-photometry using the star HD 116010 as the comparison star. The analysis
-has been performed using the previously published continuous period
-search (CPS) method, described in detail in Lehtinen et al.,
-2011A&A...527A.136L, Cat. J/A+A/527/A136. (4 data files).
 
 
 PT  - Miscellaneous
@@ -3726,7 +3771,7 @@ AU  - NCSA
 AU  - Indiana
 AU  - , . . .
 TA  - American Astronomical Society Meeting Abstracts #210
-SO  - American Astronomical Society Meeting 210, id.21.04; <ALTJOURNAL>Bulletin of the American Astronomical Society, Vol. 39, p.124</ALTJOURNAL>
+SO  - American Astronomical Society Meeting 210, id.21.04
 VI  - 210
 DP  - 2007 May 01
 4099- https://ui.adsabs.harvard.edu/#abs/2007AAS...210.2104M

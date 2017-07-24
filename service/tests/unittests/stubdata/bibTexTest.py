@@ -389,7 +389,7 @@ howpublished = {Astrophysics Source Code Library},
         photometry using the star HD 116010 as the comparison star. The
         analysis has been performed using the previously published
         continuous period search (CPS) method, described in detail in
-        Lehtinen et al., 2011A\&A...527A.136L, Cat. J/A+A/527/A136. (4
+        Lehtinen et al., 2011A\\&A...527A.136L, Cat. J/A+A/527/A136. (4
         data files).}",
       adsurl = {https://ui.adsabs.harvard.edu/#abs/2017yCat.113380453S},
      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
@@ -415,8 +415,8 @@ howpublished = {Astrophysics Source Code Library},
         Sokoloski (Columbia University) have requested spectroscopic
         monitoring of the broad-absorption-line symbiotic star V694 Mon
         (MWC 560), as a follow-up to coordinated multi-wavelength
-        observations obtained during its recent outburst (ATel \#8653,
-        \#8832, \#8957; \#10281). This system is a perfect place in
+        observations obtained during its recent outburst (ATel \\#8653,
+        \\#8832, \\#8957; \\#10281). This system is a perfect place in
         which to study the relationship between an accretion disk and
         disk winds/jets, and a high-value target for which even low-
         resolution spectra can be extraordinarily useful...Optical
@@ -427,10 +427,10 @@ howpublished = {Astrophysics Source Code Library},
         quiescence, it may prompt radio observations to confirm and test
         the proposed outflow origin for recently-discovered flat-
         spectrum radio emission (Lucy et al. ATel
-        \#10281)...Furthermore, volunteer spectroscopic monitoring of
+        \\#10281)...Furthermore, volunteer spectroscopic monitoring of
         this system has proved useful in unpredictable ways. For
         example, 'amateur' spectra obtained by Somogyi
-        P\~{A}\copyrightter in 2015 December demonstrated that the
+        P\\\\u00c3\\\\u00a9ter in 2015 December demonstrated that the
         velocity of absorption was very low only a month before an
         optical outburst peak prompted absorption troughs up to 3000
         km/s, which constrains very well the timing of the changes to
@@ -443,10 +443,10 @@ howpublished = {Astrophysics Source Code Library},
         still be useful, but will be supplementary to medium-cadence
         photometry being collected by the ANS collaboration."
         "Spectroscopy may be uploaded to the ARAS database
-        (http://www.astrosurf.com/aras/Aras\_DataBase/DataBase.htm), or
+        (http://www.astrosurf.com/aras/Aras\\_DataBase/DataBase.htm), or
         sent to Adrian and Jeno directly at
-        $\lt$lucy@astro.columbia.edu$\gt$. Finder charts with sequence
-        may be created using the AAVSO Variable Star Plotter
+        \\\\u3008lucy@astro.columbia.edu\\\\u3009. Finder charts with
+        sequence may be created using the AAVSO Variable Star Plotter
         (https://www.aavso.org/vsp). Photometry should be submitted to
         the AAVSO International Database. See full Special Notice for
         more details.}",
@@ -605,10 +605,10 @@ howpublished = {Spitzer Proposal},
         provides the highest resolution data (1 arcmin and 0.82 km/s) to
         date of an HI worm candidate. Observed as part of the Canadian
         Galactic Plane Survey, mushroom-shaped GW 123.4-1.5 extends only
-        a few hundred parsecs, contains \~{}10\^{}5 solar masses of
+        a few hundred parsecs, contains \\~{}10\\^{}5 solar masses of
         neutral hydrogen, and appears unrelated to a conventional shell
         or chimney structure. Our preliminary Zeus-2d models use a
-        single off-plane explosion with a modest (\~{}10\^{}$\{$51$\}$
+        single off-plane explosion with a modest (\\~{}10\\^{}$\\{$51$\\}$
         ergs) energy input. These generic simulations generate, interior
         to an expanding outer blast wave, a buoyant cloud whose
         structure resembles the morphology of the observed feature.

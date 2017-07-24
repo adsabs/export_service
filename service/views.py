@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+import sys
+import os
+PROJECT_HOME = os.path.abspath(
+    os.path.join(os.path.dirname(__file__)))
+sys.path.append(PROJECT_HOME)
+
 from flask import current_app, request, Blueprint, Response
 from flask_discoverer import advertise
 from flask_restful import Resource
@@ -7,13 +13,13 @@ from flask_restful import Resource
 import json
 
 from solrData import getSolrData
-from formatter.ads import adsFormatter, adsCSLStyle
-from formatter.cslJson import CSLJson
-from formatter.csl import CSL
-from formatter.xmlFormat import XMLFormat
-from formatter.bibTexFormat import BibTexFormat
-from formatter.fieldedFormat import FieldedFormat
-from formatter.customFormat import CustomFormat
+from .formatter.ads import adsFormatter, adsCSLStyle
+from .formatter.cslJson import CSLJson
+from .formatter.csl import CSL
+from .formatter.xmlFormat import XMLFormat
+from .formatter.bibTexFormat import BibTexFormat
+from .formatter.fieldedFormat import FieldedFormat
+from .formatter.customFormat import CustomFormat
 
 bp = Blueprint('export_service', __name__)
 
@@ -132,10 +138,10 @@ def cslFormatExport():
     cslStyle = payload['style']
     exportFormat = payload['format']
 
-    # if (not adsCSLStyle().verify(cslStyle)):
-    #     return __returnResponse('error: unrecognizable style (supprted formats are: ' + adsCSLStyle().get() + ')', 503)
-    # if (not adsFormatter.verify(exportFormat)):
-    #     return __returnResponse('error: unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)', 503)
+    if (not adsCSLStyle().verify(cslStyle)):
+        return __returnResponse('error: unrecognizable style (supprted formats are: ' + adsCSLStyle().get() + ')', 503)
+    if (not adsFormatter().verify(exportFormat)):
+        return __returnResponse('error: unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)', 503)
 
     fromSolr = getSolrData(bibcodes=bibcodes, fields=__defaultFields())
     return __returnResponse(CSL(CSLJson(fromSolr).get(), cslStyle, exportFormat).get(), 200)
@@ -184,4 +190,4 @@ def home():
     bibcodes = payload['bibcode']
 
     fromSolr = getSolrData(bibcodes=bibcodes, fields=__defaultFields())
-    return __returnResponse(json.dumps(fromSolr['response'].get('docs')), 200)
+    return __returnResponse(fromSolr['response'], 200)

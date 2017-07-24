@@ -64,6 +64,33 @@ data = \
     "year": "2017"
    },
    {
+    "abstract": "A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta = +0.0003 AU, solar long. = 125.841 deg). Future encounters are predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July 29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU, 125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).",
+    "aff": [
+     "-"
+    ],
+    "author": [
+     "Green, D. W. E."
+    ],
+    "bibcode": "2017CBET.4403....2G",
+    "citation_count": 0,
+    "date": "2017-06-01T00:00:00Z",
+    "doctype": "circular",
+    "links_data": [
+     "{\"title\":\"\", \"type\":\"electr\", \"instances\":\"\", \"access\":\"\"}"
+    ],
+    "page": [
+     "2"
+    ],
+    "pub": "Central Bureau Electronic Telegrams",
+    "pub_raw": "Central Bureau Electronic Telegrams, 4403, 2 (2017). Edited by Green, D. W. E.",
+    "read_count": 0,
+    "title": [
+     "Potential New Meteor Shower from Comet C/2015 D4 (Borisov)"
+    ],
+    "volume": "4403",
+    "year": "2017"
+   },
+   {
     "abstract": "The outlined regions mark the 57 knots in Tycho selected by the authors for velocity measurements. Magenta regions have redshifted line-of-sight velocities (moving away from us); cyan regions have blueshifted light-of-sight velocities (moving toward us). [Williams et al. 2017]The Tycho supernova remnant was first observed in the year 1572. Nearly 450 years later, astronomers have now used X-ray observations of Tycho to build the first-ever 3D map of a Type Ia supernova remnant.Signs of ExplosionsSupernova remnants are spectacular structures formed by the ejecta of stellar explosions as they expand outwards into the surrounding interstellar medium.One peculiarity of these remnants is that they often exhibit asymmetries in their appearance and motion. Is this because the ejecta are expanding into a nonuniform interstellar medium? Or was the explosion itself asymmetric? The best way we can explore this question is with detailed observations of the remnants.Histograms of the velocity in distribution of the knots in the X (green), Y (blue) and Z (red) directions (+Z is away from the observer). They show no evidence for asymmetric expansion of the knots. [Williams et al. 2017]Enter TychoTo this end, a team of scientists led by Brian Williams (Space Telescope Science Institute and NASA Goddard SFC) has worked to map out the 3D velocities of the ejecta in the Tycho supernova remnant. Tycho is a Type Ia supernova thought to be caused by the thermonuclear explosion of a white dwarf in a binary system that was destabilized by mass transfer from its companion.After 450 years of expansion, the remnant now has the morphological appearance of a roughly circular cloud of clumpy ejecta. The forward shock wave from the supernova, however, is known to have twice the velocity on one side of the shell as on the other.To better understand this asymmetry, Williams and collaborators selected a total of 57 knots in Tychos ejecta, spread out around the remnant. They then used 12 years of Chandra X-ray observations to measure both the knots proper motion in the plane of the sky and their line-of-sight velocity. These two measurements were then combined to build a full 3D map of the motion of the ejecta.3D hydrodynamical simulations of Tycho, stopped at the current epoch. These show that both initially smooth (top) and initially clumpy (bottom) ejecta models are consistent with the current observations of the morphology and dynamics of Tychos ejecta. [Adapted from Williams et al. 2017]Symmetry and ClumpsWilliams and collaborators found that the knots have total velocities that range from 2400 to 6600 km/s. Unlike the forward shock of the supernova, Tychos ejecta display no asymmetries in their motion which suggests that the explosion itself was symmetric. The more likely explanation is a density gradient in the interstellar medium, which could slow the shock wave on one side of the remnant without yet affecting the motion of the clumps of ejecta.As a final exploration, the authors attempt to address the origin of Tychos clumpiness. The fact that some of Tychos ejecta knots precede its outer edge has raised the question of whether the ejecta started out clumpy, or if they began smooth and only clumped during expansion. Williams and collaborators matched the morphological and dynamical data to simulations, demonstrating that neither scenario can be ruled out at this time.This first 3D map of a Type Ia supernova represents an important step in our ability to understand these stellar explosions. The authors suggest that well be able to expand on this map in the future with additional observations from Chandra, as well as with new data from future X-ray observatories that will be able to detect fainter emission.CitationBrian J. Williams et al 2017 ApJ 842 28. doi:10.3847/1538-4357/aa7384",
     "aff": [
      "-"
@@ -93,68 +120,10 @@ data = \
     ],
     "pub": "AAS Nova Highlights",
     "pub_raw": "AAS Nova Highlight, 14 Jun 2017, id.2388",
-    "read_count": 0,
+    "read_count": 5,
     "title": [
      "A 3D View of a Supernova Remnant"
     ],
-    "year": "2017"
-   },
-   {
-    "abstract": "Chapter 2: As part of the Bluedisk survey we analyse the radial gas-phase metallicity profiles of 50 late-type galaxies. We compare the metallicity profiles of a sample of HI-rich galaxies against a control sample of HI-'normal' galaxies. We find the metallicity gradient of a galaxy to be strongly correlated with its HI mass fraction {M}{HI}) / {M}_{\\ast}). We note that some galaxies exhibit a steeper metallicity profile in the outer disc than in the inner disc. These galaxies are found in both the HI-rich and control samples. This contradicts a previous indication that these outer drops are exclusive to HI-rich galaxies. These effects are not driven by bars, although we do find some indication that barred galaxies have flatter metallicity profiles. By applying a simple analytical model we are able to account for the variety of metallicity profiles that the two samples present. The success of this model implies that the metallicity in these isolated galaxies may be in a local equilibrium, regulated by star formation. This insight could provide an explanation of the observed local mass-metallicity relation. Chapter 3 We present a method to recover the gas-phase metallicity gradients from integral field spectroscopic (IFS) observations of barely resolved galaxies. We take a forward modelling approach and compare our models to the observed spatial distribution of emission line fluxes, accounting for the degrading effects of seeing and spatial binning. The method is flexible and is not limited to particular emission lines or instruments. We test the model through comparison to synthetic observations and use downgraded observations of nearby galaxies to validate this work. As a proof of concept we also apply the model to real IFS observations of high-redshift galaxies. From our testing we show that the inferred metallicity gradients and central metallicities are fairly insensitive to the assumptions made in the model and that they are reliably recovered for galaxies with sizes approximately equal to the half width at half maximum of the point-spread function. However, we also find that the presence of star forming clumps can significantly complicate the interpretation of metallicity gradients in moderately resolved high-redshift galaxies. Therefore we emphasize that care should be taken when comparing nearby well-resolved observations to high-redshift observations of partially resolved galaxies. Chapter 4 We present gas-phase metallicity gradients for 94 star-forming galaxies between (0.08 \u3008 z \u3008 0.84). We find a negative median metallicity gradient of (-0.043^{+0.009}_{-0.007}, dex/kpc)/span\u3009, i.e. on average we find the centres of these galaxies to be more metal-rich than their outskirts. However, there is significant scatter underlying this and we find that 10% (9) galaxies have significantly positive metallicity gradients, 39% (37) have significantly negative gradients, 28% (26) have gradients consistent with being flat, the remainder 23% (22) are considered to have unreliable gradient estimates. We find a slight trend for a more negative metallicity gradient with both increasing stellar mass and increasing star formation rate (SFR). However, given the potential redshift and size selection effects, we do not consider these trends to be significant. Indeed when we normalize the SFR of our galaxies relative to the main sequence, we do not observe any trend between the metallicity gradient and the normalized SFR. This finding is contrary to other recent studies of galaxies at similar and higher redshifts. We do, however, identify a novel trend between the metallicity gradient of a galaxy and its size. Small galaxies ((r_d \u3008 3 kpc)) present a large spread in observed metallicity gradients (both negative and positive gradients). In contrast, we find no large galaxies (r_d \u3009 3 kpc) with positive metallicity gradients, and overall there is less scatter in the metallicity gradient amongst the large galaxies. We suggest that these large (well-evolved) galaxies may be analogues of galaxies in the present-day Universe, which also present a common negative metallicity gradient. Chapter 5 The relationship between a galaxy's stellar mass and its gas-phase metallicity results from the complex interplay between star formation and the inflow and outflow of gas. Since the gradient of metals in galaxies is also influenced by the same processes, it is therefore natural to contrast the metallicity gradient with the mass-metallicity relation. Here we study the interrelation of the stellar mass, central metallicity and metallicity gradient, using a sample of 72 galaxies spanning (0.13 \u3008 z \u3008 0.84) with reliable metallicity gradient estimates. We find that typically the galaxies that fall below the mean mass-metallicity relation have flat or inverted metallicity gradients. We quantify their relationship taking full account of the covariance between the different variables and find that at fixed mass the central metallicity is anti-correlated with the metallicity gradient. We argue that this is consistent with a scenario that suppresses the central metallicity either through the inflow of metal poor gas or outflow of metal enriched gas.",
-    "aff": [
-     "Leiden University"
-    ],
-    "author": [
-     "Carton, David"
-    ],
-    "bibcode": "2017PhDT........14C",
-    "citation_count": 0,
-    "date": "2017-06-01T00:00:00Z",
-    "doctype": "phdthesis",
-    "doi": [
-     "10.5281/zenodo.581221"
-    ],
-    "keyword": [
-     "galaxies: evolution",
-     "galaxies: abundances",
-     "galaxies: ISM"
-    ],
-    "links_data": [
-     "{\"title\":\"\", \"type\":\"electr\", \"instances\":\"\", \"access\":\"open\"}"
-    ],
-    "pub": "Ph.D. Thesis",
-    "pub_raw": "PhD Thesis, Leiden University, 2017",
-    "read_count": 0,
-    "title": [
-     "Resolving Gas-Phase Metallicity In Galaxies"
-    ],
-    "year": "2017"
-   },
-   {
-    "abstract": "A previous good encounter occurred on 2006 July 29d04h11m UT (r - Delta = +0.0003 AU, solar long. = 125.841 deg). Future encounters are predicted on 2029 July 29d01h53m (+0.0007 AU, 125.816 deg), 2042 July 29d10h48m (+0.0006 AU, 125.886 deg), 2053 July 29d05h35m (+0.0001 AU, 125.848 deg), and on 2068 July 29d02h09m UT (-0.0001 AU, 125.863 deg).",
-    "aff": [
-     "-"
-    ],
-    "author": [
-     "Green, D. W. E."
-    ],
-    "bibcode": "2017CBET.4403....2G",
-    "citation_count": 0,
-    "date": "2017-06-01T00:00:00Z",
-    "doctype": "circular",
-    "links_data": [
-     "{\"title\":\"\", \"type\":\"electr\", \"instances\":\"\", \"access\":\"\"}"
-    ],
-    "page": [
-     "2"
-    ],
-    "pub": "Central Bureau Electronic Telegrams",
-    "pub_raw": "Central Bureau Electronic Telegrams, 4403, 2 (2017). Edited by Green, D. W. E.",
-    "read_count": 0,
-    "title": [
-     "Potential New Meteor Shower from Comet C/2015 D4 (Borisov)"
-    ],
-    "volume": "4403",
     "year": "2017"
    },
    {
@@ -218,52 +187,44 @@ data = \
     ],
     "pub": "Astrophysics Source Code Library",
     "pub_raw": "Astrophysics Source Code Library, record ascl:1706.009",
-    "read_count": 0,
+    "read_count": 2,
     "title": [
      "sick: Spectroscopic inference crank"
     ],
     "year": "2017"
    },
    {
-    "abstract": "The observing campaign from 2016 on V694 Mon (MWC 560) (AAVSO Alert Notice 538) has been continued, but with different requirements. Photometry is no longer specifically requested on a regular basis (although ongoing observations that do not interfere with other obligations are welcome). Spectroscopy on a cadence of a week or two is requested to monitor changes in the disk outflow. Investigator Adrian Lucy writes: \"Adrian Lucy and Dr. Jeno Sokoloski (Columbia University) have requested spectroscopic monitoring of the broad-absorption-line symbiotic star V694 Mon (MWC 560), as a follow-up to coordinated multi-wavelength observations obtained during its recent outburst (ATel #8653, #8832, #8957; #10281). This system is a perfect place in which to study the relationship between an accretion disk and disk winds/jets, and a high-value target for which even low-resolution spectra can be extraordinarily useful...Optical brightening in MWC 560 tends to predict higher-velocity absorption, but sometimes jumps in absorption velocity also appear during optical quiescence (e.g., Iijima 2001, ASPCS, 242, 187). If such a velocity jump occurs during photometric quiescence, it may prompt radio observations to confirm and test the proposed outflow origin for recently-discovered flat-spectrum radio emission (Lucy et al. ATel #10281)...Furthermore, volunteer spectroscopic monitoring of this system has proved useful in unpredictable ways. For example, 'amateur' spectra obtained by Somogyi P\u00c3\u00a9ter in 2015 December demonstrated that the velocity of absorption was very low only a month before an optical outburst peak prompted absorption troughs up to 3000 km/s, which constrains very well the timing of the changes to the outflow to a degree that would not have been otherwise possible. Any resolution can be useful. A wavelength range that can accommodate a blueshift of at least 140 angstroms (6000 km/s) from the rest wavelengths of H-alpha at 6562 angstroms and/or H-beta at 4861 angstroms is ideal, though spectra with a smaller range can still be useful. Photometry could potentially still be useful, but will be supplementary to medium-cadence photometry being collected by the ANS collaboration.\" \"Spectroscopy may be uploaded to the ARAS database (http://www.astrosurf.com/aras/Aras_DataBase/DataBase.htm), or sent to Adrian and Jeno directly at \u3008lucy@astro.columbia.edu\u3009. Finder charts with sequence may be created using the AAVSO Variable Star Plotter (https://www.aavso.org/vsp). Photometry should be submitted to the AAVSO International Database. See full Special Notice for more details.",
+    "abstract": "Chapter 2: As part of the Bluedisk survey we analyse the radial gas-phase metallicity profiles of 50 late-type galaxies. We compare the metallicity profiles of a sample of HI-rich galaxies against a control sample of HI-'normal' galaxies. We find the metallicity gradient of a galaxy to be strongly correlated with its HI mass fraction {M}{HI}) / {M}_{\\ast}). We note that some galaxies exhibit a steeper metallicity profile in the outer disc than in the inner disc. These galaxies are found in both the HI-rich and control samples. This contradicts a previous indication that these outer drops are exclusive to HI-rich galaxies. These effects are not driven by bars, although we do find some indication that barred galaxies have flatter metallicity profiles. By applying a simple analytical model we are able to account for the variety of metallicity profiles that the two samples present. The success of this model implies that the metallicity in these isolated galaxies may be in a local equilibrium, regulated by star formation. This insight could provide an explanation of the observed local mass-metallicity relation. Chapter 3 We present a method to recover the gas-phase metallicity gradients from integral field spectroscopic (IFS) observations of barely resolved galaxies. We take a forward modelling approach and compare our models to the observed spatial distribution of emission line fluxes, accounting for the degrading effects of seeing and spatial binning. The method is flexible and is not limited to particular emission lines or instruments. We test the model through comparison to synthetic observations and use downgraded observations of nearby galaxies to validate this work. As a proof of concept we also apply the model to real IFS observations of high-redshift galaxies. From our testing we show that the inferred metallicity gradients and central metallicities are fairly insensitive to the assumptions made in the model and that they are reliably recovered for galaxies with sizes approximately equal to the half width at half maximum of the point-spread function. However, we also find that the presence of star forming clumps can significantly complicate the interpretation of metallicity gradients in moderately resolved high-redshift galaxies. Therefore we emphasize that care should be taken when comparing nearby well-resolved observations to high-redshift observations of partially resolved galaxies. Chapter 4 We present gas-phase metallicity gradients for 94 star-forming galaxies between (0.08 \u3008 z \u3008 0.84). We find a negative median metallicity gradient of (-0.043^{+0.009}_{-0.007}, dex/kpc)/span\u3009, i.e. on average we find the centres of these galaxies to be more metal-rich than their outskirts. However, there is significant scatter underlying this and we find that 10% (9) galaxies have significantly positive metallicity gradients, 39% (37) have significantly negative gradients, 28% (26) have gradients consistent with being flat, the remainder 23% (22) are considered to have unreliable gradient estimates. We find a slight trend for a more negative metallicity gradient with both increasing stellar mass and increasing star formation rate (SFR). However, given the potential redshift and size selection effects, we do not consider these trends to be significant. Indeed when we normalize the SFR of our galaxies relative to the main sequence, we do not observe any trend between the metallicity gradient and the normalized SFR. This finding is contrary to other recent studies of galaxies at similar and higher redshifts. We do, however, identify a novel trend between the metallicity gradient of a galaxy and its size. Small galaxies ((r_d \u3008 3 kpc)) present a large spread in observed metallicity gradients (both negative and positive gradients). In contrast, we find no large galaxies (r_d \u3009 3 kpc) with positive metallicity gradients, and overall there is less scatter in the metallicity gradient amongst the large galaxies. We suggest that these large (well-evolved) galaxies may be analogues of galaxies in the present-day Universe, which also present a common negative metallicity gradient. Chapter 5 The relationship between a galaxy's stellar mass and its gas-phase metallicity results from the complex interplay between star formation and the inflow and outflow of gas. Since the gradient of metals in galaxies is also influenced by the same processes, it is therefore natural to contrast the metallicity gradient with the mass-metallicity relation. Here we study the interrelation of the stellar mass, central metallicity and metallicity gradient, using a sample of 72 galaxies spanning (0.13 \u3008 z \u3008 0.84) with reliable metallicity gradient estimates. We find that typically the galaxies that fall below the mean mass-metallicity relation have flat or inverted metallicity gradients. We quantify their relationship taking full account of the covariance between the different variables and find that at fixed mass the central metallicity is anti-correlated with the metallicity gradient. We argue that this is consistent with a scenario that suppresses the central metallicity either through the inflow of metal poor gas or outflow of metal enriched gas.",
     "aff": [
-     "AAVSO"
+     "Leiden University"
     ],
     "author": [
-     "Waagen, Elizabeth O."
+     "Carton, David"
     ],
-    "bibcode": "2017AAVSN.429....1W",
+    "bibcode": "2017PhDT........14C",
     "citation_count": 0,
-    "copyright": "(C) AAVSO 2017",
-    "date": "2017-05-01T00:00:00Z",
-    "doctype": "newsletter",
+    "date": "2017-06-01T00:00:00Z",
+    "doctype": "phdthesis",
+    "doi": [
+     "10.5281/zenodo.581221"
+    ],
     "keyword": [
-     "astronomical databases: miscellaneous",
-     "binaries: symbiotic",
-     "stars: individual (V694 Mon",
-     "MWC 560)"
+     "galaxies: evolution",
+     "galaxies: abundances",
+     "galaxies: ISM"
     ],
     "links_data": [
-     "{\"title\":\"\", \"type\":\"electr\", \"instances\":\"\", \"access\":\"\"}"
+     "{\"title\":\"\", \"type\":\"electr\", \"instances\":\"\", \"access\":\"open\"}"
     ],
-    "page": [
-     "1"
-    ],
-    "pub": "AAVSO Special Notice",
-    "pub_raw": "AAVSO Special Notice #429",
-    "read_count": 3,
+    "pub": "Ph.D. Thesis",
+    "pub_raw": "PhD Thesis, Leiden University, 2017",
+    "read_count": 2,
     "reference": [
-     "2001ASPC..242..187I",
-     "2016AAN...538....1W",
-     "2016ATel.8653....1M",
-     "2016ATel.8832....1L",
-     "2016ATel.8957....1L",
-     "2017ATel10281....1L"
+     "2006ApJ...638..797D"
     ],
     "title": [
-     "V694 Mon (MWC 560) spectroscopy requested"
+     "Resolving Gas-Phase Metallicity In Galaxies"
     ],
-    "volume": "429",
     "year": "2017"
    },
    {
@@ -321,6 +282,48 @@ data = \
      "VizieR Online Data Catalog: BM CVn V-band differential light curve (Siltala+, 2017)"
     ],
     "volume": "1133",
+    "year": "2017"
+   },
+   {
+    "abstract": "The observing campaign from 2016 on V694 Mon (MWC 560) (AAVSO Alert Notice 538) has been continued, but with different requirements. Photometry is no longer specifically requested on a regular basis (although ongoing observations that do not interfere with other obligations are welcome). Spectroscopy on a cadence of a week or two is requested to monitor changes in the disk outflow. Investigator Adrian Lucy writes: \"Adrian Lucy and Dr. Jeno Sokoloski (Columbia University) have requested spectroscopic monitoring of the broad-absorption-line symbiotic star V694 Mon (MWC 560), as a follow-up to coordinated multi-wavelength observations obtained during its recent outburst (ATel #8653, #8832, #8957; #10281). This system is a perfect place in which to study the relationship between an accretion disk and disk winds/jets, and a high-value target for which even low-resolution spectra can be extraordinarily useful...Optical brightening in MWC 560 tends to predict higher-velocity absorption, but sometimes jumps in absorption velocity also appear during optical quiescence (e.g., Iijima 2001, ASPCS, 242, 187). If such a velocity jump occurs during photometric quiescence, it may prompt radio observations to confirm and test the proposed outflow origin for recently-discovered flat-spectrum radio emission (Lucy et al. ATel #10281)...Furthermore, volunteer spectroscopic monitoring of this system has proved useful in unpredictable ways. For example, 'amateur' spectra obtained by Somogyi P\u00c3\u00a9ter in 2015 December demonstrated that the velocity of absorption was very low only a month before an optical outburst peak prompted absorption troughs up to 3000 km/s, which constrains very well the timing of the changes to the outflow to a degree that would not have been otherwise possible. Any resolution can be useful. A wavelength range that can accommodate a blueshift of at least 140 angstroms (6000 km/s) from the rest wavelengths of H-alpha at 6562 angstroms and/or H-beta at 4861 angstroms is ideal, though spectra with a smaller range can still be useful. Photometry could potentially still be useful, but will be supplementary to medium-cadence photometry being collected by the ANS collaboration.\" \"Spectroscopy may be uploaded to the ARAS database (http://www.astrosurf.com/aras/Aras_DataBase/DataBase.htm), or sent to Adrian and Jeno directly at \u3008lucy@astro.columbia.edu\u3009. Finder charts with sequence may be created using the AAVSO Variable Star Plotter (https://www.aavso.org/vsp). Photometry should be submitted to the AAVSO International Database. See full Special Notice for more details.",
+    "aff": [
+     "AAVSO"
+    ],
+    "author": [
+     "Waagen, Elizabeth O."
+    ],
+    "bibcode": "2017AAVSN.429....1W",
+    "citation_count": 0,
+    "copyright": "(C) AAVSO 2017",
+    "date": "2017-05-01T00:00:00Z",
+    "doctype": "newsletter",
+    "keyword": [
+     "astronomical databases: miscellaneous",
+     "binaries: symbiotic",
+     "stars: individual (V694 Mon",
+     "MWC 560)"
+    ],
+    "links_data": [
+     "{\"title\":\"\", \"type\":\"electr\", \"instances\":\"\", \"access\":\"\"}"
+    ],
+    "page": [
+     "1"
+    ],
+    "pub": "AAVSO Special Notice",
+    "pub_raw": "AAVSO Special Notice #429",
+    "read_count": 4,
+    "reference": [
+     "2001ASPC..242..187I",
+     "2016AAN...538....1W",
+     "2016ATel.8653....1M",
+     "2016ATel.8832....1L",
+     "2016ATel.8957....1L",
+     "2017ATel10281....1L"
+    ],
+    "title": [
+     "V694 Mon (MWC 560) spectroscopy requested"
+    ],
+    "volume": "429",
     "year": "2017"
    },
    {
@@ -430,7 +433,7 @@ data = \
     ],
     "pub": "IAC Talks, Astronomy and Astrophysics Seminars from the Instituto de Astrof&iacute;sica de Canarias",
     "pub_raw": "IAC Talks, Astronomy and Astrophysics Seminars from the Instituto de Astrof&iacute;sica de Canarias, 872",
-    "read_count": 0,
+    "read_count": 2,
     "reference": [
      "2016MNRAS.460.3519V"
     ],
@@ -624,7 +627,7 @@ data = \
     ],
     "pub": "ArXiv e-prints",
     "pub_raw": "eprint arXiv:astro-ph/0003081",
-    "read_count": 5,
+    "read_count": 7,
     "title": [
      "Galactic Worm 123.4-1.5: A Mushroom-shaped HI Cloud"
     ],
@@ -685,7 +688,7 @@ data = \
     "date": "1995-01-01T00:00:00Z",
     "doctype": "book",
     "pub_raw": "Wiley series in nonlinear science, New York; Chichester: Wiley, |c1995",
-    "read_count": 2,
+    "read_count": 3,
     "title": [
      "Applied nonlinear dynamics: analytical, computational and experimental methods"
     ],
@@ -760,7 +763,7 @@ data = \
 # import requests
 # import json
 #
-# queryURL = 'http://localhost:4000/cls'
+# queryURL = 'http://localhost:4000/'
 #
 # bibcodes = ['2017SenIm..18...17Z', '2000astro.ph..3081G', '2007AAS...210.2104M', '2009bcet.book...65L', \
 #             '2007RJPh....1...35.', '1983aiaa.meetY....K', '1995anda.book.....N', '1995ans..agar..390M', \

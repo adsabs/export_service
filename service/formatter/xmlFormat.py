@@ -116,10 +116,12 @@ class XMLFormat:
     # format links
     def __addDocLinks(self, aDoc, parent):
         linkDict =  OrderedDict([
+                        #(key:[link type, name,endpoint])
                         ('abstract',['ABSTRACT','Abstract', 'abstract']),
                         ('citation_count', ['CITATIONS', 'Citations to the Article', 'citations']),
                         ('reference',['REFERENCES','References in the Article','references']),
                         ('coreads',['Co-Reads','Co-Reads','coreads']),
+                        ('refereed_citation',['REFCIT', 'Refereed Citations to the Article', 'noendpointyet']),
                         ('links_data', []),
                     ])
 
@@ -137,10 +139,17 @@ class XMLFormat:
                 if (count > 0):
                     self.__addDocALink(parent, linkDict[link][0], linkDict[link][1], linkURLFormat.format(aDoc.get('bibcode', ''), linkDict[link][2]), str(count))
             elif (link == 'coreads'):
-                self.__addDocALink(parent, linkDict[link][0], linkDict[link][1], linkURLFormat.format(aDoc.get('bibcode', ''), linkDict[link][2]))
+                count = aDoc.get('read_count', '')
+                if (count > 0):
+                    self.__addDocALink(parent, linkDict[link][0], linkDict[link][1], linkURLFormat.format(aDoc.get('bibcode', ''), linkDict[link][2]))
+            elif (link == 'refereed_citation'):
+                count = aDoc.get('citation_count', '')
+                if (count > 0):
+                    self.__addDocALink(parent, linkDict[link][0], linkDict[link][1], linkURLFormat.format(aDoc.get('bibcode', ''), linkDict[link][2]), str(count))
             elif (link == 'links_data'):
                 if 'links_data' in aDoc:
                     self.__addLinksDataDocLinks(aDoc, parent)
+
     # format keyword
     def __addKeywords(self, aDoc, parent, exportFormat):
         if 'keyword' not in aDoc:
@@ -243,7 +252,7 @@ class XMLFormat:
         record = ET.SubElement(parent, "record")
         for field in fields:
             if (field == 'bibcode') or (field == 'pub') or (field == 'volume') or \
-                    (field == 'copyright') or (field == 'eprintid'):
+               (field == 'copyright') or (field == 'eprintid'):
                 self.__addIn(record, fields[field], aDoc.get(field, ''))
             elif (field == 'title') or (field == 'page') or (field == 'doi'):
                 self.__addIn(record, fields[field], ''.join(aDoc.get(field, '')))
