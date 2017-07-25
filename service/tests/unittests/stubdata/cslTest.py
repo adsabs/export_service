@@ -121,25 +121,25 @@ dataASPC= \
 ########################################################################################################################
 
 dataAPSJ= \
-'''Y. Zhang, Y. Aratani, and H. Nakazima, <b>18</b>, 17 (2017).
-D. W. E. Green, <b>4403</b>, 2 (2017).
+'''Y. Zhang, Y. Aratani, and H. Nakazima, {\\bf 18}, 17 (2017).
+D.~W.~E. Green, {\\bf 4403}, 2 (2017).
 S. Kohler, in (2017), p. 2388.
-R. E. Ryan and P. R. McCullough, <i>Possible Overlaps Between Blobs, Grism Apertures, and Dithers</i> (2017), p. 16.
-A. R. Casey, ascl:1706.009 (2017).
+R.~E. Ryan and P.~R. McCullough, {\\it Possible Overlaps Between Blobs, Grism Apertures, and Dithers} (2017), p. 16.
+A.~R. Casey, ascl:1706.009 (2017).
 D. Carton, Resolving Gas-phase Metallicity in Galaxies, PhDT, 2017.
-J. Siltala, L. Jetsu, T. Hackman, G. W. Henry, L. Immonen, P. Kajatkari, J. Lankinen, J. Lehtinen, S. Monira, S. Nikbakhsh, A. Viitanen, J. Viuho, and T. Willamo, <b>1133</b>, 80453 (2017).
-E. O. Waagen, <b>429</b>, 1 (2017).
+J. Siltala, L. Jetsu, T. Hackman, G.~W. Henry, L. Immonen, P. Kajatkari, J. Lankinen, J. Lehtinen, S. Monira, S. Nikbakhsh, A. Viitanen, J. Viuho, and T. Willamo, {\\bf 1133}, 80453 (2017).
+E.~O. Waagen, {\\bf 429}, 1 (2017).
 L. Yan, in (2017), p. 13168.
 S. Azankpo, Surface Accuracy and Pointing Error Prediction of a 32 M Diameter Class Radio Astronomy Telescope, MsT, 2017.
-A. Rotaru, M. Pteancu, and C. Zaharia, <i>The Penumbral Moon's Eclipse Form 16 September 2016</i> (2016).
+A. Rotaru, M. Pteancu, and C. Zaharia, {\\it The Penumbral Moon's Eclipse Form 16 September 2016} (2016).
 S. Velasco, in (2016), p. 872.
-C. W. Liu, V. Y. Alekseyev, J. R. Allwardt, A. J. Bankovich, B. J. Cade-Menun, R. W. Davis, L.-S. Du, K. C. Garcia, D. Herschlag, C. Khosla, D. A. Kraut, Q. Li, B. Null, J. D. Puglisi, P. A. Sigala, J. F. Stebbins, and L. Varani, in (2009), p. 65.
-A. A. Mahabal, A. J. Drake, S. G. Djorgovski, C. Donalek, E. Glikman, M. J. Graham, R. Williams, C. Baltay, D. Rabinowitz, PQ Team Caltech, Yale, NCSA, Indiana, and ., <b>210</b>, 21 (2007).
-S. N. A. . and E. C. O. ., <b>1</b>, 35 (2007).
-C. Galactic Plane Survey, :, J. English, A. R. Taylor, S. Y. Mashchenko, J. A. Irwin, S. Basu, and D. Johnstone, astro (2000).
-J. L. Miller, in (1995), p. 390.
-A. H. Nayfeh and B. Balachandran, <i>Applied Nonlinear Dynamics: Analytical, Computational and Experimental Methods</i> (1995).
-A. R. Khatib, J. Ellis, J. French, G. Null, T. Yunck, and S. Wu, in (1983).
+C.~W. Liu, V.~Y. Alekseyev, J.~R. Allwardt, A.~J. Bankovich, B.~J. Cade-Menun, R.~W. Davis, L.-S. Du, K.~C. Garcia, D. Herschlag, C. Khosla, D.~A. Kraut, Q. Li, B. Null, J.~D. Puglisi, P.~A. Sigala, J.~F. Stebbins, and L. Varani, in (2009), p. 65.
+A.~A. Mahabal, A.~J. Drake, S.~G. Djorgovski, C. Donalek, E. Glikman, M.~J. Graham, R. Williams, C. Baltay, D. Rabinowitz, PQ Team Caltech, Yale, NCSA, Indiana, and ., {\\bf 210}, 21 (2007).
+S.~N.~A. . and E.~C.~O. ., {\\bf 1}, 35 (2007).
+C. Galactic Plane Survey, :, J. English, A.~R. Taylor, S.~Y. Mashchenko, J.~A. Irwin, S. Basu, and D. Johnstone, astro--ph/0003081 (2000).
+J.~L. Miller, in (1995), p. 390.
+A.~H. Nayfeh and B. Balachandran, {\\it Applied Nonlinear Dynamics: Analytical, Computational and Experimental Methods} (1995).
+A.~R. Khatib, J. Ellis, J. French, G. Null, T. Yunck, and S. Wu, in (1983).
 '''
 
 ########################################################################################################################

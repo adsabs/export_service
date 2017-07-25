@@ -438,10 +438,10 @@ class CustomFormat:
         return self.__formatLineWrapped(result, index)
 
     def get(self):
-        results = ''
+        results = []
         if (self.status == 0):
-            results += self.header + '\n'
+            results.append(self.header + '\n')
             for index in range(self.getNumDocs()):
-                results += self.__getDoc(index)
-            results += '\n' + self.footer
-        return results
+                results.append(self.__getDoc(index))
+            results.append('\n' + self.footer)
+        return ''.join(result for result in results)

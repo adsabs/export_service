@@ -49,10 +49,14 @@ def bibTexFormatExport():
     bibcodes = payload['bibcode']
     bibTexStyle = payload['style']
 
-    bibTexExport = BibTexFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
+    if (len(bibcodes) == 0) or (len(bibTexStyle) == 0):
+        return __returnResponse('error: not all the needed information received', 400)
+
     if (bibTexStyle == 'BibTex'):
+        bibTexExport = BibTexFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
         return __returnResponse(bibTexExport.get(includeAbs=False), 200)
     if (bibTexStyle == 'BibTexAbs'):
+        bibTexExport = BibTexFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
         return __returnResponse(bibTexExport.get(includeAbs=True), 200)
     return __returnResponse('error: unrecognizable style (supprted styles are: BibTex, BibTexAbs)', 503)
 
@@ -74,18 +78,26 @@ def fieldedFormatExport():
     bibcodes = payload['bibcode']
     fieldedStyle = payload['style']
 
-    fieldedExport = FieldedFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
+    if (len(bibcodes) == 0) or (len(fieldedStyle) == 0):
+        return __returnResponse('error: not all the needed information received', 400)
+
     if (fieldedStyle == 'ADS'):
+        fieldedExport = FieldedFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
         return __returnResponse(fieldedExport.getADSFielded(), 200)
     if (fieldedStyle == 'EndNote'):
+        fieldedExport = FieldedFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
         return __returnResponse(fieldedExport.getEndNoteFielded(), 200)
     if (fieldedStyle == 'ProCite'):
+        fieldedExport = FieldedFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
         return __returnResponse(fieldedExport.getProCiteFielded(), 200)
     if (fieldedStyle == 'Refman'):
+        fieldedExport = FieldedFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
         return __returnResponse(fieldedExport.getRefmanFielded(), 200)
     if (fieldedStyle == 'RefWorks'):
+        fieldedExport = FieldedFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
         return __returnResponse(fieldedExport.getRefWorksFielded(), 200)
     if (fieldedStyle == 'MEDLARS'):
+        fieldedExport = FieldedFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
         return __returnResponse(fieldedExport.getMEDLARSFielded(), 200)
     return __returnResponse('error: unrecognizable style (supprted styles are: ADS, EndNote, ProCite, Refman, RefWorks, MEDLARS)', 503)
 
@@ -108,12 +120,17 @@ def xmlFormatExport():
     bibcodes = payload['bibcode']
     xmlStyle = payload['style']
 
-    xmlExport = XMLFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
+    if (len(bibcodes) == 0) or (len(xmlStyle) == 0):
+        return __returnResponse('error: not all the needed information received', 400)
+
     if (xmlStyle == 'Dublin'):
+        xmlExport = XMLFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
         return __returnResponse(xmlExport.getDublinXML(), 200)
     if (xmlStyle == 'Reference'):
+        xmlExport = XMLFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
         return __returnResponse(xmlExport.getReferenceXML(includeAsb=False), 200)
     if (xmlStyle == 'ReferenceAbs'):
+        xmlExport = XMLFormat(getSolrData(bibcodes=bibcodes, fields=__defaultFields()))
         return __returnResponse(xmlExport.getReferenceXML(includeAsb=True), 200)
     return __returnResponse('error: unrecognizable style (supprted styles are: Dublin, Reference, ReferenceAbs)', 503)
 
@@ -137,6 +154,9 @@ def cslFormatExport():
     bibcodes = payload['bibcode']
     cslStyle = payload['style']
     exportFormat = payload['format']
+
+    if (len(bibcodes) == 0) or (len(cslStyle) == 0)  or (len(exportFormat) == 0):
+        return __returnResponse('error: not all the needed information received', 400)
 
     if (not adsCSLStyle().verify(cslStyle)):
         return __returnResponse('error: unrecognizable style (supprted formats are: ' + adsCSLStyle().get() + ')', 503)
@@ -162,11 +182,14 @@ def customFormatExport():
         return __returnResponse('error: no custom format found in payload (parameter name is "format")', 400)
 
     bibcodes = payload['bibcode']
-    format = payload['format']
+    customformatStr = payload['format']
+
+    if (len(bibcodes) == 0) or (len(customformatStr) == 0):
+        return __returnResponse('error: not all the needed information received', 400)
 
     # pass the user defined format to CustomFormat to parse and we would be able to get which fields
     # in Solr we need to query on
-    customExport = CustomFormat(customFormat=format)
+    customExport = CustomFormat(customFormat=customformatStr)
     fields = customExport.getSolrFields()
     # now get the required data from Solr and send it to customFormat for formatting
     fromSolr = getSolrData(bibcodes=bibcodes, fields=fields)
@@ -188,6 +211,9 @@ def home():
         return __returnResponse('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
 
     bibcodes = payload['bibcode']
+
+    if (len(bibcodes) == 0):
+        return __returnResponse('error: not all the needed information received', 400)
 
     fromSolr = getSolrData(bibcodes=bibcodes, fields=__defaultFields())
     return __returnResponse(fromSolr['response'], 200)

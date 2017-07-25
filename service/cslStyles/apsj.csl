@@ -138,6 +138,18 @@
             <text macro="year-date"/>
           </group>
         </else-if>
+        <else-if type="article">
+          <group delimiter=" ">
+            <text variable="container-title" form="short" text-case="title"/>
+            <group delimiter=", ">
+              <text variable="volume" font-weight="bold"/>
+              <group delimiter=" ">
+                <text variable="page" form="short"/>
+                <text macro="year-date" prefix="(" suffix=")"/>
+              </group>
+            </group>
+          </group>
+        </else-if>
         <else>
           <group delimiter=" ">
             <text variable="container-title" form="short" text-case="title"/>
