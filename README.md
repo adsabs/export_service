@@ -10,22 +10,33 @@
 
 #### where <payload> and <endpoint> are as follows:
 
-1- For endpoint /bibtex define payload as
-    '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"BibTex"}'       for BibTex Reference List or
-    '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"BibTexAbs"}'    for BibTex with abstracts
+1- For endpoint /bibtex
+    for BibTex Reference List define payload as
+        '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"BibTex"}'
+    or for BibTex with abstracts
+        '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"BibTexAbs"}'
 
-2- For endpoint /fielded define payload as
-    '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"ADS"}'          for generic fielded format or
-    '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"EndNote"}'      for EndNote fielded format or
-    '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"ProCite"}'      for ProCite fielded format or
-    '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"Refman"}'       for Refman fielded format or
-    '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"RefWorks"}'     for RefWorks fielded format or
-    '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"MEDLARS"}'      for MEDLARS fielded format
+2- For endpoint /fielded
+    for generic fielded format or define payload as
+        '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"ADS"}'
+    for EndNote fielded format define payload as
+        '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"EndNote"}'
+    for ProCite fielded format define payload as
+        '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"ProCite"}'
+    for Refman fielded format define payload as
+        '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"Refman"}'
+    for RefWorks fielded format define payload as
+        '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"RefWorks"}'
+    or for MEDLARS fielded format define payload as
+        '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"MEDLARS"}'
 
-3- For endpoint /xml define payload as
-    '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"Dublin"}'       for Dublin XML or
-    '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"Reference"}'    for XML References
-    '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"ReferenceAbs"}' for XML References with abstracts
+3- For endpoint /xml
+    for Dublin XML define payload as
+        '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"Dublin"}'
+    for XML References define payload as
+        '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"Reference"}'
+    or for XML References with abstracts define payload as
+        '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"ReferenceAbs"}'
 
 4- For endpoint /csl definde payload as
     '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"", "format":""}'
