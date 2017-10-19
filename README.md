@@ -11,9 +11,9 @@
 #### where <payload> and <endpoint> are as follows:
 
 ##### 1. For endpoint /bibtex
-⋅⋅⋅⋅* for BibTex Reference List define payload as
+    * for BibTex Reference List define payload as
 ⋅⋅⋅⋅⋅⋅⋅⋅ '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"BibTex"}'
-⋅⋅⋅⋅* or for BibTex with abstracts
+    * or for BibTex with abstracts
 ⋅⋅⋅⋅⋅⋅⋅⋅ '{"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"BibTexAbs"}'
 
 ##### 2. For endpoint /fielded
