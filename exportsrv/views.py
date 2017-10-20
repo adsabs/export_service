@@ -7,7 +7,7 @@ from flask_discoverer import advertise
 
 from adsmutils import setup_logging
 
-from exportsrv.solrData import get_solr_data
+from exportsrv.models import get_solr_data
 from exportsrv.formatter.ads import adsFormatter, adsCSLStyle
 from exportsrv.formatter.cslJson import CSLJson
 from exportsrv.formatter.csl import CSL
