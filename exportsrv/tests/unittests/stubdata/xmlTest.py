@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-dataDublin = \
+data_dublin = \
 '''<?xml version='1.0' encoding='utf8'?>
 <records retrieved="19" xmlns="http://ads.harvard.edu/schema/abs/1.1/abstracts" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ads.harvard.edu/schema/abs/1.1/abstracts http://ads.harvard.edu/schema/abs/1.1/abstracts.xsd">
 <record>
@@ -623,7 +623,7 @@ techniques to provide decimeter-level accuracy for aircraft navigation.</dc:desc
 
 ########################################################################################################################
 
-dataRef= \
+data_ref = \
 '''<?xml version='1.0' encoding='utf8'?>
 <records retrieved="19" xmlns="http://ads.harvard.edu/schema/abs/1.1/abstracts" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ads.harvard.edu/schema/abs/1.1/abstracts http://ads.harvard.edu/schema/abs/1.1/abstracts.xsd">
 <record>
@@ -1240,7 +1240,7 @@ Pasadena, CA)</affiliation>
 
 ########################################################################################################################
 
-dataRefWithAbs= \
+data_ref_with_abs = \
 '''<?xml version='1.0' encoding='utf8'?>
 <records retrieved="19" xmlns="http://ads.harvard.edu/schema/abs/1.1/abstracts" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ads.harvard.edu/schema/abs/1.1/abstracts http://ads.harvard.edu/schema/abs/1.1/abstracts.xsd">
 <record>

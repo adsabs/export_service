@@ -1,20 +1,18 @@
-import sys
-import os
-PROJECT_HOME = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '../../'))
-sys.path.append(PROJECT_HOME)
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from flask_testing import TestCase
 import unittest
-import service.app as app
+
+import exportsrv.app as app
 
 from stubdata import solrdata, bibTexTest, fieldedTest, xmlTest, cslTest, customTest
-from service.formatter.bibTexFormat import BibTexFormat
-from service.formatter.fieldedFormat import FieldedFormat
-from service.formatter.xmlFormat import XMLFormat
-from service.formatter.cslJson import CSLJson
-from service.formatter.csl import CSL, adsFormatter
-from service.formatter.customFormat import CustomFormat
+from exportsrv.formatter.bibTexFormat import BibTexFormat
+from exportsrv.formatter.fieldedFormat import FieldedFormat
+from exportsrv.formatter.xmlFormat import XMLFormat
+from exportsrv.formatter.cslJson import CSLJson
+from exportsrv.formatter.csl import CSL, adsFormatter
+from exportsrv.formatter.customFormat import CustomFormat
 
 class TestExports(TestCase):
     def create_app(self):
@@ -23,118 +21,118 @@ class TestExports(TestCase):
 
     def test_bibtex(self):
         # format the stubdata using the code
-        bibTexExport = BibTexFormat(solrdata.data).get(includeAbs=False)
+        bibtex_export = BibTexFormat(solrdata.data).get(includeAbs=False)
         # now compare it with an already formatted data that we know is correct
-        assert(bibTexExport == bibTexTest.data)
+        assert(bibtex_export == bibTexTest.data)
 
     def test_bibtex_with_abs(self):
         # format the stubdata using the code
-        bibTexExport = BibTexFormat(solrdata.data).get(includeAbs=True)
+        bibtex_export = BibTexFormat(solrdata.data).get(includeAbs=True)
         # now compare it with an already formatted data that we know is correct
-        assert (bibTexExport == bibTexTest.dataWithAbs)
+        assert (bibtex_export == bibTexTest.data_with_abs)
 
     def test_ads(self):
         # format the stubdata using the code
-        fieldedExport = FieldedFormat(solrdata.data).getADSFielded()
+        fielded_export = FieldedFormat(solrdata.data).get_ads_fielded()
         # now compare it with an already formatted data that we know is correct
-        assert (fieldedExport == fieldedTest.dataADS)
+        assert (fielded_export == fieldedTest.data_ads)
 
     def test_endnote(self):
         # format the stubdata using the code
-        fieldedExport = FieldedFormat(solrdata.data).getEndNoteFielded()
+        fielded_export = FieldedFormat(solrdata.data).get_endnote_fielded()
         # now compare it with an already formatted data that we know is correct
-        assert (fieldedExport == fieldedTest.dataEndNote)
+        assert (fielded_export == fieldedTest.data_endnote)
 
     def test_procite(self):
         # format the stubdata using the code
-        fieldedExport = FieldedFormat(solrdata.data).getProCiteFielded()
+        fielded_export = FieldedFormat(solrdata.data).get_procite_fielded()
         # now compare it with an already formatted data that we know is correct
-        assert (fieldedExport == fieldedTest.dataProCite)
+        assert (fielded_export == fieldedTest.data_procite)
 
     def test_refman(self):
         # format the stubdata using the code
-        fieldedExport = FieldedFormat(solrdata.data).getRefmanFielded()
+        fielded_export = FieldedFormat(solrdata.data).get_refman_fielded()
         # now compare it with an already formatted data that we know is correct
-        assert (fieldedExport == fieldedTest.dataRefman)
+        assert (fielded_export == fieldedTest.data_refman)
 
     def test_refworks(self):
         # format the stubdata using the code
-        fieldedExport = FieldedFormat(solrdata.data).getRefWorksFielded()
+        fielded_export = FieldedFormat(solrdata.data).get_refworks_fielded()
         # now compare it with an already formatted data that we know is correct
-        assert (fieldedExport == fieldedTest.dataRefWorks)
+        assert (fielded_export == fieldedTest.data_refworks)
 
     def test_medlars(self):
         # format the stubdata using the code
-        fieldedExport = FieldedFormat(solrdata.data).getMEDLARSFielded()
+        fielded_export = FieldedFormat(solrdata.data).get_medlars_fielded()
         # now compare it with an already formatted data that we know is correct
-        assert (fieldedExport == fieldedTest.dataMEDLARS)
+        assert (fielded_export == fieldedTest.data_medlars)
 
     def test_dublinxml(self):
         # format the stubdata using the code
-        xmlExport = XMLFormat(solrdata.data).getDublinXML()
+        xml_export = XMLFormat(solrdata.data).get_dublin_xml()
         # now compare it with an already formatted data that we know is correct
-        assert(xmlExport == xmlTest.dataDublin)
+        assert(xml_export == xmlTest.data_dublin)
 
     def test_refxml(self):
         # format the stubdata using the code
-        xmlExport = XMLFormat(solrdata.data).getReferenceXML(includeAsb=False)
+        xml_export = XMLFormat(solrdata.data).get_reference_xml(includeAsb=False)
         # now compare it with an already formatted data that we know is correct
-        assert(xmlExport == xmlTest.dataRef)
+        assert(xml_export == xmlTest.data_ref)
 
     def test_refxml_with_abs(self):
         # format the stubdata using the code
-        xmlExport = XMLFormat(solrdata.data).getReferenceXML(includeAsb=True)
+        xml_export = XMLFormat(solrdata.data).get_reference_xml(includeAsb=True)
         # now compare it with an already formatted data that we know is correct
-        assert(xmlExport == xmlTest.dataRefWithAbs)
+        assert(xml_export == xmlTest.data_ref_with_abs)
 
     def test_aastex(self):
         # format the stubdata using the code
-        cslExport = CSL(CSLJson(solrdata.data).get(), 'aastex', adsFormatter.latex).get()
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'aastex', adsFormatter.latex).get()
         # now compare it with an already formatted data that we know is correct
-        assert (cslExport == cslTest.dataAASTex)
+        assert (csl_export == cslTest.data_AASTex)
 
     def test_icarus(self):
         # format the stubdata using the code
-        cslExport = CSL(CSLJson(solrdata.data).get(), 'Icarus', adsFormatter.latex).get()
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'Icarus', adsFormatter.latex).get()
         # now compare it with an already formatted data that we know is correct
-        assert (cslExport == cslTest.dataIcarus)
+        assert (csl_export == cslTest.data_Icarus)
 
     def test_mnras(self):
         # format the stubdata using the code
-        cslExport = CSL(CSLJson(solrdata.data).get(), 'mnras', adsFormatter.latex).get()
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'mnras', adsFormatter.latex).get()
         # now compare it with an already formatted data that we know is correct
-        assert(cslExport == cslTest.dataMNRAS)
+        assert(csl_export == cslTest.data_MNRAS)
 
     def test_soph(self):
         # format the stubdata using the code
-        cslExport = CSL(CSLJson(solrdata.data).get(), 'soph', adsFormatter.latex).get()
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'soph', adsFormatter.latex).get()
         # now compare it with an already formatted data that we know is correct
-        assert (cslExport == cslTest.dataSoPh)
+        assert (csl_export == cslTest.data_SoPh)
 
     def test_aspc(self):
         # format the stubdata using the code
-        cslExport = CSL(CSLJson(solrdata.data).get(), 'aspc', adsFormatter.latex).get()
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'aspc', adsFormatter.latex).get()
         # now compare it with an already formatted data that we know is correct
-        assert (cslExport == cslTest.dataASPC)
+        assert (csl_export == cslTest.data_ASPC)
 
     def test_apsj(self):
         # format the stubdata using the code
-        cslExport = CSL(CSLJson(solrdata.data).get(), 'apsj', adsFormatter.latex).get()
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'apsj', adsFormatter.latex).get()
         # now compare it with an already formatted data that we know is correct
-        assert (cslExport == cslTest.dataAPSJ)
+        assert (csl_export == cslTest.data_APSJ)
 
     def test_aasj(self):
         # format the stubdata using the code
-        cslExport = CSL(CSLJson(solrdata.data).get(), 'aasj', adsFormatter.latex).get()
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'aasj', adsFormatter.latex).get()
         # now compare it with an already formatted data that we know is correct
-        assert (cslExport == cslTest.dataAASJ)
+        assert (csl_export == cslTest.data_AASJ)
 
     def test_custom(self):
         # format the stubdata using the code
-        customFormat = CustomFormat(customFormat=r'\\bibitem[%m\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p \n')
-        customFormat.setJSONFromSolr(solrdata.data)
+        custom_format = CustomFormat(custom_format=r'\\bibitem[%m\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p \n')
+        custom_format.set_json_from_solr(solrdata.data)
         # now compare it with an already formatted data that we know is correct
-        assert (customFormat.get() == customTest.data)
+        assert (custom_format.get() == customTest.data)
 
 if __name__ == '__main__':
   unittest.main()

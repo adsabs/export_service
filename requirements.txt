@@ -1,3 +1,4 @@
+git+https://github.com/adsabs/ADSMicroserviceUtils.git@master
 adsutils==1.0.33
 citeproc-py==0.3.0
 Flask==0.12.2

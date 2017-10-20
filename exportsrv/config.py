@@ -1,66 +1,21 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
-
-import os
-# This is the URL to communicate with ADS Classic
-EXPORT_SERVICE_CLASSIC_EXPORT_URL = 'http://adsabs.harvard.edu/cgi-bin/nph-abs_connect'
-
-# In what environment are we?
-ENVIRONMENT = os.getenv('ENVIRONMENT', 'staging').lower()
-# Configure logging
-EXPORT_SERVICE_LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'default': {
-            'format': '%(levelname)s\t%(process)d '
-                      '[%(asctime)s]:\t%(message)s',
-            'datefmt': '%m/%d/%Y %H:%M:%S',
-        }
-    },
-    'handlers': {
-        'file': {
-            'formatter': 'default',
-            'level': 'INFO',
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '/tmp/export_service_app.{}.log'.format(ENVIRONMENT),
-        },
-        'console': {
-            'formatter': 'default',
-            'level': 'INFO',
-            'class': 'logging.StreamHandler'
-        },
-    },
-    'loggers': {
-        '': {
-            'handlers': ['file','console'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-    },
-}
 
 
 #This section configures this application to act as a client, for example to query solr
-#EXPORT_SERVICE_BIGQUERY_PATH = None
 #EXPORT_SERVICE_ADSWS_API_TOKEN = 'this is a secret api token!'
 
-EXPORT_SERVICE_BIGQUERY_PATH = 'http://api.adsabs.harvard.edu/v1/search/bigquery'
+
 EXPORT_SERVICE_ADSWS_API_TOKEN = 'Bearer:eQhhOLITyCD1B2Afuxf2b5LdTpFTl5WaepVI7Dn0'
 
-
-EXPORT_SERVICE_QUERY_DEFAULT_FIELDS = 'author,title,year,date,pub,pub_raw,issue,volume,page,aff,doi,abstract,eid,' \
-                                      'citation_count,read_count,bibcode,identification,copyright,keyword,doctype,' \
-                                      'links_data,reference,comment'
 
 EXPORT_SERVICE_BBB_PATH = 'https://ui.adsabs.harvard.edu/#abs'
 EXPORT_SERVICE_ADS_NOTES = 'Provided by the SAO/NASA Astrophysics Data System'
 
-EXPORT_SERVICE_RECORDS_SET_XML = [('xmlns','http://ads.harvard.edu/schema/abs/1.1/abstracts'),
-                                  ('xmlns:xsi','http://www.w3.org/2001/XMLSchema-instance'),
-                                  ('xsi:schemaLocation','http://ads.harvard.edu/schema/abs/1.1/abstracts http://ads.harvard.edu/schema/abs/1.1/abstracts.xsd')]
 
 EXPORT_SERVICE_LINK_URL_FORMAT = 'https://ui.adsabs.harvard.edu/#abs/{}/{}'
 EXPORT_SERVICE_LINK_LINKS_DATA_URL_FORMAT = 'https://ui.adsabs.harvard.edu/#abs/{}{}{}'
+
 
 EXPORT_SERVICE_LATEX_ACCENT = [
     [u"à", "\\`a"],  # Grave accent

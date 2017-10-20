@@ -12,19 +12,19 @@ class adsFormatter:
         return False
 
 class adsOrganizer:
-    plain, citationANDbibliography, bibliography = range(3)
+    plain, citation_bibliography, bibliography = range(3)
 
 class adsCSLStyle:
-    adsCLS = ['aastex', 'icarus', 'mnras', 'soph', 'aspc', 'apsj', 'aasj']
+    ads_CLS = ['aastex', 'icarus', 'mnras', 'soph', 'aspc', 'apsj', 'aasj']
 
     def verify(self, style):
-        if (style in self.adsCLS):
+        if (style in self.ads_CLS):
             return True
         return False
 
     def get(self):
         separator = ', '
         styles = ''
-        for style in self.adsCLS:
+        for style in self.ads_CLS:
             styles += style + separator
         return styles[:-len(separator)]

@@ -1,24 +1,28 @@
-from flask import Flask
-import logging.config
-from views import bp
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+import inspect
+
 from flask_restful import Api
 from flask_discoverer import Discoverer
+
+from adsmutils import ADSFlask, load_module
+
+import exportsrv
+from exportsrv.views import bp
 
 def create_app(config=None):
     """
     Create the application and return it to the user
-
     :return: flask.Flask application
     """
 
-    app = Flask(__name__, static_folder=None)
-    app.url_map.strict_slashes = False
+    proj_home = os.path.dirname(inspect.getsourcefile(exportsrv))
+    local_config = load_module(os.path.abspath(os.path.join(proj_home, 'config.py')))
 
-    # Load config and logging
-    load_config(app, config)
-    logging.config.dictConfig(
-        app.config['EXPORT_SERVICE_LOGGING']
-    )
+    app = ADSFlask(__name__, static_folder=None, proj_home=proj_home, local_config=local_config)
+    app.url_map.strict_slashes = False
 
     # Register extensions
     api = Api(app)
@@ -26,23 +30,6 @@ def create_app(config=None):
 
     app.register_blueprint(bp)
     return app
-
-
-def load_config(app, config=None):
-    """
-    Loads configuration in the following order:
-        1. config.py
-        2. local_config.py (ignore failures)
-    :param app: flask.Flask application instance
-    :return: None
-    """
-
-    app.config.from_pyfile('config.py')
-
-    try:
-        app.config.from_pyfile('local_config.py')
-    except IOError:
-        app.logger.warning("Could not load local_config.py")
 
 if __name__ == '__main__':
     app = create_app()

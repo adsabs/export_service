@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-dataAASTex= \
+data_AASTex= \
 '''\\bibitem[Zhang, et al.((2017)]{2017SenIm..18...17Z} Zhang, Y., Aratani, Y., \\& Nakazima, H.\\ 2017, Sensing and Imaging, 18, 17.
 \\bibitem[Green((2017)]{2017CBET.4403....2G} Green, D.~W.~E.\\ 2017, Central Bureau Electronic Telegrams 4403, 2.
 \\bibitem[Kohler((2017)]{2017nova.pres.2388K} Kohler, S.\\ 2017, AAS Nova Highlights, 2388.
@@ -24,7 +24,7 @@ dataAASTex= \
 
 ########################################################################################################################
 
-dataIcarus= \
+data_Icarus= \
 '''\\bibitem[Zhang et al.(2017)]{2017SenIm..18...17Z} Zhang, Y., Aratani, Y., Nakazima, H.\\ 2017.\\ A Microwave Free-Space Method Using Artificial Lens with Anti-reflection Layer.\\ Sensing and Imaging 18, 17.
 \\bibitem[Green(2017)]{2017CBET.4403....2G} Green, D.~W.~E.\\ 2017.\\ Potential New Meteor Shower from Comet C/2015 D4 (Borisov).\\ Central Bureau Electronic Telegrams 4403, 2.
 \\bibitem[Kohler(2017)]{2017nova.pres.2388K} Kohler, S.\\ 2017.\\ A 3D View of a Supernova Remnant.\\ AAS Nova Highlights 2388.
@@ -48,7 +48,7 @@ dataIcarus= \
 
 ########################################################################################################################
 
-dataMNRAS = \
+data_MNRAS = \
 '''\\bibitem[\\protect\\citaauthoryear{Zhang, Aratani, \\& Nakazima}{2017}]{2017SenIm..18...17Z} Zhang Y., Aratani Y., Nakazima H., 2017, SenIm, 18, 17
 \\bibitem[\\protect\\citaauthoryear{Green}{2017}]{2017CBET.4403....2G} Green D.~W.~E., 2017, CBET, 4403, 2
 \\bibitem[\\protect\\citaauthoryear{Kohler}{2017}]{2017nova.pres.2388K} Kohler S., 2017, AAS Nova Highlights,  2388, nova.pres
@@ -72,7 +72,7 @@ dataMNRAS = \
 
 ########################################################################################################################
 
-dataSoPh= \
+data_SoPh= \
 '''\\bibitem[Zhang, Aratani and Nakazima((2017)]{2017SenIm..18...17Z}Zhang, Y., Aratani, Y., and Nakazima, H.: 2017, {\\it Sensing and Imaging} {\\bf 18}, 17.
 \\bibitem[Green((2017)]{2017CBET.4403....2G}Green, D.W.E.: 2017, {\\it Central Bureau Electronic Telegrams} {\\bf 4403}, 2.
 \\bibitem[Kohler((2017)]{2017nova.pres.2388K}Kohler, S.: 2017, {\\it AAS Nova Highlights}, 2388.
@@ -96,7 +96,7 @@ dataSoPh= \
 
 ########################################################################################################################
 
-dataASPC= \
+data_ASPC= \
 '''\\bibitem[Zhang, et al.((2017)]{2017SenIm..18...17Z} Zhang, Y., Aratani, Y., \\& Nakazima, H.\\ 2017, Sensing and Imaging, 18, 17.
 \\bibitem[Green((2017)]{2017CBET.4403....2G} Green, D.~W.~E.\\ 2017, Central Bureau Electronic Telegrams 4403, 2.
 \\bibitem[Kohler((2017)]{2017nova.pres.2388K} Kohler, S.\\ 2017, AAS Nova Highlights, 2388.
@@ -120,7 +120,7 @@ dataASPC= \
 
 ########################################################################################################################
 
-dataAPSJ= \
+data_APSJ= \
 '''Y. Zhang, Y. Aratani, and H. Nakazima, {\\bf 18}, 17 (2017).
 D.~W.~E. Green, {\\bf 4403}, 2 (2017).
 S. Kohler, in (2017), p. 2388.
@@ -144,7 +144,7 @@ A.~R. Khatib, J. Ellis, J. French, G. Null, T. Yunck, and S. Wu, in (1983).
 
 ########################################################################################################################
 
-dataAASJ= \
+data_AASJ= \
 '''\\bibitem[Zhang, et al.((2017)]{2017SenIm..18...17Z} Zhang, Y., Aratani, Y., \\& Nakazima, H.\\ 2017, Sensing and Imaging, 18, 17.
 \\bibitem[Green((2017)]{2017CBET.4403....2G} Green, D.~W.~E.\\ 2017, Central Bureau Electronic Telegrams 4403, 2.
 \\bibitem[Kohler((2017)]{2017nova.pres.2388K} Kohler, S.\\ 2017, AAS Nova Highlights, 2388.

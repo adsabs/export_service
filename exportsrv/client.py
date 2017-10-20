@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import requests
 from flask import current_app
 
@@ -13,7 +16,6 @@ class Client:
     def __init__(self, config):
         """
         Constructor
-
         :param client_config: configuration dictionary of the client
         """
 

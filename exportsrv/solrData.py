@@ -1,15 +1,26 @@
 #!/usr/bin/env python
 
+import os
+
 from flask import current_app
 import requests
 from client import client
-import json
 
-def getSolrData(bibcodes,
+from adsmutils import setup_logging
+
+global logger
+logger = None
+
+def get_solr_data(bibcodes,
                 fields,
                 start=0,
+                rows=10,
                 sort='date desc'
                 ):
+    global logger
+    logger = setup_logging('export_service', current_app.config.get('LOG_LEVEL', 'INFO'))
+
+
     data = 'bibcode\n' + '\n'.join(bibcodes)
 
     # todo: there should be a top limit on number of bibcodes
@@ -29,16 +40,14 @@ def getSolrData(bibcodes,
 
     try:
         response = client().post(
-            url=current_app.config['EXPORT_SERVICE_BIGQUERY_PATH'],
+            url=os.environ.get('EXPORT_SOLRQUERY_URL'),
             params=params,
             data=data,
             headers=headers
         )
-        #print(response.ok)  # => True
-        #print(response.status_code)  # => 200
-        #print response.headers
         return response.json()
     except requests.exceptions.RequestException as e:
         # catastrophic error. bail.
-        print("\nbailing")
-        print e
+        logger.error('\nbailing')
+        logger.error(e)
+

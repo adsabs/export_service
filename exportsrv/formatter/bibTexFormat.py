@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from collections import OrderedDict
@@ -9,7 +9,7 @@ from itertools import product
 from string import ascii_uppercase
 import re
 
-from toLaTex import encodeLaTex, encodeLaTexAuthor
+from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
 
 # This class accepts JSON object created by Solr and reformats it
 # for the BibTex Export formats we are supporting
@@ -19,25 +19,42 @@ from toLaTex import encodeLaTex, encodeLaTexAuthor
 #    referenceXML = BibTexFormat(jsonFromSolr).getReferenceBibTex(True)
 
 class BibTexFormat:
+
+    REGEX_AUTHOR = re.compile(r'([A-Z])\w*')
+    REGEX_PUB_RAW = dict([
+        (re.compile(r"(\;?\s*\<ALTJOURNAL\>.*\</ALTJOURNAL\>\s*)"), r""),  # remove these
+        (re.compile(r"(\;?\s*\<CONF_METADATA\>.*\<CONF_METADATA\>\s*)"), r""),
+        (re.compile(r"(?:\<ISBN\>)(.*)(?:\</ISBN\>)"), r"\1"),  # get value inside the tag for these
+        (re.compile(r"(?:\<NUMPAGES\>)(.*)(?:</NUMPAGES>)"), r"\1"),
+    ])
+
     status = -1
-    fromSolr = {}
+    from_solr = {}
 
-    def __init__(self, fromSolr):
-        self.fromSolr = fromSolr
-        if (self.fromSolr.get('responseHeader')):
-            self.status = self.fromSolr['responseHeader'].get('status', self.status)
+    def __init__(self, from_solr):
+        self.from_solr = from_solr
+        if (self.from_solr.get('responseHeader')):
+            self.status = self.from_solr['responseHeader'].get('status', self.status)
 
-    def getStatus(self):
+
+    def get_status(self):
         return self.status
 
-    def getNumDocs(self):
+
+    def get_num_docs(self):
         if (self.status == 0):
-            if (self.fromSolr.get('response')):
-                return self.fromSolr['response'].get('numFound', 0)
+            if (self.from_solr.get('response')):
+                return self.from_solr['response'].get('numFound', 0)
         return 0
 
-    # from solr to BibTex document type
-    def __getDocType(self, solrType):
+
+    def __get_doc_type(self, solr_type):
+        """
+        from solr to BibTex document type
+
+        :param solr_type:
+        :return:
+        """
         fields = {'article':'@ARTICLE', 'circular':'@ARTICLE', 'newsletter':'@ARTICLE',
                   'eprint':'@ARTICLE', 'catalog':'@ARTICLE',
                   'book':'@BOOK', 
@@ -48,54 +65,62 @@ class BibTexFormat:
                   'talk':'@INPROCEEDINGS',
                   'phdthesis':'@PHDTHESIS','mastersthesis':'@MASTERSTHESIS',
                   'techreport':'@TECHREPORT', 'intechreport':'@TECHREPORT'}
-        return fields.get(solrType, '')
+        return fields.get(solr_type, '')
 
-    def __formatDate(self, solrDate):
-        # solrDate has the format 2017-12-01T00:00:00Z
-        dateTime = datetime.strptime(solrDate, '%Y-%m-%dT%H:%M:%SZ')
-        return dateTime.strftime('%b')
 
-    def __formatLineWrapped(self, left, right, formatStyle):
+    def __format_date(self, solr_date):
+        # solr_date has the format 2017-12-01T00:00:00Z
+        date_time = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
+        return date_time.strftime('%b')
+
+
+    def __format_line_wrapped(self, left, right, format_style):
         wrapped = fill(right, width=72, subsequent_indent=' ' * 8)
-        return formatStyle.format(left, wrapped)
+        return format_style.format(left, wrapped)
 
-    # exported fields for various document types
-    def __getFields(self, aDoc):
-        docTypeBibTex = self.__getDocType(aDoc.get('doctype', ''))
-        if (docTypeBibTex == '@ARTICLE'):
+
+    def __get_fields(self, a_doc):
+        """
+        exported fields for various document types
+
+        :param a_doc:
+        :return:
+        """
+        doc_type_bibtex = self.__get_doc_type(a_doc.get('doctype', ''))
+        if (doc_type_bibtex == '@ARTICLE'):
             fields = [('author', 'author'), ('title', 'title'), ('pub', 'journal'),
                       ('keyword', 'keywords'), ('year', 'year'), ('month', 'month'),
                       ('volume', 'volume'), ('eid', 'eid'), ('page', 'pages'),
                       ('abstract', 'abstract'), ('doi', 'doi'), ('bibcode', 'adsurl'),
                       ('adsnotes', 'adsnote')]
-        elif (docTypeBibTex == '@BOOK'):
+        elif (doc_type_bibtex == '@BOOK'):
             fields = [('author', 'author'), ('title', 'title'), ('pub_raw', 'booktitle'),
                       ('year', 'year'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
-        elif (docTypeBibTex == '@INBOOK'):
+        elif (doc_type_bibtex == '@INBOOK'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub_raw', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
                       ('page', 'pages'), ('abstract', 'abstract'), ('doi', 'doi'),
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
-        elif (docTypeBibTex == '@PROCEEDINGS'):
+        elif (doc_type_bibtex == '@PROCEEDINGS'):
             fields = [('title', 'title'), ('keyword', 'keywords'), ('pub_raw', 'booktitle'),
                       ('year', 'year'), ('editor', 'editor'), ('series', 'series'),
                       ('volume', 'volume'), ('month', 'month'), ('doi', 'doi'),
                       ('abstract', 'abstract'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
-        elif (docTypeBibTex == '@INPROCEEDINGS'):
+        elif (doc_type_bibtex == '@INPROCEEDINGS'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub_raw', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
                       ('series', 'series'), ('volume', 'volume'), ('month', 'month'),
                       ('eid', 'eid'), ('page', 'pages'), ('abstract', 'abstract'),
                       ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
-        elif (docTypeBibTex == '@MISC'):
+        elif (doc_type_bibtex == '@MISC'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub', 'howpublished'), ('year', 'year'), ('month', 'month'),
                       ('eid', 'eprint'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
-        elif (docTypeBibTex == '@PHDTHESIS') or (docTypeBibTex == '@MASTERSTHESIS'):
+        elif (doc_type_bibtex == '@PHDTHESIS') or (doc_type_bibtex == '@MASTERSTHESIS'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('aff', 'school'), ('year', 'year'), ('month', 'month'),
                       ('bibcode', 'adsurl'),('adsnotes', 'adsnote')]
-        elif (docTypeBibTex == '@TECHREPORT'):
+        elif (doc_type_bibtex == '@TECHREPORT'):
             fields = [('author', 'author'), ('title', 'title'), ('pub', 'journal'),
                       ('keyword', 'keywords'), ('pub_raw', 'booktitle'), ('year', 'year'),
                       ('editor', 'editor'), ('month', 'month'), ('volume', 'volume'),
@@ -104,122 +129,166 @@ class BibTexFormat:
             fields = []
         return OrderedDict(fields)
 
-    # format authors
-    def __getAuthorList(self, aDoc):
-        if 'author' not in aDoc:
-            return ''
-        andStr = ' and '
-        authorList = ''
-        regex = re.compile(r'([A-Z])\w*')
-        for author in aDoc['author']:
-            authorParts = author.split(', ')
-            authorList += '{' + authorParts[0] + '}'
-            if (len(authorParts) >= 2):
-                authorList += ", " +  '. '.join(regex.findall(authorParts[1])) + '.' + andStr
-        if (authorList.endswith(andStr)):
-            authorList = authorList[:-len(andStr)]
-        return encodeLaTexAuthor(authorList)
+    def __get_author_list(self, a_doc):
+        """
+        format authors
 
-    # format affiliation
-    def __getAffiliationList(self, aDoc):
-        if ('aff') not in aDoc:
+        :param a_doc:
+        :return:
+        """
+        if 'author' not in a_doc:
+            return ''
+        and_str = ' and '
+        author_list = ''
+        for author in a_doc['author']:
+            author_parts = author.split(', ')
+            author_list += '{' + author_parts[0] + '}'
+            if (len(author_parts) >= 2):
+                author_list += ", " +  '. '.join(self.REGEX_AUTHOR.findall(author_parts[1])) + '.' + and_str
+        if (author_list.endswith(and_str)):
+            author_list = author_list[:-len(and_str)]
+        return encode_laTex_author(author_list)
+
+
+    def __get_affiliation_list(self, a_doc):
+        """
+        format affiliation
+
+        :param a_doc:
+        :return:
+        """
+        if ('aff') not in a_doc:
             return ''
         counter = [''.join(i) for i in product(ascii_uppercase, repeat=2)]
         separator = ', '
-        affiliationList = ''
-        addCount = not (aDoc.get('doctype', '') in ['phdthesis'])
-        for affiliation, i in zip(aDoc['aff'], range(len(aDoc['aff']))):
+        affiliation_list = ''
+        addCount = not (a_doc.get('doctype', '') in ['phdthesis'])
+        for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):
             if (addCount):
-                affiliationList += counter[i] + '(' + affiliation + ')' + separator
+                affiliation_list += counter[i] + '(' + affiliation + ')' + separator
             else:
-                affiliationList += affiliation + separator
+                affiliation_list += affiliation + separator
         # do not need the last separator
-        if (len(affiliationList) > len(separator)):
-            affiliationList = affiliationList[:-len(separator)]
-        return encodeLaTex(affiliationList)
+        if (len(affiliation_list) > len(separator)):
+            affiliation_list = affiliation_list[:-len(separator)]
+        return encode_laTex(affiliation_list)
 
-    # format keywords
-    def __addKeywords(self, aDoc):
-        if 'keyword' not in aDoc:
+
+    def __add_keywords(self, a_doc):
+        """
+        format keywords
+
+        :param a_doc:
+        :return:
+        """
+        if 'keyword' not in a_doc:
             return ''
-        return encodeLaTex(', '.join(aDoc.get('keyword', '')))
+        return encode_laTex(', '.join(a_doc.get('keyword', '')))
 
-    # parse pub_raw and eliminate tags
-    def __addCleanPubRaw(self, aDoc):
-        pubRaw = ''.join(aDoc.get('pub_raw', ''))
+    
+    def __add_clean_pub_raw(self, a_doc):
+        """
+        parse pub_raw and eliminate tags
+        
+        :param a_doc: 
+        :return: 
+        """
+        pub_raw = ''.join(a_doc.get('pub_raw', ''))
         # proceed only if necessary
-        if ('<' in pubRaw) and ('>' in pubRaw):
-            tokens = dict([
-                (r"(\;?\s*\<ALTJOURNAL\>.*\</ALTJOURNAL\>\s*)",     r""),          # remove these
-                (r"(\;?\s*\<CONF_METADATA\>.*\<CONF_METADATA\>\s*)",r""),
-                (r"(?:\<ISBN\>)(.*)(?:\</ISBN\>)",                  r"\1"),        # get value inside the tag for these
-                (r"(?:\<NUMPAGES\>)(.*)(?:</NUMPAGES>)",            r"\1"),
-            ])
-            for key in tokens:
-                regex = re.compile(key)
-                pubRaw = regex.sub(tokens[key], pubRaw)
-        return pubRaw
+        if ('<' in pub_raw) and ('>' in pub_raw):
+            for key in self.REGEX_PUB_RAW:
+                pub_raw = key.sub(self.REGEX_PUB_RAW[key], pub_raw)
+        return pub_raw
 
-    # add the value into the return structure, only if a value was defined in Solr
-    def __addIn(self, field, value, outputFormat):
+
+    def __add_in(self, field, value, output_format):
+        """
+        add the value into the return structure, only if a value was defined in Solr
+        
+        :param field: 
+        :param value: 
+        :param output_format: 
+        :return: 
+        """
         if (((isinstance(value, unicode)) or (isinstance(value, str))) and (len(value) > 0)) or \
            ((isinstance(value, int)) and (value is not None)):
-            return outputFormat.format(field, value) + ',\n'
+            return output_format.format(field, value) + ',\n'
         return ''
 
-    # add the value into the return structure, only if a value was defined in Solr
-    def __addInWrapped(self, field, value, outputFormat):
+    
+    def __add_in_wrapped(self, field, value, output_format):
+        """
+        add the value into the return structure, only if a value was defined in Solr
+        
+        :param field: 
+        :param value: 
+        :param output_format: 
+        :return: 
+        """
         if (len(value) > 0):
-            return self.__formatLineWrapped(field, value, outputFormat) + ',\n'
+            return self.__format_line_wrapped(field, value, output_format) + ',\n'
         return ''
 
-    # for each document from Solr, get the fields, and format them accordingly
-    def __getDoc(self, index, includeAbs):
-        formatStyleBracketQuotes = u'{0:>12} = "{{{1}}}"'
-        formatStyleBracket = u'{0:>12} = {{{1}}}'
-        formatStyle = u'{0:>12} = {1}'
+    
+    def __get_doc(self, index, includeAbs):
+        """
+        for each document from Solr, get the fields, and format them accordingly
+        
+        :param index: 
+        :param includeAbs: 
+        :return: 
+        """
+        format_style_bracket_quotes = u'{0:>12} = "{{{1}}}"'
+        format_style_bracket = u'{0:>12} = {{{1}}}'
+        format_style = u'{0:>12} = {1}'
 
-        aDoc = self.fromSolr['response'].get('docs')[index]
-        text = self.__getDocType(aDoc.get('doctype', '')) + '{' + aDoc.get('bibcode', '')  + ',\n'
+        a_doc = self.from_solr['response'].get('docs')[index]
+        text = self.__get_doc_type(a_doc.get('doctype', '')) + '{' + a_doc.get('bibcode', '')  + ',\n'
 
-        fields = self.__getFields(aDoc)
+        fields = self.__get_fields(a_doc)
         for field in fields:
             if (field == 'author'):
-                text += self.__addInWrapped(fields[field], self.__getAuthorList(aDoc), formatStyleBracket)
+                text += self.__add_in_wrapped(fields[field], self.__get_author_list(a_doc), format_style_bracket)
             elif (field == 'title'):
-                text += self.__addInWrapped(fields[field], encodeLaTex(''.join(aDoc.get(field, ''))), formatStyleBracketQuotes)
+                text += self.__add_in_wrapped(fields[field], encode_laTex(''.join(a_doc.get(field, ''))), format_style_bracket_quotes)
             elif (field == 'aff'):
-                text += self.__addInWrapped(fields[field], self.__getAffiliationList(aDoc), formatStyleBracket)
+                text += self.__add_in_wrapped(fields[field], self.__get_affiliation_list(a_doc), format_style_bracket)
             elif (field == 'pub_raw'):
-                text += self.__addInWrapped(fields[field], self.__addCleanPubRaw(aDoc), formatStyleBracket)
+                text += self.__add_in_wrapped(fields[field], self.__add_clean_pub_raw(a_doc), format_style_bracket)
             elif (field == 'pub') or (field == 'doi'):
-                text += self.__addIn(fields[field], ''.join(aDoc.get(field, '')), formatStyleBracket)
+                text += self.__add_in(fields[field], ''.join(a_doc.get(field, '')), format_style_bracket)
             elif (field == 'keyword'):
-                text += self.__addInWrapped(fields[field], self.__addKeywords(aDoc), formatStyleBracket)
+                text += self.__add_in_wrapped(fields[field], self.__add_keywords(a_doc), format_style_bracket)
             elif (field == 'year') or (field == 'volume'):
-                text += self.__addIn(fields[field], int(aDoc.get(field, '')) if aDoc.get(field, '') else None, formatStyle)
+                text += self.__add_in(fields[field], int(a_doc.get(field, '')) if a_doc.get(field, '') else None, format_style)
             elif (field == 'month'):
-                text += self.__addIn(fields[field], self.__formatDate(aDoc.get('date', '')), formatStyle)
+                text += self.__add_in(fields[field], self.__format_date(a_doc.get('date', '')), format_style)
             elif (field == 'abstract') and (includeAbs):
-                text += self.__addInWrapped(fields[field], encodeLaTex(aDoc.get(field, '')), formatStyleBracketQuotes)
+                text += self.__add_in_wrapped(fields[field], encode_laTex(a_doc.get(field, '')), format_style_bracket_quotes)
             elif (field == 'eid'):
-                text += self.__addIn(fields[field], aDoc.get(field, ''), formatStyleBracket)
+                text += self.__add_in(fields[field], a_doc.get(field, ''), format_style_bracket)
             elif (field == 'page'):
-                text += self.__addIn(fields[field], ''.join(aDoc.get(field, '')), formatStyleBracket)
+                text += self.__add_in(fields[field], ''.join(a_doc.get(field, '')), format_style_bracket)
             elif (field == 'bibcode'):
-                text += self.__addIn(fields[field], current_app.config['EXPORT_SERVICE_BBB_PATH'] + '/' + aDoc.get(field, ''), formatStyleBracket)
+                text += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_BBB_PATH'] + '/' + a_doc.get(field, ''), format_style_bracket)
             elif (field == 'adsnotes'):
-                text += self.__addIn(fields[field], current_app.config['EXPORT_SERVICE_ADS_NOTES'], formatStyleBracket)
+                text += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_ADS_NOTES'], format_style_bracket)
         # remove the last comma,
         text = text[:-len(',\n')] + '\n'
 
         return text + '}\n\n'
 
+
     def get(self, includeAbs=False):
-        refBibTex = []
+        """
+        
+        :param includeAbs: 
+        :return: 
+        """
+        ref_BibTex = []
         if (self.status == 0):
-            numDocs = self.getNumDocs()
-            refBibTex.append('\n\nRetrieved {} abstracts, starting with number 1.\n\n\n'.format(numDocs))
+            numDocs = self.get_num_docs()
+            ref_BibTex.append('\n\nRetrieved {} abstracts, starting with number 1.\n\n\n'.format(numDocs))
             for index in range(numDocs):
-                refBibTex.append(self.__getDoc(index, includeAbs))
-        return ''.join(record for record in refBibTex)
+                ref_BibTex.append(self.__get_doc(index, includeAbs))
+        return ''.join(record for record in ref_BibTex)

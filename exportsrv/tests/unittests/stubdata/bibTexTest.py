@@ -266,7 +266,7 @@ howpublished = {Spitzer Proposal},
 
 ########################################################################################################################
 
-dataWithAbs= \
+data_with_abs= \
 '''
 
 Retrieved 19 abstracts, starting with number 1.

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-dataADS = \
+data_ads = \
 '''
 
 Retrieved 19 abstracts, starting with number 1.
@@ -675,7 +675,7 @@ techniques to provide decimeter-level accuracy for aircraft navigation.
 
 ########################################################################################################################
 
-dataEndNote= \
+data_endnote= \
 '''
 
 Retrieved 19 abstracts, starting with number 1.
@@ -1316,7 +1316,7 @@ techniques to provide decimeter-level accuracy for aircraft navigation.
 
 ########################################################################################################################
 
-dataProCite= \
+data_procite= \
 '''
 
 Retrieved 19 abstracts, starting with number 1.
@@ -1949,7 +1949,7 @@ ER  -
 
 ########################################################################################################################
 
-dataRefman= \
+data_refman= \
 '''
 
 Retrieved 19 abstracts, starting with number 1.
@@ -2621,7 +2621,7 @@ ER  -
 
 ########################################################################################################################
 
-dataRefWorks= \
+data_refworks= \
 '''
 
 Retrieved 19 abstracts, starting with number 1.
@@ -3316,7 +3316,7 @@ techniques to provide decimeter-level accuracy for aircraft navigation.
 
 ########################################################################################################################
 
-dataMEDLARS= \
+data_medlars= \
 '''
 
 Retrieved 19 abstracts, starting with number 1.

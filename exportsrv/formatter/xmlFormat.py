@@ -11,78 +11,101 @@ from string import ascii_uppercase
 import re
 import ast
 
-EXPORT_FORMAT_REF_XML = 'ReferenceXML'
-EXPORT_FORMAT_DUBLIN_XML = 'DublinXML'
 
 # This class accepts JSON object created by Solr and can reformats it
 # for the XML Export formats we are supporting.
 # 1- To get Dublin Core XML use
-#    dublinXML = XMLFormat(jsonFromSolr).getDublinXML()
+#    dublinXML = XMLFormat(jsonFromSolr).get_dublin_xml()
 # 2- To get Reference XML without Abstract use
-#    referenceXML = XMLFormat(jsonFromSolr).getReferenceXML()
+#    referenceXML = XMLFormat(jsonFromSolr).get_reference_xml()
 # 3- To get Reference XML with Abstract use
-#    referenceXML = XMLFormat(jsonFromSolr).getReferenceXML(True)
+#    referenceXML = XMLFormat(jsonFromSolr).get_reference_xml(True)
 
 class XMLFormat:
+
+    EXPORT_FORMAT_REF_XML = 'ReferenceXML'
+    EXPORT_FORMAT_DUBLIN_XML = 'DublinXML'
+
+    EXPORT_SERVICE_RECORDS_SET_XML = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/abstracts'),
+                                      ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
+                                      ('xsi:schemaLocation',
+                                       'http://ads.harvard.edu/schema/abs/1.1/abstracts http://ads.harvard.edu/schema/abs/1.1/abstracts.xsd')]
+
+    REGEX_REMOVE_TAGS_PUB_RAW = re.compile("(\<.*?\>)")
+    REGEX_PUB_RAW = dict([
+        (re.compile(r"(\;?\s*\<ALTJOURNAL\>.*\</ALTJOURNAL\>\s*)"), r""),  # remove these
+        (re.compile(r"(\;?\s*\<CONF_METADATA\>.*\<CONF_METADATA\>\s*)"), r""),
+        (re.compile(r"(?:\<ISBN\>)(.*)(?:\</ISBN\>)"), r"\1"),  # get value inside the tag for these
+        (re.compile(r"(?:\<NUMPAGES\>)(.*)(?:</NUMPAGES>)"), r"\1"),
+    ])
+
     status = -1
-    fromSolr = {}
+    from_solr = {}
 
-    def __init__(self, fromSolr):
-        self.fromSolr = fromSolr
-        if (self.fromSolr.get('responseHeader')):
-            self.status = self.fromSolr['responseHeader'].get('status', self.status)
+    def __init__(self, from_solr):
+        self.from_solr = from_solr
+        if (self.from_solr.get('responseHeader')):
+            self.status = self.from_solr['responseHeader'].get('status', self.status)
 
-    def getStatus(self):
+
+    def get_status(self):
         return self.status
 
-    def getNumDocs(self):
+
+    def get_num_docs(self):
         if (self.status == 0):
-            if (self.fromSolr.get('response')):
-                return self.fromSolr['response'].get('numFound', 0)
+            if (self.from_solr.get('response')):
+                return self.from_solr['response'].get('numFound', 0)
         return 0
 
-    def __formatDate(self, solrDate, exportFormat):
-        # solrDate has the format 2017-12-01T00:00:00Z
-        dateTime = datetime.strptime(solrDate, '%Y-%m-%dT%H:%M:%SZ')
-        formats = {EXPORT_FORMAT_DUBLIN_XML: '%Y-%m-%d', EXPORT_FORMAT_REF_XML: '%b %Y'}
-        return dateTime.strftime(formats[exportFormat])
 
-    def __formatLineWrapped(self, text):
+    def __format_date(self, solr_date, export_format):
+        # solr_date has the format 2017-12-01T00:00:00Z
+        dateTime = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
+        formats = {self.EXPORT_FORMAT_DUBLIN_XML: '%Y-%m-%d', self.EXPORT_FORMAT_REF_XML: '%b %Y'}
+        return dateTime.strftime(formats[export_format])
+
+
+    def __format_line_wrapped(self, text):
         return fill(text, width=72)
 
+
     # format authors
-    def __addAuthorList(self, aDoc, parent, tag):
-        if 'author' not in aDoc:
+    def __add_author_list(self, a_doc, parent, tag):
+        if 'author' not in a_doc:
             return
-        for author in aDoc['author']:
+        for author in a_doc['author']:
             ET.SubElement(parent, tag).text = author
 
+
     # format affilation
-    def __addAffiliationList(self, aDoc, parent, field):
-        if ('aff') not in aDoc:
+    def __add_affiliation_list(self, a_doc, parent, field):
+        if ('aff') not in a_doc:
             return ''
         counter = [''.join(i) for i in product(ascii_uppercase, repeat=2)]
         separator = ', '
-        affiliationList = ''
-        for affiliation, i in zip(aDoc['aff'], range(len(aDoc['aff']))):
-            affiliationList += counter[i] + '(' + affiliation + ')' + separator
+        affiliation_list = ''
+        for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):
+            affiliation_list += counter[i] + '(' + affiliation + ')' + separator
         # do not need the last separator
-        if (len(affiliationList) > len(separator)):
-            affiliationList = affiliationList[:-len(separator)]
-        ET.SubElement(parent, field).text = self.__formatLineWrapped(affiliationList)
+        if (len(affiliation_list) > len(separator)):
+            affiliation_list = affiliation_list[:-len(separator)]
+        ET.SubElement(parent, field).text = self.__format_line_wrapped(affiliation_list)
+
 
     # add a link to xml structure
-    def __addDocALink(self, parent, linkType, linkName, linkURL, count=''):
+    def __add_doc_a_link(self, parent, link_type, link_name, link_url, count=''):
         record = ET.SubElement(parent, "link")
-        record.set('type', linkType)
-        ET.SubElement(record, 'name').text = linkName
-        ET.SubElement(record, 'url').text = linkURL
+        record.set('type', link_type)
+        ET.SubElement(record, 'name').text = link_name
+        ET.SubElement(record, 'url').text = link_url
         if (len(count) > 0):
             ET.SubElement(record, 'count').text = count
 
+
     # format links_data
-    def __addLinksDataDocLinks(self, aDoc, parent):
-        linkDict = OrderedDict([
+    def __add_links_data_doc_links(self, a_doc, parent):
+        link_dict = OrderedDict([
                     ('data',['DATA','On-line Data']),
                     ('electr',['EJOURNAL','Electronic On-line Article (HTML)']),
                     ('gif',['GIF','Scanned Article (GIF)']),
@@ -94,28 +117,29 @@ class XMLFormat:
                     ('openurl',['OPENURL','Library Link Server']),
                 ])
 
-        linksType = ''
+        links_type = ''
         count = 1
-        for linksData in aDoc['links_data']:
+        for linksData in a_doc['links_data']:
             link = ast.literal_eval(linksData)
-            if (link['type'] in linkDict.keys()):
+            if (link['type'] in link_dict.keys()):
                 # need to count the items for multiple ones (i.e., data)
-                if (linksType == link['type']):
+                if (links_type == link['type']):
                     count += 1
                 else:
                     count = 1
-                linksType = link['type']
-                linksURL = 'later'  # eventually it is going to be this => link['url']
-                if (linksType == 'simbad') or (linksType == ' ned'):
-                    self.__addDocALink(parent, linkType=linkDict[linksType][0], linkName=linkDict[linksType][1], linkURL=linksURL, count=link['instances'])
-                if (linksType == 'data'):
-                    self.__addDocALink(parent, linkType=linkDict[linksType][0], linkName=linkDict[linksType][1], linkURL=linksURL, count=str(count))
+                links_type = link['type']
+                links_url = 'later'  # eventually it is going to be this => link['url']
+                if (links_type == 'simbad') or (links_type == ' ned'):
+                    self.__add_doc_a_link(parent, link_type=link_dict[links_type][0], link_name=link_dict[links_type][1], link_url=links_url, count=link['instances'])
+                if (links_type == 'data'):
+                    self.__add_doc_a_link(parent, link_type=link_dict[links_type][0], link_name=link_dict[links_type][1], link_url=links_url, count=str(count))
                 else:
-                    self.__addDocALink(parent, linkType=linkDict[linksType][0], linkName=linkDict[linksType][1], linkURL=linksURL)
+                    self.__add_doc_a_link(parent, link_type=link_dict[links_type][0], link_name=link_dict[links_type][1], link_url=links_url)
+
 
     # format links
-    def __addDocLinks(self, aDoc, parent):
-        linkDict =  OrderedDict([
+    def __add_doc_links(self, a_doc, parent):
+        link_dict =  OrderedDict([
                         #(key:[link type, name,endpoint])
                         ('abstract',['ABSTRACT','Abstract', 'abstract']),
                         ('citation_count', ['CITATIONS', 'Citations to the Article', 'citations']),
@@ -125,82 +149,78 @@ class XMLFormat:
                         ('links_data', []),
                     ])
 
-        linkURLFormat = current_app.config.get('EXPORT_SERVICE_LINK_URL_FORMAT')
-        for link in linkDict:
+        link_url_format = current_app.config.get('EXPORT_SERVICE_LINK_URL_FORMAT')
+        for link in link_dict:
             if (link == 'abstract'):
-                if (len(aDoc.get(link, '')) > 0):
-                    self.__addDocALink(parent, linkDict[link][0], linkDict[link][1], linkURLFormat.format(aDoc.get('bibcode', ''), linkDict[link][2]))
+                if (len(a_doc.get(link, '')) > 0):
+                    self.__add_doc_a_link(parent, link_dict[link][0], link_dict[link][1], link_url_format.format(a_doc.get('bibcode', ''), link_dict[link][2]))
             elif (link == 'citation_count'):
-                count = aDoc.get(link, '')
+                count = a_doc.get(link, '')
                 if (count > 0):
-                    self.__addDocALink(parent, linkDict[link][0], linkDict[link][1], linkURLFormat.format(aDoc.get('bibcode', ''), linkDict[link][2]), str(count))
+                    self.__add_doc_a_link(parent, link_dict[link][0], link_dict[link][1], link_url_format.format(a_doc.get('bibcode', ''), link_dict[link][2]), str(count))
             elif (link == 'reference'):
-                count = len(aDoc.get(link, ''))
+                count = len(a_doc.get(link, ''))
                 if (count > 0):
-                    self.__addDocALink(parent, linkDict[link][0], linkDict[link][1], linkURLFormat.format(aDoc.get('bibcode', ''), linkDict[link][2]), str(count))
+                    self.__add_doc_a_link(parent, link_dict[link][0], link_dict[link][1], link_url_format.format(a_doc.get('bibcode', ''), link_dict[link][2]), str(count))
             elif (link == 'coreads'):
-                count = aDoc.get('read_count', '')
+                count = a_doc.get('read_count', '')
                 if (count > 0):
-                    self.__addDocALink(parent, linkDict[link][0], linkDict[link][1], linkURLFormat.format(aDoc.get('bibcode', ''), linkDict[link][2]))
+                    self.__add_doc_a_link(parent, link_dict[link][0], link_dict[link][1], link_url_format.format(a_doc.get('bibcode', ''), link_dict[link][2]))
             elif (link == 'refereed_citation'):
-                count = aDoc.get('citation_count', '')
+                count = a_doc.get('citation_count', '')
                 if (count > 0):
-                    self.__addDocALink(parent, linkDict[link][0], linkDict[link][1], linkURLFormat.format(aDoc.get('bibcode', ''), linkDict[link][2]), str(count))
+                    self.__add_doc_a_link(parent, link_dict[link][0], link_dict[link][1], link_url_format.format(a_doc.get('bibcode', ''), link_dict[link][2]), str(count))
             elif (link == 'links_data'):
-                if 'links_data' in aDoc:
-                    self.__addLinksDataDocLinks(aDoc, parent)
+                if 'links_data' in a_doc:
+                    self.__add_links_data_doc_links(a_doc, parent)
+
 
     # format keyword
-    def __addKeywords(self, aDoc, parent, exportFormat):
-        if 'keyword' not in aDoc:
+    def __add_keywords(self, a_doc, parent, export_format):
+        if 'keyword' not in a_doc:
             return
-        if (exportFormat == EXPORT_FORMAT_REF_XML):
+        if (export_format == self.EXPORT_FORMAT_REF_XML):
             record = ET.SubElement(parent, "keywords")
-            for keyword in aDoc['keyword']:
+            for keyword in a_doc['keyword']:
                 ET.SubElement(record, 'keyword').text = keyword
-        elif (exportFormat == EXPORT_FORMAT_DUBLIN_XML):
-            ET.SubElement(parent, 'dc:subject').text = self.__formatLineWrapped(', '.join(aDoc.get('keyword', '')))
+        elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
+            ET.SubElement(parent, 'dc:subject').text = self.__format_line_wrapped(', '.join(a_doc.get('keyword', '')))
+
 
     # parse pub_raw and eliminate tags
-    def __addCleanPubRaw(self, aDoc):
-        pubRaw = ''.join(aDoc.get('pub_raw', ''))
+    def __add_clean_pub_raw(self, a_doc):
+        pub_raw = ''.join(a_doc.get('pub_raw', ''))
         # proceed only if necessary
-        if ('<' in pubRaw) and ('>' in pubRaw):
-            tokens = dict([
-                (r"(\;?\s*\<ALTJOURNAL\>.*\</ALTJOURNAL\>\s*)",     r""),          # remove these
-                (r"(\;?\s*\<CONF_METADATA\>.*\<CONF_METADATA\>\s*)",r""),
-                (r"(?:\<ISBN\>)(.*)(?:\</ISBN\>)",                  r"\1"),        # get value inside the tag for these
-                (r"(?:\<NUMPAGES\>)(.*)(?:</NUMPAGES>)",            r"\1"),
-            ])
-            for key in tokens:
-                regex = re.compile(key)
-                pubRaw = regex.sub(tokens[key], pubRaw)
-        return pubRaw
+        if ('<' in pub_raw) and ('>' in pub_raw):
+            for key in self.REGEX_PUB_RAW:
+                pub_raw = key.sub(self.REGEX_PUB_RAW[key], pub_raw)
+        return pub_raw
+
 
     # format pub_raw
-    def __addPubRaw(self, aDoc, parent, field, exportFormat):
-        if 'pub_raw' not in aDoc:
+    def __add_pub_raw(self, a_doc, parent, field, export_format):
+        if 'pub_raw' not in a_doc:
             return
-        pubRaw = self.__addCleanPubRaw(aDoc)
-        if (exportFormat == EXPORT_FORMAT_REF_XML):
+        pub_raw = self.__add_clean_pub_raw(a_doc)
+        if (export_format == self.EXPORT_FORMAT_REF_XML):
             # for reference only if pub_raw is a eprint it gets output it
-            if (pubRaw.find('arXiv') > 0):
-                pubRaw = pubRaw.replace('eprint ', '')
-                ET.SubElement(parent, field).text = pubRaw
-        elif (exportFormat == EXPORT_FORMAT_DUBLIN_XML):
+            if (pub_raw.find('arXiv') > 0):
+                pub_raw = pub_raw.replace('eprint ', '')
+                ET.SubElement(parent, field).text = pub_raw
+        elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
             # for dublin both types of pub_raw are exported
             # we could have something like this is Solr
             # "pub_raw":"Sensing and Imaging, Volume 18, Issue 1, article id. #17, <NUMPAGES>12</NUMPAGES> pp."
-            # where we remoe the tag and output it, or something like this
+            # where we remove the tag and output it, or something like this
             # "pub_raw":"eprint arXiv:astro-ph/0003081"
             # that gets output as is
-            regex = re.compile("(\<.*?\>)")
-            pubRaw = regex.sub('', pubRaw).replace('eprint ', '')
-            ET.SubElement(parent, field).text = self.__formatLineWrapped(pubRaw)
+            pub_raw = self.REGEX_REMOVE_TAGS_PUB_RAW.sub('', pub_raw).replace('eprint ', '')
+            ET.SubElement(parent, field).text = self.__format_line_wrapped(pub_raw)
+
 
     # from solr to each types' tags
-    def __getFields(self, exportFormat):
-        if (exportFormat == EXPORT_FORMAT_REF_XML):
+    def __get_fields(self, export_format):
+        if (export_format == self.EXPORT_FORMAT_REF_XML):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
                       ('aff', 'affiliation'), ('pub', 'journal'), ('volume', 'volume'),
                       ('date', 'pubdate'), ('page', 'page'), ('', 'lastpage'),
@@ -208,7 +228,7 @@ class XMLFormat:
                       ('link', 'link'), ('url', 'url'), ('comment', 'comment'),
                       ('', 'score'), ('citation_count', 'citations'), ('abstract', 'abstract'),
                       ('doi', 'DOI'), ('pub_raw', 'eprintid')]
-        elif (exportFormat == EXPORT_FORMAT_DUBLIN_XML):
+        elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
             fields = [('bibcode', 'dc:identifier'), ('title', 'dc:title'), ('author', 'dc:creator'),
                       ('pub_raw', 'dc:source'), ('date', 'dc:date'), ('keyword', 'dc:subject'),
                       ('copyright', 'dc:rights'), ('url', 'dc:relation'), ('abstract', 'dc:description'),
@@ -217,87 +237,106 @@ class XMLFormat:
             fields = []
         return OrderedDict(fields)
 
+
     # add the value into the return structure, only if a value was defined in Solr
-    def __addIn(self, parent, field, value):
+    def __add_in(self, parent, field, value):
         if (len(value) > 0):
             ET.SubElement(parent, field).text = value
 
+
     # for each document from Solr, get the fields, and format them accordingly for Dublin format
-    def __getDocDublinXML(self, index, parent):
-        aDoc = self.fromSolr['response'].get('docs')[index]
-        fields = self.__getFields(EXPORT_FORMAT_DUBLIN_XML)
+    def __get_doc_dublin_xml(self, index, parent):
+        a_doc = self.from_solr['response'].get('docs')[index]
+        fields = self.__get_fields(self.EXPORT_FORMAT_DUBLIN_XML)
         record = ET.SubElement(parent, "record")
         for field in fields:
             if (field == 'bibcode') or (field == 'copyright'):
-                self.__addIn(record, fields[field], aDoc.get(field, ''))
+                self.__add_in(record, fields[field], a_doc.get(field, ''))
             elif (field == 'title') or (field == 'doi'):
-                self.__addIn(record, fields[field], ''.join(aDoc.get(field, '')))
+                self.__add_in(record, fields[field], ''.join(a_doc.get(field, '')))
             elif (field == 'author'):
-                self.__addAuthorList(aDoc, record, fields[field])
+                self.__add_author_list(a_doc, record, fields[field])
             elif (field == 'pub_raw'):
-                self.__addPubRaw(aDoc, record, fields[field], EXPORT_FORMAT_DUBLIN_XML)
+                self.__add_pub_raw(a_doc, record, fields[field], self.EXPORT_FORMAT_DUBLIN_XML)
             elif (field == 'date'):
-                self.__addIn(record, fields[field], self.__formatDate(aDoc.get(field, ''), EXPORT_FORMAT_DUBLIN_XML))
+                self.__add_in(record, fields[field], self.__format_date(a_doc.get(field, ''), self.EXPORT_FORMAT_DUBLIN_XML))
             elif (field == 'keyword'):
-                self.__addKeywords(aDoc, record, EXPORT_FORMAT_DUBLIN_XML)
+                self.__add_keywords(a_doc, record, self.EXPORT_FORMAT_DUBLIN_XML)
             elif (field == 'url'):
-                self.__addIn(record, fields[field], current_app.config.get('EXPORT_SERVICE_BBB_PATH') + '/' + aDoc.get('bibcode', ''))
+                self.__add_in(record, fields[field], current_app.config.get('EXPORT_SERVICE_BBB_PATH') + '/' + a_doc.get('bibcode', ''))
             elif (field == 'abstract'):
-                self.__addIn(record, fields[field], self.__formatLineWrapped(aDoc.get(field, '')))
+                self.__add_in(record, fields[field], self.__format_line_wrapped(a_doc.get(field, '')))
+
 
     # for each document from Solr, get the fields, and format them accordingly for Reference format
-    def __getDocReferenceXML(self, index, parent, includeAbs):
-        aDoc = self.fromSolr['response'].get('docs')[index]
-        fields = self.__getFields(EXPORT_FORMAT_REF_XML)
+    def __get_doc_reference_xml(self, index, parent, includeAbs):
+        a_doc = self.from_solr['response'].get('docs')[index]
+        fields = self.__get_fields(self.EXPORT_FORMAT_REF_XML)
         record = ET.SubElement(parent, "record")
         for field in fields:
             if (field == 'bibcode') or (field == 'pub') or (field == 'volume') or \
                (field == 'copyright') or (field == 'eprintid'):
-                self.__addIn(record, fields[field], aDoc.get(field, ''))
+                self.__add_in(record, fields[field], a_doc.get(field, ''))
             elif (field == 'title') or (field == 'page') or (field == 'doi'):
-                self.__addIn(record, fields[field], ''.join(aDoc.get(field, '')))
+                self.__add_in(record, fields[field], ''.join(a_doc.get(field, '')))
             elif (field == 'author'):
-                self.__addAuthorList(aDoc, record, fields[field])
+                self.__add_author_list(a_doc, record, fields[field])
             elif (field == 'aff'):
-                self.__addAffiliationList(aDoc, record, fields[field])
+                self.__add_affiliation_list(a_doc, record, fields[field])
             elif (field == 'date'):
-                self.__addIn(record, fields[field], self.__formatDate(aDoc.get(field, ''), EXPORT_FORMAT_REF_XML))
+                self.__add_in(record, fields[field], self.__format_date(a_doc.get(field, ''), self.EXPORT_FORMAT_REF_XML))
             elif (field == 'pub_raw'):
-                self.__addPubRaw(aDoc, record, fields[field], EXPORT_FORMAT_REF_XML)
+                self.__add_pub_raw(a_doc, record, fields[field], self.EXPORT_FORMAT_REF_XML)
             elif (field == 'keyword'):
-                self.__addKeywords(aDoc, record, EXPORT_FORMAT_REF_XML)
+                self.__add_keywords(a_doc, record, self.EXPORT_FORMAT_REF_XML)
             elif (field == 'url'):
-                self.__addIn(record, fields[field], current_app.config.get('EXPORT_SERVICE_BBB_PATH') + '/' + aDoc.get('bibcode', ''))
+                self.__add_in(record, fields[field], current_app.config.get('EXPORT_SERVICE_BBB_PATH') + '/' + a_doc.get('bibcode', ''))
             elif (field == 'citation_count'):
-                self.__addIn(record, fields[field], str(aDoc.get(field, '')))
+                self.__add_in(record, fields[field], str(a_doc.get(field, '')))
             elif (field == 'abstract') and (includeAbs):
-                self.__addIn(record, fields[field], self.__formatLineWrapped(aDoc.get(field, '')))
+                self.__add_in(record, fields[field], self.__format_line_wrapped(a_doc.get(field, '')))
             elif (field == 'link'):
-                self.__addDocLinks(aDoc, record)
+                self.__add_doc_links(a_doc, record)
 
-    # setup the outer xml structure
-    def __getXML(self, exportFormat, includeAsb=False):
+
+    def __get_xml(self, export_format, includeAsb=False):
+        """
+        setup the outer xml structure
+
+        :param export_format:
+        :param includeAsb:
+        :return:
+        """
         if (self.status == 0):
             records = ET.Element("records")
-            attribs = OrderedDict(current_app.config.get('EXPORT_SERVICE_RECORDS_SET_XML'))
+            attribs = OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML)
             for attrib in attribs:
                 records.set(attrib, attribs[attrib])
-            records.set('retrieved', str(self.getNumDocs()))
-            if (exportFormat == EXPORT_FORMAT_REF_XML):
-                for index in range(self.getNumDocs()):
-                    self.__getDocReferenceXML(index, records, includeAsb)
-            elif (exportFormat == EXPORT_FORMAT_DUBLIN_XML):
-                for index in range(self.getNumDocs()):
-                    self.__getDocDublinXML(index, records)
-            formatXML = ET.tostring(records, encoding='utf8', method='xml')
-            formatXML = ('>\n<'.join(formatXML.split('><')))
-            formatXML = formatXML.replace('</record>', '</record>\n')
-            return formatXML
+            records.set('retrieved', str(self.get_num_docs()))
+            if (export_format == self.EXPORT_FORMAT_REF_XML):
+                for index in range(self.get_num_docs()):
+                    self.__get_doc_reference_xml(index, records, includeAsb)
+            elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
+                for index in range(self.get_num_docs()):
+                    self.__get_doc_dublin_xml(index, records)
+            format_xml = ET.tostring(records, encoding='utf8', method='xml')
+            format_xml = ('>\n<'.join(format_xml.split('><')))
+            format_xml = format_xml.replace('</record>', '</record>\n')
+            return format_xml
         return ''
 
-    def getReferenceXML(self, includeAsb=False):
-        return self.__getXML(EXPORT_FORMAT_REF_XML, includeAsb)
 
-    def getDublinXML(self):
-        return self.__getXML(EXPORT_FORMAT_DUBLIN_XML)
+    def get_reference_xml(self, includeAsb=False):
+        """
+        :param includeAsb: 
+        :return: reference xml format with or without abstract
+        """
+        return self.__get_xml(self.EXPORT_FORMAT_REF_XML, includeAsb)
+
+
+    def get_dublin_xml(self):
+        """
+        :return: dublin xml format
+        """
+        return self.__get_xml(self.EXPORT_FORMAT_DUBLIN_XML)
 
