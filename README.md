@@ -12,14 +12,12 @@
 
 
 ##### 1. For endpoint /bibtex
-
     {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"BibTex"}
 
     {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"BibTexAbs"}
 
 
 ##### 2. For endpoint /fielded
-
     {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"ADS"}
 
     {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"EndNote"}
@@ -34,7 +32,6 @@
 
 
 ##### 3. For endpoint /xml
-
 
     {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"Dublin"}
 
