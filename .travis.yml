@@ -4,4 +4,5 @@ python:
 install:
 - pip install -r requirements.txt
 script: "python tests/run_tests.py"
+sudo: false
 
