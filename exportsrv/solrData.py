@@ -11,20 +11,13 @@ from adsmutils import setup_logging
 global logger
 logger = None
 
-def get_solr_data(bibcodes,
-                fields,
-                start=0,
-                rows=10,
-                sort='date desc'
-                ):
+def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
     global logger
     logger = setup_logging('export_service', current_app.config.get('LOG_LEVEL', 'INFO'))
 
-
     data = 'bibcode\n' + '\n'.join(bibcodes)
 
-    # todo: there should be a top limit on number of bibcodes
-    rows = len(bibcodes)
+    rows = max(6000, len(bibcodes))
 
     params = {
         'q': '*:*',

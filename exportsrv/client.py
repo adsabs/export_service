@@ -20,8 +20,3 @@ class Client:
         """
 
         self.session = requests.Session()
-        self.token = config.get('EXPORT_SERVICE_ADSWS_API_TOKEN')
-        if self.token:
-            self.session.headers.update(
-                {'Authorization': 'Bearer %s' % self.token}
-            )

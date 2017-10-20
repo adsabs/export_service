@@ -195,7 +195,7 @@ def csl_format_export():
     logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
                  format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
-    if (len(bibcodes) == 0) or (len(csl_style) == 0)  or (len(export_format) == 0):
+    if (len(bibcodes) == 0) or (len(csl_style) == 0)  or (export_format == None):
         return __return_response('error: not all the needed information received', 400)
 
     if (not adsCSLStyle().verify(csl_style)):
