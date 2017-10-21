@@ -17,7 +17,7 @@ def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
 
     data = 'bibcode\n' + '\n'.join(bibcodes)
 
-    rows = max(6000, len(bibcodes))
+    rows = min(6000, len(bibcodes))
 
     params = {
         'q': '*:*',
