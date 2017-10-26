@@ -19,13 +19,15 @@ from exportsrv.formatter.customFormat import CustomFormat
 
 bp = Blueprint('export_service', __name__)
 
+
 global logger
 logger = None
 
 
 def __setup_logging():
     global logger
-    logger = setup_logging('export_service', current_app.config.get('LOG_LEVEL', 'INFO'))
+    if (logger == None):
+        logger = setup_logging('export_service', current_app.config.get('LOG_LEVEL', 'INFO'))
 
 
 def __default_fields():
@@ -51,7 +53,7 @@ def __return_response(response, status):
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/bibtex', methods=['POST'])
-def bibTexFormatExport():
+def bibTex_format_export_post():
     __setup_logging()
 
     try:
@@ -61,32 +63,36 @@ def bibTexFormatExport():
 
     if not payload:
         return __return_response('error: no information received', 400)
-    elif 'bibcode' not in payload:
+    if 'bibcode' not in payload:
         return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
-    elif 'style' not in payload:
-        return __return_response('error: no style found in payload (parameter name is "style")', 400)
 
     bibcodes = payload['bibcode']
-    bibTex_style = payload['style']
+    bibTex_style = 'BibTex'
 
     logger.debug('received request with bibcodes={bibcodes} to export in {bibTex_style} style format'.
                  format(bibcodes=''.join(bibcodes), bibTex_style=bibTex_style))
 
-    if (len(bibcodes) == 0) or (len(bibTex_style) == 0):
-        return __return_response('error: not all the needed information received', 400)
-
-    if (bibTex_style == 'BibTex'):
-        bibTexExport = BibTexFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-        return __return_response(bibTexExport.get(includeAbs=False), 200)
-    if (bibTex_style == 'BibTexAbs'):
-        bibTexExport = BibTexFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-        return __return_response(bibTexExport.get(includeAbs=True), 200)
-    return __return_response('error: unrecognizable style (supprted styles are: BibTex, BibTexAbs)', 503)
+    bibTex_export = BibTexFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
+    return __return_response(bibTex_export.get(includeAbs=False), 200)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/fielded', methods=['POST'])
-def fieldedFormatExport():
+@bp.route('/bibtex/<bibcode>', methods=['GET'])
+def bibTex_format_export_get(bibcode):
+    __setup_logging()
+
+    bibTex_style = 'BibTex'
+
+    logger.debug('received request with bibcode={bibcode} to export in {bibTex_style} style format'.
+                 format(bibcode=bibcode, bibTex_style=bibTex_style))
+
+    bibTex_export = BibTexFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
+    return __return_response(bibTex_export.get(includeAbs=False), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/bibtexabs', methods=['POST'])
+def bibTex_abs_format_export_post():
     __setup_logging()
 
     try:
@@ -96,44 +102,76 @@ def fieldedFormatExport():
 
     if not payload:
         return __return_response('error: no information received', 400)
-    elif 'bibcode' not in payload:
+    if 'bibcode' not in payload:
         return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
-    elif 'style' not in payload:
-        return __return_response('error: no style found in payload (parameter name is "style")', 400)
 
     bibcodes = payload['bibcode']
-    fielded_style = payload['style']
+    bibTex_style = 'BibTex Abs'
+
+    logger.debug('received request with bibcodes={bibcodes} to export in {bibTex_style} style format'.
+                 format(bibcodes=''.join(bibcodes), bibTex_style=bibTex_style))
+
+    bibTex_export = BibTexFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
+    return __return_response(bibTex_export.get(includeAbs=True), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/bibtexabs/<bibcode>', methods=['GET'])
+def bibTex_abs_format_export_get(bibcode):
+    __setup_logging()
+
+
+    bibTex_style = 'BibTex Abs'
+
+    logger.debug('received request with bibcode={bibcode} to export in {bibTex_style} style format'.
+                 format(bibcode=bibcode, bibTex_style=bibTex_style))
+
+    bibTex_export = BibTexFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
+    return __return_response(bibTex_export.get(includeAbs=True), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/ads', methods=['POST'])
+def fielded_ads_format_export_post():
+    __setup_logging()
+
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return __return_response('error: no information received', 400)
+    if 'bibcode' not in payload:
+        return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+
+    bibcodes = payload['bibcode']
+    fielded_style = 'ADS'
 
     logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
                  format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
-    
-    if (len(bibcodes) == 0) or (len(fielded_style) == 0):
-        return __return_response('error: not all the needed information received', 400)
 
-    if (fielded_style == 'ADS'):
-        fieldedExport = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-        return __return_response(fieldedExport.get_ads_fielded(), 200)
-    if (fielded_style == 'EndNote'):
-        fieldedExport = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-        return __return_response(fieldedExport.get_endnote_fielded(), 200)
-    if (fielded_style == 'ProCite'):
-        fieldedExport = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-        return __return_response(fieldedExport.get_procite_fielded(), 200)
-    if (fielded_style == 'Refman'):
-        fieldedExport = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-        return __return_response(fieldedExport.get_refman_fielded(), 200)
-    if (fielded_style == 'RefWorks'):
-        fieldedExport = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-        return __return_response(fieldedExport.get_refworks_fielded(), 200)
-    if (fielded_style == 'MEDLARS'):
-        fieldedExport = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-        return __return_response(fieldedExport.get_medlars_fielded(), 200)
-    return __return_response('error: unrecognizable style (supprted styles are: ADS, EndNote, ProCite, Refman, RefWorks, MEDLARS)', 503)
+    fielded_export = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
+    return __return_response(fielded_export.get_ads_fielded(), 200)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/xml', methods=['POST'])
-def xmlFormatExport():
+@bp.route('/ads/<bibcode>', methods=['GET'])
+def fielded_ads_format_export_get(bibcode):
+    __setup_logging()
+
+    fielded_style = 'ADS'
+
+    logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
+                 format(bibcode=bibcode, fielded_style=fielded_style))
+
+    fielded_export = FieldedFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
+    return __return_response(fielded_export.get_ads_fielded(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/endnote', methods=['POST'])
+def fielded_endnote_format_export_post():
     __setup_logging()
 
     try:
@@ -143,31 +181,468 @@ def xmlFormatExport():
 
     if not payload:
         return __return_response('error: no information received', 400)
-    elif 'bibcode' not in payload:
+    if 'bibcode' not in payload:
         return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
-    elif 'style' not in payload:
-        return __return_response('error: no style found in payload (parameter name is "style")', 400)
 
     bibcodes = payload['bibcode']
-    xml_style = payload['style']
+    fielded_style = 'EndNote'
+
+    logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
+                 format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
+
+    fielded_export = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
+    return __return_response(fielded_export.get_endnote_fielded(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/endnote/<bibcode>', methods=['GET'])
+def fielded_endnote_format_export_get(bibcode):
+    __setup_logging()
+
+    fielded_style = 'EndNote'
+
+    logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
+                 format(bibcode=bibcode, fielded_style=fielded_style))
+
+    fielded_export = FieldedFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
+    return __return_response(fielded_export.get_endnote_fielded(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/procite', methods=['POST'])
+def fielded_procite_format_export_post():
+    __setup_logging()
+
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return __return_response('error: no information received', 400)
+    if 'bibcode' not in payload:
+        return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+
+    bibcodes = payload['bibcode']
+    fielded_style = 'ProCite'
+
+    logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
+                 format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
+
+    fielded_export = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
+    return __return_response(fielded_export.get_procite_fielded(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/procite/<bibcode>', methods=['GET'])
+def fielded_procite_format_export_get(bibcode):
+    __setup_logging()
+
+    fielded_style = 'ProCite'
+
+    logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
+                 format(bibcode=bibcode, fielded_style=fielded_style))
+
+    fielded_export = FieldedFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
+    return __return_response(fielded_export.get_procite_fielded(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/refman', methods=['POST'])
+def fielded_refman_format_export_post():
+    __setup_logging()
+
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return __return_response('error: no information received', 400)
+    if 'bibcode' not in payload:
+        return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+
+    bibcodes = payload['bibcode']
+    fielded_style = 'Refman'
+
+    logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
+                 format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
+
+    fielded_export = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
+    return __return_response(fielded_export.get_refman_fielded(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/refman/<bibcode>', methods=['GET'])
+def fielded_refman_format_export_get(bibcode):
+    __setup_logging()
+
+    fielded_style = 'Refman'
+
+    logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
+                 format(bibcode=bibcode, fielded_style=fielded_style))
+
+    fielded_export = FieldedFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
+    return __return_response(fielded_export.get_refman_fielded(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/refworks', methods=['POST'])
+def fielded_refworks_format_export_post():
+    __setup_logging()
+
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return __return_response('error: no information received', 400)
+    if 'bibcode' not in payload:
+        return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+
+    bibcodes = payload['bibcode']
+    fielded_style = 'RefWorks'
+
+    logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
+                 format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
+
+    fielded_export = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
+    return __return_response(fielded_export.get_refworks_fielded(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/refworks/<bibcode>', methods=['GET'])
+def fielded_refworks_format_export_get(bibcode):
+    __setup_logging()
+
+    fielded_style = 'RefWorks'
+
+    logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
+                 format(bibcode=bibcode, fielded_style=fielded_style))
+
+    fielded_export = FieldedFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
+    return __return_response(fielded_export.get_refworks_fielded(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/medlars', methods=['POST'])
+def fielded_medlars__format_export_post():
+    __setup_logging()
+
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return __return_response('error: no information received', 400)
+    if 'bibcode' not in payload:
+        return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+
+    bibcodes = payload['bibcode']
+    fielded_style = 'MEDLARS'
+
+    logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
+                 format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
+
+    fielded_export = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
+    return __return_response(fielded_export.get_medlars_fielded(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/medlars/<bibcode>', methods=['GET'])
+def fielded_medlars__format_export_get(bibcode):
+    __setup_logging()
+
+    fielded_style = 'MEDLARS'
+
+    logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
+                 format(bibcode=bibcode, fielded_style=fielded_style))
+
+    fielded_export = FieldedFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
+    return __return_response(fielded_export.get_medlars_fielded(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/dublincore', methods=['POST'])
+def xml_dublincore_format_export_post():
+    __setup_logging()
+
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return __return_response('error: no information received', 400)
+    if 'bibcode' not in payload:
+        return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+
+    bibcodes = payload['bibcode']
+    xml_style = 'DublinCore'
 
     logger.debug('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
                  format(bibcodes=''.join(bibcodes), xml_style=xml_style))
 
-    if (len(bibcodes) == 0) or (len(xml_style) == 0):
-        return __return_response('error: not all the needed information received', 400)
+    xml_export = XMLFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
+    return __return_response(xml_export.get_dublincore_xml(), 200)
 
-    if (xml_style == 'Dublin'):
-        xmlExport = XMLFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-        return __return_response(xmlExport.get_dublin_xml(), 200)
-    if (xml_style == 'Reference'):
-        xmlExport = XMLFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-        return __return_response(xmlExport.get_reference_xml(includeAsb=False), 200)
-    if (xml_style == 'ReferenceAbs'):
-        xmlExport = XMLFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-        return __return_response(xmlExport.get_reference_xml(includeAsb=True), 200)
-    return __return_response('error: unrecognizable style (supprted styles are: Dublin, Reference, ReferenceAbs)', 503)
 
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/dublincore/<bibcode>', methods=['GET'])
+def xml_dublincore_format_export_get(bibcode):
+    __setup_logging()
+
+    xml_style = 'DublinCore'
+
+    logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
+                 format(bibcode=bibcode, xml_style=xml_style))
+
+    xml_export = XMLFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
+    return __return_response(xml_export.get_dublincore_xml(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/ref', methods=['POST'])
+def xml_ref_format_export_post():
+    __setup_logging()
+
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return __return_response('error: no information received', 400)
+    if 'bibcode' not in payload:
+        return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+
+    bibcodes = payload['bibcode']
+    xml_style = 'Reference'
+
+    logger.debug('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
+                 format(bibcodes=''.join(bibcodes), xml_style=xml_style))
+
+    xml_export = XMLFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
+    return __return_response(xml_export.get_reference_xml(includeAsb=False), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/ref/<bibcode>', methods=['GET'])
+def xml_ref_format_export_get(bibcode):
+    __setup_logging()
+
+    xml_style = 'Reference'
+
+    logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
+                 format(bibcode=bibcode, xml_style=xml_style))
+
+    xml_export = XMLFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
+    return __return_response(xml_export.get_reference_xml(includeAsb=False), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/refabs', methods=['POST'])
+def xml_refabs_format_export_post():
+    __setup_logging()
+
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return __return_response('error: no information received', 400)
+    if 'bibcode' not in payload:
+        return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+
+    bibcodes = payload['bibcode']
+    xml_style = 'ReferenceAbs'
+
+    logger.debug('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
+                 format(bibcodes=''.join(bibcodes), xml_style=xml_style))
+
+    xml_export = XMLFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
+    return __return_response(xml_export.get_reference_xml(includeAsb=True), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/refabs/<bibcode>', methods=['GET'])
+def xml_refabs_format_export_get(bibcode):
+    __setup_logging()
+
+    xml_style = 'ReferenceAbs'
+
+    logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
+                 format(bibcode=bibcode, xml_style=xml_style))
+
+    xml_export = XMLFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
+    return __return_response(xml_export.get_reference_xml(includeAsb=True), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/aastex', methods=['POST'])
+def csl_aastex_format_export_post():
+    __setup_logging()
+
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return __return_response('error: no information received', 400)
+    if 'bibcode' not in payload:
+        return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+
+    bibcodes = payload['bibcode']
+    csl_style = 'aastex'
+    export_format = 2
+
+    logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
+                 format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
+
+    from_solr = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/aastex/<bibcode>', methods=['GET'])
+def csl_aastex_format_export_get(bibcode):
+    __setup_logging()
+
+    csl_style = 'aastex'
+    export_format = 2
+
+    logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
+                 format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
+
+    from_solr = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/icarus', methods=['POST'])
+def csl_icarus_format_export_post():
+    __setup_logging()
+
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return __return_response('error: no information received', 400)
+    if 'bibcode' not in payload:
+        return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+
+    bibcodes = payload['bibcode']
+    csl_style = 'icarus'
+    export_format = 2
+
+    logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
+                 format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
+
+    from_solr = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/icarus/<bibcode>', methods=['GET'])
+def csl_icarus_format_export_get(bibcode):
+    __setup_logging()
+
+    csl_style = 'icarus'
+    export_format = 2
+
+    logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
+                 format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
+
+    from_solr = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/mnras', methods=['POST'])
+def csl_mnras_format_export_post():
+    __setup_logging()
+
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return __return_response('error: no information received', 400)
+    if 'bibcode' not in payload:
+        return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+
+    bibcodes = payload['bibcode']
+    csl_style = 'mnras'
+    export_format = 2
+
+    logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
+                 format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
+
+    from_solr = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/mnras/<bibcode>', methods=['GET'])
+def csl_mnras_format_export_get(bibcode):
+    __setup_logging()
+
+    csl_style = 'mnras'
+    export_format = 2
+
+    logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
+                 format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
+
+    from_solr = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/soph', methods=['POST'])
+def csl_soph_format_export_post():
+    __setup_logging()
+
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return __return_response('error: no information received', 400)
+    if 'bibcode' not in payload:
+        return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
+
+    bibcodes = payload['bibcode']
+    csl_style = 'soph'
+    export_format = 2
+
+    logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
+                 format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
+
+    from_solr = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/soph/<bibcode>', methods=['GET'])
+def csl_soph_format_export_get(bibcode):
+    __setup_logging()
+
+    csl_style = 'soph'
+    export_format = 2
+
+    logger.info('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
+                 format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
+
+    from_solr = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/csl', methods=['POST'])
@@ -181,19 +656,16 @@ def csl_format_export():
 
     if not payload:
         return __return_response('error: no information received', 400)
-    elif 'bibcode' not in payload:
+    if 'bibcode' not in payload:
         return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
-    elif 'style' not in payload:
+    if 'style' not in payload:
         return __return_response('error: no style found in payload (parameter name is "style")', 400)
-    elif 'format' not in payload:
+    if 'format' not in payload:
         return __return_response('error: no output format found in payload (parameter name is "format")', 400)
 
     bibcodes = payload['bibcode']
     csl_style = payload['style']
     export_format = payload['format']
-
-    logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
     if (len(bibcodes) == 0) or (len(csl_style) == 0)  or (export_format == None):
         return __return_response('error: not all the needed information received', 400)
@@ -203,8 +675,11 @@ def csl_format_export():
     if (not adsFormatter().verify(export_format)):
         return __return_response('error: unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)', 503)
 
+    logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
+                 format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
+
     from_solr = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
-    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, int(export_format)-1).get(), 200)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -219,9 +694,9 @@ def custom_format_export():
 
     if not payload:
         return __return_response('error: no information received', 400)
-    elif 'bibcode' not in payload:
+    if 'bibcode' not in payload:
         return __return_response('error: no bibcodes found in payload (parameter name is "bibcode")', 400)
-    elif 'format' not in payload:
+    if 'format' not in payload:
         return __return_response('error: no custom format found in payload (parameter name is "format")', 400)
 
     bibcodes = payload['bibcode']

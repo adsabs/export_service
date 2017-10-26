@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
-#This section configures this application to act as a client, for example to query solr
-#EXPORT_SERVICE_ADSWS_API_TOKEN = 'this is a secret api token!'
 
-
-EXPORT_SERVICE_ADSWS_API_TOKEN = 'Bearer:eQhhOLITyCD1B2Afuxf2b5LdTpFTl5WaepVI7Dn0'
+EXPORT_SOLRQUERY_URL = "http://api.adsabs.harvard.edu/v1/search/bigquery"
+EXPORT_SERVICE_ADSWS_API_TOKEN = 'this is a secret api token!'
 
 
 EXPORT_SERVICE_BBB_PATH = 'https://ui.adsabs.harvard.edu/#abs'

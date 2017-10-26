@@ -17,7 +17,7 @@ class TestExportsError(TestCase):
         """
         Ensure that if no payload is passed in, returns 400
         """
-        for route in ['/bibtex', '/fielded', '/xml' , '/csl', '/custom']:
+        for route in ['/csl', '/custom']:
             r = self.client.post(route)
             status = r.status_code
             response = r.data
@@ -29,7 +29,7 @@ class TestExportsError(TestCase):
         """
         Ensure that if payload without all the needed params is passed in, returns 400
         """
-        for route in ['/bibtex', '/fielded', '/xml' , '/csl', '/custom']:
+        for route in ['/csl', '/custom']:
             r = self.client.post(route, data=json.dumps({'missingParamsPayload':''}))
             status = r.status_code
             response = r.data
@@ -43,7 +43,7 @@ class TestExportsError(TestCase):
         Ensure that all of the payload params were passed in, otherwise returns 400
         """
         payload = {'bibcode': '', 'style': '', 'format': ''}
-        for route in ['/bibtex', '/fielded', '/xml', '/csl', '/custom']:
+        for route in ['/csl', '/custom']:
             r = self.client.post(route, data=json.dumps(payload))
             status = r.status_code
             response = r.data
@@ -56,11 +56,7 @@ class TestExportsError(TestCase):
         Ensure that if payload contains the supported styles for each endpoints otherwise returns 503
         """
         payload = {'bibcode': '1989ApJ...342L..71R', 'style': 'nonExsistingStyle', 'format': 'nonEsistingFormat'}
-        end_point = {
-                '/bibtex':'error: unrecognizable style (supprted styles are: BibTex, BibTexAbs)',
-                '/fielded':'error: unrecognizable style (supprted styles are: ADS, EndNote, ProCite, Refman, RefWorks, MEDLARS)',
-                '/xml':'error: unrecognizable style (supprted styles are: Dublin, Reference, ReferenceAbs)',
-                '/csl':'error: unrecognizable style (supprted formats are: aastex, icarus, mnras, soph, aspc, apsj, aasj)'}
+        end_point = {'/csl':'error: unrecognizable style (supprted formats are: aastex, icarus, mnras, soph, aspc, apsj, aasj)'}
         for key in end_point:
             r = self.client.post(key, data=json.dumps(payload))
             status = r.status_code

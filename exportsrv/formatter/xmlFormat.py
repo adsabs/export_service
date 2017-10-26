@@ -15,7 +15,7 @@ import ast
 # This class accepts JSON object created by Solr and can reformats it
 # for the XML Export formats we are supporting.
 # 1- To get Dublin Core XML use
-#    dublinXML = XMLFormat(jsonFromSolr).get_dublin_xml()
+#    dublinXML = XMLFormat(jsonFromSolr).get_dublincore_xml()
 # 2- To get Reference XML without Abstract use
 #    referenceXML = XMLFormat(jsonFromSolr).get_reference_xml()
 # 3- To get Reference XML with Abstract use
@@ -334,7 +334,7 @@ class XMLFormat:
         return self.__get_xml(self.EXPORT_FORMAT_REF_XML, includeAsb)
 
 
-    def get_dublin_xml(self):
+    def get_dublincore_xml(self):
         """
         :return: dublin xml format
         """

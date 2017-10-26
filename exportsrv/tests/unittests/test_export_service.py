@@ -69,7 +69,7 @@ class TestExports(TestCase):
 
     def test_dublinxml(self):
         # format the stubdata using the code
-        xml_export = XMLFormat(solrdata.data).get_dublin_xml()
+        xml_export = XMLFormat(solrdata.data).get_dublincore_xml()
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_dublin)
 
@@ -93,7 +93,7 @@ class TestExports(TestCase):
 
     def test_icarus(self):
         # format the stubdata using the code
-        csl_export = CSL(CSLJson(solrdata.data).get(), 'Icarus', adsFormatter.latex).get()
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'icarus', adsFormatter.latex).get()
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_Icarus)
 

@@ -10,8 +10,6 @@ import os
 from werkzeug.serving import run_simple
 from exportsrv import app
 
-os.environ["EXPORT_SOLRQUERY_URL"] = "http://api.adsabs.harvard.edu/v1/search/bigquery"
-
 application = app.create_app()
 
 if __name__ == "__main__":

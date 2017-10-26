@@ -41,10 +41,10 @@ class CSL:
         # Process the JSON data to generate a citaproc-py BibliographySource.
         bib_source = CiteProcJSON(self.for_cls)
 
-        csl_style_fullpath = os.path.realpath(__file__ + "/../../cslstyles/")
+        csl_style_fullpath = os.path.realpath(__file__ + "/../../cslstyles")
 
         # load a CSL style (from the current directory)
-        bib_style = CitationStylesStyle(os.path.join(csl_style_fullpath, csl_style+'.csl'), validate=False)
+        bib_style = CitationStylesStyle(os.path.join(csl_style_fullpath + '/' + csl_style), validate=False)
 
         # Create the citaproc-py bibliography, passing it the:
         # * CitationStylesStyle,
@@ -87,11 +87,11 @@ class CSL:
 
 
     def __update_author_etal(self, author, bibcode):
-        # for Icarus we need to add # authors beside the first author
+        # for icarus we need to add # authors beside the first author
         # in case more authors were available CSL would turn it into first author name et. al.
         # hence, from CSL we get something like Siltala, J. et al.\
         # but we need to turn it to Siltala, J., and 12 colleagues
-        if (self.csl_style == 'Icarus'):
+        if (self.csl_style == 'icarus'):
             if (' et al.\\' in author):
                 for data in self.for_cls:
                     if (data['locator'] == bibcode):
@@ -152,7 +152,7 @@ class CSL:
 
         format_style = {
             'mnras': u'\\bibitem[\\protect\\citaauthoryear{{{}}}{{{}}}]{{{}}} {}{}',
-            'Icarus': u'\\bibitem[{}({})]{{{}}} {}{}',
+            'icarus': u'\\bibitem[{}({})]{{{}}} {}{}',
             'soph': u'\\bibitem[{}({})]{{{}}}{}{}',
             'aastex': u'\\bibitem[{}({})]{{{}}} {}{}',
             'aspc': u'\\bibitem[{}({})]{{{}}} {}{}',

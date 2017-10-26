@@ -13,7 +13,8 @@ logger = None
 
 def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
     global logger
-    logger = setup_logging('export_service', current_app.config.get('LOG_LEVEL', 'INFO'))
+    if (logger == None):
+        logger = setup_logging('export_service', current_app.config.get('LOG_LEVEL', 'INFO'))
 
     data = 'bibcode\n' + '\n'.join(bibcodes)
 
@@ -29,11 +30,11 @@ def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
         'fq': '{!bitset}'
     }
 
-    headers = {'Authorization':current_app.config['EXPORT_SERVICE_ADSWS_API_TOKEN']}
+    headers = {'Authorization':'Bearer:'+current_app.config['EXPORT_SERVICE_ADSWS_API_TOKEN']}
 
     try:
         response = client().post(
-            url=os.environ.get('EXPORT_SOLRQUERY_URL'),
+            url=current_app.config['EXPORT_SOLRQUERY_URL'],
             params=params,
             data=data,
             headers=headers
