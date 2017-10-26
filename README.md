@@ -30,7 +30,7 @@
 
 
 ##### 3. For endpoint xml export format we have teh following endpoints
-* /dublincore
+* /dcxml
 * /ref
 * /refabs
 
@@ -69,7 +69,7 @@
 * /refman
 * /refworks
 * /medlars
-* /dublincore
+* /dcxml
 * /ref
 * /refabs
 * /aastex

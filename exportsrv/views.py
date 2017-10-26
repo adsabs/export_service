@@ -365,7 +365,7 @@ def fielded_medlars__format_export_get(bibcode):
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/dublincore', methods=['POST'])
+@bp.route('/dcxml', methods=['POST'])
 def xml_dublincore_format_export_post():
     __setup_logging()
 
@@ -390,7 +390,7 @@ def xml_dublincore_format_export_post():
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/dublincore/<bibcode>', methods=['GET'])
+@bp.route('/dcxml/<bibcode>', methods=['GET'])
 def xml_dublincore_format_export_get(bibcode):
     __setup_logging()
 
