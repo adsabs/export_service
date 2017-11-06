@@ -30,7 +30,7 @@ def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
         'fq': '{!bitset}'
     }
 
-    headers = {'Authorization':'Bearer:'+current_app.config['EXPORT_SERVICE_ADSWS_API_TOKEN']}
+    headers = {'Authorization':'Bearer '+current_app.config['EXPORT_SERVICE_ADSWS_API_TOKEN']}
 
     try:
         response = client().post(
@@ -42,6 +42,7 @@ def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
         return response.json()
     except requests.exceptions.RequestException as e:
         # catastrophic error. bail.
-        logger.error('\nbailing')
+        logger.error('Solr exception. Terminated request.')
         logger.error(e)
+        return None
 

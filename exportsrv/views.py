@@ -7,7 +7,7 @@ from flask_discoverer import advertise
 
 from adsmutils import setup_logging
 
-from exportsrv.models import get_solr_data
+from exportsrv.utils import get_solr_data
 from exportsrv.formatter.ads import adsFormatter, adsCSLStyle
 from exportsrv.formatter.cslJson import CSLJson
 from exportsrv.formatter.csl import CSL
@@ -72,8 +72,13 @@ def bibTex_format_export_post():
     logger.debug('received request with bibcodes={bibcodes} to export in {bibTex_style} style format'.
                  format(bibcodes=''.join(bibcodes), bibTex_style=bibTex_style))
 
-    bibTex_export = BibTexFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-    return __return_response(bibTex_export.get(includeAbs=False), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        bibTex_export = BibTexFormat(solr_data)
+        return __return_response(bibTex_export.get(includeAbs=False), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -86,8 +91,14 @@ def bibTex_format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {bibTex_style} style format'.
                  format(bibcode=bibcode, bibTex_style=bibTex_style))
 
-    bibTex_export = BibTexFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
-    return __return_response(bibTex_export.get(includeAbs=False), 200)
+
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        bibTex_export = BibTexFormat(solr_data)
+        return __return_response(bibTex_export.get(includeAbs=False), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -111,8 +122,13 @@ def bibTex_abs_format_export_post():
     logger.debug('received request with bibcodes={bibcodes} to export in {bibTex_style} style format'.
                  format(bibcodes=''.join(bibcodes), bibTex_style=bibTex_style))
 
-    bibTex_export = BibTexFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-    return __return_response(bibTex_export.get(includeAbs=True), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        bibTex_export = BibTexFormat(solr_data)
+        return __return_response(bibTex_export.get(includeAbs=True), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -126,8 +142,13 @@ def bibTex_abs_format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {bibTex_style} style format'.
                  format(bibcode=bibcode, bibTex_style=bibTex_style))
 
-    bibTex_export = BibTexFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
-    return __return_response(bibTex_export.get(includeAbs=True), 200)
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        bibTex_export = BibTexFormat(solr_data)
+        return __return_response(bibTex_export.get(includeAbs=True), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -151,8 +172,13 @@ def fielded_ads_format_export_post():
     logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
                  format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
 
-    fielded_export = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-    return __return_response(fielded_export.get_ads_fielded(), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        fielded_export = FieldedFormat(solr_data)
+        return __return_response(fielded_export.get_ads_fielded(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -165,8 +191,13 @@ def fielded_ads_format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
-    fielded_export = FieldedFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
-    return __return_response(fielded_export.get_ads_fielded(), 200)
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        fielded_export = FieldedFormat(solr_data)
+        return __return_response(fielded_export.get_ads_fielded(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -190,8 +221,13 @@ def fielded_endnote_format_export_post():
     logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
                  format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
 
-    fielded_export = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-    return __return_response(fielded_export.get_endnote_fielded(), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        fielded_export = FieldedFormat(solr_data)
+        return __return_response(fielded_export.get_endnote_fielded(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -204,8 +240,13 @@ def fielded_endnote_format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
-    fielded_export = FieldedFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
-    return __return_response(fielded_export.get_endnote_fielded(), 200)
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        fielded_export = FieldedFormat(solr_data)
+        return __return_response(fielded_export.get_endnote_fielded(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -229,8 +270,13 @@ def fielded_procite_format_export_post():
     logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
                  format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
 
-    fielded_export = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-    return __return_response(fielded_export.get_procite_fielded(), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        fielded_export = FieldedFormat(solr_data)
+        return __return_response(fielded_export.get_procite_fielded(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -243,8 +289,13 @@ def fielded_procite_format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
-    fielded_export = FieldedFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
-    return __return_response(fielded_export.get_procite_fielded(), 200)
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        fielded_export = FieldedFormat(solr_data)
+        return __return_response(fielded_export.get_procite_fielded(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -268,8 +319,13 @@ def fielded_refman_format_export_post():
     logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
                  format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
 
-    fielded_export = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-    return __return_response(fielded_export.get_refman_fielded(), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        fielded_export = FieldedFormat(solr_data)
+        return __return_response(fielded_export.get_refman_fielded(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -282,8 +338,13 @@ def fielded_refman_format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
-    fielded_export = FieldedFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
-    return __return_response(fielded_export.get_refman_fielded(), 200)
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        fielded_export = FieldedFormat(solr_data)
+        return __return_response(fielded_export.get_refman_fielded(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -307,8 +368,13 @@ def fielded_refworks_format_export_post():
     logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
                  format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
 
-    fielded_export = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-    return __return_response(fielded_export.get_refworks_fielded(), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        fielded_export = FieldedFormat(solr_data)
+        return __return_response(fielded_export.get_refworks_fielded(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -321,8 +387,13 @@ def fielded_refworks_format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
-    fielded_export = FieldedFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
-    return __return_response(fielded_export.get_refworks_fielded(), 200)
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        fielded_export = FieldedFormat(solr_data)
+        return __return_response(fielded_export.get_refworks_fielded(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -346,8 +417,13 @@ def fielded_medlars__format_export_post():
     logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
                  format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
 
-    fielded_export = FieldedFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-    return __return_response(fielded_export.get_medlars_fielded(), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        fielded_export = FieldedFormat(solr_data)
+        return __return_response(fielded_export.get_medlars_fielded(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -360,8 +436,13 @@ def fielded_medlars__format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
-    fielded_export = FieldedFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
-    return __return_response(fielded_export.get_medlars_fielded(), 200)
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        fielded_export = FieldedFormat(solr_data)
+        return __return_response(fielded_export.get_medlars_fielded(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -385,8 +466,13 @@ def xml_dublincore_format_export_post():
     logger.debug('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
                  format(bibcodes=''.join(bibcodes), xml_style=xml_style))
 
-    xml_export = XMLFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-    return __return_response(xml_export.get_dublincore_xml(), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        xml_export = XMLFormat(solr_data)
+        return __return_response(xml_export.get_dublincore_xml(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -399,12 +485,17 @@ def xml_dublincore_format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
                  format(bibcode=bibcode, xml_style=xml_style))
 
-    xml_export = XMLFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
-    return __return_response(xml_export.get_dublincore_xml(), 200)
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        xml_export = XMLFormat(solr_data)
+        return __return_response(xml_export.get_dublincore_xml(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/ref', methods=['POST'])
+@bp.route('/refxml', methods=['POST'])
 def xml_ref_format_export_post():
     __setup_logging()
 
@@ -424,12 +515,17 @@ def xml_ref_format_export_post():
     logger.debug('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
                  format(bibcodes=''.join(bibcodes), xml_style=xml_style))
 
-    xml_export = XMLFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-    return __return_response(xml_export.get_reference_xml(includeAsb=False), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        xml_export = XMLFormat(solr_data)
+        return __return_response(xml_export.get_reference_xml(includeAsb=False), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/ref/<bibcode>', methods=['GET'])
+@bp.route('/refxml/<bibcode>', methods=['GET'])
 def xml_ref_format_export_get(bibcode):
     __setup_logging()
 
@@ -438,12 +534,17 @@ def xml_ref_format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
                  format(bibcode=bibcode, xml_style=xml_style))
 
-    xml_export = XMLFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
-    return __return_response(xml_export.get_reference_xml(includeAsb=False), 200)
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        xml_export = XMLFormat(solr_data)
+        return __return_response(xml_export.get_reference_xml(includeAsb=False), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/refabs', methods=['POST'])
+@bp.route('/refabsxml', methods=['POST'])
 def xml_refabs_format_export_post():
     __setup_logging()
 
@@ -463,12 +564,17 @@ def xml_refabs_format_export_post():
     logger.debug('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
                  format(bibcodes=''.join(bibcodes), xml_style=xml_style))
 
-    xml_export = XMLFormat(get_solr_data(bibcodes=bibcodes, fields=__default_fields()))
-    return __return_response(xml_export.get_reference_xml(includeAsb=True), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        xml_export = XMLFormat(solr_data)
+        return __return_response(xml_export.get_reference_xml(includeAsb=True), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/refabs/<bibcode>', methods=['GET'])
+@bp.route('/refabsxml/<bibcode>', methods=['GET'])
 def xml_refabs_format_export_get(bibcode):
     __setup_logging()
 
@@ -477,8 +583,13 @@ def xml_refabs_format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
                  format(bibcode=bibcode, xml_style=xml_style))
 
-    xml_export = XMLFormat(get_solr_data(bibcodes=[bibcode], fields=__default_fields()))
-    return __return_response(xml_export.get_reference_xml(includeAsb=True), 200)
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        xml_export = XMLFormat(solr_data)
+        return __return_response(xml_export.get_reference_xml(includeAsb=True), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -503,8 +614,12 @@ def csl_aastex_format_export_post():
     logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
                  format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
-    from_solr = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
-    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        return __return_response(CSL(CSLJson(solr_data).get(), csl_style, export_format).get(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -518,8 +633,12 @@ def csl_aastex_format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
                  format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
 
-    from_solr = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
-    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        return __return_response(CSL(CSLJson(solr_data).get(), csl_style, export_format).get(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -544,8 +663,12 @@ def csl_icarus_format_export_post():
     logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
                  format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
-    from_solr = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
-    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        return __return_response(CSL(CSLJson(solr_data).get(), csl_style, export_format).get(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -559,8 +682,12 @@ def csl_icarus_format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
                  format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
 
-    from_solr = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
-    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        return __return_response(CSL(CSLJson(solr_data).get(), csl_style, export_format).get(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -585,8 +712,12 @@ def csl_mnras_format_export_post():
     logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
                  format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
-    from_solr = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
-    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        return __return_response(CSL(CSLJson(solr_data).get(), csl_style, export_format).get(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -600,8 +731,12 @@ def csl_mnras_format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
                  format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
 
-    from_solr = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
-    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        return __return_response(CSL(CSLJson(solr_data).get(), csl_style, export_format).get(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -626,8 +761,12 @@ def csl_soph_format_export_post():
     logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
                  format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
-    from_solr = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
-    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        return __return_response(CSL(CSLJson(solr_data).get(), csl_style, export_format).get(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -641,8 +780,13 @@ def csl_soph_format_export_get(bibcode):
     logger.info('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
                  format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
 
-    from_solr = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
-    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, export_format).get(), 200)
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        return __return_response(CSL(CSLJson(solr_data).get(), csl_style, export_format).get(), 200)
+    return __return_response('error: no result from solr', 404)
+
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/csl', methods=['POST'])
@@ -678,8 +822,12 @@ def csl_format_export():
     logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
                  format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
-    from_solr = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
-    return __return_response(CSL(CSLJson(from_solr).get(), csl_style, int(export_format)-1).get(), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        return __return_response(CSL(CSLJson(solr_data).get(), csl_style, int(export_format)-1).get(), 200)
+    return __return_response('error: no result from solr', 404)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -713,7 +861,10 @@ def custom_format_export():
     custom_export = CustomFormat(customFormat=custom_format_str)
     fields = custom_export.getSolrFields()
     # now get the required data from Solr and send it to customFormat for formatting
-    from_solr = get_solr_data(bibcodes=bibcodes, fields=fields)
-    custom_export.setJSONFromSolr(from_solr)
-
-    return __return_response(custom_export.get(), 200)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=fields)
+    if (solr_data is not None):
+        if (solr_data['error']):
+            return __return_response('error: unable to query solr', 400)
+        custom_export.setJSONFromSolr(solr_data)
+        return __return_response(custom_export.get(), 200)
+    return __return_response('error: no result from solr', 404)

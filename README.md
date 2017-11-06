@@ -9,7 +9,7 @@
 
 #### Make a POST request:
 
-`curl -H "Content-Type: application/json" -X POST -d <payload> http://localhost:5000/<endpoint>`
+`curl -H "Content-Type: application/json" -X POST -d <payload> <endpoint>`
 
 
 #### where `<payload>` and `<endpoint>` are as follows:
@@ -31,8 +31,8 @@
 
 ##### 3. For endpoint xml export format we have teh following endpoints
 * /dcxml
-* /ref
-* /refabs
+* /refxml
+* /refabsxml
 
 
 ##### 4. For the following endpoints output is in latex format
@@ -57,7 +57,7 @@
 
 #### Make a GET request:
 
-`curl -H "Content-Type: application/json" -X GET -d <payload> http://localhost:5000/<endpoint>/<bibcode>`
+`curl -H "Content-Type: application/json" -X GET -d <payload> <endpoint>/<bibcode>`
 
 
 #### where `<endpoint>` are as follows:
@@ -70,8 +70,8 @@
 * /refworks
 * /medlars
 * /dcxml
-* /ref
-* /refabs
+* /refxml
+* /refabsxml
 * /aastex
 * /icarus
 * /mnras

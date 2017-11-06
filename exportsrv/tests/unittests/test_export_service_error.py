@@ -13,11 +13,15 @@ class TestExportsError(TestCase):
         return app_
 
 
-    def test_no_payload(self):
+    def test_no_payload_post(self):
         """
         Ensure that if no payload is passed in, returns 400
         """
-        for route in ['/csl', '/custom']:
+        for route in ['/csl', '/custom',
+                      '/bibtex','/bibtexabs',
+                      '/ads','/endnote','/procite','/refman','/refworks','/medlars',
+                      '/dcxml','/refxml','/refabsxml',
+                      '/aastex','/icarus','/mnras','/soph']:
             r = self.client.post(route)
             status = r.status_code
             response = r.data
@@ -25,15 +29,32 @@ class TestExportsError(TestCase):
             self.assertEqual(response, 'error: no information received')
 
 
+    def test_no_payload_get(self):
+        """
+        Ensure that if no payload is passed in, returns 400
+        """
+        for route in ['/bibtex','/bibtexabs',
+                      '/ads','/endnote','/procite','/refman','/refworks','/medlars',
+                      '/dcxml','/refxml','/refabsxml',
+                      '/aastex','/icarus','/mnras','/soph']:
+            r = self.client.get(route)
+            status = r.status_code
+            response = r.data
+            self.assertEqual(status, 405)
+
+
     def test_no_payload_param(self):
         """
         Ensure that if payload without all the needed params is passed in, returns 400
         """
-        for route in ['/csl', '/custom']:
+        for route in ['/csl', '/custom',
+                      '/bibtex','/bibtexabs',
+                      '/ads','/endnote','/procite','/refman','/refworks','/medlars',
+                      '/dcxml','/refxml','/refabsxml',
+                      '/aastex','/icarus','/mnras','/soph']:
             r = self.client.post(route, data=json.dumps({'missingParamsPayload':''}))
             status = r.status_code
             response = r.data
-
             self.assertEqual(status, 400)
             self.assertEqual(response, 'error: no bibcodes found in payload (parameter name is "bibcode")')
 
