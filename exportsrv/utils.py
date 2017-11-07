@@ -18,7 +18,7 @@ def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
 
     data = 'bibcode\n' + '\n'.join(bibcodes)
 
-    rows = min(6000, len(bibcodes))
+    rows = min(current_app.config['EXPORT_SERVICE_MAX_RECORDS_SOLR'], len(bibcodes))
 
     params = {
         'q': '*:*',
