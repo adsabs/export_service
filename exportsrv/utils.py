@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
-import os
-
 from flask import current_app
 import requests
-from client import client
 
 from adsmutils import setup_logging
+
+from exportsrv.client import client
 
 global logger
 logger = None
