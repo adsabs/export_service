@@ -10,6 +10,9 @@ from exportsrv.client import client
 global logger
 logger = None
 
+
+EXPORT_SERVICE_MAX_RECORDS_SOLR = 6000
+
 def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
     global logger
     if (logger == None):
@@ -17,7 +20,7 @@ def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
 
     data = 'bibcode\n' + '\n'.join(bibcodes)
 
-    rows = min(current_app.config['EXPORT_SERVICE_MAX_RECORDS_SOLR'], len(bibcodes))
+    rows = min(EXPORT_SERVICE_MAX_RECORDS_SOLR, len(bibcodes))
 
     params = {
         'q': '*:*',

@@ -6,8 +6,6 @@
 EXPORT_SOLRQUERY_URL = "http://api.adsabs.harvard.edu/v1/search/bigquery"
 EXPORT_SERVICE_ADSWS_API_TOKEN = 'this is a secret api token!'
 
-EXPORT_SERVICE_MAX_RECORDS_SOLR = 6000
-
 EXPORT_SERVICE_BBB_PATH = 'https://ui.adsabs.harvard.edu/#abs'
 EXPORT_SERVICE_ADS_NOTES = 'Provided by the SAO/NASA Astrophysics Data System'
 
