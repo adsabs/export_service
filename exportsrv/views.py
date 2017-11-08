@@ -91,7 +91,6 @@ def bibTex_format_export_get(bibcode):
     logger.debug('received request with bibcode={bibcode} to export in {bibTex_style} style format'.
                  format(bibcode=bibcode, bibTex_style=bibTex_style))
 
-
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
     if (solr_data is not None):
         if ('error' in solr_data):
@@ -299,7 +298,7 @@ def fielded_procite_format_export_get(bibcode):
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/refman', methods=['POST'])
+@bp.route('/ris', methods=['POST'])
 def fielded_refman_format_export_post():
     __setup_logging()
 
@@ -329,7 +328,7 @@ def fielded_refman_format_export_post():
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/refman/<bibcode>', methods=['GET'])
+@bp.route('/ris/<bibcode>', methods=['GET'])
 def fielded_refman_format_export_get(bibcode):
     __setup_logging()
 

@@ -8,6 +8,7 @@ from textwrap import fill
 from string import ascii_uppercase
 import re
 import cgi
+import json
 
 from adsutils.ads_utils import get_pub_abbreviation
 
@@ -508,10 +509,15 @@ class CustomFormat:
         
         :return: 
         """
+        num_docs = 0
         results = []
         if (self.status == 0):
+            num_docs = self.get_num_docs()
             results.append(self.header + '\n')
-            for index in range(self.get_num_docs()):
+            for index in range(num_docs):
                 results.append(self.__get_doc(index))
             results.append('\n' + self.footer)
-        return ''.join(result for result in results)
+        result_dict = {}
+        result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
+        result_dict['export'] = ''.join(result for result in results)
+        return json.dumps(result_dict)

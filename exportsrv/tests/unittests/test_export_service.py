@@ -21,13 +21,13 @@ class TestExports(TestCase):
 
     def test_bibtex(self):
         # format the stubdata using the code
-        bibtex_export = BibTexFormat(solrdata.data).get(includeAbs=False)
+        bibtex_export = BibTexFormat(solrdata.data).get(include_abs=False)
         # now compare it with an already formatted data that we know is correct
         assert(bibtex_export == bibTexTest.data)
 
     def test_bibtex_with_abs(self):
         # format the stubdata using the code
-        bibtex_export = BibTexFormat(solrdata.data).get(includeAbs=True)
+        bibtex_export = BibTexFormat(solrdata.data).get(include_abs=True)
         # now compare it with an already formatted data that we know is correct
         assert (bibtex_export == bibTexTest.data_with_abs)
 
@@ -71,17 +71,17 @@ class TestExports(TestCase):
         # format the stubdata using the code
         xml_export = XMLFormat(solrdata.data).get_dublincore_xml()
         # now compare it with an already formatted data that we know is correct
-        assert(xml_export == xmlTest.data_dublin)
+        assert(xml_export == xmlTest.data_dublin_core)
 
     def test_refxml(self):
         # format the stubdata using the code
-        xml_export = XMLFormat(solrdata.data).get_reference_xml(includeAsb=False)
+        xml_export = XMLFormat(solrdata.data).get_reference_xml(include_abs=False)
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_ref)
 
     def test_refxml_with_abs(self):
         # format the stubdata using the code
-        xml_export = XMLFormat(solrdata.data).get_reference_xml(includeAsb=True)
+        xml_export = XMLFormat(solrdata.data).get_reference_xml(include_abs=True)
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_ref_with_abs)
 

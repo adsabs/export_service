@@ -19,7 +19,7 @@ class TestExportsError(TestCase):
         """
         for route in ['/csl', '/custom',
                       '/bibtex','/bibtexabs',
-                      '/ads','/endnote','/procite','/refman','/refworks','/medlars',
+                      '/ads','/endnote','/procite','/ris','/refworks','/medlars',
                       '/dcxml','/refxml','/refabsxml',
                       '/aastex','/icarus','/mnras','/soph']:
             r = self.client.post(route)
@@ -31,10 +31,10 @@ class TestExportsError(TestCase):
 
     def test_no_payload_get(self):
         """
-        Ensure that if no payload is passed in, returns 400
+        Ensure that if no param is passed in, returns 405
         """
         for route in ['/bibtex','/bibtexabs',
-                      '/ads','/endnote','/procite','/refman','/refworks','/medlars',
+                      '/ads','/endnote','/procite','/ris','/refworks','/medlars',
                       '/dcxml','/refxml','/refabsxml',
                       '/aastex','/icarus','/mnras','/soph']:
             r = self.client.get(route)
@@ -49,7 +49,7 @@ class TestExportsError(TestCase):
         """
         for route in ['/csl', '/custom',
                       '/bibtex','/bibtexabs',
-                      '/ads','/endnote','/procite','/refman','/refworks','/medlars',
+                      '/ads','/endnote','/procite','/ris','/refworks','/medlars',
                       '/dcxml','/refxml','/refabsxml',
                       '/aastex','/icarus','/mnras','/soph']:
             r = self.client.post(route, data=json.dumps({'missingParamsPayload':''}))

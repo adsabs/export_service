@@ -9,6 +9,7 @@ from citeproc.py2compat import *
 from citeproc.source.json import CiteProcJSON
 import re
 import os
+import json
 
 from adsutils.ads_utils import get_pub_abbreviation
 
@@ -25,15 +26,14 @@ class CSL:
 
     REGEX_TOKENIZE_CITA = re.compile(r'^(.*)\(?(\d{4})\)?')
     REGEX_TOKENIZE_BIBLIO = re.compile(r'^(.*?)(\d+.*)')
-    
-    citation_item = []
-    bibcode_list = []
 
 
     def __init__(self, for_cls, csl_style, export_format=adsFormatter.unicode):
         self.for_cls = for_cls
         self.csl_style = csl_style
         self.export_format = export_format
+        self.citation_item = []
+        self.bibcode_list = []
 
         # Update the container-title if needed for the specific style
         self.__update_container_title()
@@ -170,10 +170,15 @@ class CSL:
         """
         results = []
         if (export_organizer == adsOrganizer.plain):
+            num_docs = 0
             if (self.export_format == adsFormatter.unicode) or (self.export_format == adsFormatter.latex):
+                num_docs = len(self.bibcode_list)
                 for cita, item, bibcode, i in zip(self.citation_item, self.bibliography.bibliography(), self.bibcode_list, range(len(self.bibcode_list))):
                     results.append(self.__format_output(str(self.bibliography.cite(cita, '')), str(item), bibcode, i+1) + '\n')
-                return ''.join(result for result in results)
+            result_dict = {}
+            result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
+            result_dict['export'] = ''.join(result for result in results)
+            return json.dumps(result_dict)
         if (export_organizer == adsOrganizer.citation_bibliography):
             for cita, item, bibcode in zip(self.citation_item, self.bibliography.bibliography(), self.bibcode_list):
                 results.append(bibcode + '\n' + str(self.bibliography.cite(cita, '')) + '\n' + str(item) + '\n')

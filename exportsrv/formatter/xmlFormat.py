@@ -10,6 +10,7 @@ from itertools import product
 from string import ascii_uppercase
 import re
 import ast
+import json
 
 
 # This class accepts JSON object created by Solr and can reformats it
@@ -299,39 +300,44 @@ class XMLFormat:
                 self.__add_doc_links(a_doc, record)
 
 
-    def __get_xml(self, export_format, includeAsb=False):
+    def __get_xml(self, export_format, include_abs=False):
         """
         setup the outer xml structure
 
         :param export_format:
-        :param includeAsb:
+        :param include_abs:
         :return:
         """
+        num_docs = 0
+        format_xml = ''
         if (self.status == 0):
+            num_docs = self.get_num_docs()
             records = ET.Element("records")
             attribs = OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML)
             for attrib in attribs:
                 records.set(attrib, attribs[attrib])
-            records.set('retrieved', str(self.get_num_docs()))
+            records.set('retrieved', str(num_docs))
             if (export_format == self.EXPORT_FORMAT_REF_XML):
                 for index in range(self.get_num_docs()):
-                    self.__get_doc_reference_xml(index, records, includeAsb)
+                    self.__get_doc_reference_xml(index, records, include_abs)
             elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
                 for index in range(self.get_num_docs()):
                     self.__get_doc_dublin_xml(index, records)
             format_xml = ET.tostring(records, encoding='utf8', method='xml')
             format_xml = ('>\n<'.join(format_xml.split('><')))
             format_xml = format_xml.replace('</record>', '</record>\n')
-            return format_xml
-        return ''
+        result_dict = {}
+        result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
+        result_dict['export'] = format_xml
+        return json.dumps(result_dict)
 
 
-    def get_reference_xml(self, includeAsb=False):
+    def get_reference_xml(self, include_abs=False):
         """
-        :param includeAsb: 
+        :param include_abs: 
         :return: reference xml format with or without abstract
         """
-        return self.__get_xml(self.EXPORT_FORMAT_REF_XML, includeAsb)
+        return self.__get_xml(self.EXPORT_FORMAT_REF_XML, include_abs)
 
 
     def get_dublincore_xml(self):

@@ -8,6 +8,7 @@ from textwrap import fill
 from itertools import product
 from string import ascii_uppercase
 import re
+import json
 
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
 
@@ -230,12 +231,12 @@ class BibTexFormat:
         return ''
 
     
-    def __get_doc(self, index, includeAbs):
+    def __get_doc(self, index, include_abs):
         """
         for each document from Solr, get the fields, and format them accordingly
         
         :param index: 
-        :param includeAbs: 
+        :param include_abs: 
         :return: 
         """
         format_style_bracket_quotes = u'{0:>12} = "{{{1}}}"'
@@ -263,7 +264,7 @@ class BibTexFormat:
                 text += self.__add_in(fields[field], int(a_doc.get(field, '')) if a_doc.get(field, '') else None, format_style)
             elif (field == 'month'):
                 text += self.__add_in(fields[field], self.__format_date(a_doc.get('date', '')), format_style)
-            elif (field == 'abstract') and (includeAbs):
+            elif (field == 'abstract') and (include_abs):
                 text += self.__add_in_wrapped(fields[field], encode_laTex(a_doc.get(field, '')), format_style_bracket_quotes)
             elif (field == 'eid'):
                 text += self.__add_in(fields[field], a_doc.get(field, ''), format_style_bracket)
@@ -279,16 +280,19 @@ class BibTexFormat:
         return text + '}\n\n'
 
 
-    def get(self, includeAbs=False):
+    def get(self, include_abs=False):
         """
         
-        :param includeAbs: 
+        :param include_abs: 
         :return: 
         """
+        num_docs = 0
         ref_BibTex = []
         if (self.status == 0):
-            numDocs = self.get_num_docs()
-            ref_BibTex.append('\n\nRetrieved {} abstracts, starting with number 1.\n\n\n'.format(numDocs))
-            for index in range(numDocs):
-                ref_BibTex.append(self.__get_doc(index, includeAbs))
-        return ''.join(record for record in ref_BibTex)
+            num_docs = self.get_num_docs()
+            for index in range(num_docs):
+                ref_BibTex.append(self.__get_doc(index, include_abs))
+        result_dict = {}
+        result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
+        result_dict['export'] = ''.join(record for record in ref_BibTex)
+        return json.dumps(result_dict)

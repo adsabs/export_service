@@ -9,6 +9,7 @@ from itertools import product
 from string import ascii_uppercase
 import re
 import ast
+import json
 
 # This class accepts JSON object created by Solr and can reformats it
 # for the various fielded (formerly known as tagged) Export formats we are supporting.
@@ -426,14 +427,17 @@ class FieldedFormat:
         :param export_format: 
         :return: 
         """
+        num_docs = 0
         results = []
         if (self.status == 0):
             fields = self.__get_tags(export_format)
             num_docs = self.get_num_docs()
-            results.append('\n\nRetrieved {} abstracts, starting with number 1.\n\n\n'.format(num_docs))
             for index in range(num_docs):
                 results += self.__get_doc(index, fields, export_format)
-        return ''.join(result for result in results)
+        result_dict = {}
+        result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
+        result_dict['export'] = ''.join(result for result in results)
+        return json.dumps(result_dict)
 
 
     def get_ads_fielded(self):
