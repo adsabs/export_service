@@ -1,7 +1,5 @@
-[![Stories in Ready](https://badge.waffle.io/adsabs/export_service.png?label=ready&title=Ready)](https://waffle.io/adsabs/export_service)
 [![Build Status](https://travis-ci.org/adsabs/export_service.svg?branch=master)](https://travis-ci.org/adsabs/export_service)
 [![Coverage Status](https://coveralls.io/repos/adsabs/export_service/badge.svg?branch=master)](https://coveralls.io/r/adsabs/export_service?branch=master)
-[![Code Climate](https://codeclimate.com/github/adsabs/export_service/badges/gpa.svg)](https://codeclimate.com/github/adsabs/export_service)
 
 
 # ADS Export Service
