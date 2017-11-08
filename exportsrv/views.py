@@ -77,7 +77,7 @@ def bibTex_format_export_post():
         if ('error' in solr_data):
             return __return_response('error: unable to query solr', 400)
         bibTex_export = BibTexFormat(solr_data)
-        return __return_response(bibTex_export.get(includeAbs=False), 200)
+        return __return_response(bibTex_export.get(include_abs=False), 200)
     return __return_response('error: no result from solr', 404)
 
 
@@ -96,7 +96,7 @@ def bibTex_format_export_get(bibcode):
         if ('error' in solr_data):
             return __return_response('error: unable to query solr', 400)
         bibTex_export = BibTexFormat(solr_data)
-        return __return_response(bibTex_export.get(includeAbs=False), 200)
+        return __return_response(bibTex_export.get(include_abs=False), 200)
     return __return_response('error: no result from solr', 404)
 
 
@@ -126,7 +126,7 @@ def bibTex_abs_format_export_post():
         if ('error' in solr_data):
             return __return_response('error: unable to query solr', 400)
         bibTex_export = BibTexFormat(solr_data)
-        return __return_response(bibTex_export.get(includeAbs=True), 200)
+        return __return_response(bibTex_export.get(include_abs=True), 200)
     return __return_response('error: no result from solr', 404)
 
 
@@ -146,7 +146,7 @@ def bibTex_abs_format_export_get(bibcode):
         if ('error' in solr_data):
             return __return_response('error: unable to query solr', 400)
         bibTex_export = BibTexFormat(solr_data)
-        return __return_response(bibTex_export.get(includeAbs=True), 200)
+        return __return_response(bibTex_export.get(include_abs=True), 200)
     return __return_response('error: no result from solr', 404)
 
 
@@ -519,7 +519,7 @@ def xml_ref_format_export_post():
         if ('error' in solr_data):
             return __return_response('error: unable to query solr', 400)
         xml_export = XMLFormat(solr_data)
-        return __return_response(xml_export.get_reference_xml(includeAsb=False), 200)
+        return __return_response(xml_export.get_reference_xml(include_abs=False), 200)
     return __return_response('error: no result from solr', 404)
 
 
@@ -538,7 +538,7 @@ def xml_ref_format_export_get(bibcode):
         if ('error' in solr_data):
             return __return_response('error: unable to query solr', 400)
         xml_export = XMLFormat(solr_data)
-        return __return_response(xml_export.get_reference_xml(includeAsb=False), 200)
+        return __return_response(xml_export.get_reference_xml(include_abs=False), 200)
     return __return_response('error: no result from solr', 404)
 
 
@@ -568,7 +568,7 @@ def xml_refabs_format_export_post():
         if ('error' in solr_data):
             return __return_response('error: unable to query solr', 400)
         xml_export = XMLFormat(solr_data)
-        return __return_response(xml_export.get_reference_xml(includeAsb=True), 200)
+        return __return_response(xml_export.get_reference_xml(include_abs=True), 200)
     return __return_response('error: no result from solr', 404)
 
 
@@ -587,7 +587,7 @@ def xml_refabs_format_export_get(bibcode):
         if ('error' in solr_data):
             return __return_response('error: unable to query solr', 400)
         xml_export = XMLFormat(solr_data)
-        return __return_response(xml_export.get_reference_xml(includeAsb=True), 200)
+        return __return_response(xml_export.get_reference_xml(include_abs=True), 200)
     return __return_response('error: no result from solr', 404)
 
 
