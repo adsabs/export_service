@@ -73,7 +73,7 @@ def bibTex_format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     bibTex_style = 'BibTex'
@@ -122,7 +122,7 @@ def bibTex_abs_format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     bibTex_style = 'BibTex Abs'
@@ -172,7 +172,7 @@ def fielded_ads_format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     fielded_style = 'ADS'
@@ -221,7 +221,7 @@ def fielded_endnote_format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     fielded_style = 'EndNote'
@@ -270,7 +270,7 @@ def fielded_procite_format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     fielded_style = 'ProCite'
@@ -319,7 +319,7 @@ def fielded_refman_format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     fielded_style = 'Refman'
@@ -368,7 +368,7 @@ def fielded_refworks_format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     fielded_style = 'RefWorks'
@@ -417,7 +417,7 @@ def fielded_medlars__format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     fielded_style = 'MEDLARS'
@@ -466,7 +466,7 @@ def xml_dublincore_format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     xml_style = 'DublinCore'
@@ -515,7 +515,7 @@ def xml_ref_format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     xml_style = 'Reference'
@@ -564,7 +564,7 @@ def xml_refabs_format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     xml_style = 'ReferenceAbs'
@@ -613,7 +613,7 @@ def csl_aastex_format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     csl_style = 'aastex'
@@ -662,7 +662,7 @@ def csl_icarus_format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     csl_style = 'icarus'
@@ -711,7 +711,7 @@ def csl_mnras_format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     csl_style = 'mnras'
@@ -760,7 +760,7 @@ def csl_soph_format_export_post():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
 
     bibcodes = payload['bibcode']
     csl_style = 'soph'
@@ -809,11 +809,11 @@ def csl_format_export():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
     if 'style' not in payload:
-        return __return_response(__error_response_to_json('error: no style found in payload (parameter name is "style")'), 400)
+        return __return_response(__error_response_to_json('error: no style found in payload (parameter name is `style`)'), 400)
     if 'format' not in payload:
-        return __return_response(__error_response_to_json('error: no output format found in payload (parameter name is "format")'), 400)
+        return __return_response(__error_response_to_json('error: no output format found in payload (parameter name is `format`)'), 400)
 
     bibcodes = payload['bibcode']
     csl_style = payload['style']
@@ -851,9 +851,9 @@ def custom_format_export():
     if not payload:
         return __return_response(__error_response_to_json('error: no information received'), 400)
     if 'bibcode' not in payload:
-        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is "bibcode")'), 400)
+        return __return_response(__error_response_to_json('error: no bibcodes found in payload (parameter name is `bibcode`)'), 400)
     if 'format' not in payload:
-        return __return_response(__error_response_to_json('error: no custom format found in payload (parameter name is "format")'), 400)
+        return __return_response(__error_response_to_json('error: no custom format found in payload (parameter name is `format`)'), 400)
 
     bibcodes = payload['bibcode']
     custom_format_str = payload['format']
