@@ -3,24 +3,12 @@
 from flask import current_app
 import requests
 
-from adsmutils import setup_logging
-
 from exportsrv.client import client
 
-global logger
-logger = None
-
-
-EXPORT_SERVICE_MAX_RECORDS_SOLR = 6000
-
 def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
-    global logger
-    if (logger == None):
-        logger = setup_logging('export_service', current_app.config.get('LOG_LEVEL', 'INFO'))
-
     data = 'bibcode\n' + '\n'.join(bibcodes)
 
-    rows = min(EXPORT_SERVICE_MAX_RECORDS_SOLR, len(bibcodes))
+    rows = min(current_app.config['EXPORT_SERVICE_MAX_RECORDS_SOLR'], len(bibcodes))
 
     params = {
         'q': '*:*',
@@ -44,7 +32,7 @@ def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
         return response.json()
     except requests.exceptions.RequestException as e:
         # catastrophic error. bail.
-        logger.error('Solr exception. Terminated request.')
-        logger.error(e)
+        current_app.logger.error('Solr exception. Terminated request.')
+        current_app.logger.error(e)
         return None
 

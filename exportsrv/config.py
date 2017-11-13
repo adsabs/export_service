@@ -12,6 +12,7 @@ EXPORT_SERVICE_ADS_NOTES = 'Provided by the SAO/NASA Astrophysics Data System'
 EXPORT_SERVICE_LINK_URL_FORMAT = 'https://ui.adsabs.harvard.edu/#abs/{}/{}'
 EXPORT_SERVICE_LINK_LINKS_DATA_URL_FORMAT = 'https://ui.adsabs.harvard.edu/#abs/{}{}{}'
 
+EXPORT_SERVICE_MAX_RECORDS_SOLR = 6000
 
 EXPORT_SERVICE_LATEX_ACCENT = [
     [u"à", "\\`a"],  # Grave accent

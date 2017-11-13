@@ -7,8 +7,6 @@ from flask_discoverer import advertise
 
 import json
 
-from adsmutils import setup_logging
-
 from exportsrv.utils import get_solr_data
 from exportsrv.formatter.ads import adsFormatter, adsCSLStyle
 from exportsrv.formatter.cslJson import CSLJson
@@ -22,15 +20,6 @@ from exportsrv.formatter.customFormat import CustomFormat
 bp = Blueprint('export_service', __name__)
 
 
-global logger
-logger = None
-
-
-def __setup_logging():
-    global logger
-    if (logger == None):
-        logger = setup_logging('export_service', current_app.config.get('LOG_LEVEL', 'INFO'))
-
 
 def __default_fields():
     return 'author,title,year,date,pub,pub_raw,issue,volume,page,aff,doi,abstract,eid,' \
@@ -39,16 +28,14 @@ def __default_fields():
 
 
 def __return_response(response, status):
-    __setup_logging()
-
     r = Response(response=response, status=status)
 
     if status == 200:
         r.headers['content-type'] = 'application/json'
-        logger.debug('returning results with status code 200')
+        current_app.logger.debug('returning results with status code 200')
     else:
         r.headers['content-type'] = 'text/plain'
-        logger.error('{} status code = {}'.format(response, status))
+        current_app.logger.error('{} status code = {}'.format(response, status))
 
     return r
 
@@ -63,8 +50,6 @@ def __error_response_to_json(text_msg):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/bibtex', methods=['POST'])
 def bibTex_format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -78,7 +63,7 @@ def bibTex_format_export_post():
     bibcodes = payload['bibcode']
     bibTex_style = 'BibTex'
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {bibTex_style} style format'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {bibTex_style} style format'.
                  format(bibcodes=''.join(bibcodes), bibTex_style=bibTex_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -93,11 +78,9 @@ def bibTex_format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/bibtex/<bibcode>', methods=['GET'])
 def bibTex_format_export_get(bibcode):
-    __setup_logging()
-
     bibTex_style = 'BibTex'
 
-    logger.debug('received request with bibcode={bibcode} to export in {bibTex_style} style format'.
+    current_app.logger.debug('received request with bibcode={bibcode} to export in {bibTex_style} style format'.
                  format(bibcode=bibcode, bibTex_style=bibTex_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -112,8 +95,6 @@ def bibTex_format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/bibtexabs', methods=['POST'])
 def bibTex_abs_format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -127,7 +108,7 @@ def bibTex_abs_format_export_post():
     bibcodes = payload['bibcode']
     bibTex_style = 'BibTex Abs'
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {bibTex_style} style format'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {bibTex_style} style format'.
                  format(bibcodes=''.join(bibcodes), bibTex_style=bibTex_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -142,12 +123,9 @@ def bibTex_abs_format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/bibtexabs/<bibcode>', methods=['GET'])
 def bibTex_abs_format_export_get(bibcode):
-    __setup_logging()
-
-
     bibTex_style = 'BibTex Abs'
 
-    logger.debug('received request with bibcode={bibcode} to export in {bibTex_style} style format'.
+    current_app.logger.debug('received request with bibcode={bibcode} to export in {bibTex_style} style format'.
                  format(bibcode=bibcode, bibTex_style=bibTex_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -162,8 +140,6 @@ def bibTex_abs_format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/ads', methods=['POST'])
 def fielded_ads_format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -177,7 +153,7 @@ def fielded_ads_format_export_post():
     bibcodes = payload['bibcode']
     fielded_style = 'ADS'
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
                  format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -192,11 +168,9 @@ def fielded_ads_format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/ads/<bibcode>', methods=['GET'])
 def fielded_ads_format_export_get(bibcode):
-    __setup_logging()
-
     fielded_style = 'ADS'
 
-    logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
+    current_app.logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -211,8 +185,6 @@ def fielded_ads_format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/endnote', methods=['POST'])
 def fielded_endnote_format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -226,7 +198,7 @@ def fielded_endnote_format_export_post():
     bibcodes = payload['bibcode']
     fielded_style = 'EndNote'
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
                  format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -241,11 +213,9 @@ def fielded_endnote_format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/endnote/<bibcode>', methods=['GET'])
 def fielded_endnote_format_export_get(bibcode):
-    __setup_logging()
-
     fielded_style = 'EndNote'
 
-    logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
+    current_app.logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -260,8 +230,6 @@ def fielded_endnote_format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/procite', methods=['POST'])
 def fielded_procite_format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -275,7 +243,7 @@ def fielded_procite_format_export_post():
     bibcodes = payload['bibcode']
     fielded_style = 'ProCite'
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
                  format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -290,11 +258,9 @@ def fielded_procite_format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/procite/<bibcode>', methods=['GET'])
 def fielded_procite_format_export_get(bibcode):
-    __setup_logging()
-
     fielded_style = 'ProCite'
 
-    logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
+    current_app.logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -309,8 +275,6 @@ def fielded_procite_format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/ris', methods=['POST'])
 def fielded_refman_format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -324,7 +288,7 @@ def fielded_refman_format_export_post():
     bibcodes = payload['bibcode']
     fielded_style = 'Refman'
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
                  format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -339,11 +303,9 @@ def fielded_refman_format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/ris/<bibcode>', methods=['GET'])
 def fielded_refman_format_export_get(bibcode):
-    __setup_logging()
-
     fielded_style = 'Refman'
 
-    logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
+    current_app.logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -358,8 +320,6 @@ def fielded_refman_format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/refworks', methods=['POST'])
 def fielded_refworks_format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -373,7 +333,7 @@ def fielded_refworks_format_export_post():
     bibcodes = payload['bibcode']
     fielded_style = 'RefWorks'
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
                  format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -388,11 +348,9 @@ def fielded_refworks_format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/refworks/<bibcode>', methods=['GET'])
 def fielded_refworks_format_export_get(bibcode):
-    __setup_logging()
-
     fielded_style = 'RefWorks'
 
-    logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
+    current_app.logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -407,8 +365,6 @@ def fielded_refworks_format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/medlars', methods=['POST'])
 def fielded_medlars__format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -422,7 +378,7 @@ def fielded_medlars__format_export_post():
     bibcodes = payload['bibcode']
     fielded_style = 'MEDLARS'
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
                  format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -437,11 +393,9 @@ def fielded_medlars__format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/medlars/<bibcode>', methods=['GET'])
 def fielded_medlars__format_export_get(bibcode):
-    __setup_logging()
-
     fielded_style = 'MEDLARS'
 
-    logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
+    current_app.logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -456,8 +410,6 @@ def fielded_medlars__format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/dcxml', methods=['POST'])
 def xml_dublincore_format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -471,7 +423,7 @@ def xml_dublincore_format_export_post():
     bibcodes = payload['bibcode']
     xml_style = 'DublinCore'
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
                  format(bibcodes=''.join(bibcodes), xml_style=xml_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -486,11 +438,9 @@ def xml_dublincore_format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/dcxml/<bibcode>', methods=['GET'])
 def xml_dublincore_format_export_get(bibcode):
-    __setup_logging()
-
     xml_style = 'DublinCore'
 
-    logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
+    current_app.logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
                  format(bibcode=bibcode, xml_style=xml_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -505,8 +455,6 @@ def xml_dublincore_format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/refxml', methods=['POST'])
 def xml_ref_format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -520,7 +468,7 @@ def xml_ref_format_export_post():
     bibcodes = payload['bibcode']
     xml_style = 'Reference'
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
                  format(bibcodes=''.join(bibcodes), xml_style=xml_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -535,11 +483,9 @@ def xml_ref_format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/refxml/<bibcode>', methods=['GET'])
 def xml_ref_format_export_get(bibcode):
-    __setup_logging()
-
     xml_style = 'Reference'
 
-    logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
+    current_app.logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
                  format(bibcode=bibcode, xml_style=xml_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -554,8 +500,6 @@ def xml_ref_format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/refabsxml', methods=['POST'])
 def xml_refabs_format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -569,7 +513,7 @@ def xml_refabs_format_export_post():
     bibcodes = payload['bibcode']
     xml_style = 'ReferenceAbs'
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
                  format(bibcodes=''.join(bibcodes), xml_style=xml_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -584,11 +528,9 @@ def xml_refabs_format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/refabsxml/<bibcode>', methods=['GET'])
 def xml_refabs_format_export_get(bibcode):
-    __setup_logging()
-
     xml_style = 'ReferenceAbs'
 
-    logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
+    current_app.logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
                  format(bibcode=bibcode, xml_style=xml_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -603,8 +545,6 @@ def xml_refabs_format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/aastex', methods=['POST'])
 def csl_aastex_format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -619,7 +559,7 @@ def csl_aastex_format_export_post():
     csl_style = 'aastex'
     export_format = 2
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
                  format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -633,12 +573,10 @@ def csl_aastex_format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/aastex/<bibcode>', methods=['GET'])
 def csl_aastex_format_export_get(bibcode):
-    __setup_logging()
-
     csl_style = 'aastex'
     export_format = 2
 
-    logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
+    current_app.logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
                  format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -652,8 +590,6 @@ def csl_aastex_format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/icarus', methods=['POST'])
 def csl_icarus_format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -668,7 +604,7 @@ def csl_icarus_format_export_post():
     csl_style = 'icarus'
     export_format = 2
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
                  format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -682,12 +618,10 @@ def csl_icarus_format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/icarus/<bibcode>', methods=['GET'])
 def csl_icarus_format_export_get(bibcode):
-    __setup_logging()
-
     csl_style = 'icarus'
     export_format = 2
 
-    logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
+    current_app.logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
                  format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -701,8 +635,6 @@ def csl_icarus_format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/mnras', methods=['POST'])
 def csl_mnras_format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -717,7 +649,7 @@ def csl_mnras_format_export_post():
     csl_style = 'mnras'
     export_format = 2
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
                  format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -731,12 +663,10 @@ def csl_mnras_format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/mnras/<bibcode>', methods=['GET'])
 def csl_mnras_format_export_get(bibcode):
-    __setup_logging()
-
     csl_style = 'mnras'
     export_format = 2
 
-    logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
+    current_app.logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
                  format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -750,8 +680,6 @@ def csl_mnras_format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/soph', methods=['POST'])
 def csl_soph_format_export_post():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -766,7 +694,7 @@ def csl_soph_format_export_post():
     csl_style = 'soph'
     export_format = 2
 
-    logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
+    current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
                  format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -780,12 +708,10 @@ def csl_soph_format_export_post():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/soph/<bibcode>', methods=['GET'])
 def csl_soph_format_export_get(bibcode):
-    __setup_logging()
-
     csl_style = 'soph'
     export_format = 2
 
-    logger.info('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
+    current_app.logger.info('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
                  format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=__default_fields())
@@ -799,8 +725,6 @@ def csl_soph_format_export_get(bibcode):
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/csl', methods=['POST'])
 def csl_format_export():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -827,7 +751,7 @@ def csl_format_export():
     if (not adsFormatter().verify(export_format)):
         return __return_response(__error_response_to_json('error: unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)'), 503)
 
-    logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
                  format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=__default_fields())
@@ -841,8 +765,6 @@ def csl_format_export():
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/custom', methods=['POST'])
 def custom_format_export():
-    __setup_logging()
-
     try:
         payload = request.get_json(force=True)  # post data in json
     except:
@@ -858,7 +780,7 @@ def custom_format_export():
     bibcodes = payload['bibcode']
     custom_format_str = payload['format']
 
-    logger.debug('received request with bibcodes={bibcodes} to export in a custom format: {custom_format_str}'.
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in a custom format: {custom_format_str}'.
                  format(bibcodes=''.join(bibcodes), custom_format_str=custom_format_str))
 
     if (len(bibcodes) == 0) or (len(custom_format_str) == 0):

@@ -7,7 +7,7 @@ import inspect
 from flask_restful import Api
 from flask_discoverer import Discoverer
 
-from adsmutils import ADSFlask, load_module
+from adsmutils import ADSFlask, load_module, setup_logging
 
 import exportsrv
 from exportsrv.views import bp
