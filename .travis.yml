@@ -1,8 +1,16 @@
 language: python
-python:
-- "2.7"
-install:
-- pip install -r requirements.txt
-script: "python tests/run_tests.py"
-sudo: false
 
+python:
+  - "2.7"
+
+install:
+  - "pip install -r requirements.txt"
+  - "pip install -r dev-requirements.txt"
+
+script:
+  - "py.test"
+
+after_success:
+  - "coveralls"
+
+sudo: false
