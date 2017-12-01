@@ -513,7 +513,6 @@ class CustomFormat:
         results = []
         if (self.status == 0):
             num_docs = self.get_num_docs()
-            results.append(self.header + '\n')
             for index in range(num_docs):
                 results.append(self.__get_doc(index))
             results.append('\n' + self.footer)

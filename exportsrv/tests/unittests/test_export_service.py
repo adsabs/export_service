@@ -13,6 +13,8 @@ from exportsrv.formatter.xmlFormat import XMLFormat
 from exportsrv.formatter.cslJson import CSLJson
 from exportsrv.formatter.csl import CSL, adsFormatter
 from exportsrv.formatter.customFormat import CustomFormat
+from exportsrv.formatter.convertCF import convert
+
 
 class TestExports(TestCase):
     def create_app(self):
@@ -133,6 +135,9 @@ class TestExports(TestCase):
         custom_format.set_json_from_solr(solrdata.data)
         # now compare it with an already formatted data that we know is correct
         assert (custom_format.get() == customTest.data)
+
+    def test_convert(self):
+        assert(convert("\\\\bibitem[%\\2m%(y)]\{%za1%y} %\\8l %\\Y,%\\j,%\\V,%\\p") == "\\\\bibitem[%2m\\(%Y)]\\{%H%Y} %8l\\ %Y\\,%j\\,%V\\,%p\\")
 
 if __name__ == '__main__':
   unittest.main()

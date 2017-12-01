@@ -56,19 +56,20 @@ class TestExportsError(TestCase):
             status = r.status_code
             response = r.data
             self.assertEqual(status, 400)
-            self.assertEqual(response, '{"msg": "error: no bibcodes found in payload (parameter name is `bibcode`)", "export": ""}')
+            self.assertEqual(response, '{"msg": "error: no bibcodes found in payload (parameter name is `bibcodes`)", "export": ""}')
 
 
     def test_missing_payload_param(self):
         """
         Ensure that all of the payload params were passed in, otherwise returns 400
         """
-        payload = {'bibcode': '', 'style': '', 'format': ''}
+        payload = {'bibcodes': '', 'style': '', 'format': ''}
         for route in ['/csl', '/custom']:
             r = self.client.post(route, data=json.dumps(payload))
             status = r.status_code
             response = r.data
             self.assertEqual(status, 400)
+            print '>>>>>response', response
             self.assertEqual(response, '{"msg": "error: not all the needed information received", "export": ""}')
 
 
@@ -76,7 +77,7 @@ class TestExportsError(TestCase):
         """
         Ensure that if payload contains the supported styles for each endpoints otherwise returns 503
         """
-        payload = {'bibcode': '1989ApJ...342L..71R', 'style': 'nonExsistingStyle', 'format': 'nonEsistingFormat'}
+        payload = {'bibcodes': '1989ApJ...342L..71R', 'style': 'nonExsistingStyle', 'format': 'nonEsistingFormat'}
         end_point = {'/csl':'{"msg": "error: unrecognizable style (supprted formats are: aastex, icarus, mnras, soph, aspc, apsj, aasj)", "export": ""}'}
         for key in end_point:
             r = self.client.post(key, data=json.dumps(payload))
@@ -90,7 +91,7 @@ class TestExportsError(TestCase):
         """
         Ensure that if payload contains the supported styles for each endpoints otherwise returns 503
         """
-        payload = {'bibcode': '1989ApJ...342L..71R', 'style': 'aastex', 'format': 'nonEsistingFormat'}
+        payload = {'bibcodes': '1989ApJ...342L..71R', 'style': 'aastex', 'format': 'nonEsistingFormat'}
         end_point = {'/csl':'{"msg": "error: unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)", "export": ""}'}
         for key in end_point:
             r = self.client.post(key, data=json.dumps(payload))

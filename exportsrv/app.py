@@ -7,21 +7,21 @@ import inspect
 from flask_restful import Api
 from flask_discoverer import Discoverer
 
-from adsmutils import ADSFlask, load_module, setup_logging
+from adsmutils import ADSFlask
 
-import exportsrv
 from exportsrv.views import bp
 
-def create_app(config=None):
+def create_app(**config):
     """
     Create the application and return it to the user
     :return: flask.Flask application
     """
 
-    proj_home = os.path.dirname(inspect.getsourcefile(exportsrv))
-    local_config = load_module(os.path.abspath(os.path.join(proj_home, 'config.py')))
+    if config:
+        app = ADSFlask(__name__, static_folder=None, local_config=config)
+    else:
+        app = ADSFlask(__name__, static_folder=None)
 
-    app = ADSFlask(__name__, static_folder=None, proj_home=proj_home, local_config=local_config)
     app.url_map.strict_slashes = False
 
     # Register extensions
