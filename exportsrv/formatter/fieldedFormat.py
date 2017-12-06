@@ -48,16 +48,28 @@ class FieldedFormat:
 
 
     def __init__(self, from_solr):
+        """
+
+        :param from_solr:
+        """
         self.from_solr = from_solr
         if (self.from_solr.get('responseHeader')):
             self.status = self.from_solr['responseHeader'].get('status', self.status)
 
 
     def get_status(self):
+        """
+
+        :return: status of solr query
+        """
         return self.status
 
 
     def get_num_docs(self):
+        """
+
+        :return: number of docs returned by solr query
+        """
         if (self.status == 0):
             if (self.from_solr.get('response')):
                 return self.from_solr['response'].get('numFound', 0)
@@ -117,6 +129,12 @@ class FieldedFormat:
 
 
     def __format_date(self, solr_date, export_format):
+        """
+
+        :param solr_date:
+        :param export_format:
+        :return:
+        """
         # solr_date has the format 2017-12-01T00:00:00Z
         date_time = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
         formats = {self.EXPORT_FORMAT_ADS: '%m/%Y', self.EXPORT_FORMAT_ENDNOTE: '%B %d, %Y',
@@ -126,12 +144,17 @@ class FieldedFormat:
 
 
     def __format_line_wrapped(self, text):
+        """
+
+        :param text:
+        :return:
+        """
         return fill(text, width=72)
 
 
     def __get_tags(self, export_format):
         """
-        from solr to each fielded types' tags
+        convert from solr to each fielded types' tags
         
         :param export_format: 
         :return: 
@@ -240,40 +263,103 @@ class FieldedFormat:
         return affiliation_list + '\n'
 
 
-    def __add_links_data_doc_links(self, a_doc, tag):
+    def __add_doc_links_property(self, a_doc, tag):
         """
-        format links_data
+        format links that are defined in the property field
+        :param a_doc: 
+        :param tag:
+        :return: 
+        """
+        link_dict = OrderedDict([
+            ('TOC', ['TOC', 'Table of Contents']),
+            ('LIBRARYCATALOG', ['LIBRARY', 'Library Entry']),
+        ])
+        link_list = ''
+        next_line = ';\n'
+        for link in link_dict:
+            if link in a_doc.get('property', ''):
+                link_list += tag + ' ' + link_dict[link][0] + ': ' + link_dict[link][1] + next_line
+        return link_list
+
+
+    def __add_doc_links_esource(self, a_doc, tag):
+        """
+        format links that are defined in the esource field
 
         :param a_doc:
         :param tag:
         :return:
         """
-        link_list = ''
         link_dict = OrderedDict([
-                    ('data',['DATA','On-line Data']),
-                    ('electr',['EJOURNAL','Electronic On-line Article (HTML)']),
-                    ('gif',['GIF','Scanned Article (GIF)']),
-                    ('article',['ARTICLE','Full Printable Article (PDF/Postscript)']),
-                    ('preprint',['PREPRINT','arXiv e-print']),
-                    ('arXiv',['','']),
-                    ('simbad',['SIMBAD','SIMBAD Objects']),
-                    ('ned',['NED','NED Objects']),
-                    ('openurl',['OPENURL','Library Link Server']),
-                ])
-
+            # (link type:[name, access])
+            ('EPRINT_HTML', 'arXiv Article'),
+            ('AUTHOR_HTML', 'Author Article'),
+            ('PUB_HTML', 'Publisher Article'),
+            ('ADS_SCAN', 'Scanned Article (GIF)'),
+            ('EPRINT_PDF', 'arXiv PDF'),
+            ('AUTHOR_PDF', 'Author PDF'),
+            ('PUB_PDF', 'Publisher PDF'),
+            ('ADS_PDF', 'ADS PDF'),
+        ])
+        link_list = ''
         next_line = ';\n'
-        linksType = ''
-        count = 1
-        for linksData in a_doc['links_data']:
-            link = ast.literal_eval(linksData)
-            if (link['type'] in link_dict.keys()):
-                # need to count the items for multiple ones (i.e., data)
-                if (linksType == link['type']):
-                    count += 1
-                else:
-                    count = 1
-                linksType = link['type']
-                link_list += tag + ' ' + link_dict[linksType][0] + ': ' + link_dict[linksType][1] + next_line
+        for link in link_dict:
+            if link.upper() in a_doc.get('esources', ''):
+                link_list += tag + ' ' + link + ': ' + link_dict[link] + next_line
+        return link_list
+
+
+    def __add_doc_links_data(self, a_doc, tag):
+        """
+        format links that are defined in the data field
+
+        :param a_doc:
+        :param tag:
+        :return:
+        """
+        link_dict = OrderedDict([
+                        ('ARI', 'Astronomisches Rechen-Institut'),
+                        ('SIMBAD', 'SIMBAD Database at the CDS'),
+                        ('NED', 'NASA/IPAC Extragalactic Database'),
+                        ('CDS', 'Strasbourg Astronomical Data Center'),
+                        ('Vizier', 'VizieR Catalog Service'),
+                        ('GCPD', 'The General Catalogue of Photometric Data'),
+                        ('Author', 'Author Hosted Dataset'),
+                        ('PDG', 'Particle Data Group'),
+                        ('MAST', 'Mikulski Archive for Space Telescopes'),
+                        ('HEASARC', '''NASA's High Energy Astrophysics Science Archive Research Center'''),
+                        ('INES', 'IUE Newly Extracted Spectra'),
+                        ('IBVS', 'Information Bulletin on Variable Stars'),
+                        ('Astroverse', 'CfA Dataverse'),
+                        ('ESA', 'ESAC Science Data Center'),
+                        ('NExScI', 'NASA Exoplanet Archive'),
+                        ('PDS', 'The NASA Planetary Data System'),
+                        ('AcA', 'Acta Astronomica Data Files'),
+                        ('ISO', 'Infrared Space Observatory'),
+                        ('ESO', 'European Southern Observatory'),
+                        ('CXO', 'Chandra X-Ray Observatory'),
+                        ('NOAO', 'National Optical Astronomy Observatory'),
+                        ('XMM', 'XMM Newton Science Archive'),
+                        ('Spitzer', 'Spitzer Space Telescope'),
+                        ('PASA', 'Publication of the Astronomical Society of Australia Datasets'),
+                        ('ATNF', 'Australia Telescope Online Archive'),
+                        ('KOA', 'Keck Observatory Archive'),
+                        ('Herschel', 'Herschel Science Center'),
+                        ('GTC', 'Gran Telescopio CANARIAS Public Archive'),
+                        ('BICEP2', 'BICEP/Keck Data'),
+                        ('ALMA', 'Atacama Large Millimeter/submillimeter Array'),
+                        ('CADC', 'Canadian Astronomy Data Center'),
+                        ('Zenodo', 'Zenodo Archive'),
+                        ('TNS', 'Transient Name Server'),
+                ])
+        data_dict = {}
+        for d in a_doc.get('data', ''):
+            data_dict[d.split(':')[0]] = int(d.split(':')[1])
+        link_list = ''
+        next_line = ';\n'
+        for link in link_dict:
+            if link in data_dict.keys():
+                link_list += tag + ' ' + link + ': ' + link_dict[link] + next_line
         return link_list
 
 
@@ -285,40 +371,22 @@ class FieldedFormat:
         :param tag:
         :return:
         """
+        link_dict = OrderedDict([
+            # (link type:[include if, name, has count])
+            ('abstract', [len(a_doc.get('abstract', '')), 'ABSTRACT', 'Abstract']),
+            ('citations', [a_doc.get('citation_count', 0), 'CITATIONS', 'Citations to the Article']),
+            ('reference', [len(a_doc.get('reference', '')), 'REFERENCES', 'References in the Article']),
+            ('coreads', [a_doc.get('read_count', ''), 'Co-Reads', 'Co-Reads']),
+        ])
         link_list = ''
-        link_dict =  OrderedDict([
-                        #(key:[link type, name])
-                        ('abstract',['ABSTRACT','Abstract']),
-                        ('citation_count', ['CITATIONS', 'Citations to the Article']),
-                        ('reference',['REFERENCES','References in the Article']),
-                        ('coreads',['Co-Reads','Co-Reads']),
-                        ('refereed_citation',['REFCIT', 'Refereed Citations to the Article']),
-                        ('links_data', []),
-                    ])
         next_line = ';\n'
         for link in link_dict:
-            if (link == 'abstract'):
-                if (len(a_doc.get(link, '')) > 0):
-                    link_list += tag + ' ' + link_dict[link][0] + ': ' + link_dict[link][1] + next_line
-            elif (link == 'citation_count'):
-                count = a_doc.get(link, '')
-                if (count > 0):
-                    link_list += tag + ' ' + link_dict[link][0] + ': ' + link_dict[link][1] + next_line
-            elif (link == 'reference'):
-                count = len(a_doc.get(link, ''))
-                if (count > 0):
-                    link_list += tag + ' ' + link_dict[link][0] + ': ' + link_dict[link][1] + next_line
-            elif (link == 'coreads'):
-                count = a_doc.get('read_count', '')
-                if (count > 0):
-                    link_list += tag + ' ' + link_dict[link][0] + ': ' + link_dict[link][1] + next_line
-            elif (link == 'refereed_citation'):
-                count = a_doc.get('citation_count', '')
-                if (count > 0):
-                    link_list += tag + ' ' + link_dict[link][0] + ': ' + link_dict[link][1] + next_line
-            elif (link == 'links_data'):
-                if 'links_data' in a_doc:
-                    link_list += self.__add_links_data_doc_links(a_doc, tag)
+            if (link_dict[link][0] > 0):
+                link_list += tag + ' ' + link_dict[link][1] + ': ' + link_dict[link][2] + next_line
+
+        link_list += self.__add_doc_links_property(a_doc, tag)
+        link_list += self.__add_doc_links_esource(a_doc, tag)
+        link_list += self.__add_doc_links_data(a_doc, tag)
         return link_list
 
 
@@ -387,6 +455,13 @@ class FieldedFormat:
 
 
     def __get_doc(self, index, fields, export_format):
+        """
+
+        :param index:
+        :param fields:
+        :param export_format:
+        :return:
+        """
         result = ''
         a_doc = self.from_solr['response'].get('docs')[index]
         for field in fields:
@@ -437,7 +512,7 @@ class FieldedFormat:
         result_dict = {}
         result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
         result_dict['export'] = ''.join(result for result in results)
-        return json.dumps(result_dict)
+        return result_dict
 
 
     def get_ads_fielded(self):

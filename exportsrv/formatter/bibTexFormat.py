@@ -33,16 +33,28 @@ class BibTexFormat:
     from_solr = {}
 
     def __init__(self, from_solr):
+        """
+
+        :param from_solr:
+        """
         self.from_solr = from_solr
         if (self.from_solr.get('responseHeader')):
             self.status = self.from_solr['responseHeader'].get('status', self.status)
 
 
     def get_status(self):
+        """
+
+        :return: status of solr query
+        """
         return self.status
 
 
     def get_num_docs(self):
+        """
+
+        :return: number of docs returned by solr query
+        """
         if (self.status == 0):
             if (self.from_solr.get('response')):
                 return self.from_solr['response'].get('numFound', 0)
@@ -51,7 +63,7 @@ class BibTexFormat:
 
     def __get_doc_type(self, solr_type):
         """
-        from solr to BibTex document type
+        convert from solr to BibTex document type
 
         :param solr_type:
         :return:
@@ -70,12 +82,24 @@ class BibTexFormat:
 
 
     def __format_date(self, solr_date):
+        """
+
+        :param solr_date:
+        :return:
+        """
         # solr_date has the format 2017-12-01T00:00:00Z
         date_time = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
         return date_time.strftime('%b')
 
 
     def __format_line_wrapped(self, left, right, format_style):
+        """
+
+        :param left:
+        :param right:
+        :param format_style:
+        :return:
+        """
         wrapped = fill(right, width=72, subsequent_indent=' ' * 8)
         return format_style.format(left, wrapped)
 
@@ -91,7 +115,7 @@ class BibTexFormat:
         if (doc_type_bibtex == '@ARTICLE'):
             fields = [('author', 'author'), ('title', 'title'), ('pub', 'journal'),
                       ('keyword', 'keywords'), ('year', 'year'), ('month', 'month'),
-                      ('volume', 'volume'), ('eid', 'eid'), ('page', 'pages'),
+                      ('volume', 'volume'), ('eid', 'eid'), ('page_range', 'pages'),
                       ('abstract', 'abstract'), ('doi', 'doi'), ('bibcode', 'adsurl'),
                       ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@BOOK'):
@@ -100,7 +124,7 @@ class BibTexFormat:
         elif (doc_type_bibtex == '@INBOOK'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub_raw', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
-                      ('page', 'pages'), ('abstract', 'abstract'), ('doi', 'doi'),
+                      ('page_range', 'pages'), ('abstract', 'abstract'), ('doi', 'doi'),
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@PROCEEDINGS'):
             fields = [('title', 'title'), ('keyword', 'keywords'), ('pub_raw', 'booktitle'),
@@ -111,7 +135,7 @@ class BibTexFormat:
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub_raw', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
                       ('series', 'series'), ('volume', 'volume'), ('month', 'month'),
-                      ('eid', 'eid'), ('page', 'pages'), ('abstract', 'abstract'),
+                      ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
                       ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@MISC'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
@@ -268,7 +292,7 @@ class BibTexFormat:
                 text += self.__add_in_wrapped(fields[field], encode_laTex(a_doc.get(field, '')), format_style_bracket_quotes)
             elif (field == 'eid'):
                 text += self.__add_in(fields[field], a_doc.get(field, ''), format_style_bracket)
-            elif (field == 'page'):
+            elif (field == 'page_range'):
                 text += self.__add_in(fields[field], ''.join(a_doc.get(field, '')), format_style_bracket)
             elif (field == 'bibcode'):
                 text += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_BBB_PATH'] + '/' + a_doc.get(field, ''), format_style_bracket)
@@ -283,8 +307,8 @@ class BibTexFormat:
     def get(self, include_abs=False):
         """
         
-        :param include_abs: 
-        :return: 
+        :param include_abs: if ture include abstract
+        :return: result of formatted records in a dict
         """
         num_docs = 0
         ref_BibTex = []
@@ -295,4 +319,4 @@ class BibTexFormat:
         result_dict = {}
         result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
         result_dict['export'] = ''.join(record for record in ref_BibTex)
-        return json.dumps(result_dict)
+        return result_dict

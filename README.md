@@ -14,7 +14,7 @@
 
 
 ###### 1. For endpoints `/bibtex` and `/bibtexabs` payload is defined as
-    {"bibcodes":["1980ApJS...44..137K","1980ApJS...44..489B"]}
+    {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"]}
 
 
 ###### 2. For the fielded export format we have the following endpoints
@@ -43,14 +43,14 @@ similarly to #1, payload should be defined as a comma separated list of bibcodes
 
 ###### 5. For endpoint /csl inlcude style and output format in the payload as defined below
 
-    {"bibcodes":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"", "format":""}
+    {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"", "format":""}
 
     where style can be: aastex, icarus, mnras, soph, aspc, apj, rhrv and export can be: unicode=1, html=2, latex=3
 
 
 ###### 6. For endpoint /custom
 
-    {"bibcodes":["1980ApJS...44..137K","1980ApJS...44..489B"], "format":"%ZEncoding:latex%ZLinelength:0\bibitem[%4m(%Y)]{%R} %5.3l\ %Y, %j, %V, %p.\n"}
+    {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "format":"%ZEncoding:latex%ZLinelength:0\bibitem[%4m(%Y)]{%R} %5.3l\ %Y, %j, %V, %p.\n"}
 
 
 

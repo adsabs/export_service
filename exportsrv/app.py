@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
-import inspect
+from werkzeug.serving import run_simple
 
 from flask_restful import Api
 from flask_discoverer import Discoverer
@@ -32,5 +31,4 @@ def create_app(**config):
     return app
 
 if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=True, use_reloader=False)
+    run_simple('0.0.0.0', 5000, create_app(), use_reloader=False, use_debugger=False)

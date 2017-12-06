@@ -29,6 +29,11 @@ def re_sub(pattern, replacement, string):
     return re.sub(pattern, _r, string)
 
 def convert(classicCF):
+    """
+
+    :param classicCF: classic's custom format
+    :return: new custom format
+    """
     currentCF = re_sub(r'%([\\])?(\d*\.?\d*)?([\(\{\[\"])?(\w+)([\)\}\]\"])?', r'\3%\2\4\1\5', classicCF)
     redundant = ['%b','%e','%f','%k','%r','%s','%t','%v','%w','%y']
     for r in redundant:
