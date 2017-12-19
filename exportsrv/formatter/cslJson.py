@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-#  -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 
 # This class accepts JSON object created by Solr and reformats it
@@ -14,16 +13,28 @@ class CSLJson:
     from_solr = {}
 
     def __init__(self, from_solr):
+        """
+
+        :param from_solr:
+        """
         self.from_solr = from_solr
         if (self.from_solr.get('responseHeader')):
             self.status = self.from_solr['responseHeader'].get('status', self.status)
 
 
     def get_status(self):
+        """
+
+        :return: status of solr query
+        """
         return self.status
 
 
     def get_num_docs(self):
+        """
+
+        :return: number of docs returned by solr query
+        """
         if (self.status == 0):
             if (self.from_solr.get('response')):
                 return self.from_solr['response'].get('numFound', 0)
@@ -108,6 +119,8 @@ class CSLJson:
     def get_author(self):
         """
         returns JSON code that has authors only
+
+        :return:
         """
         csl_list = []
         if (self.status == 0):
@@ -119,6 +132,8 @@ class CSLJson:
     def get(self):
         """
         returns JSON code that includes all the fields to build full citation and bibliography
+
+        :return:
         """
         csl_list = []
         if (self.status == 0):

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from flask import current_app
@@ -29,6 +28,12 @@ class CSL:
 
 
     def __init__(self, for_cls, csl_style, export_format=adsFormatter.unicode):
+        """
+
+        :param for_cls: input data for this class
+        :param csl_style: export journal style
+        :param export_format: export format
+        """
         self.for_cls = for_cls
         self.csl_style = csl_style
         self.export_format = export_format
@@ -70,6 +75,10 @@ class CSL:
 
 
     def __update_container_title(self):
+        """
+
+        :return:
+        """
         # for mnras we need abbreviation of the journal names
         # available from adsutils
         if (self.csl_style == 'mnras'):
@@ -87,6 +96,12 @@ class CSL:
 
 
     def __update_author_etal(self, author, bibcode):
+        """
+
+        :param author:
+        :param bibcode:
+        :return:
+        """
         # for icarus we need to add # authors beside the first author
         # in case more authors were available CSL would turn it into first author name et. al.
         # hence, from CSL we get something like Siltala, J. et al.\
@@ -103,6 +118,11 @@ class CSL:
 
 
     def __update_author_etal_add_emph(self, author):
+        """
+
+        :param author:
+        :return:
+        """
         # for Solar Physics we need to put et al. in \emph, which was not do able on the CLS
         # side, and hence we need to add it here
         # but note that it only applies if the output format is in latex format
@@ -113,6 +133,11 @@ class CSL:
 
 
     def __tokenize_cita(self, cita):
+        """
+
+        :param cita: citation
+        :return:
+        """
         # cita (citation) is author(s) followed by year inside a parentheses
         # first remove the parentheses and then split the author and year fields
         cita = self.REGEX_TOKENIZE_CITA.findall(cita[1:-1])
@@ -121,6 +146,11 @@ class CSL:
 
 
     def __tokenize_biblio(self, biblio):
+        """
+
+        :param biblio: bibliography
+        :return:
+        """
         # split the author and rest of biblio
         biblio = self.REGEX_TOKENIZE_BIBLIO.findall(biblio)
         biblio_author, biblio_rest = biblio[0]
@@ -128,6 +158,14 @@ class CSL:
 
 
     def __format_output(self, cita, biblio, bibcode, index):
+        """
+
+        :param cita:
+        :param biblio:
+        :param bibcode:
+        :param index:
+        :return:
+        """
         # apsj is a special case, display biblio as csl has format, just adjust translate characters for LaTex
         if (self.csl_style == 'apsj'):
             cita_author, cita_year = '', ''
@@ -148,7 +186,7 @@ class CSL:
         if (self.export_format == adsFormatter.latex):
             cita_author = cita_author.replace(" &", " \&")
             biblio_author = encode_laTex_author(biblio_author)
-            biblio_rest = encode_laTex(biblio_rest).decode('string_escape').replace('\{', '{').replace('\}', '}')
+            biblio_rest = encode_laTex(biblio_rest).encode('unicode_escape').replace('\{', '{').replace('\}', '}')
 
         format_style = {
             'mnras': u'\\bibitem[\\protect\\citaauthoryear{{{}}}{{{}}}]{{{}}} {}{}',
@@ -166,7 +204,7 @@ class CSL:
         """
 
         :param export_organizer: output format, default is plain
-        :return:
+        :return: for adsOrganizer.plain returns the result of formatted records in a dict
         """
         results = []
         if (export_organizer == adsOrganizer.plain):
@@ -178,7 +216,7 @@ class CSL:
             result_dict = {}
             result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
             result_dict['export'] = ''.join(result for result in results)
-            return json.dumps(result_dict)
+            return result_dict
         if (export_organizer == adsOrganizer.citation_bibliography):
             for cita, item, bibcode in zip(self.citation_item, self.bibliography.bibliography(), self.bibcode_list):
                 results.append(bibcode + '\n' + str(self.bibliography.cite(cita, '')) + '\n' + str(item) + '\n')

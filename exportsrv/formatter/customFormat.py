@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
@@ -59,6 +58,10 @@ class CustomFormat:
     author_count = {}
 
     def __init__(self, custom_format):
+        """
+
+        :param custom_format:
+        """
         self.custom_format = custom_format
         self.export_format = adsFormatter.unicode
         self.line_length = 80
@@ -88,6 +91,10 @@ class CustomFormat:
 
 
     def __get_num_authors(self):
+        """
+
+        :return:
+        """
         num_authors = []
         for a_doc in self.from_solr['response'].get('docs'):
             num_authors.append(len(a_doc['author']))
@@ -121,10 +128,18 @@ class CustomFormat:
 
 
     def get_status(self):
+        """
+
+        :return: status of solr query
+        """
         return self.status
 
 
     def get_num_docs(self):
+        """
+
+        :return: number of docs returned by solr query
+        """
         if (self.status == 0):
             if (self.from_solr.get('response')):
                 return self.from_solr['response'].get('numFound', 0)
@@ -248,6 +263,12 @@ class CustomFormat:
 
 
     def __format_date(self, solr_date, date_format):
+        """
+
+        :param solr_date:
+        :param date_format:
+        :return:
+        """
         # solr_date has the format 2017-12-01T00:00:00Z
         date_time = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
         formats = {'D': '%Xm/%Y', 'Y': '%Y'}
@@ -255,16 +276,28 @@ class CustomFormat:
 
 
     def __format_url(self, bibcode, url_format):
+        """
+
+        :param bibcode:
+        :param url_format:
+        :return:
+        """
         # U: has form: <a href="url">bibcode</a>
         # u: has the form: url/bibcode
         formats = {'U': u'<a href="{}">{}</a>', 'u': u'{}/{}'}
-        path = current_app.config['EXPORT_SERVICE_BBB_PATH']
+        path = current_app.config['EXPORT_SERVICE_FROM_BBB_URL']
         if (len(bibcode) > 0):
             return formats[url_format].format(path, bibcode)
         return ''
 
 
     def __format_line_wrapped(self, text, index):
+        """
+
+        :param text:
+        :param index:
+        :return:
+        """
         # remove line break if any
         text = text.replace('\\n', '')
 
@@ -285,6 +318,11 @@ class CustomFormat:
 
 
     def __get_affiliation_list(self, a_doc):
+        """
+
+        :param a_doc:
+        :return:
+        """
         if ('aff') in a_doc:
             counter = [''.join(i) for i in product(ascii_uppercase, repeat=2)]
             separator = '; '
@@ -299,6 +337,15 @@ class CustomFormat:
 
 
     def __get_n_authors(self, author_list, n, separator, n_parts_author, before_last):
+        """
+
+        :param author_list:
+        :param n:
+        :param separator:
+        :param n_parts_author:
+        :param before_last:
+        :return:
+        """
         split_parts = author_list.replace(before_last, '').split(separator)
         if (n == 1):
             return separator.join(split_parts[:n_parts_author])
@@ -309,26 +356,33 @@ class CustomFormat:
 
 
     def __get_author_list_shorten(self, author_list, num_authors, format, m, n):
+        """
+        Formats	First Author	Second Author..	Before Last	    shorten
+        A	        As in db	    As in db	    and	            first author, et al.
+        G	        lastname f. i.	lastname f. i.	                first author, et al.
+        H	        lastname	    lastname	    and	            display requested number of authors
+        I	        lastname f. i.	f. i. lastname	and	            first author, and xx colleagues
+        L	        lastname, f. i.	lastname, f. i.	and	            first author, and xx colleagues
+        N	        lastname, f. i.	lastname, f. i.		            first author, and xx colleagues
+        l	        lastname, f. i.	lastname, f. i.	&	            first author, et al.
+        M	        lastname	    lastname	and	                first author, et al.
+        m	        lastname	    lastname	&	                first author, et al.
+        n	        lastname	    +
+        a	        lastname
+        g	        lastname, f.i.	lastname, f.i.	and	            first author, and xx colleagues
+        h	        lastname	    lastname	    and	            first author \emph{et al.}
 
-        # Formats	First Author	Second Author..	Before Last	    shorten
-        # A	        As in db	    As in db	    and	            first author, et al.
-        # G	        lastname f. i.	lastname f. i.	                first author, et al.
-        # H	        lastname	    lastname	    and	            display requested number of authors
-        # I	        lastname f. i.	f. i. lastname	and	            first author, and xx colleagues
-        # L	        lastname, f. i.	lastname, f. i.	and	            first author, and xx colleagues
-        # N	        lastname, f. i.	lastname, f. i.		            first author, and xx colleagues
-        # l	        lastname, f. i.	lastname, f. i.	&	            first author, et al.
-        # M	        lastname	    lastname	and	                first author, et al.
-        # m	        lastname	    lastname	&	                first author, et al.
-        # n	        lastname	    +
-        # a	        lastname
-        # g	        lastname, f.i.	lastname, f.i.	and	            first author, and xx colleagues
-        # h	        lastname	    lastname	    and	            first author \emph{et al.}
+        n.m: Maximum number of entries in field (optional).
+        If the number of authors in the list is larger than n, the list will be truncated and returned as
+        "author1, author2, ..., authorm, et al.". If m is not specified, n.1 is assumed.
 
-        # n.m: Maximum number of entries in field (optional).
-        # If the number of authors in the list is larger than n, the list will be truncated and returned as
-        # "author1, author2, ..., authorm, et al.". If m is not specified, n.1 is assumed.
-
+        :param author_list:
+        :param num_authors:
+        :param format:
+        :param m:
+        :param n:
+        :return:
+        """
         format_etal = u'{}, et al.'
         format_n_authors = u'{} and {}'
         format_with_n_colleagues = u'{}, and {} colleagues'
@@ -384,6 +438,12 @@ class CustomFormat:
 
 
     def __get_author_list(self, format, index):
+        """
+
+        :param format:
+        :param index:
+        :return:
+        """
         authors = self.from_cls.get(format)[index]
         count = self.author_count.get(format)[index]
         # see if author list needs to get shorten
@@ -401,6 +461,11 @@ class CustomFormat:
 
 
     def __get_keywords(self, a_doc):
+        """
+
+        :param a_doc:
+        :return:
+        """
         if ('keyword') in a_doc:
             separator = ', '
             keyword_list = ''
@@ -429,6 +494,12 @@ class CustomFormat:
 
 
     def __get_publication(self, format, a_doc):
+        """
+
+        :param format:
+        :param a_doc:
+        :return:
+        """
         format = format[-1]
         if (format == 'J'):
             # returns the journal name
@@ -451,6 +522,12 @@ class CustomFormat:
 
 
     def __encode(self, text, name):
+        """
+
+        :param text:
+        :param name:
+        :return:
+        """
         if (self.export_format == adsFormatter.unicode):
             return text
         elif (self.export_format == adsFormatter.html):
@@ -467,6 +544,13 @@ class CustomFormat:
 
 
     def __add_in(self, result, field, value):
+        """
+
+        :param result:
+        :param field:
+        :param value:
+        :return:
+        """
         if (len(value) > 0):
             return result.replace(field[1], self.__encode(value, field[2]))
         else:
@@ -476,6 +560,11 @@ class CustomFormat:
 
 
     def __get_doc(self, index):
+        """
+
+        :param index: index to the docs structure returned from solr
+        :return:
+        """
         result = self.custom_format
         a_doc = self.from_solr['response'].get('docs')[index]
         for field in self.parsed_spec:
@@ -507,17 +596,16 @@ class CustomFormat:
     def get(self):
         """
         
-        :return: 
+        :return: result of formatted records in a dict
         """
         num_docs = 0
         results = []
         if (self.status == 0):
             num_docs = self.get_num_docs()
-            results.append(self.header + '\n')
             for index in range(num_docs):
                 results.append(self.__get_doc(index))
             results.append('\n' + self.footer)
         result_dict = {}
         result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
         result_dict['export'] = ''.join(result for result in results)
-        return json.dumps(result_dict)
+        return result_dict

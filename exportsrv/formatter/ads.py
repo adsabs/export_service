@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # these three classes are basically just enums, verifying valid members
@@ -6,9 +5,30 @@
 class adsFormatter:
     unicode, html, latex = range(3)
 
-    def verify(self, format):
-        if (format == adsFormatter.unicode) or (format == adsFormatter.html) or (format == adsFormatter.latex):
+    def __is_number(self, s):
+        """
+
+        :param s:
+        :return:
+        """
+        try:
+            int(s)
             return True
+        except ValueError:
+            pass
+        try:
+            import unicodedata
+            unicodedata.numeric(s)
+            return True
+        except (TypeError, ValueError):
+            pass
+        return False
+
+    def verify(self, format):
+        if self.__is_number(format):
+            format = int(format)
+            if (format == adsFormatter.unicode) or (format == adsFormatter.html) or (format == adsFormatter.latex):
+                return True
         return False
 
 class adsOrganizer:
