@@ -884,9 +884,9 @@ def csl_format_export():
         return __return_response({'error': 'not all the needed information received'}, 400)
 
     if (not adsCSLStyle().verify(csl_style)):
-        return __return_response({'error': 'unrecognizable style (supprted formats are: ' + adsCSLStyle().get() + ')'}, 503)
+        return __return_response({'error': 'unrecognizable style (supprted formats are: ' + adsCSLStyle().get() + ')'}, 400)
     if (not adsFormatter().verify(export_format)):
-        return __return_response({'error': 'unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)'}, 503)
+        return __return_response({'error': 'unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)'}, 400)
 
     current_app.logger.debug('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
                  format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))

@@ -45,7 +45,7 @@ similarly to #1, payload should be defined as a comma separated list of bibcodes
 
     {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"", "format":""}
 
-    where style can be: aastex, icarus, mnras, soph, aspc, apj, rhrv and export can be: unicode=1, html=2, latex=3
+    where style can be: aastex, icarus, mnras, soph, aspc, apj, rhrv and format can be: 1, 2 or 3, for output format Unicode, HTML or LaTeX respectively.
 
 
 ###### 6. For endpoint /custom

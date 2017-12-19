@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import xml.etree.cElementTree as ET
@@ -160,7 +159,7 @@ class XMLFormat:
         :param parent: 
         :return: 
         """
-        link_url_format = current_app.config['EXPORT_RESOLVE_URL'] + '/{bibcode}/{link_type}'
+        link_url_format = current_app.config['EXPORT_SERVICE_RESOLVE_URL'] + '/{bibcode}/{link_type}'
         bibcode = a_doc.get('bibcode', '')
 
         link_dict = OrderedDict([
@@ -181,7 +180,7 @@ class XMLFormat:
         :param parent:
         :return:
         """
-        link_url_format = current_app.config['EXPORT_RESOLVE_URL'] + '/{bibcode}/{link_type}'
+        link_url_format = current_app.config['EXPORT_SERVICE_RESOLVE_URL'] + '/{bibcode}/{link_type}'
         bibcode = a_doc.get('bibcode', '')
 
         link_dict = OrderedDict([
@@ -210,7 +209,7 @@ class XMLFormat:
         :param parent:
         :return:
         """
-        link_url_format = current_app.config['EXPORT_RESOLVE_URL'] + '/{bibcode}/{link_type}'
+        link_url_format = current_app.config['EXPORT_SERVICE_RESOLVE_URL'] + '/{bibcode}/{link_type}'
         bibcode = a_doc.get('bibcode', '')
         link_dict = OrderedDict([
                         ('ARI', 'Astronomisches Rechen-Institut'),
@@ -265,7 +264,7 @@ class XMLFormat:
         :param parent:
         :return:
         """
-        link_url_format = current_app.config['EXPORT_RESOLVE_URL'] + '/{bibcode}/{link_type}'
+        link_url_format = current_app.config['EXPORT_SERVICE_RESOLVE_URL'] + '/{bibcode}/{link_type}'
         bibcode = a_doc.get('bibcode', '')
         link_dict =  OrderedDict([
                         #(link type:[include if, name, has count])
@@ -411,7 +410,7 @@ class XMLFormat:
             elif (field == 'keyword'):
                 self.__add_keywords(a_doc, record, self.EXPORT_FORMAT_DUBLIN_XML)
             elif (field == 'url'):
-                self.__add_in(record, fields[field], current_app.config.get('EXPORT_SERVICE_BBB_PATH') + '/' + a_doc.get('bibcode', ''))
+                self.__add_in(record, fields[field], current_app.config.get('EXPORT_SERVICE_FROM_BBB_URL') + '/' + a_doc.get('bibcode', ''))
             elif (field == 'abstract'):
                 self.__add_in(record, fields[field], self.__format_line_wrapped(a_doc.get(field, '')))
 
@@ -445,7 +444,7 @@ class XMLFormat:
             elif (field == 'keyword'):
                 self.__add_keywords(a_doc, record, self.EXPORT_FORMAT_REF_XML)
             elif (field == 'url'):
-                self.__add_in(record, fields[field], current_app.config.get('EXPORT_SERVICE_BBB_PATH') + '/' + a_doc.get('bibcode', ''))
+                self.__add_in(record, fields[field], current_app.config.get('EXPORT_SERVICE_FROM_BBB_URL') + '/' + a_doc.get('bibcode', ''))
             elif (field == 'citation_count'):
                 self.__add_in(record, fields[field], str(a_doc.get(field, '')))
             elif (field == 'abstract') and (includeAbs):

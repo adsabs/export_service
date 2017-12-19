@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from flask_testing import TestCase
@@ -138,6 +137,12 @@ class TestExports(TestCase):
 
     def test_convert(self):
         assert(convert("\\\\bibitem[%\\2m%(y)]\{%za1%y} %\\8l %\\Y,%\\j,%\\V,%\\p") == "\\\\bibitem[%2m\\(%Y)]\\{%H%Y} %8l\\ %Y\\,%j\\,%V\\,%p\\")
+
+    def test_ads_formatter(self):
+        assert(adsFormatter().verify('1'), True)
+        assert(adsFormatter().verify(1), True)
+        assert(adsFormatter().verify('10'), False)
+        assert(adsFormatter().verify(10), False)
 
 if __name__ == '__main__':
   unittest.main()

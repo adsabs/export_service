@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 
 from flask import current_app
 import requests

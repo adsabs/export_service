@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from collections import OrderedDict
@@ -295,7 +294,7 @@ class BibTexFormat:
             elif (field == 'page_range'):
                 text += self.__add_in(fields[field], ''.join(a_doc.get(field, '')), format_style_bracket)
             elif (field == 'bibcode'):
-                text += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_BBB_PATH'] + '/' + a_doc.get(field, ''), format_style_bracket)
+                text += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_FROM_BBB_URL'] + '/' + a_doc.get(field, ''), format_style_bracket)
             elif (field == 'adsnotes'):
                 text += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_ADS_NOTES'], format_style_bracket)
         # remove the last comma,

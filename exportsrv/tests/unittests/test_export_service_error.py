@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from flask_testing import TestCase
@@ -39,7 +38,6 @@ class TestExportsError(TestCase):
                       '/aastex','/icarus','/mnras','/soph']:
             r = self.client.get(route)
             status = r.status_code
-            response = r.data
             self.assertEqual(status, 405)
 
 
@@ -74,7 +72,7 @@ class TestExportsError(TestCase):
 
     def test_non_exist_style(self):
         """
-        Ensure that if payload contains the supported styles for each endpoints otherwise returns 503
+        Ensure that if payload contains the supported styles for each endpoints otherwise returns 400
         """
         payload = {'bibcode': '1989ApJ...342L..71R', 'style': 'nonExsistingStyle', 'format': 'nonEsistingFormat'}
         end_point = {'/csl':'{"error": "unrecognizable style (supprted formats are: aastex, icarus, mnras, soph, aspc, apsj, aasj)"}'}
@@ -82,13 +80,13 @@ class TestExportsError(TestCase):
             r = self.client.post(key, data=json.dumps(payload))
             status = r.status_code
             response = r.data
-            self.assertEqual(status, 503)
+            self.assertEqual(status, 400)
             self.assertEqual(response, end_point[key])
 
 
     def test_non_exist_format(self):
         """
-        Ensure that if payload contains the supported styles for each endpoints otherwise returns 503
+        Ensure that if payload contains the supported styles for each endpoints otherwise returns 400
         """
         payload = {'bibcode': '1989ApJ...342L..71R', 'style': 'aastex', 'format': 'nonEsistingFormat'}
         end_point = {'/csl':'{"error": "unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)"}'}
@@ -96,7 +94,7 @@ class TestExportsError(TestCase):
             r = self.client.post(key, data=json.dumps(payload))
             status = r.status_code
             response = r.data
-            self.assertEqual(status, 503)
+            self.assertEqual(status, 400)
             self.assertEqual(response, end_point[key])
 
 

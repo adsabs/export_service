@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from collections import OrderedDict
@@ -482,7 +481,7 @@ class FieldedFormat:
             elif (field == 'comment'):
                 result += self.__add_in(fields[field], self.__format_line_wrapped(''.join(a_doc.get(field, ''))))
             elif (field == 'url'):
-                result += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_BBB_PATH'] + '/' + a_doc.get('bibcode', ''))
+                result += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_FROM_BBB_URL'] + '/' + a_doc.get('bibcode', ''))
             elif (field == 'endRecord'):
                 result += self.__add_in(fields[field], ' ')
             elif (field == 'pub_raw'):
