@@ -10,7 +10,7 @@ EXPORT_SERVICE_RESOLVE_URL = "https://ui.adsabs.harvard.edu/resolve"
 
 EXPORT_SERVICE_ADS_NOTES = 'Provided by the SAO/NASA Astrophysics Data System'
 
-EXPORT_SERVICE_MAX_RECORDS_SOLR = 6000
+EXPORT_SERVICE_MAX_RECORDS_SOLR = 2000
 
 EXPORT_SERVICE_LATEX_ACCENT = [
     [u"à", "\\`a"],  # Grave accent

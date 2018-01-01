@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 # This class accepts JSON object created by Solr and reformats it
 # for the CSL processor. To use
 #    jsonForCSL = CSLJson(jsonFromSolr).get()
