@@ -28,7 +28,9 @@ def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
             data=data,
             headers=headers
         )
-        return response.json()
+        if (response.status_code == 200):
+            return response.json()
+        return None
     except requests.exceptions.RequestException as e:
         # catastrophic error. bail.
         current_app.logger.error('Solr exception. Terminated request.')

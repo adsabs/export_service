@@ -1,6 +1,4 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
-
 
 from flask import current_app, request, Blueprint, Response
 from flask_discoverer import advertise
