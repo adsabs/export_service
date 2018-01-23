@@ -56,7 +56,7 @@ similarly to #1, payload should be defined as a comma separated list of bibcodes
 
 #### Make a GET request:
 
-`curl -H "Content-Type: application/json" -X GET -d <endpoint>/<bibcode>`
+`curl <endpoint>/<bibcode>`
 
 
 ##### where `<endpoint>` are as follows:
