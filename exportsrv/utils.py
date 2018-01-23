@@ -29,7 +29,12 @@ def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
             headers=headers
         )
         if (response.status_code == 200):
-            return response.json()
+            # make sure solr found the documents
+            from_solr = response.json()
+            if (from_solr.get('response')):
+                num_docs = from_solr['response'].get('numFound', 0)
+                if num_docs > 0:
+                    return from_solr
         return None
     except requests.exceptions.RequestException as e:
         # catastrophic error. bail.
