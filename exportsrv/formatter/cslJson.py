@@ -48,13 +48,14 @@ class CSLJson:
         :return: 
         """
         author_list = []
-        for author in a_doc['author']:
-            author_parts = author.split(', ')
-            oneAuthor = {}
-            oneAuthor['family'] = author_parts[0]
-            if (len(author_parts) >= 2):
-                oneAuthor['given'] = author_parts[1]
-            author_list.append(oneAuthor)
+        if 'author' in a_doc:
+            for author in a_doc['author']:
+                author_parts = author.split(', ')
+                oneAuthor = {}
+                oneAuthor['family'] = author_parts[0]
+                if (len(author_parts) >= 2):
+                    oneAuthor['given'] = author_parts[1]
+                author_list.append(oneAuthor)
         return author_list
 
 
@@ -71,7 +72,8 @@ class CSLJson:
                   'talk':'paper-conference','software':'article','proposal':'paper-conference',
                   'pressrelease':'paper-conference', 'circular':'article', 'newsletter':'article',
                   'catalog':'article','phdthesis':'thesis','mastersthesis':'thesis',
-                  'techreport':'report', 'intechreport':'report'}
+                  'techreport':'report', 'intechreport':'report',
+                  'bookreview': 'article-journal', 'erratum': 'article-journal', 'obituary': 'article-journal'}
         return fields.get(solr_type, '')
 
 
@@ -99,6 +101,10 @@ class CSLJson:
         :return: 
         """
         a_doc = self.from_solr['response'].get('docs')[index]
+        print '--------------------'
+        print a_doc
+        print '--------------------'
+
         data = {}
         data['id'] = 'ITEM-{0}'.format(index + 1)
         data['issued'] = ({'date-parts': [[int(a_doc['year'])]]})

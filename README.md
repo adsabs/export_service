@@ -4,86 +4,98 @@
 
 # ADS Export Service
 
+## Short Summary
 
-#### Make a POST request:
-
-`curl -H "Content-Type: application/json" -X POST -d <payload> <endpoint>`
-
-
-##### where `<payload>` and `<endpoint>` are as follows:
+This microservice exports ADS records with various formats including BibTex, AASTex, and multiple fielded and xml options.
 
 
-###### 1. For endpoints `/bibtex` and `/bibtexabs` payload is defined as
-    {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"]}
+## Setup (recommended)
+
+    $ virtualenv python
+    $ source python/bin/activate
+    $ pip install -r requirements.txt
+    $ pip install -r dev-requirements.txt
+    $ vim local_config.py # edit, edit
+
+    
+## POST a request:
+
+To get e.g. BibTeX for a set of records you do a POST request to the endpoint
+
+    https://api.adsabs.harvard.edu/v1/export/bibtex
+
+within the POST header payload is defined as
+
+    {"bibcode":["<bibcode1>","<bibcode2>", ...]}
+    
+For example to get the BibTeX for the record with bibcode 2015ApJS..219...21Z, you would do
+
+    curl -H "Authorization: Bearer <your API token>" -H "Content-Type: application/json" -X POST -d '{"bibcode":["2015ApJS..219...21Z"]}' https://api.adsabs.harvard.edu/v1/export/bibtex
 
 
-###### 2. For the fielded export format we have the following endpoints
-* /ads
-* /endnote
-* /procite
-* /ris
-* /refworks
-* /medlars
+and the API then responds in JSON with 
 
-similarly to #1, payload should be defined as a comma separated list of bibcodes
+    {u'msg': u'Retrieved 1 abstracts, starting with number 1.  Total number selected: 1.', u'export': u'@ARTICLE{2015ApJS..219...21Z,\n   author = {{Zhang}, M. and {Fang}, M. and {Wang}, H. and {Sun}, J. and \n\t{Wang}, M. and {Jiang}, Z. and {Anathipindika}, S.},\n    title = "{A Deep Near-infrared Survey toward the Aquila Molecular Cloud. I. Molecular Hydrogen Outflows}",\n  journal = {\\apjs},\narchivePrefix = "arXiv",\n   eprint = {1506.08372},\n primaryClass = "astro-ph.SR",\n keywords = {infrared: ISM, ISM: jets and outflows, shock waves, stars: formation, stars: winds, outflows},\n     year = 2015,\n    month = aug,\n   volume = 219,\n      eid = {21},\n    pages = {21},\n      doi = {10.1088/0067-0049/219/2/21},\n   adsurl = {http://adsabs.harvard.edu/abs/2015ApJS..219...21Z},\n  adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'}
+    
+    
+###### 1. For the following endpoints output is in latex format:
+* **/bibtex** *BibTeX reference list*
+* **/bibtexabs** *BibTeX with abstracts*
+* **/aastex** *AASTeX format*
+* **/icarus** *Icarus format*
+* **/mnras** *MNRAS format*
+* **/soph** *SoPh format*
 
+###### 2. For the fielded export format we have the following endpoints:
+* **/ads** *Generic tagged abstracts*
+* **/endnote** *EndNote format*
+* **/procite** *ProCite format*
+* **/ris** *Refman format*
+* **/refworks** *RefWorks format*
+* **/medlars** *MEDLARS format*
 
-###### 3. For endpoint xml export format we have teh following endpoints
-* /dcxml
-* /refxml
-* /refabsxml
+###### 3. For the xml export format we have the following endpoints:
+* **/dcxml** *Dublin Core XML*
+* **/refxml** *XML references*
+* **/refabsxml** *XML with abstracts*
 
-
-###### 4. For the following endpoints output is in latex format
-* /aastex
-* /icarus
-* /mnras
-* /soph
-
-
-###### 5. For endpoint /csl inlcude style and output format in the payload as defined below
+###### 4. Using endpoint /csl allows various styles and output formats to be defined in payload as follows:
 
     {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"", "format":""}
 
-    where style can be: aastex, icarus, mnras, soph, aspc, apj, rhrv and format can be: 1, 2 or 3, for output format Unicode, HTML or LaTeX respectively.
+    where style can be: aastex, icarus, mnras, soph, aspc, apj, rhrv and format can be: 1, 2 or 3, for output formats Unicode, HTML or LaTeX respectively.
 
 
-###### 6. For endpoint /custom
+###### 5. For endpoint /custom define payload as:
 
     {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "format":"%ZEncoding:latex%ZLinelength:0\bibitem[%4m(%Y)]{%R} %5.3l\ %Y, %j, %V, %p.\n"}
 
 
+## GET a request:
 
-#### Make a GET request:
+GET endpoints are similar to the POSTS endpoints. The `curl` command has the following syntax:
 
-`curl <endpoint>/<bibcode>`
-
-
-##### where `<endpoint>` are as follows:
-* /bibtex
-* /bibtexabs
-* /ads
-* /endnote
-* /procite
-* /ris
-* /refworks
-* /medlars
-* /dcxml
-* /refxml
-* /refabsxml
-* /aastex
-* /icarus
-* /mnras
-* /soph
+    curl -H "Authorization: Bearer <your API token>" <endpoint>/<bibcode>`
 
 
-#### Convert a Classic Custom Format to the Current Custom Format:
+## To Convert a Classic Custom Format to the Current Custom Format:
 
-`curl -H "Content-Type: application/json" -X POST -d <payload> <endpoint>`
+    curl -H "Authorization: Bearer <your API token>" -H "Content-Type: application/json" -X POST -d <payload> <endpoint>
 
-##### where `<endpoint>` is `/convert` and `<payload>` is formatted as: 
+where `<endpoint>` is `/convert` and `<payload>` is formatted as: 
     {"format":<classic custom format string>}
 
-##### For example:
+For example:
 
-`curl -H "Content-Type: application/json" -X POST -d '{"format":"\\\\bibitem[%\\2m%(y)]\\{%za1%y} %\\8l %\\Y,%\\j,%\\V,%\\p"}' http://localhost:4000/convert`
+    curl -H "Authorization: Bearer <your API token>" -H "Content-Type: application/json" -X POST -d '{"format":"\\\\bibitem[%\\2m%(y)]\\{%za1%y} %\\8l %\\Y,%\\j,%\\V,%\\p"}' https://api.adsabs.harvard.edu/v1/export
+
+## Testing
+
+On your desktop run:
+
+    $ py.test
+    
+
+## Maintainers
+
+Golnaz, Edwin

@@ -91,7 +91,8 @@ class FieldedFormat:
                       'talk': 'Conference Paper', 'software':'Miscellaneous', 'proposal':'Miscellaneous',
                       'pressrelease':'Journal Article', 'circular':'Journal Article', 'newsletter':'Journal Article',
                       'catalog':'Journal Article', 'phdthesis':'Thesis', 'mastersthesis':'Thesis',
-                      'techreport':'Report', 'intechreport':'Report'}
+                      'techreport':'Report', 'intechreport':'Report',
+                      'bookreview': 'Journal Article', 'erratum': 'Journal Article', 'obituary': 'Journal Article'}
         elif (export_format == self.EXPORT_FORMAT_PROCITE):
             fields = {'article': 'Journal', 'book': 'Book, Whole', 'inbook': 'Book Chapter',
                       'proceedings': 'Journal', 'inproceedings': 'Conference',
@@ -99,7 +100,8 @@ class FieldedFormat:
                       'talk': 'Conference', 'software':'Miscellaneous', 'proposal':'Miscellaneous',
                       'pressrelease':'Journal', 'circular':'Journal', 'newsletter':'Journal',
                       'catalog':'Journal', 'phdthesis':'Thesis/Dissertation', 'mastersthesis':'Thesis/Dissertation',
-                      'techreport':'Report', 'intechreport':'Report'}
+                      'techreport':'Report', 'intechreport':'Report',
+                      'bookreview': 'Journal', 'erratum': 'Journal', 'obituary': 'Journal'}
         elif (export_format == self.EXPORT_FORMAT_REFMAN):
             fields = {'article': 'JOUR', 'book': 'BOOK', 'inbook': 'CHAP',
                       'proceedings': 'JOUR', 'inproceedings': 'CONF',
@@ -107,7 +109,8 @@ class FieldedFormat:
                       'talk': 'CONF', 'software':'MISC', 'proposal':'MISC',
                       'pressrelease':'JOUR', 'circular':'JOUR', 'newsletter':'JOUR',
                       'catalog':'JOUR', 'phdthesis':'Thesis/Dissertation', 'mastersthesis':'Thesis/Dissertation',
-                      'techreport':'RPRT', 'intechreport':'RPRT'}
+                      'techreport':'RPRT', 'intechreport':'RPRT',
+                      'bookreview': 'JOUR', 'erratum': 'JOUR', 'obituary': 'JOUR'}
         elif (export_format == self.EXPORT_FORMAT_REFWORKS):
             fields = {'article': 'Journal', 'book': 'Book, Whole', 'inbook': 'Book, Chapter',
                       'proceedings': 'Journal', 'inproceedings': 'Conference Proceeding',
@@ -115,7 +118,8 @@ class FieldedFormat:
                       'talk': 'Conference Proceeding', 'software':'Generic', 'proposal':'Generic',
                       'pressrelease':'Journal', 'circular':'Journal', 'newsletter':'Journal',
                       'catalog':'Journal', 'phdthesis':'Thesis/Dissertation', 'mastersthesis':'Thesis/Dissertation',
-                      'techreport':'Report', 'intechreport':'Report'}
+                      'techreport':'Report', 'intechreport':'Report',
+                      'bookreview': 'Journal', 'erratum': 'Journal', 'obituary': 'Journal'}
         elif (export_format == self.EXPORT_FORMAT_MEDLARS):
             fields = {'article': 'Journal Article', 'book': 'Book', 'inbook': 'Book Chapter',
                       'proceedings': 'Journal Article', 'inproceedings': 'Conference',
@@ -123,7 +127,8 @@ class FieldedFormat:
                       'talk': 'Conference', 'software':'Miscellaneous', 'proposal':'Miscellaneous',
                       'pressrelease':'Journal Article', 'circular':'Journal Article', 'newsletter':'Journal Article',
                       'catalog':'Journal Article', 'phdthesis':'Thesis', 'mastersthesis':'Thesis',
-                      'techreport':'Report', 'intechreport':'Report'}
+                      'techreport':'Report', 'intechreport':'Report',
+                      'bookreview': 'Journal Article', 'erratum': 'Journal Article', 'obituary': 'Journal Article'}
         return fields.get(solr_type, '')
 
 
@@ -160,37 +165,43 @@ class FieldedFormat:
         """
         if (export_format == self.EXPORT_FORMAT_ADS):
             return (OrderedDict([('bibcode', '%R'), ('title', '%T'), ('author', '%A'),
-                                 ('aff', '%F'), ('pub', '%J'), ('volume', '%V'),
-                                 ('date', '%D'), ('page', '%P'), ('keyword', '%K'),
-                                 ('', '%G'), ('copyright', '%C'), ('links', '%I'),
-                                 ('url', '%U'), ('comment', '%X'), ('', '%S'),
-                                 ('abstract', '%B'), ('doi', '%Y DOI:')]))
+                                 ('aff', '%F'), ('pub_raw', '%J'), ('volume', '%V'),
+                                 ('date', '%D'), ('page', '%P'), ('lastpage', '%L'),
+                                 ('keyword', '%K'), ('', '%G'), ('copyright', '%C'),
+                                 ('links', '%I'), ('url', '%U'), ('comment', '%X'),
+                                 ('', '%S'), ('abstract', '%B'), ('doi', '%Y DOI:'),
+                                 ('eprintid', '%Y eprintid:')]))
         if (export_format == self.EXPORT_FORMAT_ENDNOTE):
             return (OrderedDict([('doctype', '%0'), ('title', '%T'), ('author', '%A'),
                                  ('aff', '%+'), ('pub', '%B'), ('volume', '%V'),
-                                 ('year', '%D'), ('date', '%8'), ('keyword', '%K'),
-                                 ('url', '%U'), ('comment', '%Z'), ('abstract', '%X'),
-                                 ('doi', '%3')]))
+                                 ('year', '%D'), ('date', '%8'), ('page_range', '%P'),
+                                 ('keyword', '%K'), ('url', '%U'), ('comment', '%Z'),
+                                 ('abstract', '%X'), ('doi', '%3'), ('eprintid', '%= eprint:'),
+                                 ('isbn', '%@')]))
         if (export_format == self.EXPORT_FORMAT_PROCITE):
             return (OrderedDict([('doctype', 'TY  -'), ('title', 'T1  -'), ('author', 'A1  -'),
-                                 ('pub', 'JO  -'), ('volume', 'VL  -'), ('date', 'Y1  -'),
-                                 ('page', 'SP  -'), ('keyword', 'KW  -'), ('url', 'UR  -'),
-                                 ('abstract', 'N2  -'), ('doi', 'DO  -'), ('endRecord', 'ER  -')]))
+                                 ('pub_raw', 'JO  -'), ('volume', 'VL  -'), ('date', 'Y1  -'),
+                                 ('page', 'SP  -'), ('lastpage', 'EP  -'), ('keyword', 'KW  -'),
+                                 ('url', 'UR  -'), ('abstract', 'N2  -'), ('doi', 'DO  -'),
+                                 ('eprintid', 'C1  - eprint:'), ('isbn', 'SN  -'), ('endRecord', 'ER  -')]))
         if (export_format == self.EXPORT_FORMAT_REFMAN):
             return (OrderedDict([('doctype', 'TY  -'), ('title', 'T1  -'), ('author', 'A1  -'),
-                                 ('pub', 'JO  -'), ('volume', 'VL  -'), ('date', 'Y1  -'),
-                                 ('page', 'SP  -'), ('keyword', 'KW  -'), ('url', 'UR  -'),
-                                 ('abstract', 'N2  -'), ('doi', 'DO  -'), ('endRecord', 'ER  -')]))
+                                 ('pub_raw', 'JO  -'), ('volume', 'VL  -'), ('date', 'Y1  -'),
+                                 ('page', 'SP  -'), ('lastpage', 'EP  -'), ('keyword', 'KW  -'),
+                                 ('url', 'UR  -'), ('abstract', 'N2  -'), ('doi', 'DO  -'),
+                                 ('eprintid', 'C1  - eprint:'), ('isbn', 'SN  -'), ('endRecord', 'ER  -')]))
         if (export_format == self.EXPORT_FORMAT_REFWORKS):
             return (OrderedDict([('doctype', 'RT'), ('title', 'T1'), ('author', 'A1'),
-                                 ('aff', 'AD'), ('pub', 'JF'), ('volume', 'VO'),
+                                 ('aff', 'AD'), ('pub_raw', 'JF'), ('volume', 'VO'),
                                  ('year', 'YR'), ('date', 'FD'), ('page', 'SP'),
-                                 ('keyword', 'K1'), ('url', 'LK'), ('comment', 'NO'),
-                                 ('abstract', 'AB'), ('doi', 'DO DOI:')]))
+                                 ('lastpage', 'OP'), ('keyword', 'K1'), ('url', 'LK'),
+                                 ('comment', 'NO'), ('abstract', 'AB'), ('doi', 'DO DOI:'),
+                                 ('eprintid', 'DO eprintid:'), ('isbn', 'SN')]))
         if (export_format == self.EXPORT_FORMAT_MEDLARS):
             return (OrderedDict([('doctype', 'PT  -'), ('title', 'TI  -'), ('author', 'AU  -'),
                                  ('pub', 'TA  -'), ('pub_raw', 'SO  -'), ('volume', 'VI  -'),
-                                 ('date', 'DP  -'), ('url', '4099-'), ('abstract', 'AB  -')]))
+                                 ('date', 'DP  -'), ('page_range', 'PG  -'), ('url', '4099-'),
+                                 ('abstract', 'AB  -'), ('isbn', 'IS  -')]))
 
 
     def __add_author_list(self, a_doc, export_format, tag):
@@ -206,7 +217,7 @@ class FieldedFormat:
             return ''
 
         if (export_format == self.EXPORT_FORMAT_ADS):
-            separator = ';'
+            separator = '; '
             result = tag + ' '
             for author in a_doc['author']:
                 result += author + separator
@@ -245,16 +256,21 @@ class FieldedFormat:
         counter = [''.join(i) for i in product(ascii_uppercase, repeat=2)]
         separator = ', '
 
-        if (len(tag) > 0):
-            affiliation_list = tag + ' '
-        else:
-            affiliation_list = ''
-
+        affiliation_list = ''
         for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):
-            affiliation_list += counter[i] + '(' + affiliation + ')' + separator
+            if (affiliation != '-'):
+                affiliation_list += counter[i] + '(' + affiliation + ')' + separator
         # do not need the last separator
         if (len(affiliation_list) > len(separator)):
             affiliation_list = affiliation_list[:-len(separator)]
+
+        # if no affiliation was defined
+        if (len(affiliation_list) == 0):
+            return ''
+
+        # if there is a tag, added to the beginning
+        if (len(tag) > 0):
+            affiliation_list = tag + ' ' + affiliation_list
 
         if (export_format == self.EXPORT_FORMAT_ADS):
             return self.__format_line_wrapped(affiliation_list) + '\n'
@@ -424,6 +440,25 @@ class FieldedFormat:
         return ''
 
 
+    def __add_comment(self, a_doc):
+        """
+
+        :param a_doc:
+        :return:
+        """
+        if a_doc.get('doctype', '') == 'eprint':
+            pubnote = ''.join(a_doc.get('pubnote', ''))
+            if len(pubnote) > 0:
+                return pubnote
+
+        comment = ''
+        if 'comment' in a_doc:
+            comment = ''.join(a_doc.get('comment', ''))
+            if 'isbn' in a_doc:
+                comment += ' ISBN: <ISBN>' + ', '.join(a_doc.get('isbn', '')) + '</ISBN>'
+        return comment
+
+
     def __add_clean_pub_raw(self, a_doc):
         """
         parse pub_raw and eliminate tags
@@ -439,6 +474,28 @@ class FieldedFormat:
         return pub_raw
 
 
+    def __add_eprint(self, a_doc):
+        """
+
+        :param a_doc:
+        :return:
+        """
+        if 'esources' in a_doc and 'identifier' in a_doc:
+            esources = a_doc.get('esources', [])
+            if 'EPRINT_PDF' in esources or 'PUB_PDF' in esources:
+                identifier = a_doc.get('identifier', [])
+                for i in identifier:
+                    if i.startswith('arXiv'):
+                        return i
+                    if (not i.startswith('10.') and (len(i) != 19)):
+                        return 'arXiv:' + i
+            if 'PUB_HTML' in esources:
+                identifier = a_doc.get('identifier', [])
+                for i in identifier:
+                    if i.startswith('ascl'):
+                        return i
+        return ''
+
     def __add_in(self, field, value):
         """
         add the value into the return structure, only if a value was defined in Solr
@@ -453,6 +510,18 @@ class FieldedFormat:
         return ''
 
 
+    def ___get_last_page(self, page_range):
+        """
+
+        :param page_range:
+        :return:
+        """
+        if (len(page_range) > 0) and ('-' in page_range):
+            parts = page_range.split('-')
+            if (len(parts[1]) > 0):
+                return parts[1]
+        return ''
+
     def __get_doc(self, index, fields, export_format):
         """
 
@@ -464,8 +533,10 @@ class FieldedFormat:
         result = ''
         a_doc = self.from_solr['response'].get('docs')[index]
         for field in fields:
-            if (field == 'title') or (field == 'page') or (field == 'doi'):
+            if (field == 'title') or (field == 'page') or (field == 'doi') or (field == 'isbn') or (field == 'pubnote'):
                 result += self.__add_in(fields[field], ''.join(a_doc.get(field, '')))
+            elif (field == 'lastpage'):
+                result += self.__add_in(fields[field], self.___get_last_page(a_doc.get('page_range', '')))
             elif (field == 'author'):
                 result += self.__add_author_list(a_doc, export_format, fields[field])
             elif (field == 'doctype'):
@@ -479,7 +550,7 @@ class FieldedFormat:
             elif (field == 'keyword'):
                 result += self.__add_keywords(a_doc, export_format, fields[field])
             elif (field == 'comment'):
-                result += self.__add_in(fields[field], self.__format_line_wrapped(''.join(a_doc.get(field, ''))))
+                result += self.__add_in(fields[field], self.__format_line_wrapped(self.__add_comment(a_doc)))
             elif (field == 'url'):
                 result += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_FROM_BBB_URL'] + '/' + a_doc.get('bibcode', ''))
             elif (field == 'endRecord'):
@@ -488,6 +559,8 @@ class FieldedFormat:
                 result += self.__add_in(fields[field], self.__add_clean_pub_raw(a_doc))
             elif (field == 'links'):
                 result += self.__add_doc_links(a_doc, fields[field])
+            elif (field == 'eprintid'):
+                result += self.__add_in(fields[field], self.__add_eprint(a_doc))
             else:
                 result += self.__add_in(fields[field], a_doc.get(field, ''))
         # line feed once the doc is complete

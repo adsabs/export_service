@@ -184,12 +184,15 @@ class CSL:
 
         # encode latex stuff
         if (self.export_format == adsFormatter.latex):
-            cita_author = cita_author.replace(" &", " \&")
+            if (self.csl_style == 'aastex'):
+                cita_author = encode_laTex_author(cita_author)
+            else:
+                cita_author = cita_author.replace(" &", " \&")
             biblio_author = encode_laTex_author(biblio_author)
             biblio_rest = encode_laTex(biblio_rest).encode('unicode_escape').replace('\{', '{').replace('\}', '}')
 
         format_style = {
-            'mnras': u'\\bibitem[\\protect\\citaauthoryear{{{}}}{{{}}}]{{{}}} {}{}',
+            'mnras': u'\\bibitem[\\protect\\citeauthoryear{{{}}}{{{}}}]{{{}}} {}{}',
             'icarus': u'\\bibitem[{}({})]{{{}}} {}{}',
             'soph': u'\\bibitem[{}({})]{{{}}}{}{}',
             'aastex': u'\\bibitem[{}({})]{{{}}} {}{}',
