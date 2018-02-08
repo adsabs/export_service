@@ -18,7 +18,7 @@ This microservice exports ADS records with various formats including BibTex, AAS
     $ vim local_config.py # edit, edit
 
     
-#### POST a request:
+## POST a request:
 
 To get e.g. BibTeX for a set of records you do a POST request to the endpoint
 
@@ -71,14 +71,14 @@ and the API then responds in JSON with
     {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "format":"%ZEncoding:latex%ZLinelength:0\bibitem[%4m(%Y)]{%R} %5.3l\ %Y, %j, %V, %p.\n"}
 
 
-#### GET request:
+## GET request:
 
 GET endpoints are similar to the POSTS endpoints. The `curl` command has the following syntax:
 
     curl -H "Authorization: Bearer <your API token>" <endpoint>/<bibcode>`
 
 
-#### To Convert a Classic Custom Format to the Current Custom Format:
+## To Convert a Classic Custom Format to the Current Custom Format:
 
     curl -H "Authorization: Bearer <your API token>" -H "Content-Type: application/json" -X POST -d <payload> <endpoint>
 
