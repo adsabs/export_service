@@ -71,7 +71,7 @@ and the API then responds in JSON with
     {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "format":"%ZEncoding:latex%ZLinelength:0\bibitem[%4m(%Y)]{%R} %5.3l\ %Y, %j, %V, %p.\n"}
 
 
-## GET request:
+## GET a request:
 
 GET endpoints are similar to the POSTS endpoints. The `curl` command has the following syntax:
 
