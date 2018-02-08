@@ -123,11 +123,14 @@ class XMLFormat:
         separator = ', '
         affiliation_list = ''
         for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):
-            affiliation_list += counter[i] + '(' + affiliation + ')' + separator
+            if (affiliation != '-'):
+                affiliation_list += counter[i] + '(' + affiliation + ')' + separator
         # do not need the last separator
         if (len(affiliation_list) > len(separator)):
             affiliation_list = affiliation_list[:-len(separator)]
-        ET.SubElement(parent, field).text = self.__format_line_wrapped(affiliation_list)
+        # if no affiliation was defined
+        if (len(affiliation_list) > 0):
+            ET.SubElement(parent, field).text = self.__format_line_wrapped(affiliation_list)
 
 
     def __add_doc_a_link(self, parent, link_type, link_name, link_url, count='', access=''):
@@ -332,10 +335,8 @@ class XMLFormat:
             return
         pub_raw = self.__add_clean_pub_raw(a_doc)
         if (export_format == self.EXPORT_FORMAT_REF_XML):
-            # for reference only if pub_raw is a eprint it gets output it
-            if (pub_raw.find('arXiv') > 0):
-                pub_raw = pub_raw.replace('eprint ', '')
-                ET.SubElement(parent, field).text = pub_raw
+            ET.SubElement(parent, field).text = pub_raw
+
         elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
             # for dublin both types of pub_raw are exported
             # we could have something like this is Solr
@@ -343,7 +344,7 @@ class XMLFormat:
             # where we remove the tag and output it, or something like this
             # "pub_raw":"eprint arXiv:astro-ph/0003081"
             # that gets output as is
-            pub_raw = self.REGEX_REMOVE_TAGS_PUB_RAW.sub('', pub_raw).replace('eprint ', '')
+            pub_raw = self.REGEX_REMOVE_TAGS_PUB_RAW.sub('', pub_raw)
             ET.SubElement(parent, field).text = self.__format_line_wrapped(pub_raw)
 
 
@@ -356,20 +357,67 @@ class XMLFormat:
         """
         if (export_format == self.EXPORT_FORMAT_REF_XML):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
-                      ('aff', 'affiliation'), ('pub', 'journal'), ('volume', 'volume'),
+                      ('aff', 'affiliation'), ('pub_raw', 'journal'), ('volume', 'volume'),
                       ('date', 'pubdate'), ('page', 'page'), ('', 'lastpage'),
                       ('keyword', 'keywords'), ('', 'origin'), ('copyright', 'copyright'),
                       ('link', 'link'), ('url', 'url'), ('comment', 'comment'),
                       ('', 'score'), ('citation_count', 'citations'), ('abstract', 'abstract'),
-                      ('doi', 'DOI'), ('pub_raw', 'eprintid')]
+                      ('doi', 'DOI'), ('eprintid', 'eprintid')]
         elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
             fields = [('bibcode', 'dc:identifier'), ('title', 'dc:title'), ('author', 'dc:creator'),
                       ('pub_raw', 'dc:source'), ('date', 'dc:date'), ('keyword', 'dc:subject'),
-                      ('copyright', 'dc:rights'), ('url', 'dc:relation'), ('abstract', 'dc:description'),
-                      ('doi', 'dc:identifier')]
+                      ('copyright', 'dc:rights'), ('url', 'dc:relation'), ('citation_count', 'dc:relation'),
+                      ('abstract', 'dc:description'), ('doi', 'dc:identifier')]
         else:
             fields = []
         return OrderedDict(fields)
+
+
+    def __get_doi(self, doi):
+        """
+
+        :param doi:
+        :return:
+        """
+        if len(doi) > 0:
+            return 'doi:' + doi
+        return ''
+
+
+    def __get_citation(self, citation_count, export_format):
+        """
+
+        :param citation_count:
+        :return:
+        """
+        if citation_count != 0:
+            if (export_format == self.EXPORT_FORMAT_REF_XML):
+                return str(citation_count)
+            if (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
+                return 'citations:' + str(citation_count)
+        return ''
+
+    def __add_eprint(self, a_doc):
+        """
+
+        :param a_doc:
+        :return:
+        """
+        if 'esources' in a_doc and 'identifier' in a_doc:
+            esources = a_doc.get('esources', [])
+            if 'EPRINT_PDF' in esources or 'PUB_PDF' in esources:
+                identifier = a_doc.get('identifier', [])
+                for i in identifier:
+                    if i.startswith('arXiv'):
+                        return i
+                    if (not i.startswith('10.') and (len(i) != 19)):
+                        return 'arXiv:' + i
+            if 'PUB_HTML' in esources:
+                identifier = a_doc.get('identifier', [])
+                for i in identifier:
+                    if i.startswith('ascl'):
+                        return i
+        return ''
 
 
     def __add_in(self, parent, field, value):
@@ -399,7 +447,7 @@ class XMLFormat:
         for field in fields:
             if (field == 'bibcode') or (field == 'copyright'):
                 self.__add_in(record, fields[field], a_doc.get(field, ''))
-            elif (field == 'title') or (field == 'doi'):
+            elif (field == 'title'):
                 self.__add_in(record, fields[field], ''.join(a_doc.get(field, '')))
             elif (field == 'author'):
                 self.__add_author_list(a_doc, record, fields[field])
@@ -413,6 +461,10 @@ class XMLFormat:
                 self.__add_in(record, fields[field], current_app.config.get('EXPORT_SERVICE_FROM_BBB_URL') + '/' + a_doc.get('bibcode', ''))
             elif (field == 'abstract'):
                 self.__add_in(record, fields[field], self.__format_line_wrapped(a_doc.get(field, '')))
+            elif (field == 'doi'):
+                self.__add_in(record, fields[field], self.__get_doi(''.join(a_doc.get(field, ''))))
+            elif (field == 'citation_count'):
+                self.__add_in(record, fields[field], self.__get_citation(int(a_doc.get(field, 0)), self.EXPORT_FORMAT_DUBLIN_XML))
 
 
     def __get_doc_reference_xml(self, index, parent, includeAbs):
@@ -429,7 +481,7 @@ class XMLFormat:
         record = ET.SubElement(parent, "record")
         for field in fields:
             if (field == 'bibcode') or (field == 'pub') or (field == 'volume') or \
-               (field == 'copyright') or (field == 'eprintid'):
+               (field == 'copyright'):
                 self.__add_in(record, fields[field], a_doc.get(field, ''))
             elif (field == 'title') or (field == 'page') or (field == 'doi'):
                 self.__add_in(record, fields[field], ''.join(a_doc.get(field, '')))
@@ -446,11 +498,13 @@ class XMLFormat:
             elif (field == 'url'):
                 self.__add_in(record, fields[field], current_app.config.get('EXPORT_SERVICE_FROM_BBB_URL') + '/' + a_doc.get('bibcode', ''))
             elif (field == 'citation_count'):
-                self.__add_in(record, fields[field], str(a_doc.get(field, '')))
+                self.__add_in(record, fields[field], self.__get_citation(int(a_doc.get(field, 0)), self.EXPORT_FORMAT_REF_XML))
             elif (field == 'abstract') and (includeAbs):
                 self.__add_in(record, fields[field], self.__format_line_wrapped(a_doc.get(field, '')))
             elif (field == 'link'):
                 self.__add_doc_links(a_doc, record)
+            elif (field == 'eprintid'):
+                self.__add_in(record, fields[field], self.__add_eprint(a_doc))
 
 
     def __get_xml(self, export_format, include_abs=False):

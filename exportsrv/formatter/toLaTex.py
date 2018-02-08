@@ -2,7 +2,7 @@
 
 import re
 from collections import OrderedDict
-from flask import current_app
+from pylatexenc.latexencode import utf8tolatex
 
 # this module contains methods to encode for latex output
 
@@ -20,7 +20,6 @@ REGEX_HTML_TAG = dict([
     (re.compile(r"(&amp;)"), r"\&")
 ])
 
-
 def encode_laTex(text):
     """
 
@@ -31,14 +30,7 @@ def encode_laTex(text):
     if (isinstance(text, str)):
         text = unicode(text)
     # character subtitution
-    if (len(text) > 1):
-        latex_accents = current_app.config['EXPORT_SERVICE_LATEX_ACCENT']
-        translation_table = dict([(ord(k), unicode(v)) for k, v in latex_accents])
-        text = text.translate(translation_table)
-        for key in REGEX_LATEX_MATH:
-            text = key.sub(REGEX_LATEX_MATH[key], text)
-    return text
-
+    return utf8tolatex(text)
 
 def encode_laTex_author(text):
     """
@@ -46,10 +38,10 @@ def encode_laTex_author(text):
     :param text:
     :return:
     """
+    text = encode_laTex(text)
     for key in REGEX_LATEX_AUTHOR:
         text = key.sub(REGEX_LATEX_AUTHOR[key], text)
     return text
-
 
 def html_to_laTex(text):
     """
