@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/adsabs/export_service.svg?branch=master)](https://travis-ci.org/adsabs/export_service)
-[![Coverage Status](https://coveralls.io/repos/adsabs/export_service/badge.svg?branch=master)](https://coveralls.io/r/adsabs/export_service?branch=master)
+[![Build Status](https://travis-ci.org/adsabs/export_service.svg)](https://travis-ci.org/adsabs/export_service)
+[![Coverage Status](https://coveralls.io/repos/adsabs/export_service/badge.svg)](https://coveralls.io/r/adsabs/export_service?branch=master)
 
 
 # ADS Export Service
@@ -18,7 +18,16 @@ This microservice exports ADS records with various formats including BibTex, AAS
     $ vim local_config.py # edit, edit
 
     
-## POST a request:
+## Testing
+
+On your desktop run:
+
+    $ py.test
+    
+
+## API
+
+### POST a request:
 
 To get e.g. BibTeX for a set of records you do a POST request to the endpoint
 
@@ -38,15 +47,9 @@ and the API then responds in JSON with
     {u'msg': u'Retrieved 1 abstracts, starting with number 1.  Total number selected: 1.', u'export': u'@ARTICLE{2015ApJS..219...21Z,\n   author = {{Zhang}, M. and {Fang}, M. and {Wang}, H. and {Sun}, J. and \n\t{Wang}, M. and {Jiang}, Z. and {Anathipindika}, S.},\n    title = "{A Deep Near-infrared Survey toward the Aquila Molecular Cloud. I. Molecular Hydrogen Outflows}",\n  journal = {\\apjs},\narchivePrefix = "arXiv",\n   eprint = {1506.08372},\n primaryClass = "astro-ph.SR",\n keywords = {infrared: ISM, ISM: jets and outflows, shock waves, stars: formation, stars: winds, outflows},\n     year = 2015,\n    month = aug,\n   volume = 219,\n      eid = {21},\n    pages = {21},\n      doi = {10.1088/0067-0049/219/2/21},\n   adsurl = {http://adsabs.harvard.edu/abs/2015ApJS..219...21Z},\n  adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'}
     
     
-###### 1. For the following endpoints output is in latex format:
+###### 1. For the following endpoints output is in tagged format:
 * **/bibtex** *BibTeX reference list*
 * **/bibtexabs** *BibTeX with abstracts*
-* **/aastex** *AASTeX format*
-* **/icarus** *Icarus format*
-* **/mnras** *MNRAS format*
-* **/soph** *SoPh format*
-
-###### 2. For the fielded export format we have the following endpoints:
 * **/ads** *Generic tagged abstracts*
 * **/endnote** *EndNote format*
 * **/procite** *ProCite format*
@@ -54,7 +57,13 @@ and the API then responds in JSON with
 * **/refworks** *RefWorks format*
 * **/medlars** *MEDLARS format*
 
-###### 3. For the xml export format we have the following endpoints:
+###### 2. For the following endpoints output is in latex format:
+* **/aastex** *AASTeX format*
+* **/icarus** *Icarus format*
+* **/mnras** *MNRAS format*
+* **/soph** *SoPh format*
+
+###### 3. For the following endpoints output is in xml format:
 * **/dcxml** *Dublin Core XML*
 * **/refxml** *XML references*
 * **/refabsxml** *XML with abstracts*
@@ -71,14 +80,14 @@ and the API then responds in JSON with
     {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "format":"%ZEncoding:latex%ZLinelength:0\bibitem[%4m(%Y)]{%R} %5.3l\ %Y, %j, %V, %p.\n"}
 
 
-## GET a request:
+### GET a request:
 
 GET endpoints are similar to the POSTS endpoints. The `curl` command has the following syntax:
 
     curl -H "Authorization: Bearer <your API token>" <endpoint>/<bibcode>`
 
 
-## To Convert a Classic Custom Format to the Current Custom Format:
+#### To Convert a Classic Custom Format to the Current Custom Format:
 
     curl -H "Authorization: Bearer <your API token>" -H "Content-Type: application/json" -X POST -d <payload> <endpoint>
 
@@ -89,12 +98,6 @@ For example:
 
     curl -H "Authorization: Bearer <your API token>" -H "Content-Type: application/json" -X POST -d '{"format":"\\\\bibitem[%\\2m%(y)]\\{%za1%y} %\\8l %\\Y,%\\j,%\\V,%\\p"}' https://api.adsabs.harvard.edu/v1/export
 
-## Testing
-
-On your desktop run:
-
-    $ py.test
-    
 
 ## Maintainers
 
