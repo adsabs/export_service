@@ -7,9 +7,9 @@ from textwrap import fill
 from itertools import product
 from string import ascii_uppercase
 import re
-import json
 
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
+from exportsrv.utils import get_eprint
 
 # This class accepts JSON object created by Solr and reformats it
 # for the BibTex Export formats we are supporting
@@ -75,7 +75,7 @@ class BibTexFormat:
                   'proceedings':'@PROCEEDINGS', 
                   'inproceedings':'@INPROCEEDINGS', 'abstract':'@INPROCEEDINGS',
                   'misc':'@MISC', 'software':'@MISC','proposal':'@MISC', 'pressrelease':'@MISC',
-                  'talk':'@INPROCEEDINGS',
+                  'talk':'@MISC',
                   'phdthesis':'@PHDTHESIS','mastersthesis':'@MASTERSTHESIS',
                   'techreport':'@TECHREPORT', 'intechreport':'@TECHREPORT'}
         return fields.get(solr_type, '')
@@ -242,29 +242,6 @@ class BibTexFormat:
         return pub_raw
 
 
-    def __add_eprint(self, a_doc):
-        """
-
-        :param a_doc:
-        :return:
-        """
-        if 'esources' in a_doc and 'identifier' in a_doc:
-            esources = a_doc.get('esources', [])
-            if 'EPRINT_PDF' in esources:
-                identifier = a_doc.get('identifier', [])
-                for i in identifier:
-                    if i.startswith('arXiv'):
-                        return i
-                    if (not i.startswith('10.') and (len(i) != 19)):
-                        return 'arXiv:' + i
-            if 'PUB_HTML' in esources:
-                identifier = a_doc.get('identifier', [])
-                for i in identifier:
-                    if i.startswith('ascl'):
-                        return i
-        return ''
-
-
     def __add_in(self, field, value, output_format):
         """
         add the value into the return structure, only if a value was defined in Solr
@@ -342,7 +319,7 @@ class BibTexFormat:
             elif (field == 'adsnotes'):
                 text += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_ADS_NOTES'], format_style_bracket)
             elif (field == 'eprintid'):
-                text += self.__add_in(fields[field], self.__add_eprint(a_doc), format_style_bracket)
+                text += self.__add_in(fields[field], get_eprint(a_doc), format_style_bracket)
         # remove the last comma,
         text = text[:-len(',\n')] + '\n'
 

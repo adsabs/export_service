@@ -8,9 +8,8 @@ from textwrap import fill
 from itertools import product
 from string import ascii_uppercase
 import re
-import ast
-import json
 
+from exportsrv.utils import get_eprint
 
 # This class accepts JSON object created by Solr and can reformats it
 # for the XML Export formats we are supporting.
@@ -397,29 +396,6 @@ class XMLFormat:
                 return 'citations:' + str(citation_count)
         return ''
 
-    def __add_eprint(self, a_doc):
-        """
-
-        :param a_doc:
-        :return:
-        """
-        if 'esources' in a_doc and 'identifier' in a_doc:
-            esources = a_doc.get('esources', [])
-            if 'EPRINT_PDF' in esources or 'PUB_PDF' in esources:
-                identifier = a_doc.get('identifier', [])
-                for i in identifier:
-                    if i.startswith('arXiv'):
-                        return i
-                    if (not i.startswith('10.') and (len(i) != 19)):
-                        return 'arXiv:' + i
-            if 'PUB_HTML' in esources:
-                identifier = a_doc.get('identifier', [])
-                for i in identifier:
-                    if i.startswith('ascl'):
-                        return i
-        return ''
-
-
     def __add_in(self, parent, field, value):
         """
         add the value into the return structure, only if a value was defined in Solr
@@ -504,7 +480,7 @@ class XMLFormat:
             elif (field == 'link'):
                 self.__add_doc_links(a_doc, record)
             elif (field == 'eprintid'):
-                self.__add_in(record, fields[field], self.__add_eprint(a_doc))
+                self.__add_in(record, fields[field], get_eprint(a_doc))
 
 
     def __get_xml(self, export_format, include_abs=False):
