@@ -7,8 +7,8 @@ from textwrap import fill
 from itertools import product
 from string import ascii_uppercase
 import re
-import ast
-import json
+
+from exportsrv.utils import get_eprint
 
 # This class accepts JSON object created by Solr and can reformats it
 # for the various fielded (formerly known as tagged) Export formats we are supporting.
@@ -474,28 +474,6 @@ class FieldedFormat:
         return pub_raw
 
 
-    def __add_eprint(self, a_doc):
-        """
-
-        :param a_doc:
-        :return:
-        """
-        if 'esources' in a_doc and 'identifier' in a_doc:
-            esources = a_doc.get('esources', [])
-            if 'EPRINT_PDF' in esources or 'PUB_PDF' in esources:
-                identifier = a_doc.get('identifier', [])
-                for i in identifier:
-                    if i.startswith('arXiv'):
-                        return i
-                    if (not i.startswith('10.') and (len(i) != 19)):
-                        return 'arXiv:' + i
-            if 'PUB_HTML' in esources:
-                identifier = a_doc.get('identifier', [])
-                for i in identifier:
-                    if i.startswith('ascl'):
-                        return i
-        return ''
-
     def __add_in(self, field, value):
         """
         add the value into the return structure, only if a value was defined in Solr
@@ -560,7 +538,7 @@ class FieldedFormat:
             elif (field == 'links'):
                 result += self.__add_doc_links(a_doc, fields[field])
             elif (field == 'eprintid'):
-                result += self.__add_in(fields[field], self.__add_eprint(a_doc))
+                result += self.__add_in(fields[field], get_eprint(a_doc))
             else:
                 result += self.__add_in(fields[field], a_doc.get(field, ''))
         # line feed once the doc is complete

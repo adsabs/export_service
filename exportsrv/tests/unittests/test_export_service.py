@@ -6,8 +6,7 @@ import unittest
 import exportsrv.app as app
 
 from stubdata import solrdata, bibTexTest, fieldedTest, xmlTest, cslTest, customTest
-from exportsrv.views import default_solr_fields, \
-    return_bibTex_format_export, return_fielded_format_export, return_xml_format_export, return_csl_format_export
+from exportsrv.views import default_solr_fields, return_bibTex_format_export, return_fielded_format_export, return_xml_format_export, return_csl_format_export
 from exportsrv.formatter.bibTexFormat import BibTexFormat
 from exportsrv.formatter.fieldedFormat import FieldedFormat
 from exportsrv.formatter.xmlFormat import XMLFormat
@@ -15,6 +14,7 @@ from exportsrv.formatter.cslJson import CSLJson
 from exportsrv.formatter.csl import CSL, adsFormatter
 from exportsrv.formatter.customFormat import CustomFormat
 from exportsrv.formatter.convertCF import convert
+from exportsrv.utils import get_eprint
 
 
 class TestExports(TestCase):
@@ -26,7 +26,7 @@ class TestExports(TestCase):
         # format the stubdata using the code
         bibtex_export = BibTexFormat(solrdata.data).get(include_abs=False)
         # now compare it with an already formatted data that we know is correct
-        assert(bibtex_export == bibTexTest.data)
+        assert (bibtex_export == bibTexTest.data)
 
     def test_bibtex_with_abs(self):
         # format the stubdata using the code
@@ -176,7 +176,7 @@ class TestExports(TestCase):
         bibTex_export = BibTexFormat(solr_data)
         assert(bibTex_export.get_num_docs() == 0)
 
-    def test_bibtex(self):
+    def test_bibtex_success(self):
         response = return_bibTex_format_export(solrdata.data, False)
         assert(response._status_code == 200)
 
@@ -188,37 +188,6 @@ class TestExports(TestCase):
         solr_data = {"error" : "data error"}
         response = return_bibTex_format_export(solr_data, False)
         assert(response._status_code == 400)
-
-    def test_bibtex_eprint(self):
-        bibTex_export = BibTexFormat(solrdata.data)
-
-        a_doc_no_eprint = solrdata.data['response'].get('docs')[0]
-        assert(bibTex_export._BibTexFormat__add_eprint(a_doc_no_eprint) == '')
-
-        a_doc_eprint = \
-            {
-                "bibcode": "1997NuPhB.490..121R",
-                "identifier": ["1996hep.th...11047R",
-                               "1996hep.th...11047R",
-                               "hep-th/9611047",
-                               "10.1016/S0550-3213(97)00055-2",
-                               "10.1016/S0550-3213(97)00055-2",
-                               "1997NuPhB.490..121R"],
-                "esources": ["EPRINT_HTML",
-                             "EPRINT_PDF",
-                             "PUB_HTML"]
-            }
-        assert(bibTex_export._BibTexFormat__add_eprint(a_doc_eprint) == 'arXiv:hep-th/9611047')
-
-        a_doc_ascl = \
-            {
-                "identifier": ["ascl:1308.009",
-                               "2013ascl.soft08009C",
-                               "ascl:1308.009"],
-                "bibcode": "2013ascl.soft08009C",
-                "esources": ["PUB_HTML"]
-            }
-        assert(bibTex_export._BibTexFormat__add_eprint(a_doc_ascl) == 'ascl:1308.009')
 
     def test_fielded_status(self):
         fielded_export = FieldedFormat(solrdata.data)
@@ -244,7 +213,7 @@ class TestExports(TestCase):
         fielded_export = FieldedFormat(solr_data)
         assert(fielded_export.get_num_docs() == 0)
 
-    def test_fielded(self):
+    def test_fielded_success(self):
         for fielded_style in ['ADS','EndNote','ProCite','Refman','RefWorks','MEDLARS']:
             response = return_fielded_format_export(solrdata.data, fielded_style)
             assert(response._status_code == 200)
@@ -259,37 +228,6 @@ class TestExports(TestCase):
         for fielded_style in ['ADS','EndNote','ProCite','Refman','RefWorks','MEDLARS']:
             response = return_fielded_format_export(solr_data, fielded_style)
             assert(response._status_code == 400)
-
-    def test_fielded_eprint(self):
-        fielded_export = FieldedFormat(solrdata.data)
-
-        a_doc_no_eprint = solrdata.data['response'].get('docs')[0]
-        assert(fielded_export._FieldedFormat__add_eprint(a_doc_no_eprint) == '')
-
-        a_doc_eprint = \
-            {
-                "bibcode": "1997NuPhB.490..121R",
-                "identifier": ["1996hep.th...11047R",
-                               "1996hep.th...11047R",
-                               "hep-th/9611047",
-                               "10.1016/S0550-3213(97)00055-2",
-                               "10.1016/S0550-3213(97)00055-2",
-                               "1997NuPhB.490..121R"],
-                "esources": ["EPRINT_HTML",
-                             "EPRINT_PDF",
-                             "PUB_HTML"]
-            }
-        assert(fielded_export._FieldedFormat__add_eprint(a_doc_eprint) == 'arXiv:hep-th/9611047')
-
-        a_doc_ascl = \
-            {
-                "identifier": ["ascl:1308.009",
-                               "2013ascl.soft08009C",
-                               "ascl:1308.009"],
-                "bibcode": "2013ascl.soft08009C",
-                "esources": ["PUB_HTML"]
-            }
-        assert(fielded_export._FieldedFormat__add_eprint(a_doc_ascl) == 'ascl:1308.009')
 
     def test_xml_status(self):
         xml_export = XMLFormat(solrdata.data)
@@ -315,7 +253,7 @@ class TestExports(TestCase):
         xml_export = XMLFormat(solr_data)
         assert(xml_export.get_num_docs() == 0)
 
-    def test_xml(self):
+    def test_xml_success(self):
         for xml_style in ['DublinCore','Reference','ReferenceAbs']:
             response = return_xml_format_export(solrdata.data, xml_style)
             assert(response._status_code == 200)
@@ -330,37 +268,6 @@ class TestExports(TestCase):
         for xml_style in ['DublinCore','Reference','ReferenceAbs']:
             response = return_xml_format_export(solr_data, xml_style)
             assert(response._status_code == 400)
-
-    def test_xml_eprint(self):
-        xml_export = XMLFormat(solrdata.data)
-
-        a_doc_no_eprint = solrdata.data['response'].get('docs')[0]
-        assert(xml_export._XMLFormat__add_eprint(a_doc_no_eprint) == '')
-
-        a_doc_eprint = \
-            {
-                "bibcode": "1997NuPhB.490..121R",
-                "identifier": ["1996hep.th...11047R",
-                               "1996hep.th...11047R",
-                               "hep-th/9611047",
-                               "10.1016/S0550-3213(97)00055-2",
-                               "10.1016/S0550-3213(97)00055-2",
-                               "1997NuPhB.490..121R"],
-                "esources": ["EPRINT_HTML",
-                             "EPRINT_PDF",
-                             "PUB_HTML"]
-            }
-        assert(xml_export._XMLFormat__add_eprint(a_doc_eprint) == 'arXiv:hep-th/9611047')
-
-        a_doc_ascl = \
-            {
-                "identifier": ["ascl:1308.009",
-                               "2013ascl.soft08009C",
-                               "ascl:1308.009"],
-                "bibcode": "2013ascl.soft08009C",
-                "esources": ["PUB_HTML"]
-            }
-        assert(xml_export._XMLFormat__add_eprint(a_doc_ascl) == 'ascl:1308.009')
 
     def test_csl_status(self):
         csl_export = CSLJson(solrdata.data)
@@ -404,6 +311,37 @@ class TestExports(TestCase):
         for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj']:
             response = return_csl_format_export(solr_data, csl_style, export_format)
             assert(response._status_code == 400)
+
+
+    def test_eprint(self):
+        a_doc_no_eprint = solrdata.data['response'].get('docs')[0]
+        assert (get_eprint(a_doc_no_eprint) == '')
+
+        a_doc_eprint = \
+            {
+                "bibcode": "1997NuPhB.490..121R",
+                "identifier": ["1996hep.th...11047R",
+                               "1996hep.th...11047R",
+                               "hep-th/9611047",
+                               "10.1016/S0550-3213(97)00055-2",
+                               "10.1016/S0550-3213(97)00055-2",
+                               "1997NuPhB.490..121R"],
+                "esources": ["EPRINT_HTML",
+                             "EPRINT_PDF",
+                             "PUB_HTML"]
+            }
+        assert (get_eprint(a_doc_eprint) == 'arXiv:hep-th/9611047')
+
+        a_doc_ascl = \
+            {
+                "identifier": ["ascl:1308.009",
+                               "2013ascl.soft08009C",
+                               "ascl:1308.009"],
+                "bibcode": "2013ascl.soft08009C",
+                "esources": ["PUB_HTML"]
+            }
+        assert (get_eprint(a_doc_ascl) == 'ascl:1308.009')
+
 
 if __name__ == '__main__':
   unittest.main()
