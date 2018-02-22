@@ -17,7 +17,8 @@ REGEX_LATEX_AUTHOR = dict([
 REGEX_HTML_TAG = dict([
     (re.compile(r"<i>(.*)</i>"), r"{\it \1}"),  # we get italic and bold tags from CSL and we need to modify them
     (re.compile(r"<b>(.*)</b>"), r"{\\bf \1}"),
-    (re.compile(r"(&amp;)"), r"\&")
+    (re.compile(r"(&amp;)"), r"\&"),
+    (re.compile(r"(,?\s*\{\\&\}amp;)"), r" \&")
 ])
 
 def encode_laTex(text):

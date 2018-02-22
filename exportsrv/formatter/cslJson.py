@@ -101,10 +101,6 @@ class CSLJson:
         :return: 
         """
         a_doc = self.from_solr['response'].get('docs')[index]
-        print '--------------------'
-        print a_doc
-        print '--------------------'
-
         data = {}
         data['id'] = 'ITEM-{0}'.format(index + 1)
         data['issued'] = ({'date-parts': [[int(a_doc['year'])]]})

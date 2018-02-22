@@ -177,19 +177,16 @@ class CSL:
             cita_author, cita_year = self.__tokenize_cita(cita)
             biblio_author, biblio_rest = self.__tokenize_biblio(biblio)
 
+        # encode latex stuff
+        if (self.export_format == adsFormatter.latex):
+            cita_author = encode_laTex_author(cita_author)
+            biblio_author = encode_laTex_author(biblio_author)
+            biblio_rest = encode_laTex(biblio_rest)
+
         # some adjustments to the what is returned from CSL that we can not do with CSL
         cita_author = html_to_laTex(self.__update_author_etal_add_emph(cita_author))
         biblio_author = html_to_laTex(self.__update_author_etal(str(biblio_author), bibcode))
         biblio_rest = html_to_laTex(biblio_rest)
-
-        # encode latex stuff
-        if (self.export_format == adsFormatter.latex):
-            if (self.csl_style == 'aastex'):
-                cita_author = encode_laTex_author(cita_author)
-            else:
-                cita_author = cita_author.replace(" &", " \&")
-            biblio_author = encode_laTex_author(biblio_author)
-            biblio_rest = encode_laTex(biblio_rest).encode('unicode_escape').replace('\{', '{').replace('\}', '}')
 
         format_style = {
             'mnras': u'\\bibitem[\\protect\\citeauthoryear{{{}}}{{{}}}]{{{}}} {}{}',
