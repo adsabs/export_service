@@ -89,10 +89,18 @@ class CSL:
                     journal = abbreviation[0][1].strip('.')
                 data['container-title'] = journal
         # for AASTex we need a macro of the journal names
-        if (self.csl_style == 'aastex') or (self.csl_style == 'aasj') or (self.csl_style == 'aspc'):
+        elif (self.csl_style == 'aastex') or (self.csl_style == 'aasj') or (self.csl_style == 'aspc'):
             journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
             for data in self.for_cls:
                 data['container-title'] = journal_macros.get(data['container-title'].replace('The ', ''), data['container-title'])
+        # for SoPh we use journal abbreviation for some special journals only
+        elif (self.csl_style == 'soph'):
+            journal_abbrevation = current_app.config['EXPORT_SERVICE_SOPH_JOURNAL_ABBREVIATION']
+            for data in self.for_cls:
+                try:
+                    data['container-title'] = journal_abbrevation.get(data['locator'][4:9], data['container-title'])
+                except:
+                    pass
 
 
     def __update_author_etal(self, author, bibcode):
@@ -197,8 +205,6 @@ class CSL:
             'aasj': u'\\bibitem[{}({})]{{{}}} {}{}',
             'apsj': u'{}{}{}{}{}'
         }
-        print '.......cita_author=', cita_author
-        print format_style[self.csl_style].format(cita_author, cita_year, bibcode, biblio_author, biblio_rest)
         return format_style[self.csl_style].format(cita_author, cita_year, bibcode, biblio_author, biblio_rest)
 
 
