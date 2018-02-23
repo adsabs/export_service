@@ -142,7 +142,7 @@ class CSL:
         # first remove the parentheses and then split the author and year fields
         cita = self.REGEX_TOKENIZE_CITA.findall(cita[1:-1])
         cita_author, cita_year = cita[0]
-        return cita_author.strip(' '), cita_year.strip(' ')
+        return cita_author.strip(' ').rstrip('('), cita_year.strip(' ')
 
 
     def __tokenize_biblio(self, biblio):
@@ -197,6 +197,8 @@ class CSL:
             'aasj': u'\\bibitem[{}({})]{{{}}} {}{}',
             'apsj': u'{}{}{}{}{}'
         }
+        print '.......cita_author=', cita_author
+        print format_style[self.csl_style].format(cita_author, cita_year, bibcode, biblio_author, biblio_rest)
         return format_style[self.csl_style].format(cita_author, cita_year, bibcode, biblio_author, biblio_rest)
 
 
