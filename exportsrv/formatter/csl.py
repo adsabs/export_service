@@ -89,10 +89,18 @@ class CSL:
                     journal = abbreviation[0][1].strip('.')
                 data['container-title'] = journal
         # for AASTex we need a macro of the journal names
-        if (self.csl_style == 'aastex') or (self.csl_style == 'aasj') or (self.csl_style == 'aspc'):
+        elif (self.csl_style == 'aastex') or (self.csl_style == 'aasj') or (self.csl_style == 'aspc'):
             journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
             for data in self.for_cls:
                 data['container-title'] = journal_macros.get(data['container-title'].replace('The ', ''), data['container-title'])
+        # for SoPh we use journal abbreviation for some special journals only
+        elif (self.csl_style == 'soph'):
+            journal_abbrevation = current_app.config['EXPORT_SERVICE_SOPH_JOURNAL_ABBREVIATION']
+            for data in self.for_cls:
+                try:
+                    data['container-title'] = journal_abbrevation.get(data['locator'][4:9], data['container-title'])
+                except:
+                    pass
 
 
     def __update_author_etal(self, author, bibcode):
@@ -142,7 +150,7 @@ class CSL:
         # first remove the parentheses and then split the author and year fields
         cita = self.REGEX_TOKENIZE_CITA.findall(cita[1:-1])
         cita_author, cita_year = cita[0]
-        return cita_author.strip(' '), cita_year.strip(' ')
+        return cita_author.strip(' ').rstrip('('), cita_year.strip(' ')
 
 
     def __tokenize_biblio(self, biblio):
@@ -177,19 +185,16 @@ class CSL:
             cita_author, cita_year = self.__tokenize_cita(cita)
             biblio_author, biblio_rest = self.__tokenize_biblio(biblio)
 
+        # encode latex stuff
+        if (self.export_format == adsFormatter.latex):
+            cita_author = encode_laTex_author(cita_author)
+            biblio_author = encode_laTex_author(biblio_author)
+            biblio_rest = encode_laTex(biblio_rest)
+
         # some adjustments to the what is returned from CSL that we can not do with CSL
         cita_author = html_to_laTex(self.__update_author_etal_add_emph(cita_author))
         biblio_author = html_to_laTex(self.__update_author_etal(str(biblio_author), bibcode))
         biblio_rest = html_to_laTex(biblio_rest)
-
-        # encode latex stuff
-        if (self.export_format == adsFormatter.latex):
-            if (self.csl_style == 'aastex'):
-                cita_author = encode_laTex_author(cita_author)
-            else:
-                cita_author = cita_author.replace(" &", " \&")
-            biblio_author = encode_laTex_author(biblio_author)
-            biblio_rest = encode_laTex(biblio_rest).encode('unicode_escape').replace('\{', '{').replace('\}', '}')
 
         format_style = {
             'mnras': u'\\bibitem[\\protect\\citeauthoryear{{{}}}{{{}}}]{{{}}} {}{}',

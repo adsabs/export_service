@@ -87,7 +87,7 @@ GET endpoints are similar to the POSTS endpoints. The `curl` command has the fol
     curl -H "Authorization: Bearer <your API token>" <endpoint>/<bibcode>`
 
 
-#### To Convert a Classic Custom Format to the Current Custom Format:
+### To Convert a Classic Custom Format to the Current Custom Format:
 
     curl -H "Authorization: Bearer <your API token>" -H "Content-Type: application/json" -X POST -d <payload> <endpoint>
 

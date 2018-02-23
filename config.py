@@ -76,3 +76,18 @@ EXPORT_SERVICE_AASTEX_JOURNAL_MACRO = [
     ['Planetary Space Science',r'\planss'],
     ['Proceedings of the SPIE',r'\procspie'],
 ]
+
+# For SoPh format:
+# First element is the journal abbreviation to be output,
+# second one is the bibstem to which it applies.
+EXPORT_SERVICE_SOPH_JOURNAL_ABBREVIATION = {
+    'A&A..': 'Astron. Astroph.',
+    'ApJ..': 'Astrophys. J.',
+    'SoPh.': 'Solar Phys.',
+    'GeoRL': 'Geophys. Res. Lett.',
+    'JGRA.': 'J.Geophys. Res. A',
+    'JGRB.': 'J.Geophys. Res. B',
+    'JGRC.': 'J.Geophys. Res. C',
+    'JGRD.': 'J.Geophys. Res. D',
+    'JGRE.': 'J.Geophys. Res. E',
+}

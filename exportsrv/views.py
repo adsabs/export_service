@@ -30,24 +30,34 @@ def default_solr_fields():
            'reference,comment,property,esources,data,isbn,pubnote'
 
 
-def return_response(results, status):
+def return_response(results, status, request_type=''):
     """
 
     :param results: results in a dict
     :param status: status code
     :return:
     """
-    response = json.dumps(results)
-
     current_app.logger.info('sending response status={status}'.format(status=status))
-    current_app.logger.debug('sending response text={response}'.format(response=response))
+    current_app.logger.debug('sending response text={response}'.format(response=results))
 
-    r = Response(response=response, status=status)
-    r.headers['content-type'] = 'application/json'
-    return r
+    if status != 200:
+        r = Response(response=json.dumps(results), status=status)
+        r.headers['content-type'] = 'application/json'
+        return r
 
+    if request_type == 'POST':
+        r = Response(response=json.dumps(results), status=status)
+        r.headers['content-type'] = 'application/json'
+        return r
 
-def return_bibTex_format_export(solr_data, include_abs):
+    if request_type == 'GET':
+        r = Response(response=results['export'], status=status)
+        r.headers['content-type'] = 'text/plain'
+        return r
+
+    return None
+
+def return_bibTex_format_export(solr_data, include_abs, request_type='POST'):
     """
 
     :param include_abs:
@@ -57,11 +67,11 @@ def return_bibTex_format_export(solr_data, include_abs):
         if ('error' in solr_data):
             return return_response({'error': 'unable to query solr'}, 400)
         bibTex_export = BibTexFormat(solr_data)
-        return return_response(bibTex_export.get(include_abs=include_abs), 200)
+        return return_response(bibTex_export.get(include_abs=include_abs), 200, request_type)
     return return_response({'error': 'no result from solr'}, 404)
 
 
-def return_fielded_format_export(solr_data, fielded_style):
+def return_fielded_format_export(solr_data, fielded_style, request_type='POST'):
     """
 
     :param solr_data:
@@ -74,22 +84,22 @@ def return_fielded_format_export(solr_data, fielded_style):
 
         fielded_export = FieldedFormat(solr_data)
         if fielded_style == 'ADS':
-            return return_response(fielded_export.get_ads_fielded(), 200)
+            return return_response(fielded_export.get_ads_fielded(), 200, request_type)
         if fielded_style == 'EndNote':
-            return return_response(fielded_export.get_endnote_fielded(), 200)
+            return return_response(fielded_export.get_endnote_fielded(), 200, request_type)
         if fielded_style == 'ProCite':
-            return return_response(fielded_export.get_procite_fielded(), 200)
+            return return_response(fielded_export.get_procite_fielded(), 200, request_type)
         if fielded_style == 'Refman':
-            return return_response(fielded_export.get_refman_fielded(), 200)
+            return return_response(fielded_export.get_refman_fielded(), 200, request_type)
         if fielded_style == 'RefWorks':
-            return return_response(fielded_export.get_refworks_fielded(), 200)
+            return return_response(fielded_export.get_refworks_fielded(), 200, request_type)
         if fielded_style == 'MEDLARS':
-            return return_response(fielded_export.get_medlars_fielded(), 200)
+            return return_response(fielded_export.get_medlars_fielded(), 200, request_type)
 
     return return_response({'error': 'no result from solr'}, 404)
 
 
-def return_xml_format_export(solr_data, xml_style):
+def return_xml_format_export(solr_data, xml_style, request_type='POST'):
     """
 
     :param solr_data:
@@ -103,16 +113,16 @@ def return_xml_format_export(solr_data, xml_style):
 
         xml_export = XMLFormat(solr_data)
         if xml_style == 'DublinCore':
-            return return_response(xml_export.get_dublincore_xml(), 200)
+            return return_response(xml_export.get_dublincore_xml(), 200, request_type)
         if xml_style == 'Reference':
-            return return_response(xml_export.get_reference_xml(include_abs=False), 200)
+            return return_response(xml_export.get_reference_xml(include_abs=False), 200, request_type)
         if xml_style == 'ReferenceAbs':
-            return return_response(xml_export.get_reference_xml(include_abs=True), 200)
+            return return_response(xml_export.get_reference_xml(include_abs=True), 200, request_type)
 
-    return return_response({'error': 'no result from solr'}, 404)
+    return return_response({'error': 'no result from solr'}, 404, request_type)
 
 
-def return_csl_format_export(solr_data, csl_style, export_format):
+def return_csl_format_export(solr_data, csl_style, export_format, request_type='POST'):
     """
 
     :param solr_data:
@@ -124,7 +134,7 @@ def return_csl_format_export(solr_data, csl_style, export_format):
         if ('error' in solr_data):
             return return_response({'error': 'unable to query solr'}, 400)
         csl_export = CSL(CSLJson(solr_data).get(), csl_style, export_format)
-        return return_response(csl_export.get(), 200)
+        return return_response(csl_export.get(), 200, request_type)
     return return_response({'error': 'no result from solr'}, 404)
 
 
@@ -169,7 +179,7 @@ def bibTex_format_export_get(bibcode):
                  format(bibcode=bibcode, bibTex_style=bibTex_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_bibTex_format_export(solr_data=solr_data, include_abs=False)
+    return return_bibTex_format_export(solr_data=solr_data, include_abs=False, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -213,7 +223,7 @@ def bibTex_abs_format_export_get(bibcode):
                  format(bibcode=bibcode, bibTex_style=bibTex_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_bibTex_format_export(solr_data=solr_data, include_abs=True)
+    return return_bibTex_format_export(solr_data=solr_data, include_abs=True, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -256,7 +266,7 @@ def fielded_ads_format_export_get(bibcode):
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style)
+    return return_fielded_format_export(solr_data, fielded_style, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -300,7 +310,7 @@ def fielded_endnote_format_export_get(bibcode):
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style)
+    return return_fielded_format_export(solr_data, fielded_style, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -344,7 +354,7 @@ def fielded_procite_format_export_get(bibcode):
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style)
+    return return_fielded_format_export(solr_data, fielded_style, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -388,7 +398,7 @@ def fielded_refman_format_export_get(bibcode):
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style)
+    return return_fielded_format_export(solr_data, fielded_style, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -432,7 +442,7 @@ def fielded_refworks_format_export_get(bibcode):
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style)
+    return return_fielded_format_export(solr_data, fielded_style, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -476,7 +486,7 @@ def fielded_medlars__format_export_get(bibcode):
                  format(bibcode=bibcode, fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style)
+    return return_fielded_format_export(solr_data, fielded_style, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -520,7 +530,7 @@ def xml_dublincore_format_export_get(bibcode):
                  format(bibcode=bibcode, xml_style=xml_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_xml_format_export(solr_data, xml_style)
+    return return_xml_format_export(solr_data, xml_style, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -564,7 +574,7 @@ def xml_ref_format_export_get(bibcode):
                  format(bibcode=bibcode, xml_style=xml_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_xml_format_export(solr_data, xml_style)
+    return return_xml_format_export(solr_data, xml_style, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -608,7 +618,7 @@ def xml_refabs_format_export_get(bibcode):
                  format(bibcode=bibcode, xml_style=xml_style))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_xml_format_export(solr_data, xml_style)
+    return return_xml_format_export(solr_data, xml_style, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -654,7 +664,7 @@ def csl_aastex_format_export_get(bibcode):
                  format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_csl_format_export(solr_data, csl_style, export_format)
+    return return_csl_format_export(solr_data, csl_style, export_format, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -700,7 +710,7 @@ def csl_icarus_format_export_get(bibcode):
                  format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_csl_format_export(solr_data, csl_style, export_format)
+    return return_csl_format_export(solr_data, csl_style, export_format, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -746,7 +756,7 @@ def csl_mnras_format_export_get(bibcode):
                  format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_csl_format_export(solr_data, csl_style, export_format)
+    return return_csl_format_export(solr_data, csl_style, export_format, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -792,7 +802,7 @@ def csl_soph_format_export_get(bibcode):
                  format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_csl_format_export(solr_data, csl_style, export_format)
+    return return_csl_format_export(solr_data, csl_style, export_format, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
