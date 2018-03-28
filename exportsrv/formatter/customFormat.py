@@ -11,6 +11,7 @@ import json
 
 from adsutils.ads_utils import get_pub_abbreviation
 
+from exportsrv.formatter.format import Format
 from exportsrv.formatter.ads import adsFormatter, adsOrganizer
 from exportsrv.formatter.cslJson import CSLJson
 from exportsrv.formatter.csl import CSL
@@ -26,15 +27,9 @@ from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
 #    custom_format.set_json_from_solr(jsonFromSolr)
 #    custom_format.getCustomFormat()
 
-class CustomFormat:
+class CustomFormat(Format):
 
     REGEX_AUTHOR = re.compile(r'%(\d*\.?\d*)(\w)')
-    REGEX_PUB_RAW = dict([
-        (re.compile(r"(\;?\s*\<ALTJOURNAL\>.*\</ALTJOURNAL\>\s*)"), r""),  # remove these
-        (re.compile(r"(\;?\s*\<CONF_METADATA\>.*\<CONF_METADATA\>\s*)"), r""),
-        (re.compile(r"(?:\<ISBN\>)(.*)(?:\</ISBN\>)"), r"\1"),  # get value inside the tag for these
-        (re.compile(r"(?:\<NUMPAGES\>)(.*)(?:</NUMPAGES>)"), r"\1"),
-    ])
     REGEX_ENUMERATION = re.compile(r'(%z)')
     REGEX_COMMAND = [
         re.compile(r'(%Z(?:Encoding|Linelength):(?:unicode|html|latex|\d+)\s?)'),
@@ -53,7 +48,6 @@ class CustomFormat:
 
     custom_format = ''
     parsed_spec = []
-    status = -1
     from_cls = {}
     author_count = {}
 
@@ -62,6 +56,7 @@ class CustomFormat:
 
         :param custom_format:
         """
+        Format.__init__(self, None)
         self.custom_format = custom_format
         self.export_format = adsFormatter.unicode
         self.line_length = 80
@@ -127,25 +122,6 @@ class CustomFormat:
                 self.author_count[key] = self.__get_num_authors()
 
 
-    def get_status(self):
-        """
-
-        :return: status of solr query
-        """
-        return self.status
-
-
-    def get_num_docs(self):
-        """
-
-        :return: number of docs returned by solr query
-        """
-        if (self.status == 0):
-            if (self.from_solr.get('response')):
-                return self.from_solr['response'].get('numFound', 0)
-        return 0
-
-    
     def __get_solr_field(self, specifier):
         """
         from specifier to Solr fields
@@ -530,16 +506,15 @@ class CustomFormat:
         """
         if (self.export_format == adsFormatter.unicode):
             return text
-        elif (self.export_format == adsFormatter.html):
+        if (self.export_format == adsFormatter.html):
             return cgi.escape(text)
-        elif (self.export_format == adsFormatter.latex):
+        if (self.export_format == adsFormatter.latex):
             if (name == 'author'):
                 return encode_laTex_author(text)
             # do not encode publication since it could be the macro
             if (name == 'pub'):
                 return text
-            else:
-                return encode_laTex(text)
+            return encode_laTex(text)
         return text
 
 

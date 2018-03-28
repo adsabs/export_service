@@ -9,6 +9,7 @@ from itertools import product
 from string import ascii_uppercase
 import re
 
+from exportsrv.formatter.format import Format
 from exportsrv.utils import get_eprint
 
 # This class accepts JSON object created by Solr and can reformats it
@@ -20,7 +21,7 @@ from exportsrv.utils import get_eprint
 # 3- To get Reference XML with Abstract use
 #    referenceXML = XMLFormat(jsonFromSolr).get_reference_xml(True)
 
-class XMLFormat:
+class XMLFormat(Format):
 
     EXPORT_FORMAT_REF_XML = 'ReferenceXML'
     EXPORT_FORMAT_DUBLIN_XML = 'DublinXML'
@@ -29,46 +30,6 @@ class XMLFormat:
                                       ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
                                       ('xsi:schemaLocation',
                                        'http://ads.harvard.edu/schema/abs/1.1/abstracts http://ads.harvard.edu/schema/abs/1.1/abstracts.xsd')]
-
-    REGEX_REMOVE_TAGS_PUB_RAW = re.compile("(\<.*?\>)")
-    REGEX_PUB_RAW = dict([
-        (re.compile(r"(\;?\s*\<ALTJOURNAL\>.*\</ALTJOURNAL\>\s*)"), r""),  # remove these
-        (re.compile(r"(\;?\s*\<CONF_METADATA\>.*\<CONF_METADATA\>\s*)"), r""),
-        (re.compile(r"(?:\<ISBN\>)(.*)(?:\</ISBN\>)"), r"\1"),  # get value inside the tag for these
-        (re.compile(r"(?:\<NUMPAGES\>)(.*)(?:</NUMPAGES>)"), r"\1"),
-    ])
-
-    status = -1
-    from_solr = {}
-
-    def __init__(self, from_solr):
-        """
-
-        :param from_solr:
-        """
-        self.from_solr = from_solr
-        if (self.from_solr.get('responseHeader')):
-            self.status = self.from_solr['responseHeader'].get('status', self.status)
-
-
-    def get_status(self):
-        """
-
-        :return: status of solr query
-        """
-        return self.status
-
-
-    def get_num_docs(self):
-        """
-
-        :return: number of docs returned by solr query
-        """
-        if (self.status == 0):
-            if (self.from_solr.get('response')):
-                return self.from_solr['response'].get('numFound', 0)
-        return 0
-
 
     def __format_date(self, solr_date, export_format):
         """
@@ -396,6 +357,7 @@ class XMLFormat:
                 return 'citations:' + str(citation_count)
         return ''
 
+
     def __add_in(self, parent, field, value):
         """
         add the value into the return structure, only if a value was defined in Solr
@@ -501,10 +463,10 @@ class XMLFormat:
                 records.set(attrib, attribs[attrib])
             records.set('retrieved', str(num_docs))
             if (export_format == self.EXPORT_FORMAT_REF_XML):
-                for index in range(self.get_num_docs()):
+                for index in range(num_docs):
                     self.__get_doc_reference_xml(index, records, include_abs)
             elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
-                for index in range(self.get_num_docs()):
+                for index in range(num_docs):
                     self.__get_doc_dublin_xml(index, records)
             format_xml = ET.tostring(records, encoding='utf8', method='xml')
             format_xml = ('>\n<'.join(format_xml.split('><')))

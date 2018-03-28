@@ -8,6 +8,7 @@ from itertools import product
 from string import ascii_uppercase
 import re
 
+from exportsrv.formatter.format import Format
 from exportsrv.utils import get_eprint
 
 # This class accepts JSON object created by Solr and can reformats it
@@ -25,8 +26,8 @@ from exportsrv.utils import get_eprint
 # 6- To get MEDLARS format use
 #    fieldedMEDLARS = FieldedFormat(jsonFromSolr).getMEDLARSFielded()
 
-class FieldedFormat:
-    
+class FieldedFormat(Format):
+
     # Fielded (formerly known as tagged)
     EXPORT_FORMAT_ADS = 'ADS'
     EXPORT_FORMAT_ENDNOTE = 'EndNote'
@@ -41,39 +42,6 @@ class FieldedFormat:
         (re.compile(r"(?:\<ISBN\>)(.*)(?:\</ISBN\>)"), r"\1"),  # get value inside the tag for these
         (re.compile(r"(?:\<NUMPAGES\>)(.*)(?:</NUMPAGES>)"), r"\1"),
     ])
-
-    status = -1
-    from_solr = {}
-
-
-    def __init__(self, from_solr):
-        """
-
-        :param from_solr:
-        """
-        self.from_solr = from_solr
-        if (self.from_solr.get('responseHeader')):
-            self.status = self.from_solr['responseHeader'].get('status', self.status)
-
-
-    def get_status(self):
-        """
-
-        :return: status of solr query
-        """
-        return self.status
-
-
-    def get_num_docs(self):
-        """
-
-        :return: number of docs returned by solr query
-        """
-        if (self.status == 0):
-            if (self.from_solr.get('response')):
-                return self.from_solr['response'].get('numFound', 0)
-        return 0
-
 
     def __get_doc_type(self, solr_type, export_format):
         """

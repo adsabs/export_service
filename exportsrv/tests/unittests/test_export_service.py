@@ -5,8 +5,10 @@ import unittest
 
 import exportsrv.app as app
 
-from stubdata import solrdata, bibTexTest, fieldedTest, xmlTest, cslTest, customTest
-from exportsrv.views import default_solr_fields, return_bibTex_format_export, return_fielded_format_export, return_xml_format_export, return_csl_format_export
+from stubdata import solrdata, bibTexTest, fieldedTest, xmlTest, cslTest, customTest, voTableTest, rssTest
+from exportsrv.views import default_solr_fields, return_bibTex_format_export, return_fielded_format_export, \
+                            return_xml_format_export, return_csl_format_export, return_votable_format_export, return_rss_format_export
+from exportsrv.formatter.format import Format
 from exportsrv.formatter.bibTexFormat import BibTexFormat
 from exportsrv.formatter.fieldedFormat import FieldedFormat
 from exportsrv.formatter.xmlFormat import XMLFormat
@@ -14,6 +16,8 @@ from exportsrv.formatter.cslJson import CSLJson
 from exportsrv.formatter.csl import CSL, adsFormatter
 from exportsrv.formatter.customFormat import CustomFormat
 from exportsrv.formatter.convertCF import convert
+from exportsrv.formatter.voTableFormat import VOTableFormat
+from exportsrv.formatter.rssFormat import RSSFormat
 from exportsrv.utils import get_eprint
 
 
@@ -136,6 +140,8 @@ class TestExports(TestCase):
         custom_format.set_json_from_solr(solrdata.data)
         # now compare it with an already formatted data that we know is correct
         assert (custom_format.get() == customTest.data)
+        # verify correct solr fields are fetched
+        assert (custom_format.get_solr_fields() == 'author,year,pub,volume,page,bibcode')
 
     def test_convert(self):
         assert(convert("\\\\bibitem[%\\2m%(y)]\{%za1%y} %\\8l %\\Y,%\\j,%\\V,%\\p") == "\\\\bibitem[%2m\\(%Y)]\\{%H%Y} %8l\\ %Y\\,%j\\,%V\\,%p\\")
@@ -152,30 +158,6 @@ class TestExports(TestCase):
                          'reference,comment,property,esources,data,isbn,pubnote'
         assert (default_solr_fields() == default_fields)
 
-    def test_bibtex_status(self):
-        bibTex_export = BibTexFormat(solrdata.data)
-        assert(bibTex_export.get_status() == 0)
-
-    def test_bibtex_no_num_docs(self):
-        solr_data = \
-            {
-               "responseHeader":{
-                  "status":1,
-                  "QTime":1,
-                  "params":{
-                     "sort":"date desc",
-                     "fq":"{!bitset}",
-                     "rows":"19",
-                     "q":"*:*",
-                     "start":"0",
-                     "wt":"json",
-                     "fl":"author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identification,copyright,keyword,doctype,reference,comment,property,esources,data"
-                  }
-               }
-            }
-        bibTex_export = BibTexFormat(solr_data)
-        assert(bibTex_export.get_num_docs() == 0)
-
     def test_bibtex_success(self):
         response = return_bibTex_format_export(solrdata.data, False)
         assert(response._status_code == 200)
@@ -188,30 +170,6 @@ class TestExports(TestCase):
         solr_data = {"error" : "data error"}
         response = return_bibTex_format_export(solr_data, False)
         assert(response._status_code == 400)
-
-    def test_fielded_status(self):
-        fielded_export = FieldedFormat(solrdata.data)
-        assert(fielded_export.get_status() == 0)
-
-    def test_bibtex_no_num_docs(self):
-        solr_data = \
-            {
-               "responseHeader":{
-                  "status":1,
-                  "QTime":1,
-                  "params":{
-                     "sort":"date desc",
-                     "fq":"{!bitset}",
-                     "rows":"19",
-                     "q":"*:*",
-                     "start":"0",
-                     "wt":"json",
-                     "fl":"author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identification,copyright,keyword,doctype,reference,comment,property,esources,data"
-                  }
-               }
-            }
-        fielded_export = FieldedFormat(solr_data)
-        assert(fielded_export.get_num_docs() == 0)
 
     def test_fielded_success(self):
         for fielded_style in ['ADS','EndNote','ProCite','Refman','RefWorks','MEDLARS']:
@@ -229,30 +187,6 @@ class TestExports(TestCase):
             response = return_fielded_format_export(solr_data, fielded_style)
             assert(response._status_code == 400)
 
-    def test_xml_status(self):
-        xml_export = XMLFormat(solrdata.data)
-        assert(xml_export.get_status() == 0)
-
-    def test_xml_no_num_docs(self):
-        solr_data = \
-            {
-               "responseHeader":{
-                  "status":1,
-                  "QTime":1,
-                  "params":{
-                     "sort":"date desc",
-                     "fq":"{!bitset}",
-                     "rows":"19",
-                     "q":"*:*",
-                     "start":"0",
-                     "wt":"json",
-                     "fl":"author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identification,copyright,keyword,doctype,reference,comment,property,esources,data"
-                  }
-               }
-            }
-        xml_export = XMLFormat(solr_data)
-        assert(xml_export.get_num_docs() == 0)
-
     def test_xml_success(self):
         for xml_style in ['DublinCore','Reference','ReferenceAbs']:
             response = return_xml_format_export(solrdata.data, xml_style)
@@ -268,30 +202,6 @@ class TestExports(TestCase):
         for xml_style in ['DublinCore','Reference','ReferenceAbs']:
             response = return_xml_format_export(solr_data, xml_style)
             assert(response._status_code == 400)
-
-    def test_csl_status(self):
-        csl_export = CSLJson(solrdata.data)
-        assert(csl_export.get_status() == 0)
-
-    def test_csl_no_num_docs(self):
-        solr_data = \
-            {
-               "responseHeader":{
-                  "status":1,
-                  "QTime":1,
-                  "params":{
-                     "sort":"date desc",
-                     "fq":"{!bitset}",
-                     "rows":"19",
-                     "q":"*:*",
-                     "start":"0",
-                     "wt":"json",
-                     "fl":"author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identification,copyright,keyword,doctype,reference,comment,property,esources,data"
-                  }
-               }
-            }
-        csl_export = CSLJson(solr_data)
-        assert(csl_export.get_num_docs() == 0)
 
     def test_csl(self):
         export_format = 2
@@ -341,6 +251,127 @@ class TestExports(TestCase):
                 "esources": ["PUB_HTML"]
             }
         assert (get_eprint(a_doc_ascl) == 'ascl:1308.009')
+
+    def test_format_status(self):
+        format_export = Format(solrdata.data)
+        assert(format_export.get_status() == 0)
+
+    def test_format_no_num_docs(self):
+        solr_data = \
+            {
+               "responseHeader":{
+                  "status":1,
+                  "QTime":1,
+                  "params":{
+                     "sort":"date desc",
+                     "fq":"{!bitset}",
+                     "rows":"19",
+                     "q":"*:*",
+                     "start":"0",
+                     "wt":"json",
+                     "fl":"author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identification,copyright,keyword,doctype,reference,comment,property,esources,data"
+                  }
+               }
+            }
+        format_export = Format(solr_data)
+        assert(format_export.get_num_docs() == 0)
+
+    def test_votable(self):
+        # format the stubdata using the code
+        votable_export = VOTableFormat(solrdata.data).get()
+        # now compare it with an already formatted data that we know is correct
+        assert (votable_export == voTableTest.data)
+
+    def test_rss(self):
+        # format the stubdata using the code
+        rss_export = RSSFormat(solrdata.data).get()
+        # now compare it with an already formatted data that we know is correct
+        assert (rss_export == rssTest.data)
+
+    def test_votable_success(self):
+        response = return_votable_format_export(solrdata.data)
+        assert(response._status_code == 200)
+
+    def test_votable_no_data(self):
+        response = return_votable_format_export(None)
+        assert(response._status_code == 404)
+
+    def test_votable_data_error(self):
+        solr_data = {"error" : "data error"}
+        response = return_votable_format_export(solr_data)
+        assert(response._status_code == 400)
+
+    def test_rss_success(self):
+        response = return_rss_format_export(solrdata.data, '')
+        assert(response._status_code == 200)
+
+    def test_rss_no_data(self):
+        response = return_rss_format_export(None, '')
+        assert(response._status_code == 404)
+
+    def test_rss_data_error(self):
+        solr_data = {"error" : "data error"}
+        response = return_rss_format_export(solr_data, '')
+        assert(response._status_code == 400)
+
+    def test_rss_authors(self):
+        solr_data = \
+            {
+                "responseHeader": {
+                    "status": 0,
+                    "QTime": 1,
+                    "params": {
+                        "sort": "date desc",
+                        "fq": "{!bitset}",
+                        "rows": "19",
+                        "q": "*:*",
+                        "start": "0",
+                        "wt": "json",
+                        "fl": "author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identification,copyright,keyword,doctype,reference,comment,property,esources,data"
+                    }
+                },
+                "response": {
+                    "start": 0,
+                    "numFound": 4,
+                    "docs": [
+                        {
+                            "title": [
+                                "A Microwave Free-Space Method Using Artificial Lens with Anti-reflection Layer"
+                            ],
+                            "author": [
+                                "Zhang, Yangjun",
+                                "Aratani, Yuki",
+                                "Nakazima, Hironari"
+                            ],
+                        },
+                        {
+                            "author": [
+                                "Ryan, R. E.",
+                                "McCullough, P. R."
+                            ],
+                        },
+                        {
+                            "title": [
+                                "Resolving Gas-Phase Metallicity In Galaxies"
+                            ],
+                        },
+                        {
+                            "bibcode": "2017ascl.soft06009C",
+                        },
+                    ]
+                }
+            }
+        rss_export = RSSFormat(solrdata.data)
+        # both author and title exists
+        assert(rss_export._RSSFormat__get_author_title(solr_data['response'].get('docs')[0]) ==
+               'Zhang, Yangjun: A Microwave Free-Space Method Using Artificial Lens with Anti-reflection Layer')
+        # only author
+        assert(rss_export._RSSFormat__get_author_title(solr_data['response'].get('docs')[1]) == 'Ryan, R. E.')
+        # only title
+        assert(rss_export._RSSFormat__get_author_title(solr_data['response'].get('docs')[2]) ==
+               'Resolving Gas-Phase Metallicity In Galaxies')
+        # neither author nor title exists
+        assert(rss_export._RSSFormat__get_author_title(solr_data['response'].get('docs')[3]) == '')
 
 
 if __name__ == '__main__':

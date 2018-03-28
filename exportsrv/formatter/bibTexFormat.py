@@ -9,6 +9,7 @@ from string import ascii_uppercase
 import re
 
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
+from exportsrv.formatter.format import Format
 from exportsrv.utils import get_eprint
 
 # This class accepts JSON object created by Solr and reformats it
@@ -18,7 +19,7 @@ from exportsrv.utils import get_eprint
 # 2- To get Reference BibTex with Abstract use
 #    referenceXML = BibTexFormat(jsonFromSolr).getReferenceBibTex(True)
 
-class BibTexFormat:
+class BibTexFormat(Format):
 
     REGEX_AUTHOR = re.compile(r'([A-Z])\w*')
     REGEX_PUB_RAW = dict([
@@ -27,38 +28,6 @@ class BibTexFormat:
         (re.compile(r"(?:\<ISBN\>)(.*)(?:\</ISBN\>)"), r"\1"),  # get value inside the tag for these
         (re.compile(r"(?:\<NUMPAGES\>)(.*)(?:</NUMPAGES>)"), r"\1"),
     ])
-
-    status = -1
-    from_solr = {}
-
-    def __init__(self, from_solr):
-        """
-
-        :param from_solr:
-        """
-        self.from_solr = from_solr
-        if (self.from_solr.get('responseHeader')):
-            self.status = self.from_solr['responseHeader'].get('status', self.status)
-
-
-    def get_status(self):
-        """
-
-        :return: status of solr query
-        """
-        return self.status
-
-
-    def get_num_docs(self):
-        """
-
-        :return: number of docs returned by solr query
-        """
-        if (self.status == 0):
-            if (self.from_solr.get('response')):
-                return self.from_solr['response'].get('numFound', 0)
-        return 0
-
 
     def __get_doc_type(self, solr_type):
         """

@@ -67,6 +67,21 @@ and the API then responds in JSON with
 * **/dcxml** *Dublin Core XML*
 * **/refxml** *XML references*
 * **/refabsxml** *XML with abstracts*
+* **/votable** *VOTables*
+* **/rss** *RSS*
+
+Note that for endpoint `/rss` an optional parameter `link` can be passed in. `link` is the query url that generated the bibcodes. 
+
+For example querying ADS Bumblebee for
+
+    author:"accomazzi" and year:2018
+
+at the end of March 2018, returns the following 4 bibcodes, and generates the url as specified below: 
+
+    {"bibcode":["2018arXiv180303598K","2018arXiv180101021FB","2018AAS...23136217A","2018AAS...23130709A"], "link":"https://ui.adsabs.harvard.edu/#search/q=author%3A%22accomazzi%22%20and%20year%3A2018&sort=date%20desc%2C%20bibcode%20desc"}
+
+which can be passed as payload to `/rss` endpoint.
+
 
 ###### 4. Using endpoint /csl allows various styles and output formats to be defined in payload as follows:
 

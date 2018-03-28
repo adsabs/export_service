@@ -14,6 +14,8 @@ from exportsrv.formatter.bibTexFormat import BibTexFormat
 from exportsrv.formatter.fieldedFormat import FieldedFormat
 from exportsrv.formatter.customFormat import CustomFormat
 from exportsrv.formatter.convertCF import convert
+from exportsrv.formatter.voTableFormat import VOTableFormat
+from exportsrv.formatter.rssFormat import RSSFormat
 
 
 bp = Blueprint('export_service', __name__)
@@ -37,20 +39,22 @@ def return_response(results, status, request_type=''):
     :param status: status code
     :return:
     """
-    current_app.logger.info('sending response status={status}'.format(status=status))
-    current_app.logger.debug('sending response text={response}'.format(response=results))
 
     if status != 200:
+        current_app.logger.error('sending response status={status}'.format(status=status))
+        current_app.logger.error('sending response text={response}'.format(response=results))
         r = Response(response=json.dumps(results), status=status)
         r.headers['content-type'] = 'application/json'
         return r
 
     if request_type == 'POST':
+        current_app.logger.info('sending response status={status}'.format(status=status))
         r = Response(response=json.dumps(results), status=status)
         r.headers['content-type'] = 'application/json'
         return r
 
     if request_type == 'GET':
+        current_app.logger.info('sending response status={status}'.format(status=status))
         r = Response(response=results['export'], status=status)
         r.headers['content-type'] = 'text/plain'
         return r
@@ -128,6 +132,7 @@ def return_csl_format_export(solr_data, csl_style, export_format, request_type='
     :param solr_data:
     :param csl_style:
     :param export_format:
+    :param request_type:
     :return:
     """
     if (solr_data is not None):
@@ -135,6 +140,37 @@ def return_csl_format_export(solr_data, csl_style, export_format, request_type='
             return return_response({'error': 'unable to query solr'}, 400)
         csl_export = CSL(CSLJson(solr_data).get(), csl_style, export_format)
         return return_response(csl_export.get(), 200, request_type)
+    return return_response({'error': 'no result from solr'}, 404)
+
+
+def return_votable_format_export(solr_data, request_type='POST'):
+    """
+
+    :param solr_data:
+    :param request_type:
+    :return:
+    """
+    if (solr_data is not None):
+        if ('error' in solr_data):
+            return return_response({'error': 'unable to query solr'}, 400)
+        votable_export = VOTableFormat(solr_data)
+        return return_response(votable_export.get(), 200, request_type)
+    return return_response({'error': 'no result from solr'}, 404)
+
+
+def return_rss_format_export(solr_data, link, request_type='POST'):
+    """
+
+    :param solr_data:
+    :param link:
+    :param request_type:
+    :return:
+    """
+    if (solr_data is not None):
+        if ('error' in solr_data):
+            return return_response({'error': 'unable to query solr'}, 400)
+        rss_export = RSSFormat(solr_data)
+        return return_response(rss_export.get(link), 200, request_type)
     return return_response({'error': 'no result from solr'}, 404)
 
 
@@ -900,3 +936,91 @@ def custom_format_convert():
 
     current_app.logger.info('received request to convert the classic custom format "' + classic_custom_format + '".')
     return return_response(convert(classic_custom_format), 200)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/votable', methods=['POST'])
+def votable_format_export_post():
+    """
+
+    :return:
+    """
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return return_response({'error': 'no information received'}, 400)
+    if 'bibcode' not in payload:
+        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
+
+    bibcodes = payload['bibcode']
+
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in VOTable format'.
+                 format(bibcodes=''.join(bibcodes)))
+
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
+    return return_votable_format_export(solr_data=solr_data)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/votable/<bibcode>', methods=['GET'])
+def votable_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    current_app.logger.debug('received request with bibcode={bibcode} to export in VOTable format'.
+                 format(bibcode=bibcode))
+
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
+    return return_votable_format_export(solr_data=solr_data, request_type='GET')
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/rss', methods=['POST'])
+def rss_format_export_post():
+    """
+
+    :return:
+    """
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if not payload:
+        return return_response({'error': 'no information received'}, 400)
+    if 'bibcode' not in payload:
+        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
+
+    bibcodes = payload['bibcode']
+    if 'link' in payload:
+        link = payload['link']
+    else:
+        link = ''
+
+    current_app.logger.debug('received request with bibcodes={bibcodes} to export in RSS format'.
+                 format(bibcodes=''.join(bibcodes)))
+
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
+    return return_rss_format_export(solr_data=solr_data, link=link)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/rss/<bibcode>/', defaults={'link': ''}, methods=['GET'])
+@bp.route('/rss/<bibcode>/<path:link>', methods=['GET'])
+def rss_format_export_get(bibcode, link):
+    """
+
+    :param bibcode:
+    :param link:
+    :return:
+    """
+    current_app.logger.debug('received request with bibcode={bibcode} to export in RSS format'.
+                 format(bibcode=bibcode))
+
+    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
+    return return_rss_format_export(solr_data=solr_data, link=link, request_type='GET')
+
