@@ -239,7 +239,17 @@ class BibTexFormat(Format):
             return self.__format_line_wrapped(field, value, output_format) + ',\n'
         return ''
 
-    
+
+    def __eprint_id_only(self, eprint):
+        """
+        remove prefix arXiv: and ascl return only the id
+
+        :param eprint:
+        :return:
+        """
+        return eprint.replace('arXiv:', '').replace('ascl:', '')
+
+
     def __get_doc(self, index, include_abs):
         """
         for each document from Solr, get the fields, and format them accordingly
@@ -288,7 +298,7 @@ class BibTexFormat(Format):
             elif (field == 'adsnotes'):
                 text += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_ADS_NOTES'], format_style_bracket)
             elif (field == 'eprintid'):
-                text += self.__add_in(fields[field], get_eprint(a_doc), format_style_bracket)
+                text += self.__add_in(fields[field], self.__eprint_id_only(get_eprint(a_doc)), format_style_bracket)
         # remove the last comma,
         text = text[:-len(',\n')] + '\n'
 
