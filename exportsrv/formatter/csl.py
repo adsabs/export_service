@@ -8,7 +8,6 @@ from citeproc.py2compat import *
 from citeproc.source.json import CiteProcJSON
 import re
 import os
-import json
 
 from adsutils.ads_utils import get_pub_abbreviation
 
