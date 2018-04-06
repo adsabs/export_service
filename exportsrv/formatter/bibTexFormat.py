@@ -84,8 +84,8 @@ class BibTexFormat(Format):
         if (doc_type_bibtex == '@ARTICLE'):
             fields = [('author', 'author'), ('title', 'title'), ('pub', 'journal'),
                       ('keyword', 'keywords'), ('year', 'year'), ('month', 'month'),
-                      ('volume', 'volume'), ('eid', 'eid'), ('page_range', 'pages'),
-                      ('abstract', 'abstract'), ('doi', 'doi'), ('eprintid', 'eprint'),
+                      ('volume', 'volume'), ('page_range', 'pages'),
+                      ('abstract', 'abstract'), ('doi', 'doi'), ('eprintid', 'archivePrefix|eprint'),
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@BOOK'):
             fields = [('author', 'author'), ('title', 'title'), ('pub_raw', 'booktitle'),
@@ -94,25 +94,25 @@ class BibTexFormat(Format):
         elif (doc_type_bibtex == '@INBOOK'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub_raw', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
-                      ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
+                      ('page_range', 'pages'), ('abstract', 'abstract'),
                       ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@PROCEEDINGS'):
             fields = [('title', 'title'), ('keyword', 'keywords'), ('pub_raw', 'booktitle'),
                       ('year', 'year'), ('editor', 'editor'), ('series', 'series'),
                       ('volume', 'volume'), ('month', 'month'), ('doi', 'doi'),
-                      ('eprintid', 'eprint'), ('abstract', 'abstract'), ('bibcode', 'adsurl'),
+                      ('eprintid', 'archivePrefix|eprint'), ('abstract', 'abstract'), ('bibcode', 'adsurl'),
                       ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@INPROCEEDINGS'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub_raw', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
                       ('series', 'series'), ('volume', 'volume'), ('month', 'month'),
-                      ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
+                      ('page_range', 'pages'), ('abstract', 'abstract'),
                       ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@MISC'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub', 'howpublished'), ('year', 'year'), ('month', 'month'),
-                      ('eid', 'eid'), ('page_range', 'pages'), ('doi', 'doi'),
-                      ('eprintid', 'eprint'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
+                      ('page_range', 'pages'), ('doi', 'doi'),
+                      ('eprintid', 'archivePrefix|eprint'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@PHDTHESIS') or (doc_type_bibtex == '@MASTERSTHESIS'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('aff', 'school'), ('year', 'year'), ('month', 'month'),
@@ -120,7 +120,7 @@ class BibTexFormat(Format):
         elif (doc_type_bibtex == '@TECHREPORT'):
             fields = [('author', 'author'), ('title', 'title'), ('pub', 'journal'),
                       ('keyword', 'keywords'), ('pub_raw', 'booktitle'), ('year', 'year'),
-                      ('editor', 'editor'), ('month', 'month'), ('eid', 'eid'),
+                      ('editor', 'editor'), ('month', 'month'),
                       ('page_range', 'pages'), ('volume', 'volume'), ('bibcode', 'adsurl'),
                       ('adsnotes', 'adsnote')]
         else:
@@ -225,7 +225,26 @@ class BibTexFormat(Format):
             return output_format.format(field, value) + ',\n'
         return ''
 
-    
+
+    def __add_in_eprint(self, fields, values, output_format):
+        """
+        add in the values of eprint
+
+        :param fields:
+        :param values:
+        :param output_format:
+        :return:
+        """
+        field = fields.split('|')
+        value = values.split(':')
+        if len(field) != 2 and len(value) != 2:
+            return ''
+        result = ''
+        for f, v in zip(field, value):
+            result += self.__add_in(f, v, output_format)
+        return result
+
+
     def __add_in_wrapped(self, field, value, output_format):
         """
         add the value into the return structure, only if a value was defined in Solr
@@ -240,16 +259,6 @@ class BibTexFormat(Format):
         return ''
 
 
-    def __eprint_id_only(self, eprint):
-        """
-        remove prefix arXiv: and ascl return only the id
-
-        :param eprint:
-        :return:
-        """
-        return eprint.replace('arXiv:', '').replace('ascl:', '')
-
-
     def __get_doc(self, index, include_abs):
         """
         for each document from Solr, get the fields, and format them accordingly
@@ -258,9 +267,9 @@ class BibTexFormat(Format):
         :param include_abs: 
         :return: 
         """
-        format_style_bracket_quotes = u'{0:>12} = "{{{1}}}"'
-        format_style_bracket = u'{0:>12} = {{{1}}}'
-        format_style = u'{0:>12} = {1}'
+        format_style_bracket_quotes = u'{0:>13} = "{{{1}}}"'
+        format_style_bracket = u'{0:>13} = {{{1}}}'
+        format_style = u'{0:>13} = {1}'
 
         a_doc = self.from_solr['response'].get('docs')[index]
         text = self.__get_doc_type(a_doc.get('doctype', '')) + '{' + a_doc.get('bibcode', '')  + ',\n'
@@ -298,7 +307,7 @@ class BibTexFormat(Format):
             elif (field == 'adsnotes'):
                 text += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_ADS_NOTES'], format_style_bracket)
             elif (field == 'eprintid'):
-                text += self.__add_in(fields[field], self.__eprint_id_only(get_eprint(a_doc)), format_style_bracket)
+                text += self.__add_in_eprint(fields[field], get_eprint(a_doc), format_style_bracket)
         # remove the last comma,
         text = text[:-len(',\n')] + '\n'
 

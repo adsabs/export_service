@@ -155,7 +155,7 @@ class TestExports(TestCase):
     def test_default_solr_fields(self):
         default_fields = 'author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,' \
                          'citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,' \
-                         'reference,comment,property,esources,data,isbn,pubnote'
+                         'reference,comment,property,esources,data,isbn,pubnote,eid'
         assert (default_solr_fields() == default_fields)
 
     def test_bibtex_success(self):
@@ -227,28 +227,17 @@ class TestExports(TestCase):
         a_doc_no_eprint = solrdata.data['response'].get('docs')[0]
         assert (get_eprint(a_doc_no_eprint) == '')
 
-        a_doc_eprint = \
+        a_doc_arxiv = \
             {
-                "bibcode": "1997NuPhB.490..121R",
-                "identifier": ["1996hep.th...11047R",
-                               "1996hep.th...11047R",
-                               "hep-th/9611047",
-                               "10.1016/S0550-3213(97)00055-2",
-                               "10.1016/S0550-3213(97)00055-2",
-                               "1997NuPhB.490..121R"],
-                "esources": ["EPRINT_HTML",
-                             "EPRINT_PDF",
-                             "PUB_HTML"]
+                "bibcode": "2018arXiv180303598K",
+                "eid": "arXiv:1803.03598"
             }
-        assert (get_eprint(a_doc_eprint) == 'arXiv:hep-th/9611047')
+        assert (get_eprint(a_doc_arxiv) == 'arXiv:1803.03598')
 
         a_doc_ascl = \
             {
-                "identifier": ["ascl:1308.009",
-                               "2013ascl.soft08009C",
-                               "ascl:1308.009"],
                 "bibcode": "2013ascl.soft08009C",
-                "esources": ["PUB_HTML"]
+                "eid": "ascl:1308.009"
             }
         assert (get_eprint(a_doc_ascl) == 'ascl:1308.009')
 

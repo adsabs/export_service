@@ -60,20 +60,10 @@ def get_eprint(solr_doc):
     :param a_doc:
     :return:
     """
-    if 'esources' in solr_doc and 'identifier' in solr_doc:
-        esources = solr_doc.get('esources', [])
-        if 'EPRINT_PDF' in esources:
-            identifier = solr_doc.get('identifier', [])
-            for i in identifier:
-                if i.startswith('arXiv'):
-                    return i
-                if (not i.startswith('10.') and (len(i) != 19)):
-                    return 'arXiv:' + i
-        if 'PUB_HTML' in esources:
-            identifier = solr_doc.get('identifier', [])
-            for i in identifier:
-                if i.startswith('ascl'):
-                    return i
+    if 'eid' in solr_doc:
+        eid = solr_doc.get('eid', '')
+        if eid.startswith('arXiv') or eid.startswith('ascl'):
+            return eid
     return ''
 
 

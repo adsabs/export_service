@@ -21,7 +21,6 @@ class VOTableFormat(Format):
         # add schema
         votable = ET.Element("VOTABLE")
         votable.set("version", "1.1")
-        ET.SubElement(votable, "doctype_placeholder")
         description = ET.SubElement(votable, "DESCRIPTION")
         description.text = "\n   Results generated from the NASA Astrophysics Data System: {base_url}" \
                            "\n   For more information and support please contact ads@cfa.harvard.edu"\
@@ -50,8 +49,8 @@ class VOTableFormat(Format):
         table.append(data)
         format_xml = ET.tostring(votable, encoding='utf8', method='xml')
         # apprently the functionality to add in the doctype is not avaialble in ET
-        # so have to add it manually
-        format_xml = format_xml.replace('doctype_placeholder', '!DOCTYPE VOTABLE SYSTEM "http://cdsweb.u-strasbg.fr/xml/VOTable.dtd"')
+        # so have to add it manually after the first line <?xml version='1.0' encoding='utf8'?>
+        format_xml = format_xml.replace('?>', '?><!DOCTYPE VOTABLE SYSTEM "http://cdsweb.u-strasbg.fr/xml/VOTable.dtd" />')
         # insert linefeed
         format_xml = ('>\n<'.join(format_xml.split('><')))
         format_xml = format_xml.replace('</TR>', '</TR>\n')
