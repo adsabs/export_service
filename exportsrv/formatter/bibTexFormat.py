@@ -11,6 +11,7 @@ import re
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
 from exportsrv.formatter.format import Format
 from exportsrv.utils import get_eprint
+from exportsrv.formatter.strftime import strftime
 
 # This class accepts JSON object created by Solr and reformats it
 # for the BibTex Export formats we are supporting
@@ -58,7 +59,7 @@ class BibTexFormat(Format):
         """
         # solr_date has the format 2017-12-01T00:00:00Z
         date_time = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
-        return date_time.strftime('%b')
+        return strftime(date_time, '%b')
 
 
     def __format_line_wrapped(self, left, right, format_style):

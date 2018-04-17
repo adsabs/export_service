@@ -10,6 +10,7 @@ import re
 
 from exportsrv.formatter.format import Format
 from exportsrv.utils import get_eprint
+from exportsrv.formatter.strftime import strftime
 
 # This class accepts JSON object created by Solr and can reformats it
 # for the various fielded (formerly known as tagged) Export formats we are supporting.
@@ -112,7 +113,7 @@ class FieldedFormat(Format):
         formats = {self.EXPORT_FORMAT_ADS: '%m/%Y', self.EXPORT_FORMAT_ENDNOTE: '%B %d, %Y',
                    self.EXPORT_FORMAT_PROCITE: '%Y/%m/X%d', self.EXPORT_FORMAT_REFMAN: '%Y/%m/X%d',
                    self.EXPORT_FORMAT_REFWORKS: '%Y/%m/X%d', self.EXPORT_FORMAT_MEDLARS: '%Y %b %d'}
-        return date_time.strftime(formats[export_format]).replace('X0', 'X').replace('X', '')
+        return strftime(date_time, formats[export_format]).replace('X0', 'X').replace('X', '')
 
 
     def __format_line_wrapped(self, text):

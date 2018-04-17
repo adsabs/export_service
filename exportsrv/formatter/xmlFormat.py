@@ -11,6 +11,7 @@ import re
 
 from exportsrv.formatter.format import Format
 from exportsrv.utils import get_eprint
+from exportsrv.formatter.strftime import strftime
 
 # This class accepts JSON object created by Solr and can reformats it
 # for the XML Export formats we are supporting.
@@ -41,7 +42,7 @@ class XMLFormat(Format):
         # solr_date has the format 2017-12-01T00:00:00Z
         dateTime = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
         formats = {self.EXPORT_FORMAT_DUBLIN_XML: '%Y-%m-%d', self.EXPORT_FORMAT_REF_XML: '%b %Y'}
-        return dateTime.strftime(formats[export_format])
+        return strftime(dateTime, formats[export_format])
 
 
     def __format_line_wrapped(self, text):

@@ -16,6 +16,7 @@ from exportsrv.formatter.ads import adsFormatter, adsOrganizer
 from exportsrv.formatter.cslJson import CSLJson
 from exportsrv.formatter.csl import CSL
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
+from exportsrv.formatter.strftime import strftime
 
 # This class accepts JSON object created by Solr and can reformats it
 # for the user define Custom Format Export.
@@ -248,7 +249,7 @@ class CustomFormat(Format):
         # solr_date has the format 2017-12-01T00:00:00Z
         date_time = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
         formats = {'D': '%Xm/%Y', 'Y': '%Y'}
-        return date_time.strftime(formats[date_format]).replace('X0', 'X').replace('X', '')
+        return strftime(date_time, formats[date_format]).replace('X0', 'X').replace('X', '')
 
 
     def __format_url(self, bibcode, url_format):

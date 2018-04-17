@@ -5,6 +5,7 @@ from datetime import datetime
 from flask import current_app
 
 from exportsrv.formatter.format import Format
+from exportsrv.formatter.strftime import strftime
 
 class VOTableFormat(Format):
 
@@ -90,7 +91,7 @@ class VOTableFormat(Format):
         """
         # solr_date has the format 2017-12-01T00:00:00Z
         date_time = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
-        return date_time.strftime('%Y-%m-X%d').replace('X0', 'X').replace('X', '')
+        return strftime(date_time, '%Y-%m-X%d').replace('X0', 'X').replace('X', '')
 
 
     def __add_in_table_data(self, parent, value):
