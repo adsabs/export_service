@@ -1,12 +1,11 @@
+# Copyright 2004 Andrew Dalke
+# Original Source: https://github.com/ActiveState/code/blob/master/recipes/Python/306860_proleptic_Gregoridates_strftime_before/recipe-306860.py
+
 # Format a datetime through its full proleptic Gregorian date range.
 #
 # >>> strftime(datetime.date(1850, 8, 2), "%Y/%M/%d was a %A")
 # '1850/00/02 was a Friday'
 # >>>
-
-
-# downloaded from http://code.activestate.com/recipes/306860-proleptic-gregorian-dates-and-strftime-before-1900/
-# on 4/17/18
 
 import re, time
 
