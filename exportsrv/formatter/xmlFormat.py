@@ -80,7 +80,7 @@ class XMLFormat(Format):
         """
         if ('aff') not in a_doc:
             return ''
-        counter = [''.join(i) for i in product(ascii_uppercase, repeat=2)]
+        counter = [''.join(i) for i in product(ascii_uppercase, repeat=3)]
         separator = ', '
         affiliation_list = ''
         for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):
@@ -319,7 +319,7 @@ class XMLFormat(Format):
         if (export_format == self.EXPORT_FORMAT_REF_XML):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
                       ('aff', 'affiliation'), ('pub_raw', 'journal'), ('volume', 'volume'),
-                      ('date', 'pubdate'), ('page', 'page'), ('', 'lastpage'),
+                      ('date', 'pubdate'), ('page', 'page'), ('page_range', 'lastpage'),
                       ('keyword', 'keywords'), ('', 'origin'), ('copyright', 'copyright'),
                       ('link', 'link'), ('url', 'url'), ('comment', 'comment'),
                       ('', 'score'), ('citation_count', 'citations'), ('abstract', 'abstract'),
@@ -358,6 +358,27 @@ class XMLFormat(Format):
                 return 'citations:' + str(citation_count)
         return ''
 
+
+    def __add_page(self, a_doc, parent, field):
+        """
+
+        :return:
+        """
+        if 'page_range' not in a_doc or 'page' not in a_doc:
+            return
+        page = ''.join(a_doc.get('page_range', ''))
+        if len(page) > 0:
+            if '-' in page:
+                page,lastpage = page.split('-')
+            else:
+                lastpage = ''
+        else:
+            page = ''.join(a_doc.get('page', ''))
+            lastpage = ''
+        if (field == 'page'):
+            self.__add_in(parent, field, page)
+        elif (field == 'lastpage'):
+            self.__add_in(parent, field, lastpage)
 
     def __add_in(self, parent, field, value):
         """
@@ -422,7 +443,7 @@ class XMLFormat(Format):
             if (field == 'bibcode') or (field == 'pub') or (field == 'volume') or \
                (field == 'copyright'):
                 self.__add_in(record, fields[field], a_doc.get(field, ''))
-            elif (field == 'title') or (field == 'page') or (field == 'doi'):
+            elif (field == 'title') or (field == 'doi'):
                 self.__add_in(record, fields[field], ''.join(a_doc.get(field, '')))
             elif (field == 'author'):
                 self.__add_author_list(a_doc, record, fields[field])
@@ -432,6 +453,8 @@ class XMLFormat(Format):
                 self.__add_in(record, fields[field], self.__format_date(a_doc.get(field, ''), self.EXPORT_FORMAT_REF_XML))
             elif (field == 'pub_raw'):
                 self.__add_pub_raw(a_doc, record, fields[field], self.EXPORT_FORMAT_REF_XML)
+            elif (field == 'page') or (field == 'page_range'):
+                self.__add_page(a_doc, record, fields[field])
             elif (field == 'keyword'):
                 self.__add_keywords(a_doc, record, self.EXPORT_FORMAT_REF_XML)
             elif (field == 'url'):
