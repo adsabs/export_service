@@ -85,7 +85,7 @@ class BibTexFormat(Format):
         if (doc_type_bibtex == '@ARTICLE'):
             fields = [('author', 'author'), ('title', 'title'), ('pub', 'journal'),
                       ('keyword', 'keywords'), ('year', 'year'), ('month', 'month'),
-                      ('volume', 'volume'), ('page_range', 'pages'),
+                      ('volume', 'volume'), ('eid', 'eid'), ('page_range', 'pages'),
                       ('abstract', 'abstract'), ('doi', 'doi'), ('eprintid', 'archivePrefix|eprint'),
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@BOOK'):
@@ -95,7 +95,7 @@ class BibTexFormat(Format):
         elif (doc_type_bibtex == '@INBOOK'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub_raw', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
-                      ('page_range', 'pages'), ('abstract', 'abstract'),
+                      ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
                       ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@PROCEEDINGS'):
             fields = [('title', 'title'), ('keyword', 'keywords'), ('pub_raw', 'booktitle'),
@@ -107,12 +107,12 @@ class BibTexFormat(Format):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub_raw', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
                       ('series', 'series'), ('volume', 'volume'), ('month', 'month'),
-                      ('page_range', 'pages'), ('abstract', 'abstract'),
+                      ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
                       ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@MISC'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub', 'howpublished'), ('year', 'year'), ('month', 'month'),
-                      ('page_range', 'pages'), ('doi', 'doi'),
+                      ('eid', 'eid'), ('page_range', 'pages'), ('doi', 'doi'),
                       ('eprintid', 'archivePrefix|eprint'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@PHDTHESIS') or (doc_type_bibtex == '@MASTERSTHESIS'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
@@ -121,7 +121,7 @@ class BibTexFormat(Format):
         elif (doc_type_bibtex == '@TECHREPORT'):
             fields = [('author', 'author'), ('title', 'title'), ('pub', 'journal'),
                       ('keyword', 'keywords'), ('pub_raw', 'booktitle'), ('year', 'year'),
-                      ('editor', 'editor'), ('month', 'month'),
+                      ('editor', 'editor'), ('month', 'month'), ('eid', 'eid'),
                       ('page_range', 'pages'), ('volume', 'volume'), ('bibcode', 'adsurl'),
                       ('adsnotes', 'adsnote')]
         else:
@@ -210,6 +210,18 @@ class BibTexFormat(Format):
             for key in self.REGEX_PUB_RAW:
                 pub_raw = key.sub(self.REGEX_PUB_RAW[key], pub_raw)
         return pub_raw
+
+
+    def __add_page(self, a_doc):
+        """
+
+        :param a_doc:
+        :return:
+        """
+        page = ''.join(a_doc.get('page_range', ''))
+        if len(page) == 0:
+            page = ''.join(a_doc.get('page', ''))
+        return page
 
 
     def __add_in(self, field, value, output_format):
@@ -302,7 +314,7 @@ class BibTexFormat(Format):
             elif (field == 'eid'):
                 text += self.__add_in(fields[field], a_doc.get(field, ''), format_style_bracket)
             elif (field == 'page_range'):
-                text += self.__add_in(fields[field], ''.join(a_doc.get(field, '')), format_style_bracket)
+                text += self.__add_in(fields[field], self.__add_page(a_doc), format_style_bracket)
             elif (field == 'bibcode'):
                 text += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_FROM_BBB_URL'] + '/' + a_doc.get(field, ''), format_style_bracket)
             elif (field == 'adsnotes'):
