@@ -195,7 +195,7 @@ def bibTex_format_export_post():
     bibTex_style = 'BibTex'
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {bibTex_style} style format'.
-                 format(bibcodes=''.join(bibcodes), bibTex_style=bibTex_style))
+                 format(bibcodes=','.join(bibcodes), bibTex_style=bibTex_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_bibTex_format_export(solr_data=solr_data, include_abs=False)
@@ -239,7 +239,7 @@ def bibTex_abs_format_export_post():
     bibTex_style = 'BibTex Abs'
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {bibTex_style} style format'.
-                 format(bibcodes=''.join(bibcodes), bibTex_style=bibTex_style))
+                 format(bibcodes=','.join(bibcodes), bibTex_style=bibTex_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_bibTex_format_export(solr_data=solr_data, include_abs=True)
@@ -283,7 +283,7 @@ def fielded_ads_format_export_post():
     fielded_style = 'ADS'
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
-                 format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
+                 format(bibcodes=','.join(bibcodes), fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_fielded_format_export(solr_data, fielded_style)
@@ -326,7 +326,7 @@ def fielded_endnote_format_export_post():
     fielded_style = 'EndNote'
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
-                 format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
+                 format(bibcodes=','.join(bibcodes), fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_fielded_format_export(solr_data, fielded_style)
@@ -370,7 +370,7 @@ def fielded_procite_format_export_post():
     fielded_style = 'ProCite'
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
-                 format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
+                 format(bibcodes=','.join(bibcodes), fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_fielded_format_export(solr_data, fielded_style)
@@ -414,7 +414,7 @@ def fielded_refman_format_export_post():
     fielded_style = 'Refman'
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
-                 format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
+                 format(bibcodes=','.join(bibcodes), fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_fielded_format_export(solr_data, fielded_style)
@@ -458,7 +458,7 @@ def fielded_refworks_format_export_post():
     fielded_style = 'RefWorks'
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
-                 format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
+                 format(bibcodes=','.join(bibcodes), fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_fielded_format_export(solr_data, fielded_style)
@@ -502,7 +502,7 @@ def fielded_medlars__format_export_post():
     fielded_style = 'MEDLARS'
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
-                 format(bibcodes=''.join(bibcodes), fielded_style=fielded_style))
+                 format(bibcodes=','.join(bibcodes), fielded_style=fielded_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_fielded_format_export(solr_data, fielded_style)
@@ -546,7 +546,7 @@ def xml_dublincore_format_export_post():
     xml_style = 'DublinCore'
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
-                 format(bibcodes=''.join(bibcodes), xml_style=xml_style))
+                 format(bibcodes=','.join(bibcodes), xml_style=xml_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_xml_format_export(solr_data, xml_style)
@@ -590,7 +590,7 @@ def xml_ref_format_export_post():
     xml_style = 'Reference'
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
-                 format(bibcodes=''.join(bibcodes), xml_style=xml_style))
+                 format(bibcodes=','.join(bibcodes), xml_style=xml_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_xml_format_export(solr_data, xml_style)
@@ -634,7 +634,7 @@ def xml_refabs_format_export_post():
     xml_style = 'ReferenceAbs'
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
-                 format(bibcodes=''.join(bibcodes), xml_style=xml_style))
+                 format(bibcodes=','.join(bibcodes), xml_style=xml_style))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_xml_format_export(solr_data, xml_style)
@@ -679,7 +679,7 @@ def csl_aastex_format_export_post():
     export_format = 2
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
+                 format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_csl_format_export(solr_data, csl_style, export_format)
@@ -725,7 +725,7 @@ def csl_icarus_format_export_post():
     export_format = 2
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
+                 format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_csl_format_export(solr_data, csl_style, export_format)
@@ -771,7 +771,7 @@ def csl_mnras_format_export_post():
     export_format = 2
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
+                 format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_csl_format_export(solr_data, csl_style, export_format)
@@ -817,7 +817,7 @@ def csl_soph_format_export_post():
     export_format = 2
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
+                 format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_csl_format_export(solr_data, csl_style, export_format)
@@ -871,7 +871,7 @@ def csl_format_export():
         return return_response({'error': 'unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)'}, 400)
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcodes=''.join(bibcodes), csl_style=csl_style, export_format=export_format))
+                 format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_csl_format_export(solr_data, csl_style, export_format)
@@ -896,7 +896,7 @@ def custom_format_export():
     custom_format_str = payload['format']
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in a custom format: {custom_format_str}'.
-                 format(bibcodes=''.join(bibcodes), custom_format_str=custom_format_str))
+                 format(bibcodes=','.join(bibcodes), custom_format_str=custom_format_str))
 
     if (len(bibcodes) == 0) or (len(custom_format_str) == 0):
         return return_response({'error': 'not all the needed information received'}, 400)
@@ -958,7 +958,7 @@ def votable_format_export_post():
     bibcodes = payload['bibcode']
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in VOTable format'.
-                 format(bibcodes=''.join(bibcodes)))
+                 format(bibcodes=','.join(bibcodes)))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_votable_format_export(solr_data=solr_data)
@@ -1002,7 +1002,7 @@ def rss_format_export_post():
         link = ''
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in RSS format'.
-                 format(bibcodes=''.join(bibcodes)))
+                 format(bibcodes=','.join(bibcodes)))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
     return return_rss_format_export(solr_data=solr_data, link=link)
