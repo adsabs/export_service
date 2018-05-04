@@ -4,8 +4,6 @@ from collections import OrderedDict
 from datetime import datetime
 from flask import current_app
 from textwrap import fill
-from itertools import product
-from string import ascii_uppercase
 import re
 
 from exportsrv.formatter.format import Format
@@ -222,7 +220,7 @@ class FieldedFormat(Format):
         if ('aff') not in a_doc:
             return ''
 
-        counter = [''.join(i) for i in product(ascii_uppercase, repeat=2)]
+        counter = [''.join(i) for i in self.generate_counter_id(len(a_doc['aff']))]
         separator = ', '
 
         affiliation_list = ''

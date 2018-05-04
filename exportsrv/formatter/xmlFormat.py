@@ -5,9 +5,6 @@ from collections import OrderedDict
 from datetime import datetime
 from flask import current_app
 from textwrap import fill
-from itertools import product
-from string import ascii_uppercase
-import re
 
 from exportsrv.formatter.format import Format
 from exportsrv.utils import get_eprint
@@ -80,7 +77,7 @@ class XMLFormat(Format):
         """
         if ('aff') not in a_doc:
             return ''
-        counter = [''.join(i) for i in product(ascii_uppercase, repeat=3)]
+        counter = [''.join(i) for i in self.generate_counter_id(len(a_doc['aff']))]
         separator = ', '
         affiliation_list = ''
         for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):

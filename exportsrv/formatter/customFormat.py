@@ -2,12 +2,9 @@
 
 from datetime import datetime
 from flask import current_app
-from itertools import product
 from textwrap import fill
-from string import ascii_uppercase
 import re
 import cgi
-import json
 
 from adsutils.ads_utils import get_pub_abbreviation
 
@@ -301,7 +298,7 @@ class CustomFormat(Format):
         :return:
         """
         if ('aff') in a_doc:
-            counter = [''.join(i) for i in product(ascii_uppercase, repeat=2)]
+            counter = [''.join(i) for i in self.generate_counter_id(len(a_doc['aff']))]
             separator = '; '
             affiliation_list = ''
             for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):

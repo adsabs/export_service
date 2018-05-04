@@ -1,6 +1,7 @@
 
 import re
-
+from itertools import product
+from string import ascii_uppercase
 
 class Format:
     """
@@ -45,4 +46,8 @@ class Format:
                 return self.from_solr['response'].get('numFound', 0)
         return 0
 
+    def generate_counter_id(self, length):
+        if length < 26^2:
+            return product(ascii_uppercase, repeat=2)
+        return product(ascii_uppercase, repeat=3)
 
