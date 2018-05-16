@@ -911,7 +911,7 @@ def custom_format_export():
         if ('error' in solr_data):
             return return_response({'error': 'unable to query solr'}, 400)
         custom_export.set_json_from_solr(solr_data)
-        return return_response(custom_export.get(), 200)
+        return return_response(custom_export.get(), 200, 'POST')
     return return_response({'error': 'no result from solr'}, 404)
 
 
@@ -935,7 +935,7 @@ def custom_format_convert():
     classic_custom_format = payload['format']
 
     current_app.logger.info('received request to convert the classic custom format "' + classic_custom_format + '".')
-    return return_response(convert(classic_custom_format), 200)
+    return return_response(convert(classic_custom_format), 200, 'POST')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
