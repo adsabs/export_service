@@ -893,10 +893,15 @@ def custom_format_export():
         return return_response({'error': 'no custom format found in payload (parameter name is `format`)'}, 400)
 
     bibcodes = payload['bibcode']
-    if type(payload['format']) is list:
-        custom_format_str = payload['format'][0]
-    else:
-        custom_format_str = payload['format']
+    import traceback
+    try:
+        if type(payload['format']) is list:
+            custom_format_str = payload['format'][0]
+        else:
+            custom_format_str = payload['format']
+    except Exception as e:
+        return return_response({'error': 'unable to read custom format: {}'.format(traceback.format_exc())}, 400)
+
 
     current_app.logger.info('received request with bibcodes={bibcodes} to export in a custom format: {custom_format_str}'.
                  format(bibcodes=','.join(bibcodes), custom_format_str=custom_format_str))
