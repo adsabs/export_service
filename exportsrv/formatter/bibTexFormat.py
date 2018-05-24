@@ -87,23 +87,23 @@ class BibTexFormat(Format):
                       ('abstract', 'abstract'), ('doi', 'doi'), ('eprintid', 'archivePrefix|eprint'),
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@BOOK'):
-            fields = [('author', 'author'), ('title', 'title'), ('pub_raw', 'booktitle'),
+            fields = [('author', 'author'), ('title', 'title'), ('pub', 'booktitle'),
                       ('year', 'year'), ('doi', 'doi'), ('bibcode', 'adsurl'),
                       ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@INBOOK'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
-                      ('pub_raw', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
+                      ('pub', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
                       ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
                       ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@PROCEEDINGS'):
-            fields = [('title', 'title'), ('keyword', 'keywords'), ('pub_raw', 'booktitle'),
+            fields = [('title', 'title'), ('keyword', 'keywords'), ('pub', 'booktitle'),
                       ('year', 'year'), ('editor', 'editor'), ('series', 'series'),
                       ('volume', 'volume'), ('month', 'month'), ('doi', 'doi'),
                       ('eprintid', 'archivePrefix|eprint'), ('abstract', 'abstract'), ('bibcode', 'adsurl'),
                       ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@INPROCEEDINGS'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
-                      ('pub_raw', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
+                      ('pub', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
                       ('series', 'series'), ('volume', 'volume'), ('month', 'month'),
                       ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
                       ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
@@ -118,7 +118,7 @@ class BibTexFormat(Format):
                       ('bibcode', 'adsurl'),('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@TECHREPORT'):
             fields = [('author', 'author'), ('title', 'title'), ('pub', 'journal'),
-                      ('keyword', 'keywords'), ('pub_raw', 'booktitle'), ('year', 'year'),
+                      ('keyword', 'keywords'), ('pub', 'booktitle'), ('year', 'year'),
                       ('editor', 'editor'), ('month', 'month'), ('eid', 'eid'),
                       ('page_range', 'pages'), ('volume', 'volume'), ('bibcode', 'adsurl'),
                       ('adsnotes', 'adsnote')]
