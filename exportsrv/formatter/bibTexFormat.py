@@ -87,12 +87,12 @@ class BibTexFormat(Format):
                       ('abstract', 'abstract'), ('doi', 'doi'), ('eprintid', 'archivePrefix|eprint'),
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@BOOK'):
-            fields = [('author', 'author'), ('title', 'title'), ('pub', 'booktitle'),
+            fields = [('author', 'author'), ('title', 'title'), ('pub_raw', 'booktitle'),
                       ('year', 'year'), ('doi', 'doi'), ('bibcode', 'adsurl'),
                       ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@INBOOK'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
-                      ('pub', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
+                      ('pub_raw', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
                       ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
                       ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@PROCEEDINGS'):
@@ -117,7 +117,7 @@ class BibTexFormat(Format):
                       ('aff', 'school'), ('year', 'year'), ('month', 'month'),
                       ('bibcode', 'adsurl'),('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@TECHREPORT'):
-            fields = [('author', 'author'), ('title', 'title'), ('pub', 'journal'),
+            fields = [('author', 'author'), ('title', 'title'), ('pub_raw', 'journal'),
                       ('keyword', 'keywords'), ('pub', 'booktitle'), ('year', 'year'),
                       ('editor', 'editor'), ('month', 'month'), ('eid', 'eid'),
                       ('page_range', 'pages'), ('volume', 'volume'), ('bibcode', 'adsurl'),
