@@ -245,8 +245,8 @@ class CustomFormat(Format):
         """
         # solr_date has the format 2017-12-01T00:00:00Z
         date_time = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
-        formats = {'D': '%Xm/%Y', 'Y': '%Y'}
-        return strftime(date_time, formats[date_format]).replace('X0', 'X').replace('X', '')
+        formats = {'D': 'X%M/%Y', 'Y': '%Y'}
+        return strftime(date_time, formats[date_format]).replace('X00/', 'X').replace('X', '')
 
 
     def __format_url(self, bibcode, url_format):
