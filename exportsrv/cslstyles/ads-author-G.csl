@@ -6,7 +6,7 @@
     <id>https://ui.adsabs.harvard.edu</id>
     <category citation-format="author"/>
     <category field="generic-base"/>
-    <summary>Format G: First Author has the format: lastname f. i., Second Author on has the format: lastname f. i., Before Last Author there no and, and when shorten has the format: n author(s), et al.</summary>
+    <summary>Format G: First Author has the format: lastname f. i., Second Author on has the format: lastname f. i., Before Last Author there is and, and when shorten has the format: n author(s), et al.</summary>
     <updated>2017-07-12T18:59:05+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
