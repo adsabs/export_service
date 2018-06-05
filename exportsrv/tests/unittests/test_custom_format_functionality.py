@@ -5,17 +5,12 @@ import unittest
 
 import exportsrv.app as app
 
-from stubdata import solrdata, customTest
-from exportsrv.views import default_solr_fields
-from exportsrv.formatter.format import Format
-from exportsrv.formatter.cslJson import CSLJson
+from stubdata import solrdata
 from exportsrv.formatter.csl import CSL, adsFormatter
 from exportsrv.formatter.customFormat import CustomFormat
-from exportsrv.formatter.convertCF import convert
-from exportsrv.utils import get_eprint
 
 
-class TestExports(TestCase):
+class TestExportsCustomFormat(TestCase):
     def create_app(self):
         app_ = app.create_app()
         return app_
