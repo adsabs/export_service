@@ -16,6 +16,7 @@ from exportsrv.formatter.customFormat import CustomFormat
 from exportsrv.formatter.convertCF import convert
 from exportsrv.formatter.voTableFormat import VOTableFormat
 from exportsrv.formatter.rssFormat import RSSFormat
+from exportsrv.tests.unittests.stubdata import solrdata
 
 bp = Blueprint('export_service', __name__)
 
@@ -59,6 +60,7 @@ def return_response(results, status, request_type=''):
         return r
 
     return None
+
 
 def return_bibTex_format_export(solr_data, include_abs, request_type='POST'):
     """
@@ -215,6 +217,11 @@ def export_get(bibcode, style, format=-1):
                     format(bibcode=bibcode, style=style, format=format))
 
     sort = 'date desc, bibcode desc'
+
+    # if in the test mode, return test solr data
+    if current_app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'] == bibcode:
+        return solrdata.one
+
     return get_solr_data(bibcodes=[bibcode], fields=default_solr_fields(), sort=sort)
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])

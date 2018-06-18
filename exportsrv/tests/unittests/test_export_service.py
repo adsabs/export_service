@@ -338,7 +338,7 @@ class TestExports(TestCase):
                           views.xml_refabs_format_export_get, views.csl_aastex_format_export_get,
                           views.csl_icarus_format_export_get, views.csl_mnras_format_export_get,
                           views.csl_soph_format_export_get, views.votable_format_export_get]
-        bibcode = '2018AAS...23221409A'
+        bibcode = self.app.config['EXPORT_SERVICE_TEST_BIBCODE_GET']
         for f in function_names:
             response = f(bibcode)
             assert (response._status_code == 200)

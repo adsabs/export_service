@@ -91,3 +91,7 @@ EXPORT_SERVICE_SOPH_JOURNAL_ABBREVIATION = {
     'JGRD.': 'J.Geophys. Res. D',
     'JGRE.': 'J.Geophys. Res. E',
 }
+
+
+# Testing Bibcode for GET
+EXPORT_SERVICE_TEST_BIBCODE_GET = 'TEST..BIBCODE..GET.'
