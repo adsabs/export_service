@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" and="text" initialize="false">
   <info>
-    <title>ADS Author Custom Format A</title>
-    <title-short>ADS Author Custom Format A</title-short>
+    <title>ADS Author Custom Format I</title>
+    <title-short>ADS Author Custom Format I</title-short>
     <id>https://ui.adsabs.harvard.edu</id>
     <category citation-format="author"/>
     <category field="generic-base"/>
-    <summary>Format A: Author as appears in db, with 'and' before the last author</summary>
+    <summary>Format I: Author has the format: lastname f. i., with 'and' before the last author</summary>
     <updated>2017-06-23T15:43:04+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
@@ -15,11 +15,11 @@
   <citation>
     <layout/>
   </citation>
-  <bibliography and="text" initialize="false" entry-spacing="0" hanging-indent="true">
+  <bibliography and="text" initialize="true" entry-spacing="0" hanging-indent="true">
     <layout>
       <text macro="author"/>
       <names variable="author">
-        <name and="text" delimiter-precedes-last="never" initialize="false" initialize-with=". " name-as-sort-order="all"/>
+        <name and="text" delimiter-precedes-last="never" initialize="false" initialize-with=". " name-as-sort-order="first"/>
         <label prefix=", "/>
       </names>
     </layout>

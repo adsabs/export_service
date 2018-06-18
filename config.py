@@ -10,7 +10,7 @@ EXPORT_SERVICE_MAX_RECORDS_SOLR = 2000
 
 # these are used for linkout links
 EXPORT_SERVICE_FROM_BBB_URL = 'https://ui.adsabs.harvard.edu/#abs'
-EXPORT_SERVICE_RESOLVE_URL = "https://ui.adsabs.harvard.edu/resolve"
+EXPORT_SERVICE_RESOLVE_URL = "https://ui.adsabs.harvard.edu/link_gateway"
 
 # added to the end of bibTex
 EXPORT_SERVICE_ADS_NOTES = 'Provided by the SAO/NASA Astrophysics Data System'
@@ -91,3 +91,7 @@ EXPORT_SERVICE_SOPH_JOURNAL_ABBREVIATION = {
     'JGRD.': 'J.Geophys. Res. D',
     'JGRE.': 'J.Geophys. Res. E',
 }
+
+
+# Testing Bibcode for GET
+EXPORT_SERVICE_TEST_BIBCODE_GET = 'TEST..BIBCODE..GET.'

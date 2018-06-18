@@ -16,7 +16,7 @@ from exportsrv.formatter.customFormat import CustomFormat
 from exportsrv.formatter.convertCF import convert
 from exportsrv.formatter.voTableFormat import VOTableFormat
 from exportsrv.formatter.rssFormat import RSSFormat
-
+from exportsrv.tests.unittests.stubdata import solrdata
 
 bp = Blueprint('export_service', __name__)
 
@@ -61,6 +61,7 @@ def return_response(results, status, request_type=''):
 
     return None
 
+
 def return_bibTex_format_export(solr_data, include_abs, request_type='POST'):
     """
 
@@ -68,8 +69,6 @@ def return_bibTex_format_export(solr_data, include_abs, request_type='POST'):
     :return:
     """
     if (solr_data is not None):
-        if ('error' in solr_data):
-            return return_response({'error': 'unable to query solr'}, 400)
         bibTex_export = BibTexFormat(solr_data)
         return return_response(bibTex_export.get(include_abs=include_abs), 200, request_type)
     return return_response({'error': 'no result from solr'}, 404)
@@ -83,9 +82,6 @@ def return_fielded_format_export(solr_data, fielded_style, request_type='POST'):
     :return:
     """
     if (solr_data is not None):
-        if ('error' in solr_data):
-            return return_response({'error': 'unable to query solr'}, 400)
-
         fielded_export = FieldedFormat(solr_data)
         if fielded_style == 'ADS':
             return return_response(fielded_export.get_ads_fielded(), 200, request_type)
@@ -112,9 +108,6 @@ def return_xml_format_export(solr_data, xml_style, request_type='POST'):
     :return:
     """
     if (solr_data is not None):
-        if ('error' in solr_data):
-            return return_response({'error': 'unable to query solr'}, 400)
-
         xml_export = XMLFormat(solr_data)
         if xml_style == 'DublinCore':
             return return_response(xml_export.get_dublincore_xml(), 200, request_type)
@@ -123,7 +116,7 @@ def return_xml_format_export(solr_data, xml_style, request_type='POST'):
         if xml_style == 'ReferenceAbs':
             return return_response(xml_export.get_reference_xml(include_abs=True), 200, request_type)
 
-    return return_response({'error': 'no result from solr'}, 404, request_type)
+    return return_response({'error': 'no result from solr'}, 404)
 
 
 def return_csl_format_export(solr_data, csl_style, export_format, request_type='POST'):
@@ -136,8 +129,6 @@ def return_csl_format_export(solr_data, csl_style, export_format, request_type='
     :return:
     """
     if (solr_data is not None):
-        if ('error' in solr_data):
-            return return_response({'error': 'unable to query solr'}, 400)
         csl_export = CSL(CSLJson(solr_data).get(), csl_style, export_format)
         return return_response(csl_export.get(), 200, request_type)
     return return_response({'error': 'no result from solr'}, 404)
@@ -151,8 +142,6 @@ def return_votable_format_export(solr_data, request_type='POST'):
     :return:
     """
     if (solr_data is not None):
-        if ('error' in solr_data):
-            return return_response({'error': 'unable to query solr'}, 400)
         votable_export = VOTableFormat(solr_data)
         return return_response(votable_export.get(), 200, request_type)
     return return_response({'error': 'no result from solr'}, 404)
@@ -167,18 +156,17 @@ def return_rss_format_export(solr_data, link, request_type='POST'):
     :return:
     """
     if (solr_data is not None):
-        if ('error' in solr_data):
-            return return_response({'error': 'unable to query solr'}, 400)
         rss_export = RSSFormat(solr_data)
         return return_response(rss_export.get(link), 200, request_type)
     return return_response({'error': 'no result from solr'}, 404)
 
 
-@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/bibtex', methods=['POST'])
-def bibTex_format_export_post():
+def export_post(request, style, format=-1, testing=False):
     """
 
+    :param request:
+    :param style:
+    :param format:
     :return:
     """
     try:
@@ -187,18 +175,67 @@ def bibTex_format_export_post():
         payload = dict(request.form)  # post data in form encoding
 
     if not payload:
-        return return_response({'error': 'no information received'}, 400)
+        return {'error': 'no information received'}, 400
     if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
+        return {'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400
+    if 'sort' in payload:
+        if type(payload['sort']) is list:
+            sort = payload['sort'][0]
+        else:
+            sort = payload['sort']
+    else:
+        sort = 'date desc, bibcode desc'
 
     bibcodes = payload['bibcode']
-    bibTex_style = 'BibTex'
 
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {bibTex_style} style format'.
-                 format(bibcodes=','.join(bibcodes), bibTex_style=bibTex_style))
+    if format == -1:
+        current_app.logger.info('received request with bibcodes={bibcodes} to export in {style} style'.
+                    format(bibcodes=','.join(bibcodes), style=style))
+    else:
+        current_app.logger.info('received request with bibcodes={bibcodes} to export in {style} style with output format {format}'.
+                    format(bibcodes=','.join(bibcodes), style=style, format=format))
 
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_bibTex_format_export(solr_data=solr_data, include_abs=False)
+    # if in the test mode, return solr data that was passed in
+    # if in the test mode, return test solr data
+    if current_app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'] == bibcodes:
+        return solrdata.data, 200
+
+    return get_solr_data(bibcodes=bibcodes, fields=default_solr_fields(), sort=sort), 200
+
+def export_get(bibcode, style, format=-1):
+    """
+
+    :param bibcode:
+    :param style:
+    :param format:
+    :return:
+    """
+    if format == -1:
+        current_app.logger.debug('received request with bibcode={bibcode} to export in {style} style'.
+                    format(bibcode=bibcode, style=style))
+    else:
+        current_app.logger.debug('received request with bibcode={bibcode} to export in {style} style with output format {format}'.
+                    format(bibcode=bibcode, style=style, format=format))
+
+    sort = 'date desc, bibcode desc'
+
+    # if in the test mode, return test solr data
+    if current_app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'] == bibcode:
+        return solrdata.one
+
+    return get_solr_data(bibcodes=[bibcode], fields=default_solr_fields(), sort=sort)
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/bibtex', methods=['POST'])
+def bibTex_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = export_post(request, 'BibTex')
+    if status == 200:
+        return return_bibTex_format_export(solr_data=results, include_abs=False)
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -209,13 +246,7 @@ def bibTex_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    bibTex_style = 'BibTex'
-
-    current_app.logger.debug('received request with bibcode={bibcode} to export in {bibTex_style} style format'.
-                 format(bibcode=bibcode, bibTex_style=bibTex_style))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_bibTex_format_export(solr_data=solr_data, include_abs=False, request_type='GET')
+    return return_bibTex_format_export(solr_data=export_get(bibcode, 'BibTex'), include_abs=False, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -225,24 +256,10 @@ def bibTex_abs_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-    bibTex_style = 'BibTex Abs'
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {bibTex_style} style format'.
-                 format(bibcodes=','.join(bibcodes), bibTex_style=bibTex_style))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_bibTex_format_export(solr_data=solr_data, include_abs=True)
+    results, status = export_post(request, 'BibTex Abs')
+    if status == 200:
+        return return_bibTex_format_export(solr_data=results, include_abs=True)
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -253,13 +270,7 @@ def bibTex_abs_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    bibTex_style = 'BibTex Abs'
-
-    current_app.logger.debug('received request with bibcode={bibcode} to export in {bibTex_style} style format'.
-                 format(bibcode=bibcode, bibTex_style=bibTex_style))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_bibTex_format_export(solr_data=solr_data, include_abs=True, request_type='GET')
+    return return_bibTex_format_export(solr_data=export_get(bibcode, 'BibTex Abs'), include_abs=True, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -269,24 +280,11 @@ def fielded_ads_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
+    results, status = export_post(request, 'ADS')
+    if status == 200:
+        return return_fielded_format_export(solr_data=results, fielded_style='ADS', request_type='POST')
+    return return_response(results, status)
 
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-    fielded_style = 'ADS'
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
-                 format(bibcodes=','.join(bibcodes), fielded_style=fielded_style))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style)
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/ads/<bibcode>', methods=['GET'])
@@ -296,13 +294,7 @@ def fielded_ads_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    fielded_style = 'ADS'
-
-    current_app.logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
-                 format(bibcode=bibcode, fielded_style=fielded_style))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style, request_type='GET')
+    return return_fielded_format_export(solr_data=export_get(bibcode, 'ADS'), fielded_style='ADS', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -312,24 +304,10 @@ def fielded_endnote_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-    fielded_style = 'EndNote'
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
-                 format(bibcodes=','.join(bibcodes), fielded_style=fielded_style))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style)
+    results, status = export_post(request, 'EndNote')
+    if status == 200:
+        return return_fielded_format_export(solr_data=results, fielded_style='EndNote', request_type='POST')
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -340,13 +318,7 @@ def fielded_endnote_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    fielded_style = 'EndNote'
-
-    current_app.logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
-                 format(bibcode=bibcode, fielded_style=fielded_style))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style, request_type='GET')
+    return return_fielded_format_export(solr_data=export_get(bibcode, 'EndNote'), fielded_style='EndNote', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -356,24 +328,10 @@ def fielded_procite_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-    fielded_style = 'ProCite'
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
-                 format(bibcodes=','.join(bibcodes), fielded_style=fielded_style))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style)
+    results, status = export_post(request, 'ProCite')
+    if status == 200:
+        return return_fielded_format_export(solr_data=results, fielded_style='ProCite', request_type='POST')
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -384,13 +342,7 @@ def fielded_procite_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    fielded_style = 'ProCite'
-
-    current_app.logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
-                 format(bibcode=bibcode, fielded_style=fielded_style))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style, request_type='GET')
+    return return_fielded_format_export(solr_data=export_get(bibcode, 'ProCite'), fielded_style='ProCite', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -400,24 +352,10 @@ def fielded_refman_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-    fielded_style = 'Refman'
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
-                 format(bibcodes=','.join(bibcodes), fielded_style=fielded_style))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style)
+    results, status = export_post(request, 'Refman')
+    if status == 200:
+        return return_fielded_format_export(solr_data=results, fielded_style='Refman', request_type='POST')
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -428,13 +366,7 @@ def fielded_refman_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    fielded_style = 'Refman'
-
-    current_app.logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
-                 format(bibcode=bibcode, fielded_style=fielded_style))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style, request_type='GET')
+    return return_fielded_format_export(solr_data=export_get(bibcode, 'Refman'), fielded_style='Refman', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -444,24 +376,10 @@ def fielded_refworks_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-    fielded_style = 'RefWorks'
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
-                 format(bibcodes=','.join(bibcodes), fielded_style=fielded_style))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style)
+    results, status = export_post(request, 'RefWorks')
+    if status == 200:
+        return return_fielded_format_export(solr_data=results, fielded_style='RefWorks', request_type='POST')
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -472,57 +390,31 @@ def fielded_refworks_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    fielded_style = 'RefWorks'
-
-    current_app.logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
-                 format(bibcode=bibcode, fielded_style=fielded_style))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style, request_type='GET')
+    return return_fielded_format_export(solr_data=export_get(bibcode, 'RefWorks'), fielded_style='RefWorks', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/medlars', methods=['POST'])
-def fielded_medlars__format_export_post():
+def fielded_medlars_format_export_post():
     """
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-    fielded_style = 'MEDLARS'
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {fielded_style} style format'.
-                 format(bibcodes=','.join(bibcodes), fielded_style=fielded_style))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style)
+    results, status = export_post(request, 'MEDLARS')
+    if status == 200:
+        return return_fielded_format_export(solr_data=results, fielded_style='MEDLARS', request_type='POST')
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/medlars/<bibcode>', methods=['GET'])
-def fielded_medlars__format_export_get(bibcode):
+def fielded_medlars_format_export_get(bibcode):
     """
 
     :param bibcode:
     :return:
     """
-    fielded_style = 'MEDLARS'
-
-    current_app.logger.debug('received request with bibcode={bibcode} to export in {fielded_style} style format'.
-                 format(bibcode=bibcode, fielded_style=fielded_style))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_fielded_format_export(solr_data, fielded_style, request_type='GET')
+    return return_fielded_format_export(solr_data=export_get(bibcode, 'MEDLARS'), fielded_style='MEDLARS', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -532,24 +424,10 @@ def xml_dublincore_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-    xml_style = 'DublinCore'
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
-                 format(bibcodes=','.join(bibcodes), xml_style=xml_style))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_xml_format_export(solr_data, xml_style)
+    results, status = export_post(request, 'DublinCore')
+    if status == 200:
+        return return_xml_format_export(solr_data=results, xml_style='DublinCore', request_type='POST')
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -560,13 +438,7 @@ def xml_dublincore_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    xml_style = 'DublinCore'
-
-    current_app.logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
-                 format(bibcode=bibcode, xml_style=xml_style))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_xml_format_export(solr_data, xml_style, request_type='GET')
+    return return_xml_format_export(solr_data=export_get(bibcode, 'DublinCore'), xml_style='DublinCore', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -576,24 +448,10 @@ def xml_ref_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-    xml_style = 'Reference'
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
-                 format(bibcodes=','.join(bibcodes), xml_style=xml_style))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_xml_format_export(solr_data, xml_style)
+    results, status = export_post(request, 'Reference')
+    if status == 200:
+        return return_xml_format_export(solr_data=results, xml_style='Reference', request_type='POST')
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -604,13 +462,7 @@ def xml_ref_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    xml_style = 'Reference'
-
-    current_app.logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
-                 format(bibcode=bibcode, xml_style=xml_style))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_xml_format_export(solr_data, xml_style, request_type='GET')
+    return return_xml_format_export(solr_data=export_get(bibcode, 'Reference'), xml_style='Reference', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -620,24 +472,10 @@ def xml_refabs_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-    xml_style = 'ReferenceAbs'
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {xml_style} style format'.
-                 format(bibcodes=','.join(bibcodes), xml_style=xml_style))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_xml_format_export(solr_data, xml_style)
+    results, status = export_post(request, 'ReferenceAbs')
+    if status == 200:
+        return return_xml_format_export(solr_data=results, xml_style='ReferenceAbs', request_type='POST')
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -648,13 +486,7 @@ def xml_refabs_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    xml_style = 'ReferenceAbs'
-
-    current_app.logger.debug('received request with bibcode={bibcode} to export in {xml_style} style format'.
-                 format(bibcode=bibcode, xml_style=xml_style))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_xml_format_export(solr_data, xml_style, request_type='GET')
+    return return_xml_format_export(solr_data=export_get(bibcode, 'ReferenceAbs'), xml_style='ReferenceAbs', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -664,25 +496,10 @@ def csl_aastex_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-    csl_style = 'aastex'
-    export_format = 2
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_csl_format_export(solr_data, csl_style, export_format)
+    results, status = export_post(request, 'aastex', 2)
+    if status == 200:
+        return return_csl_format_export(solr_data=results, csl_style='aastex', export_format=2, request_type='POST')
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -693,14 +510,7 @@ def csl_aastex_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    csl_style = 'aastex'
-    export_format = 2
-
-    current_app.logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_csl_format_export(solr_data, csl_style, export_format, request_type='GET')
+    return return_csl_format_export(solr_data=export_get(bibcode, 'aastex', 2), csl_style='aastex', export_format=2, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -710,25 +520,10 @@ def csl_icarus_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-    csl_style = 'icarus'
-    export_format = 2
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_csl_format_export(solr_data, csl_style, export_format)
+    results, status = export_post(request, 'icarus', 2)
+    if status == 200:
+        return return_csl_format_export(solr_data=results, csl_style='icarus', export_format=2, request_type='POST')
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -739,14 +534,7 @@ def csl_icarus_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    csl_style = 'icarus'
-    export_format = 2
-
-    current_app.logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_csl_format_export(solr_data, csl_style, export_format, request_type='GET')
+    return return_csl_format_export(solr_data=export_get(bibcode, 'icarus', 2), csl_style='icarus', export_format=2, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -756,25 +544,10 @@ def csl_mnras_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-    csl_style = 'mnras'
-    export_format = 2
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_csl_format_export(solr_data, csl_style, export_format)
+    results, status = export_post(request, 'mnras', 2)
+    if status == 200:
+        return return_csl_format_export(solr_data=results, csl_style='mnras', export_format=2, request_type='POST')
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -785,14 +558,7 @@ def csl_mnras_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    csl_style = 'mnras'
-    export_format = 2
-
-    current_app.logger.debug('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_csl_format_export(solr_data, csl_style, export_format, request_type='GET')
+    return return_csl_format_export(solr_data=export_get(bibcode, 'mnras', 2), csl_style='mnras', export_format=2, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -802,25 +568,10 @@ def csl_soph_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-    csl_style = 'soph'
-    export_format = 2
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_csl_format_export(solr_data, csl_style, export_format)
+    results, status = export_post(request, 'soph', 2)
+    if status == 200:
+        return return_csl_format_export(solr_data=results, csl_style='soph', export_format=2, request_type='POST')
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -831,14 +582,7 @@ def csl_soph_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    csl_style = 'soph'
-    export_format = 2
-
-    current_app.logger.info('received request with bibcode={bibcode} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcode=bibcode, csl_style=csl_style, export_format=export_format))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_csl_format_export(solr_data, csl_style, export_format, request_type='GET')
+    return return_csl_format_export(solr_data=export_get(bibcode, 'soph', 2), csl_style='soph', export_format=2, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -857,6 +601,13 @@ def csl_format_export():
         return return_response({'error': 'no style found in payload (parameter name is `style`)'}, 400)
     if 'format' not in payload:
         return return_response({'error': 'no output format found in payload (parameter name is `format`)'}, 400)
+    if 'sort' in payload:
+        if type(payload['sort']) is list:
+            sort = payload['sort'][0]
+        else:
+            sort = payload['sort']
+    else:
+        sort = 'date desc, bibcode desc'
 
     bibcodes = payload['bibcode']
     csl_style = payload['style']
@@ -873,7 +624,7 @@ def csl_format_export():
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
                  format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format))
 
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields(), sort=sort)
     return return_csl_format_export(solr_data, csl_style, export_format)
 
 
@@ -891,6 +642,14 @@ def custom_format_export():
         return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
     if 'format' not in payload:
         return return_response({'error': 'no custom format found in payload (parameter name is `format`)'}, 400)
+    if 'sort' in payload:
+        if type(payload['sort']) is list:
+            sort = payload['sort'][0]
+        else:
+            sort = payload['sort']
+    else:
+        sort = 'date desc, bibcode desc'
+
 
     bibcodes = payload['bibcode']
     try:
@@ -913,7 +672,7 @@ def custom_format_export():
     custom_export = CustomFormat(custom_format=custom_format_str)
     fields = custom_export.get_solr_fields()
     # now get the required data from Solr and send it to customFormat for formatting
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=fields)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=fields, sort=sort)
     if (solr_data is not None):
         if ('error' in solr_data):
             return return_response({'error': 'unable to query solr'}, 400)
@@ -926,7 +685,7 @@ def custom_format_export():
 @bp.route('/convert', methods=['POST'])
 def custom_format_convert():
     """
-    
+
     :return: converted custom format to the new specification
     """
     try:
@@ -952,23 +711,10 @@ def votable_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
-
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in VOTable format'.
-                 format(bibcodes=','.join(bibcodes)))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_votable_format_export(solr_data=solr_data)
+    results, status = export_post(request, 'VOTable')
+    if status == 200:
+        return return_votable_format_export(solr_data=results, request_type='POST')
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -979,11 +725,8 @@ def votable_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    current_app.logger.debug('received request with bibcode={bibcode} to export in VOTable format'.
-                 format(bibcode=bibcode))
+    return return_votable_format_export(solr_data=export_get(bibcode, 'VOTable'), request_type='GET')
 
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_votable_format_export(solr_data=solr_data, request_type='GET')
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/rss', methods=['POST'])
@@ -997,22 +740,18 @@ def rss_format_export_post():
     except:
         payload = dict(request.form)  # post data in form encoding
 
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-
-    bibcodes = payload['bibcode']
     if 'link' in payload:
-        link = payload['link']
+        if type(payload['link']) is list:
+            link = payload['link'][0]
+        else:
+            link = payload['link']
     else:
         link = ''
 
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in RSS format'.
-                 format(bibcodes=','.join(bibcodes)))
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields())
-    return return_rss_format_export(solr_data=solr_data, link=link)
+    results, status = export_post(request, 'RSS')
+    if status == 200:
+        return return_rss_format_export(solr_data=results, link=link)
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -1025,9 +764,5 @@ def rss_format_export_get(bibcode, link):
     :param link:
     :return:
     """
-    current_app.logger.debug('received request with bibcode={bibcode} to export in RSS format'.
-                 format(bibcode=bibcode))
-
-    solr_data = get_solr_data(bibcodes=[bibcode], fields=default_solr_fields())
-    return return_rss_format_export(solr_data=solr_data, link=link, request_type='GET')
+    return return_rss_format_export(solr_data=export_get(bibcode, 'RSS'), link=link, request_type='GET')
 

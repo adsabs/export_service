@@ -884,6 +884,43 @@ data = \
    }
 }
 
+one = \
+{
+  "responseHeader":{
+    "status":0,
+    "QTime":43,
+    "params":{
+      "q":"bibcode:2018AAS...23221409A",
+      "indent":"on",
+      "fl":"author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,  citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,  reference,comment,property,esources,data,isbn,pubnote,eid",
+      "wt":"json",
+      "_":"1529341837285"}},
+  "response":{"numFound":1,"start":0,"docs":[
+      {
+        "read_count":0,
+        "abstract":"The NASA Astrophysics Data System (ADS) is used daily by researchers and curators as a discovery platform for the Astronomy literature. Over the past several years, the ADS has been adding to the breadth and depth of its contents. Scholarly astronomy articles are now indexed as full-text documents, allowing for complete and accurate literature searches. High-level data products, data links, and software used in refereed astronomy papers are now also being ingested and indexed in our database. All the search functionality exposed in the new ADS interface is also available via its API, which we are continuing to develop and enhance. In this talk I will describe the current system, our current roadmap, and solicit input from the community regarding what additional data, services, and discovery capabilities the ADS should support.",
+        "citation_count":0,
+        "date":"2018-06-01T00:00:00Z",
+        "year":"2018",
+        "page":["214.09"],
+        "bibcode":"2018AAS...23221409A",
+        "identifier":["2018AAS...23221409A"],
+        "copyright":"(c) 2018: American Astronomical Society",
+        "author":["Accomazzi, Alberto",
+          "ADS Team"],
+        "aff":["Harvard Smithsonian, CfA",
+          "-"],
+        "volume":"232",
+        "pub":"American Astronomical Society Meeting Abstracts #232",
+        "property":["NONARTICLE",
+          "NOT REFEREED"],
+        "doctype":"abstract",
+        "pub_raw":"American Astronomical Society, AAS Meeting #232, id.#214.09",
+        "eid":"214.09",
+        "title":["The NASA Astrophysics Data System: Capabilities and Roadmap for the 2020s"]}]
+  }
+}
+
 ###################
 # to produce the above data
 #

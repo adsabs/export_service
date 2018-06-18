@@ -201,7 +201,7 @@ class CustomFormat(Format):
 
     def __parse_command(self):
         """
-        see if commond specifier has been defined in the custom format string
+        see if command specifier has been defined in the custom format string
 
         :return:
         """
@@ -211,7 +211,7 @@ class CustomFormat(Format):
                 for match in matches:
                     self.custom_format = self.custom_format.replace(match, '', len(match))
                     # remove %Z and split on :
-                    parts = match[2:].split(':')
+                    parts = match[2:].strip().split(':')
                     if (len(parts) == 2):
                         if (parts[0] == 'Encoding'):
                             self.__set_export_format(parts[1])
@@ -245,8 +245,8 @@ class CustomFormat(Format):
         """
         # solr_date has the format 2017-12-01T00:00:00Z
         date_time = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
-        formats = {'D': 'X%M/%Y', 'Y': '%Y'}
-        return strftime(date_time, formats[date_format]).replace('X00/', 'X').replace('X', '')
+        formats = {'D': '%m/%Y', 'Y': '%Y'}
+        return strftime(date_time, formats[date_format])
 
 
     def __format_url(self, bibcode, url_format):
@@ -387,11 +387,7 @@ class CustomFormat(Format):
             else:
                 authors.remove('and')
                 return format_n_authors.format(' '.join(authors[:m-1]), authors[m])
-        if (format == 'I'):
-            # return LastName and count - list is separated by a space
-            authors = author_list.split(',')
-            return format_with_n_colleagues.format(authors[0], num_authors-1)
-        if (format == 'L') or (format == 'N') or (format == 'g'):
+        if (format == 'I') or (format == 'L') or (format == 'N') or (format == 'g'):
             # return LastName and count list is separated by a comma
             authors = author_list.split(',')
             return format_with_n_colleagues.format(authors[0], num_authors-1)
@@ -407,7 +403,7 @@ class CustomFormat(Format):
         if (format == 'a'):
             # return first authors Lastname only
             # this is already done at the CSL level so just return what was passed in
-            return author_list
+            return format_etal.format(self.__get_n_authors(author_list, n, u',', 2, u', \&'))
         return author_list
 
 

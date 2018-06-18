@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" demote-non-dropping-particle="display-and-sort">
   <info>
-    <title>ADS Author Custom Format G</title>
-    <title-short>ADS Author Custom Format G</title-short>
+    <title>ADS Author Custom Format g</title>
+    <title-short>ADS Author Custom Format g</title-short>
     <id>https://ui.adsabs.harvard.edu</id>
     <category citation-format="author"/>
     <category field="generic-base"/>
-    <summary>Format A: Author short format, with no separator before the last author</summary>
+    <summary>Format g: First Author has the format: lastname f. i., Second Author on has the format: lastname f. i., Before Last Author there is no and, and when shorten has the format: first author, and xx colleagues.</summary>
     <updated>2017-06-22T15:56:44+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>

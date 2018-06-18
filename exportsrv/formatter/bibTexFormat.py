@@ -106,7 +106,8 @@ class BibTexFormat(Format):
                       ('pub', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
                       ('series', 'series'), ('volume', 'volume'), ('month', 'month'),
                       ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
-                      ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
+                      ('doi', 'doi'), ('eprintid', 'archivePrefix|eprint'), ('bibcode', 'adsurl'),
+                      ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@MISC'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub', 'howpublished'), ('year', 'year'), ('month', 'month'),
