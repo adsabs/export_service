@@ -337,22 +337,22 @@ class TestExports(TestCase):
                           views.xml_dublincore_format_export_get, views.xml_ref_format_export_get,
                           views.xml_refabs_format_export_get, views.csl_aastex_format_export_get,
                           views.csl_icarus_format_export_get, views.csl_mnras_format_export_get,
-                          views.csl_soph_format_export_get, views.votable_format_export_get]
+                          views.csl_soph_format_export_get, views.votable_format_export_get,
+                          views.rss_format_export_get]
         bibcode = self.app.config['EXPORT_SERVICE_TEST_BIBCODE_GET']
         for f in function_names:
-            response = f(bibcode)
+            if f == views.rss_format_export_get:
+                response = f(bibcode, '')
+            else:
+                response = f(bibcode)
             assert (response._status_code == 200)
-        response = views.rss_format_export_get(bibcode, '/#abs/2018AAS...23221409A/abstract')
-        assert (response._status_code == 200)
 
 
     def test_all_posts(self):
-
-        payload = {'bibcode': '2018AAS...23221409A',
-                   'link': '/#abs/2018AAS...23221409A/abstract',
-                   'testing_solrdata': solrdata.data}
         endpoints = ['/bibtex', '/bibtexabs', '/ads', '/endnote', '/procite', '/ris', '/refworks', '/medlars',
                      '/dcxml', '/refxml', '/refabsxml', '/aastex', '/icarus', '/mnras', '/soph', 'votable', 'rss']
+        payload = {'bibcode': self.app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'],
+                   'link': ''}
         for ep in endpoints:
             response = self.client.post(ep, data=json.dumps(payload))
             assert (response._status_code == 200)

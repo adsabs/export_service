@@ -59,9 +59,14 @@ def get_eprint(solr_doc):
     :return:
     """
     if 'eid' in solr_doc:
-        eid = solr_doc.get('eid', '')
+        eid = solr_doc.get('eid')
         if eid.startswith('arXiv') or eid.startswith('ascl'):
             return eid
+    if 'identifier' in solr_doc:
+        identifier = solr_doc.get('identifier')
+        for i in identifier:
+            if ('arXiv:' in i) or ('ascl:' in i):
+                return i
     return ''
 
 

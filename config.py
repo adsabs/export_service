@@ -10,7 +10,7 @@ EXPORT_SERVICE_MAX_RECORDS_SOLR = 2000
 
 # these are used for linkout links
 EXPORT_SERVICE_FROM_BBB_URL = 'https://ui.adsabs.harvard.edu/#abs'
-EXPORT_SERVICE_RESOLVE_URL = "https://ui.adsabs.harvard.edu/resolve"
+EXPORT_SERVICE_RESOLVE_URL = "https://ui.adsabs.harvard.edu/link_gateway"
 
 # added to the end of bibTex
 EXPORT_SERVICE_ADS_NOTES = 'Provided by the SAO/NASA Astrophysics Data System'

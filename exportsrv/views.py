@@ -196,8 +196,9 @@ def export_post(request, style, format=-1, testing=False):
                     format(bibcodes=','.join(bibcodes), style=style, format=format))
 
     # if in the test mode, return solr data that was passed in
-    if 'testing_solrdata' in payload:
-        return payload['testing_solrdata'], 200
+    # if in the test mode, return test solr data
+    if current_app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'] == bibcodes:
+        return solrdata.data, 200
 
     return get_solr_data(bibcodes=bibcodes, fields=default_solr_fields(), sort=sort), 200
 
