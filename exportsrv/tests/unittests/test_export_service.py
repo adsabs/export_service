@@ -3,11 +3,12 @@
 from flask_testing import TestCase
 import unittest
 
+import json
+
 import exportsrv.app as app
+import exportsrv.views as views
 
 from stubdata import solrdata, bibTexTest, fieldedTest, xmlTest, cslTest, customTest, voTableTest, rssTest
-from exportsrv.views import default_solr_fields, return_bibTex_format_export, return_fielded_format_export, \
-                            return_xml_format_export, return_csl_format_export, return_votable_format_export, return_rss_format_export
 from exportsrv.formatter.format import Format
 from exportsrv.formatter.bibTexFormat import BibTexFormat
 from exportsrv.formatter.fieldedFormat import FieldedFormat
@@ -156,72 +157,47 @@ class TestExports(TestCase):
         default_fields = 'author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,' \
                          'citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,' \
                          'reference,comment,property,esources,data,isbn,pubnote,eid'
-        assert (default_solr_fields() == default_fields)
+        assert (views.default_solr_fields() == default_fields)
 
     def test_bibtex_success(self):
-        response = return_bibTex_format_export(solrdata.data, False)
+        response = views.return_bibTex_format_export(solrdata.data, False)
         assert(response._status_code == 200)
 
     def test_bibtex_no_data(self):
-        response = return_bibTex_format_export(None, False)
+        response = views.return_bibTex_format_export(None, False)
         assert(response._status_code == 404)
-
-    def test_bibtex_data_error(self):
-        solr_data = {"error" : "data error"}
-        response = return_bibTex_format_export(solr_data, False)
-        assert(response._status_code == 400)
 
     def test_fielded_success(self):
         for fielded_style in ['ADS','EndNote','ProCite','Refman','RefWorks','MEDLARS']:
-            response = return_fielded_format_export(solrdata.data, fielded_style)
+            response = views.return_fielded_format_export(solrdata.data, fielded_style)
             assert(response._status_code == 200)
 
     def test_fielded_no_data(self):
         for fielded_style in ['ADS','EndNote','ProCite','Refman','RefWorks','MEDLARS']:
-            response = return_fielded_format_export(None, fielded_style)
+            response = views.return_fielded_format_export(None, fielded_style)
             assert(response._status_code == 404)
-
-    def test_fielded_data_error(self):
-        solr_data = {"error" : "data error"}
-        for fielded_style in ['ADS','EndNote','ProCite','Refman','RefWorks','MEDLARS']:
-            response = return_fielded_format_export(solr_data, fielded_style)
-            assert(response._status_code == 400)
 
     def test_xml_success(self):
         for xml_style in ['DublinCore','Reference','ReferenceAbs']:
-            response = return_xml_format_export(solrdata.data, xml_style)
+            response = views.return_xml_format_export(solrdata.data, xml_style)
             assert(response._status_code == 200)
 
     def test_xml_no_data(self):
         for xml_style in ['DublinCore','Reference','ReferenceAbs']:
-            response = return_xml_format_export(None, xml_style)
+            response = views.return_xml_format_export(None, xml_style)
             assert(response._status_code == 404)
-
-    def test_xml_data_error(self):
-        solr_data = {"error" : "data error"}
-        for xml_style in ['DublinCore','Reference','ReferenceAbs']:
-            response = return_xml_format_export(solr_data, xml_style)
-            assert(response._status_code == 400)
 
     def test_csl(self):
         export_format = 2
         for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj']:
-            response = return_csl_format_export(solrdata.data, csl_style, export_format)
+            response = views.return_csl_format_export(solrdata.data, csl_style, export_format)
             assert(response._status_code == 200)
 
     def test_csl_no_data(self):
         export_format = 2
         for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj']:
-            response = return_csl_format_export(None, csl_style, export_format)
+            response = views.return_csl_format_export(None, csl_style, export_format)
             assert(response._status_code == 404)
-
-    def test_csl_data_error(self):
-        export_format = 2
-        solr_data = {"error" : "data error"}
-        for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj']:
-            response = return_csl_format_export(solr_data, csl_style, export_format)
-            assert(response._status_code == 400)
-
 
     def test_eprint(self):
         a_doc_no_eprint = solrdata.data['response'].get('docs')[0]
@@ -278,30 +254,20 @@ class TestExports(TestCase):
         assert (rss_export == rssTest.data)
 
     def test_votable_success(self):
-        response = return_votable_format_export(solrdata.data)
+        response = views.return_votable_format_export(solrdata.data)
         assert(response._status_code == 200)
 
     def test_votable_no_data(self):
-        response = return_votable_format_export(None)
+        response = views.return_votable_format_export(None)
         assert(response._status_code == 404)
 
-    def test_votable_data_error(self):
-        solr_data = {"error" : "data error"}
-        response = return_votable_format_export(solr_data)
-        assert(response._status_code == 400)
-
     def test_rss_success(self):
-        response = return_rss_format_export(solrdata.data, '')
+        response = views.return_rss_format_export(solrdata.data, '')
         assert(response._status_code == 200)
 
     def test_rss_no_data(self):
-        response = return_rss_format_export(None, '')
+        response = views.return_rss_format_export(None, '')
         assert(response._status_code == 404)
-
-    def test_rss_data_error(self):
-        solr_data = {"error" : "data error"}
-        response = return_rss_format_export(solr_data, '')
-        assert(response._status_code == 400)
 
     def test_rss_authors(self):
         solr_data = \
@@ -361,6 +327,35 @@ class TestExports(TestCase):
                'Resolving Gas-Phase Metallicity In Galaxies')
         # neither author nor title exists
         assert(rss_export._RSSFormat__get_author_title(solr_data['response'].get('docs')[3]) == '')
+
+
+    def test_all_gets(self):
+        function_names = [views.bibTex_format_export_get, views.bibTex_abs_format_export_get,
+                          views.fielded_ads_format_export_get, views.fielded_endnote_format_export_get,
+                          views.fielded_procite_format_export_get, views.fielded_refman_format_export_get,
+                          views.fielded_refworks_format_export_get, views.fielded_medlars_format_export_get,
+                          views.xml_dublincore_format_export_get, views.xml_ref_format_export_get,
+                          views.xml_refabs_format_export_get, views.csl_aastex_format_export_get,
+                          views.csl_icarus_format_export_get, views.csl_mnras_format_export_get,
+                          views.csl_soph_format_export_get, views.votable_format_export_get]
+        bibcode = '2018AAS...23221409A'
+        for f in function_names:
+            response = f(bibcode)
+            assert (response._status_code == 200)
+        response = views.rss_format_export_get(bibcode, '/#abs/2018AAS...23221409A/abstract')
+        assert (response._status_code == 200)
+
+
+    def test_all_posts(self):
+
+        payload = {'bibcode': '2018AAS...23221409A',
+                   'link': '/#abs/2018AAS...23221409A/abstract',
+                   'testing_solrdata': solrdata.data}
+        endpoints = ['/bibtex', '/bibtexabs', '/ads', '/endnote', '/procite', '/ris', '/refworks', '/medlars',
+                     '/dcxml', '/refxml', '/refabsxml', '/aastex', '/icarus', '/mnras', '/soph', 'votable', 'rss']
+        for ep in endpoints:
+            response = self.client.post(ep, data=json.dumps(payload))
+            assert (response._status_code == 200)
 
 
 if __name__ == '__main__':

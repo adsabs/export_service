@@ -4,7 +4,7 @@ import requests
 
 from exportsrv.client import client
 
-def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
+def get_solr_data(bibcodes, fields, sort, start=0):
     """
     
     :param bibcodes: 
@@ -43,9 +43,7 @@ def get_solr_data(bibcodes, fields, start=0, sort='date desc'):
                 num_docs = from_solr['response'].get('numFound', 0)
                 if num_docs > 0:
                     return from_solr
-        else:
-            current_app.logger.error('Solr returned {response}.'.format(response=response))
-
+        current_app.logger.error('Solr returned {response}.'.format(response=response))
         return None
     except requests.exceptions.RequestException as e:
         # catastrophic error. bail.
