@@ -88,7 +88,7 @@ which can be passed as payload to `/rss` endpoint.
 
 ###### 4. Using endpoint /csl allows various styles and output formats to be defined in payload as follows:
 
-    {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"", "format":""}
+    {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"", "format":"", sort:"date desc, bibcode, desc"}
 
     where style can be: aastex, icarus, mnras, soph, aspc, apj, rhrv and format can be: 1, 2 or 3, for output formats Unicode, HTML or LaTeX respectively.
 
