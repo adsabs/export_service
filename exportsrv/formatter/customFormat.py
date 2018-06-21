@@ -570,6 +570,8 @@ class CustomFormat(Format):
         num_docs = 0
         results = []
         if (self.status == 0):
+            if len(self.header):
+                results.append(self.header + '\n')
             num_docs = self.get_num_docs()
             for index in range(num_docs):
                 results.append(self.__get_doc(index))
