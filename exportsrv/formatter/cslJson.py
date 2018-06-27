@@ -27,6 +27,8 @@ class CSLJson(Format):
                 if (len(author_parts) >= 2):
                     oneAuthor['given'] = author_parts[1]
                 author_list.append(oneAuthor)
+        if len(author_list) == 0:
+            author_list.append({'family':'No author'})
         return author_list
 
 
