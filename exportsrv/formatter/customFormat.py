@@ -90,7 +90,10 @@ class CustomFormat(Format):
         """
         num_authors = []
         for a_doc in self.from_solr['response'].get('docs'):
-            num_authors.append(len(a_doc['author']))
+            if 'author' in a_doc:
+                num_authors.append(len(a_doc['author']))
+            else:
+                num_authors.append(0)
         return num_authors
 
     
