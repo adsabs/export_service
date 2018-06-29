@@ -364,7 +364,7 @@ class CustomFormat(Format):
         format_n_authors = u'{} and {}'
         format_with_n_colleagues = u'{}, and {} colleagues'
         format_escape_emph = u'{} \emph{{et al.}}'
-        format_plus = u'{}+'
+        format_plus = u'{},+'
 
         if (format == 'n'):
             authors = author_list.split(',')
