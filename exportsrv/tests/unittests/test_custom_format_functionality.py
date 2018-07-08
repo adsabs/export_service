@@ -132,7 +132,7 @@ class TestExportsCustomFormat(TestCase):
                             '%3.2m':'English, \& Taylor, et al.',
                             '%N':'English, J., Taylor, A. R., Mashchenko, S. Y., Irwin, J. A., Basu, S. and Johnstone, D.',
                             '%3.2N': 'English, and 5 colleagues',
-                            '%n': 'English, J., Taylor, A. R., Mashchenko, S. Y., Irwin, J. A., Basu, S. \& Johnstone, D.',
+                            '%n': 'English,+',
                             '%3.2n': 'English,+',
         }
         for key, value in author_format.iteritems():

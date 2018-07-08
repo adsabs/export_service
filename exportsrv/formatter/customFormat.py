@@ -365,8 +365,11 @@ class CustomFormat(Format):
         format_n_authors = u'{} and {}'
         format_with_n_colleagues = u'{}, and {} colleagues'
         format_escape_emph = u'{} \emph{{et al.}}'
-        format_plus = u'{}+'
+        format_plus = u'{},+'
 
+        if (format == 'n'):
+            authors = author_list.split(',')
+            return format_plus.format(authors[0])
         if (num_authors <= n) or (num_authors <= m):
             return author_list
         if (format == 'A'):
@@ -401,9 +404,6 @@ class CustomFormat(Format):
         if (format == 'h'):
             authors = author_list.split(' ')
             return format_escape_emph.format(authors[0])
-        if (format == 'n'):
-            authors = author_list.split(' ')
-            return format_plus.format(authors[0])
         if (format == 'a'):
             # return first authors Lastname only
             # this is already done at the CSL level so just return what was passed in
@@ -418,6 +418,7 @@ class CustomFormat(Format):
         :param index:
         :return:
         """
+
         authors = self.from_cls.get(format)[index]
         count = self.author_count.get(format)[index]
         # see if author list needs to get shorten
@@ -425,12 +426,16 @@ class CustomFormat(Format):
         # If the number of authors in the list is larger than n, the list will be truncated to m entries.
         # If.m is not specified, n.1 is assumed.
         matches = self.REGEX_AUTHOR.findall(format)
-        if (len(matches) >= 1) and (len(matches[0][0]) > 0):
-            shorten = matches[0][0].split('.')
-            if (len(shorten) > 1):
-                return self.__get_author_list_shorten(authors, count, matches[0][1], int(str(shorten[0])), int(str(shorten[1])))
-            else:
-                return self.__get_author_list_shorten(authors, count, matches[0][1], int(str(shorten[0])), 1)
+        if (len(matches) >= 1):
+            # format n is a special case
+            if (matches[0][1] == 'n'):
+                return self.__get_author_list_shorten(authors, count, matches[0][1], 0, 0)
+            elif (len(matches[0][0]) > 0):
+                shorten = matches[0][0].split('.')
+                if (len(shorten) > 1):
+                    return self.__get_author_list_shorten(authors, count, matches[0][1], int(str(shorten[0])), int(str(shorten[1])))
+                else:
+                    return self.__get_author_list_shorten(authors, count, matches[0][1], int(str(shorten[0])), 1)
         return authors
 
 
