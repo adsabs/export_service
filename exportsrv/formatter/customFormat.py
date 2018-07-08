@@ -14,6 +14,7 @@ from exportsrv.formatter.cslJson import CSLJson
 from exportsrv.formatter.csl import CSL
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
 from exportsrv.formatter.strftime import strftime
+from exportsrv.utils import get_eprint
 
 # This class accepts JSON object created by Solr and can reformats it
 # for the user define Custom Format Export.
@@ -164,7 +165,7 @@ class CustomFormat(Format):
             'u': 'url',
             'V': 'volume',
             'W': 'doctype',
-            'X': 'pub_raw',
+            'X': 'eid,identifier',
             'x': 'comment',
             'Y': 'year'
         }
@@ -567,6 +568,8 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, self.__get_publication(field[1], a_doc))
             elif (field[2] == 'citation_count'):
                 result = self.__add_in(result, field, str(a_doc.get(field[2], '')))
+            elif (field[2] == 'eid,identifier'):
+                result = self.__add_in(result, field, get_eprint(a_doc))
         return self.__format_line_wrapped(result, index)
 
 
