@@ -1,6 +1,7 @@
 
 from flask import current_app
 import requests
+import re
 
 from exportsrv.client import client
 
@@ -52,6 +53,7 @@ def get_solr_data(bibcodes, fields, sort, start=0):
         return None
 
 
+REGEX_FLATPARSE_ARXIV = re.compile(r'(\d{4}\.\d{4,5})')
 def get_eprint(solr_doc):
     """
 
@@ -64,9 +66,17 @@ def get_eprint(solr_doc):
             return eid
     if 'identifier' in solr_doc:
         identifier = solr_doc.get('identifier')
+        arxiv_category = ('astro-ph', 'cond-mat', 'gr-qc', 'hep-ex', 'hep-lat', 'hep-ph', 'hep-th', 'math-ph', 'nucl-ex',
+                          'nucl-th', 'econ', 'eess', 'physics', 'quant-ph', 'math', 'nlin', 'cs', 'q-bio', 'q-fin', 'stat')
         for i in identifier:
             if ('arXiv:' in i) or ('ascl:' in i):
                 return i
+            if i.startswith(arxiv_category):
+                return 'arXiv:' + i
+            else:
+                match = REGEX_FLATPARSE_ARXIV.findall(i)
+                if match:
+                    return 'arXiv:' + ''.join(match)
     return ''
 
 
