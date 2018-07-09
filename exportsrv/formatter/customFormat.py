@@ -535,11 +535,11 @@ class CustomFormat(Format):
                 for char in str:
                     if char == left:
                         count += 1
-                    if char == right:
+                    if char == right and left != right:
                         count -= 1
                 if count != 0:
-                    str.replace(left,'')
-                    str.replace(right,'')
+                    str = str.replace(left,'')
+                    str = str.replace(right,'')
                 # take care of a special case when string starts and finishes with a comma
                 # if found remove the one from the beginning
                 if str.startswith(',') and str.endswith(','):
