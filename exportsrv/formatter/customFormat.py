@@ -520,27 +520,34 @@ class CustomFormat(Format):
             return encode_laTex(text)
         return text
 
-    def __matched(self, left_str, right_str):
+    def __matched(self, list_str):
         """
-        make sure we have matching punctuations in the left and right strings
+        make sure we have matching punctuations in all the strings in the list
         otherwise remove all non matching ones
-        :param left_str:
-        :param right_str:
+        :param list_str:
         :return:
         """
+        pattern = []
         punctuation = {'(':')', '{':'}', '[':']', '"':'"'}
-        for left, right in punctuation.iteritems():
-            count = 0
-            for char in left_str:
-                if char == left:
-                    count += 1
-            for char in right_str:
-                if char == right:
-                    count -= 1
-            if count != 0:
-                left_str.replace(left,'')
-                right_str.replace(right,'')
-        return left_str, right_str
+        for str in list_str:
+            for left, right in punctuation.iteritems():
+                count = 0
+                for char in str:
+                    if char == left:
+                        count += 1
+                    if char == right:
+                        count -= 1
+                if count != 0:
+                    str.replace(left,'')
+                    str.replace(right,'')
+                # take care of a special case when string starts and finishes with a comma
+                # if found remove the one from the beginning
+                if str.startswith(',') and str.endswith(','):
+                    str = str[1:]
+                elif str.startswith('\,') and str.endswith('\,'):
+                    str = str[2:]
+            pattern.append(str)
+        return pattern
 
 
     def __add_in(self, result, field, value):
@@ -554,10 +561,12 @@ class CustomFormat(Format):
         if (len(value) > 0):
             return result.replace(field[1], self.__encode(value, field[2]))
         else:
-            precede = r'(\\?[\(|\{|\[|\"]?(\\\\[a-z]{2}\s)?[\\|\s|-]?'
+            precede = r'(\\?[\(|\{|\[|\"]?[\\\\(a-z){2}\s]?[\\|\s|,|-]?'
             succeed = r'[\\|,]?[\)|\}|\]|\"]?[\\|,]?)'
-            precede,succeed = self.__matched(precede, succeed)
-            return re.sub(precede + field[1] + succeed, '', result)
+            pattern = self.__matched(re.findall(precede + field[1] + succeed, result))
+            for p in pattern:
+                result = result.replace(p, '')
+            return result
 
 
     def __get_doc(self, index):
