@@ -53,7 +53,6 @@ def get_solr_data(bibcodes, fields, sort, start=0):
         return None
 
 
-REGEX_FLATPARSE_ARXIV = re.compile(r'(\d{4}\.\d{4,5})')
 def get_eprint(solr_doc):
     """
 
@@ -73,10 +72,6 @@ def get_eprint(solr_doc):
                 return i
             if i.startswith(arxiv_category):
                 return 'arXiv:' + i
-            else:
-                match = REGEX_FLATPARSE_ARXIV.findall(i)
-                if match:
-                    return 'arXiv:' + ''.join(match)
     return ''
 
 

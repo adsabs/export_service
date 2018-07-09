@@ -520,6 +520,28 @@ class CustomFormat(Format):
             return encode_laTex(text)
         return text
 
+    def __matched(self, left_str, right_str):
+        """
+        make sure we have matching punctuations in the left and right strings
+        otherwise remove all non matching ones
+        :param left_str:
+        :param right_str:
+        :return:
+        """
+        punctuation = {'(':')', '{':'}', '[':']', '"':'"'}
+        for left, right in punctuation.iteritems():
+            count = 0
+            for char in left_str:
+                if char == left:
+                    count += 1
+            for char in right_str:
+                if char == right:
+                    count -= 1
+            if count != 0:
+                left_str.replace(left,'')
+                right_str.replace(right,'')
+        return left_str, right_str
+
 
     def __add_in(self, result, field, value):
         """
@@ -532,8 +554,9 @@ class CustomFormat(Format):
         if (len(value) > 0):
             return result.replace(field[1], self.__encode(value, field[2]))
         else:
-            precede = r'(\\?[\(|\{|\[|\"]?(\\\\[a-z]{2}\s)?[\\|\s|,|-]?'
+            precede = r'(\\?[\(|\{|\[|\"]?(\\\\[a-z]{2}\s)?[\\|\s|-]?'
             succeed = r'[\\|,]?[\)|\}|\]|\"]?[\\|,]?)'
+            precede,succeed = self.__matched(precede, succeed)
             return re.sub(precede + field[1] + succeed, '', result)
 
 
