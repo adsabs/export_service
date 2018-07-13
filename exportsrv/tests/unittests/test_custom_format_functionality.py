@@ -110,9 +110,9 @@ class TestExportsCustomFormat(TestCase):
 
         author_format = {
                             '%A':'English, J., Taylor, A. R., Mashchenko, S. Y., Irwin, J. A., Basu, S. and Johnstone, D.',
-                            '%3.2A':'English, J., and Taylor, A. R., et al.',
+                            '%3.2A':'English, J., Taylor, A. R., et al.',
                             '%a':'English, J., Taylor, A. R., Mashchenko, S. Y., Irwin, J. A., Basu, S. \& Johnstone, D.',
-                            '%3.2a':'English, J., \& Taylor, A. R., et al.',
+                            '%3.2a':'English, J., Taylor, A. R., et al.',
                             '%G':'English J. Taylor A. R. Mashchenko S. Y. Irwin J. A. Basu S. and Johnstone D.',
                             '%3.2G':'English J. Taylor A., et al.',
                             '%g':'English, J., Taylor, A. R., Mashchenko, S. Y., Irwin, J. A., Basu, S., Johnstone, D.',
@@ -127,9 +127,9 @@ class TestExportsCustomFormat(TestCase):
                             '%L': 'English, J., Taylor, A. R., Mashchenko, S. Y., Irwin, J. A., Basu, S. and Johnstone, D.',
                             '%3.2L': 'English, and 5 colleagues',
                             '%M':'English, Taylor, Mashchenko, Irwin, Basu and Johnstone',
-                            '%3.2M':'English, and Taylor, et al.',
+                            '%3.2M':'English, Taylor, et al.',
                             '%m':'English, Taylor, Mashchenko, Irwin, Basu \& Johnstone',
-                            '%3.2m':'English, \& Taylor, et al.',
+                            '%3.2m':'English, Taylor, et al.',
                             '%N':'English, J., Taylor, A. R., Mashchenko, S. Y., Irwin, J. A., Basu, S. and Johnstone, D.',
                             '%3.2N': 'English, and 5 colleagues',
                             '%n': 'English,+',
