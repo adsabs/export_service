@@ -3,7 +3,7 @@
 # these three classes are basically just enums, verifying valid members
 
 class adsFormatter:
-    unicode, html, latex = range(3)
+    unicode, html, latex, csv = range(4)
 
     def __is_number(self, s):
         """

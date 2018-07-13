@@ -358,7 +358,7 @@ class FieldedFormat(Format):
             ('abstract', [len(a_doc.get('abstract', '')), 'ABSTRACT', 'Abstract']),
             ('citations', [a_doc.get('citation_count', 0), 'CITATIONS', 'Citations to the Article']),
             ('reference', [len(a_doc.get('reference', '')), 'REFERENCES', 'References in the Article']),
-            ('coreads', [a_doc.get('read_count', ''), 'Co-Reads', 'Co-Reads']),
+            ('coreads', [a_doc.get('read_count', 0), 'Co-Reads', 'Co-Reads']),
         ])
         link_list = ''
         next_line = ';\n'

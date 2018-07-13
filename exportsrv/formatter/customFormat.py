@@ -31,7 +31,7 @@ class CustomFormat(Format):
     REGEX_AUTHOR = re.compile(r'%(\d*\.?\d*)(\w)')
     REGEX_ENUMERATION = re.compile(r'(%z)')
     REGEX_COMMAND = [
-        re.compile(r'(%Z(?:Encoding|Linelength):(?:unicode|html|latex|\d+)\s?)'),
+        re.compile(r'(%Z(?:Encoding|Linelength):(?:unicode|html|latex|csv|\d+)\s?)'),
         re.compile(r'(%Z(?:Header|Footer):\".+?\"\s?)'),
     ]
     REGEX_CUSTOME_FORMAT = re.compile(
@@ -82,6 +82,33 @@ class CustomFormat(Format):
             solr_fields += 'bibcode,'
         # don't need the last comma
         return solr_fields[:-len(',')]
+
+
+    def __get_linefeed(self):
+        """
+
+        :return:
+        """
+        if self.export_format == adsFormatter.unicode or self.export_format == adsFormatter.csv:
+            return '\n'
+        elif self.export_format == adsFormatter.html:
+            return '<br / >'
+        elif self.export_format == adsFormatter.latex:
+            return ''
+
+
+    def __replace_tab(self, text):
+        """
+        tabs are not rendered in the UI so replace them with with four spaces
+        :param text:
+        :return:
+        """
+        if self.export_format == adsFormatter.unicode or self.export_format == adsFormatter.csv:
+            return text.replace('\t', "    ")
+        elif self.export_format == adsFormatter.html:
+            return text.replace('\t', "&nbsp;&nbsp;&nbsp;&nbsp;")
+        elif self.export_format == adsFormatter.latex:
+            return ''
 
 
     def __get_num_authors(self):
@@ -186,6 +213,8 @@ class CustomFormat(Format):
             self.export_format = adsFormatter.html
         elif (format == 'latex'):
             self.export_format = adsFormatter.latex
+        elif (format == 'csv'):
+            self.export_format = adsFormatter.csv
         else:
             self.export_format = adsFormatter.unicode
 
@@ -238,6 +267,25 @@ class CustomFormat(Format):
         self.__parse_enumeration()
         for m in self.REGEX_CUSTOME_FORMAT.finditer(self.custom_format):
             self.parsed_spec.append(tuple((m.start(1), m.group(1), self.__get_solr_field(m.group(1)))))
+        self.__for_csv()
+
+
+    def __for_csv(self):
+        """
+        see if the encoding is csv, then there would be no line wrapping
+        and if the header line is not defined by user, create the header
+        :return:
+        """
+        if (self.export_format == adsFormatter.csv):
+            # no line wrapping in csv format
+            self.line_length = 0
+            if len(self.header) == 0:
+                header = ''
+                for field in self.parsed_spec:
+                    header += '"' + field[2] + '",'
+                # eliminate the last comma
+                header = header[:-1]
+                self.header = header
 
 
     def __format_date(self, solr_date, date_format):
@@ -281,7 +329,7 @@ class CustomFormat(Format):
 
         formatStyle = u'{0:>2} {1}'
         if (self.line_length == 0):
-            # no linewrap here, so just adjust the linefeed if exists
+            # no linewrap here, so just add line number if requested
             if (self.enumeration):
                 result = formatStyle.format(index+1, text)
             else:
@@ -292,7 +340,10 @@ class CustomFormat(Format):
                 result = formatStyle.format(index+1, wrapped)
             else:
                 result = fill(text, width=self.line_length, replace_whitespace=False)
-        return result + '\n'
+        # in csv format there is a comma at the very end, remove that before adding the linefeed
+        if (self.export_format == adsFormatter.csv):
+            result = result[:-1]
+        return result + self.__get_linefeed()
 
 
     def __get_affiliation_list(self, a_doc):
@@ -325,12 +376,7 @@ class CustomFormat(Format):
         :return:
         """
         split_parts = author_list.replace(before_last, '').split(separator)
-        if (n == 1):
-            return separator.join(split_parts[:n_parts_author])
-        if (len(before_last) == 0):
-            before_last = ' '
-        return separator.join(split_parts[:(n - 1) * n_parts_author]) + before_last + \
-               separator.join(split_parts[(n - 1) * n_parts_author:n * n_parts_author])
+        return separator.join(split_parts[:n*n_parts_author])
 
 
     def __get_author_list_shorten(self, author_list, num_authors, format, m, n):
@@ -535,11 +581,14 @@ class CustomFormat(Format):
                 for char in str:
                     if char == left:
                         count += 1
-                    if char == right and left != right:
+                    elif char == right:
                         count -= 1
                 if count != 0:
-                    str = str.replace(left,'')
-                    str = str.replace(right,'')
+                    if char == '"':
+                        if count % 2 != 0:
+                            str = str.replace(left, '')
+                    else:
+                        str = str.replace(left,'').replace(right,'')
                 # take care of a special case when string starts and finishes with a comma
                 # if found remove the one from the beginning
                 if str.startswith(',') and str.endswith(','):
@@ -558,11 +607,24 @@ class CustomFormat(Format):
         :param value:
         :return:
         """
+        precede = r'(\\?[\(|\{|\[|\"]?[\\\\(a-z){2}\s]?[\\|\s|,|-]?'
+        succeed = r'[\\|,]?[\)|\}|\]|\"]?[\\|,]?)'
+
+        # in the csv format we add double quotes followed by a comma
+        # whether there is a value or not
+        if self.export_format == adsFormatter.csv:
+            if (len(value) > 0):
+                insert_value = '"' + self.__encode(value, field[2]) + '",'
+            else:
+                insert_value = '"",'
+            pattern = self.__matched(re.findall(precede + field[1] + succeed, result))
+            for p in pattern:
+                result = result.replace(p, insert_value)
+            return result
+
         if (len(value) > 0):
             return result.replace(field[1], self.__encode(value, field[2]))
         else:
-            precede = r'(\\?[\(|\{|\[|\"]?[\\\\(a-z){2}\s]?[\\|\s|,|-]?'
-            succeed = r'[\\|,]?[\)|\}|\]|\"]?[\\|,]?)'
             pattern = self.__matched(re.findall(precede + field[1] + succeed, result))
             for p in pattern:
                 result = result.replace(p, '')
@@ -602,7 +664,7 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, str(a_doc.get(field[2], '')))
             elif (field[2] == 'eid,identifier'):
                 result = self.__add_in(result, field, get_eprint(a_doc))
-        return self.__format_line_wrapped(result, index)
+        return self.__format_line_wrapped(self.__replace_tab(result), index)
 
 
     def get(self):
@@ -614,11 +676,11 @@ class CustomFormat(Format):
         results = []
         if (self.status == 0):
             if len(self.header):
-                results.append(self.header + '\n')
+                results.append(self.header + self.__get_linefeed())
             num_docs = self.get_num_docs()
             for index in range(num_docs):
                 results.append(self.__get_doc(index))
-            results.append('\n' + self.footer)
+            results.append(self.__get_linefeed() + self.footer)
         result_dict = {}
         result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
         result_dict['export'] = ''.join(result for result in results)

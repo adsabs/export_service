@@ -232,7 +232,7 @@ class XMLFormat(Format):
                         ('abstract', [len(a_doc.get('abstract', '')), 'abstract', False]),
                         ('citations', [a_doc.get('citation_count', 0), 'Citations to the Article', 'citations', True]),
                         ('reference', [len(a_doc.get('reference', '')), 'References in the Article', 'references', True]),
-                        ('coreads', [a_doc.get('read_count', ''), 'Co-Reads', False]),
+                        ('coreads', [a_doc.get('read_count', 0), 'Co-Reads', False]),
         ])
         for link in link_dict:
             if (link_dict[link][0] > 0):
