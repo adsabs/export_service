@@ -103,12 +103,9 @@ class CustomFormat(Format):
         :param text:
         :return:
         """
-        if self.export_format == adsFormatter.unicode or self.export_format == adsFormatter.csv:
-            return text.replace('\t', "    ")
-        elif self.export_format == adsFormatter.html:
+        if self.export_format == adsFormatter.html:
             return text.replace('\t', "&nbsp;&nbsp;&nbsp;&nbsp;")
-        elif self.export_format == adsFormatter.latex:
-            return ''
+        return text.replace('\t', "    ")
 
 
     def __get_num_authors(self):
