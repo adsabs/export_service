@@ -3,6 +3,9 @@
 # these three classes are basically just enums, verifying valid members
 
 class adsFormatter:
+    """
+    We are supporting four format in custom format, however only support the first three in csl format.
+    """
     unicode, html, latex, csv = range(4)
 
     def __is_number(self, s):
@@ -25,6 +28,11 @@ class adsFormatter:
         return False
 
     def verify(self, format):
+        """
+        this is called from /csl which only supports 3 formats of unicode, html, and latex
+        :param format:
+        :return:
+        """
         if self.__is_number(format):
             format = int(format)
             if (format == adsFormatter.unicode) or (format == adsFormatter.html) or (format == adsFormatter.latex):

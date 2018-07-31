@@ -89,23 +89,21 @@ class CustomFormat(Format):
 
         :return:
         """
-        if self.export_format == adsFormatter.unicode or self.export_format == adsFormatter.csv:
-            return '\n'
-        elif self.export_format == adsFormatter.html:
+        if self.export_format == adsFormatter.html:
             return '<br / >'
-        elif self.export_format == adsFormatter.latex:
-            return ''
+        return '\n'
 
 
-    def __replace_tab(self, text):
+    def __replace_tab_and_linefeed(self, text):
         """
         tabs are not rendered in the UI so replace them with with four spaces
+        linefeeds are escaped, so remove the escape
         :param text:
         :return:
         """
         if self.export_format == adsFormatter.html:
-            return text.replace('\t', "&nbsp;&nbsp;&nbsp;&nbsp;")
-        return text.replace('\t', "    ")
+            return text.replace('\t', "&nbsp;&nbsp;&nbsp;&nbsp;").replace('\\n', '<br / >')
+        return text.replace('\t', "    ").replace('\\n', '\n')
 
 
     def __get_num_authors(self):
@@ -661,7 +659,7 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, str(a_doc.get(field[2], '')))
             elif (field[2] == 'eid,identifier'):
                 result = self.__add_in(result, field, get_eprint(a_doc))
-        return self.__format_line_wrapped(self.__replace_tab(result), index)
+        return self.__format_line_wrapped(self.__replace_tab_and_linefeed(result), index)
 
 
     def get(self):
