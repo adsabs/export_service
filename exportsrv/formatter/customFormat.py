@@ -550,14 +550,15 @@ class CustomFormat(Format):
         """
         if field == 'page,page_range':
             if 'page' in a_doc:
-                return a_doc.get('page')
+                return ''.join(a_doc.get('page'))
             if 'page_range' in a_doc:
-                page_range = a_doc.get('page_range').split('-')
+                page_range = ''.join(a_doc.get('page_range')).split('-')
                 return page_range[0]
         if field == 'lastpage,page_range':
             if 'page_range' in a_doc:
-                page_range = a_doc.get('page_range').split('-')
-                return page_range[1]
+                page_range = ''.join(a_doc.get('page_range')).split('-')
+                if len(page_range) > 1:
+                    return page_range[1]
         return ''
 
 
@@ -679,7 +680,7 @@ class CustomFormat(Format):
             elif (field[2] == 'eid,identifier'):
                 result = self.__add_in(result, field, get_eprint(a_doc))
             elif (field[2] == 'page,page_range') or (field[2] == 'lastpage,page_range'):
-                result = self.__add_in(result, field, ''.join(self.__get_page(field[2], a_doc)))
+                result = self.__add_in(result, field, self.__get_page(field[2], a_doc))
 
         return self.__format_line_wrapped(self.__replace_tab_and_linefeed(result), index)
 
