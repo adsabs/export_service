@@ -29,7 +29,7 @@ from exportsrv.utils import get_eprint
 class CustomFormat(Format):
 
     REGEX_AUTHOR = re.compile(r'%(\d*\.?\d*)(\w)')
-    REGEX_ENUMERATION = re.compile(r'(%z)')
+    REGEX_ENUMERATION = re.compile(r'(%zn)')
     REGEX_COMMAND = [
         re.compile(r'(%Z(?:Encoding|Linelength):(?:unicode|html|latex|csv|\d+)\s?)'),
         re.compile(r'(%Z(?:Header|Footer):\".+?\"\s?)'),
@@ -223,7 +223,6 @@ class CustomFormat(Format):
         matches = self.REGEX_ENUMERATION.findall(self.custom_format)
         if (len(matches) >= 1):
             for match in matches:
-                self.custom_format = match.replace('', self.custom_format)
                 self.enumeration = True
 
 
@@ -319,25 +318,19 @@ class CustomFormat(Format):
         :param index:
         :return:
         """
-        # remove line break if any
-        text = text.replace('\\n', '')
+        if (self.enumeration):
+            text = self.REGEX_ENUMERATION.sub(str(index+1), text)
 
-        formatStyle = u'{0:>2} {1}'
         if (self.line_length == 0):
-            # no linewrap here, so just add line number if requested
-            if (self.enumeration):
-                result = formatStyle.format(index+1, text)
-            else:
-                result = text
+            # no linewrap here
+            result = text
         else:
-            if (self.enumeration):
-                wrapped = fill(text, width=self.line_length, subsequent_indent=' ' * 4, replace_whitespace=False)
-                result = formatStyle.format(index+1, wrapped)
-            else:
-                result = fill(text, width=self.line_length, replace_whitespace=False)
+            result = fill(text, width=self.line_length, replace_whitespace=False)
+
         # in csv format there is a comma at the very end, remove that before adding the linefeed
         if (self.export_format == adsFormatter.csv):
             result = result[:-1]
+
         return result + self.__get_linefeed()
 
 
@@ -549,16 +542,15 @@ class CustomFormat(Format):
         :return:
         """
         if field == 'page,page_range':
-            if 'page' in a_doc:
-                return ''.join(a_doc.get('page'))
             if 'page_range' in a_doc:
                 page_range = ''.join(a_doc.get('page_range')).split('-')
                 return page_range[0]
+            if 'page' in a_doc:
+                return ''.join(a_doc.get('page'))
         if field == 'lastpage,page_range':
-            if 'page_range' in a_doc:
+            if 'page_range' in a_doc and '-' in a_doc:
                 page_range = ''.join(a_doc.get('page_range')).split('-')
-                if len(page_range) > 1:
-                    return page_range[1]
+                return page_range[1]
         return ''
 
 

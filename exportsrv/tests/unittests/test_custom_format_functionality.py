@@ -33,7 +33,7 @@ class TestExportsCustomFormat(TestCase):
 
     def test_parse_enumeration(self):
         # enumeration is included
-        custom_format = CustomFormat(custom_format=r'%z%10i %(Y), %T,%\J,%\V,%\p')
+        custom_format = CustomFormat(custom_format=r'%zn%10i %(Y), %T,%\J,%\V,%\p')
         custom_format._CustomFormat__parse_enumeration()
         assert (custom_format.enumeration == True)
 
