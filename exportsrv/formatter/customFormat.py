@@ -177,8 +177,8 @@ class CustomFormat(Format):
             'N': 'author',
             'n': 'author',
             'O': '',  # Object Names
-            'p': 'page',
-            'P': 'lastpage',  # Last Page
+            'p': 'page,page_range',
+            'P': 'lastpage,page_range',  # Last Page
             'Q': 'pub_raw',
             'q': 'pub',
             'R': 'bibcode',
@@ -541,6 +541,26 @@ class CustomFormat(Format):
         return ''
 
 
+    def __get_page(self, field, a_doc):
+        """
+
+        :param field:
+        :param a_doc:
+        :return:
+        """
+        if field == 'page,page_range':
+            if 'page' in a_doc:
+                return a_doc.get('page')
+            if 'page_range' in a_doc:
+                page_range = a_doc.get('page_range').split('-')
+                return page_range[0]
+        if field == 'lastpage,page_range':
+            if 'page_range' in a_doc:
+                page_range = a_doc.get('page_range').split('-')
+                return page_range[1]
+        return ''
+
+
     def __encode(self, text, name):
         """
 
@@ -635,8 +655,7 @@ class CustomFormat(Format):
         result = self.custom_format
         a_doc = self.from_solr['response'].get('docs')[index]
         for field in self.parsed_spec:
-            if (field[2] == 'title') or (field[2] == 'page') or (field[2] == 'lastpage') or \
-               (field[2] == 'doi') or (field[2] == 'comment'):
+            if (field[2] == 'title') or (field[2] == 'doi') or (field[2] == 'comment'):
                 result = self.__add_in(result, field, ''.join(a_doc.get(field[2], '')))
             elif (field[2] == 'author'):
                 result = self.__add_in(result, field, self.__get_author_list(field[1], index))
@@ -659,6 +678,9 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, str(a_doc.get(field[2], '')))
             elif (field[2] == 'eid,identifier'):
                 result = self.__add_in(result, field, get_eprint(a_doc))
+            elif (field[2] == 'page,page_range') or (field[2] == 'lastpage,page_range'):
+                result = self.__add_in(result, field, ''.join(self.__get_page(field[2], a_doc)))
+
         return self.__format_line_wrapped(self.__replace_tab_and_linefeed(result), index)
 
 
