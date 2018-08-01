@@ -325,7 +325,10 @@ class CustomFormat(Format):
             # no linewrap here
             result = text
         else:
-            result = fill(text, width=self.line_length, replace_whitespace=False)
+            # fill removes linefeeds at the end of the format, so count them and then add them in
+            linefeeds = re.findall('\n*$', text)
+            result = fill(text, width=self.line_length, replace_whitespace=False, break_long_words=False)
+            result += ''.join(linefeeds)
 
         # in csv format there is a comma at the very end, remove that before adding the linefeed
         if (self.export_format == adsFormatter.csv):
