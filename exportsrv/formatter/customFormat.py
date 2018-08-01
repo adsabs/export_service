@@ -551,9 +551,10 @@ class CustomFormat(Format):
             if 'page' in a_doc:
                 return ''.join(a_doc.get('page'))
         if field == 'lastpage,page_range':
-            if 'page_range' in a_doc and '-' in a_doc:
+            if 'page_range' in a_doc:
                 page_range = ''.join(a_doc.get('page_range')).split('-')
-                return page_range[1]
+                if len(page_range) > 1:
+                    return page_range[1]
         return ''
 
 
