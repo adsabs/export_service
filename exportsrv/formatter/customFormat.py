@@ -102,8 +102,8 @@ class CustomFormat(Format):
         :return:
         """
         if self.export_format == adsFormatter.html:
-            return text.replace('\t', "&nbsp;&nbsp;&nbsp;&nbsp;").replace('\\n', '<br / >')
-        return text.replace('\t', "    ").replace('\\n', '\n')
+            return text.replace('\\t', "&nbsp;&nbsp;&nbsp;&nbsp;").replace('\\\\', '&bsol;').replace('\n', '<br / >')
+        return re.sub(r'(\\\\n\b)', '\n', text.replace('\\t', "    ").replace('\\\\', '\\'))
 
 
     def __get_num_authors(self):
