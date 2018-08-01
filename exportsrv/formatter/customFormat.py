@@ -607,6 +607,9 @@ class CustomFormat(Format):
                     str = str[1:]
                 elif str.startswith('\,') and str.endswith('\,'):
                     str = str[2:]
+                # another special case is when last page is eliminated, so keep the comma
+                elif str.startswith('-') and str.endswith(','):
+                    str = str[:-1]
             pattern.append(str)
         return pattern
 
