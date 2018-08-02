@@ -91,19 +91,7 @@ class CustomFormat(Format):
         """
         if self.export_format == adsFormatter.html:
             return '<br / >'
-        return '\n'
-
-
-    def __replace_tab_and_linefeed(self, text):
-        """
-        tabs are not rendered in the UI so replace them with with four spaces
-        linefeeds are escaped, so remove the escape
-        :param text:
-        :return:
-        """
-        if self.export_format == adsFormatter.html:
-            return text.replace('\\t', "&nbsp;&nbsp;&nbsp;&nbsp;").replace('\\\\', '&bsol;').replace('\n', '<br / >')
-        return re.sub(r'(\\\\n\b)', '\n', text.replace('\\t', "    ").replace('\\\\', '\\'))
+        return '\\n'
 
 
     def __get_num_authors(self):
@@ -250,18 +238,17 @@ class CustomFormat(Format):
                             self.footer = parts[1].replace('"', '').decode('string_escape')
 
 
-    def __parse(self):
+    def __escape(self):
         """
-        parse the custom format string to identify the requested fields
-
+        tabs are not rendered in the UI so replace them with four spaces
+        linefeeds, tabs, and backslash are escaped, so remove the escape
         :return:
         """
-        self.parsed_spec = []
-        self.__parse_command()
-        self.__parse_enumeration()
-        for m in self.REGEX_CUSTOME_FORMAT.finditer(self.custom_format):
-            self.parsed_spec.append(tuple((m.start(1), m.group(1), self.__get_solr_field(m.group(1)))))
-        self.__for_csv()
+        # for re backslash needs to be escaped so for matching \\n need to search for \\\\n
+        if self.export_format == adsFormatter.html:
+            self.custom_format = re.sub(r'(\\\\n\b)', '<br / >', self.custom_format.replace('\\t', "&nbsp;&nbsp;&nbsp;&nbsp;").replace('\\\\', '&bsol;'))
+        else:
+            self.custom_format = re.sub(r'(\\\\n\b)', '\\n', self.custom_format.replace('\\t', "    ").replace('\\\\', '\\'))
 
 
     def __for_csv(self):
@@ -280,6 +267,21 @@ class CustomFormat(Format):
                 # eliminate the last comma
                 header = header[:-1]
                 self.header = header
+
+
+    def __parse(self):
+        """
+        parse the custom format string to identify the requested fields
+
+        :return:
+        """
+        self.parsed_spec = []
+        self.__parse_command()
+        self.__parse_enumeration()
+        for m in self.REGEX_CUSTOME_FORMAT.finditer(self.custom_format):
+            self.parsed_spec.append(tuple((m.start(1), m.group(1), self.__get_solr_field(m.group(1)))))
+        self.__escape()
+        self.__for_csv()
 
 
     def __format_date(self, solr_date, date_format):
@@ -325,10 +327,7 @@ class CustomFormat(Format):
             # no linewrap here
             result = text
         else:
-            # fill removes linefeeds at the end of the format, so count them and then add them in
-            linefeeds = re.findall('\n*$', text)
-            result = fill(text, width=self.line_length, replace_whitespace=False, break_long_words=False)
-            result += ''.join(linefeeds)
+            result = fill(text, width=self.line_length, replace_whitespace=False)
 
         # in csv format there is a comma at the very end, remove that before adding the linefeed
         if (self.export_format == adsFormatter.csv):
@@ -546,13 +545,13 @@ class CustomFormat(Format):
         """
         if field == 'page,page_range':
             if 'page_range' in a_doc:
-                page_range = ''.join(a_doc.get('page_range')).split('-')
+                page_range = a_doc.get('page_range').split('-')
                 return page_range[0]
             if 'page' in a_doc:
                 return ''.join(a_doc.get('page'))
         if field == 'lastpage,page_range':
             if 'page_range' in a_doc:
-                page_range = ''.join(a_doc.get('page_range')).split('-')
+                page_range = a_doc.get('page_range').split('-')
                 if len(page_range) > 1:
                     return page_range[1]
         return ''
@@ -578,10 +577,12 @@ class CustomFormat(Format):
             return encode_laTex(text)
         return text
 
-    def __matched(self, list_str):
+    def __match_punctuation(self, list_str):
         """
         make sure we have matching punctuations in all the strings in the list
         otherwise remove all non matching ones
+        also consider the case when there is a "startpage-endpage" and when the endpage is missing
+        we attempt to remove any punctuation on both sides, but if the right side is a comma, dont remove it
         :param list_str:
         :return:
         """
@@ -607,9 +608,9 @@ class CustomFormat(Format):
                     str = str[1:]
                 elif str.startswith('\,') and str.endswith('\,'):
                     str = str[2:]
-                # another special case is when last page is eliminated, so keep the comma
-                elif str.startswith('-') and str.endswith(','):
-                    str = str[:-1]
+            # another special case is when last page is eliminated, so keep the comma
+            if str.startswith('-') and str.endswith(','):
+                str = str[:-1]
             pattern.append(str)
         return pattern
 
@@ -632,7 +633,7 @@ class CustomFormat(Format):
                 insert_value = '"' + self.__encode(value, field[2]) + '",'
             else:
                 insert_value = '"",'
-            pattern = self.__matched(re.findall(precede + field[1] + succeed, result))
+            pattern = self.__match_punctuation(re.findall(precede + field[1] + succeed, result))
             for p in pattern:
                 result = result.replace(p, insert_value)
             return result
@@ -640,7 +641,7 @@ class CustomFormat(Format):
         if (len(value) > 0):
             return result.replace(field[1], self.__encode(value, field[2]))
         else:
-            pattern = self.__matched(re.findall(precede + field[1] + succeed, result))
+            pattern = self.__match_punctuation(re.findall(precede + field[1] + succeed, result))
             for p in pattern:
                 result = result.replace(p, '')
             return result
@@ -681,7 +682,7 @@ class CustomFormat(Format):
             elif (field[2] == 'page,page_range') or (field[2] == 'lastpage,page_range'):
                 result = self.__add_in(result, field, self.__get_page(field[2], a_doc))
 
-        return self.__format_line_wrapped(self.__replace_tab_and_linefeed(result), index)
+        return self.__format_line_wrapped(result, index)
 
 
     def get(self):
