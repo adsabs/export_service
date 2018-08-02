@@ -91,7 +91,7 @@ class CustomFormat(Format):
         """
         if self.export_format == adsFormatter.html:
             return '<br / >'
-        return '\\n'
+        return '\n'
 
 
     def __get_num_authors(self):
@@ -246,9 +246,9 @@ class CustomFormat(Format):
         """
         # for re backslash needs to be escaped so for matching \\n need to search for \\\\n
         if self.export_format == adsFormatter.html:
-            self.custom_format = re.sub(r'(\\\\n\b)', '<br / >', self.custom_format.replace('\\t', "&nbsp;&nbsp;&nbsp;&nbsp;").replace('\\\\', '&bsol;'))
+            self.custom_format = re.sub(r'(\\n\b)', '<br / >', self.custom_format.replace('\\t', "&nbsp;&nbsp;&nbsp;&nbsp;").replace('\\\\', '&bsol;'))
         else:
-            self.custom_format = re.sub(r'(\\\\n\b)', '\\n', self.custom_format.replace('\\t', "    ").replace('\\\\', '\\'))
+            self.custom_format = re.sub(r'(\\n\b)', self.__get_linefeed(), self.custom_format.replace('\\t', "    ").replace('\\\\', '\\'))
 
 
     def __for_csv(self):
@@ -327,8 +327,14 @@ class CustomFormat(Format):
             # no linewrap here
             result = text
         else:
-            result = fill(text, width=self.line_length, replace_whitespace=False)
-
+            # note that fill removes all the linefeeds at the end of the string,
+            # but not the ones in the middle
+            # so we can take two approaches, one is to count how many \n appear at the end
+            # and then add them in before returning, or add a character or two to the end of
+            # of the text and remove them after it has been filled, to give to illusion of
+            # \n not at the end of string, if there were any
+            result = fill(text+'<END>', width=self.line_length, replace_whitespace=False)
+            result = result[:-len('<END>')]
         # in csv format there is a comma at the very end, remove that before adding the linefeed
         if (self.export_format == adsFormatter.csv):
             result = result[:-1]
