@@ -29,7 +29,7 @@ def default_solr_fields():
     """
     return 'author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,' \
            'citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,' \
-           'reference,comment,property,esources,data,isbn,pubnote,eid'
+           'reference,comment,property,esources,data,isbn,pubnote,eid,arxiv_class,editor,series'
 
 
 def return_response(results, status, request_type=''):

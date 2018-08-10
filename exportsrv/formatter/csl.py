@@ -39,8 +39,7 @@ class CSL:
         self.citation_item = []
         self.bibcode_list = []
 
-        # Update the container-title if needed for the specific style
-        self.__update_container_title()
+        self.__update_title()
 
         # Process the JSON data to generate a citaproc-py BibliographySource.
         bib_source = CiteProcJSON(self.for_cls)
@@ -73,8 +72,10 @@ class CSL:
             self.bibcode_list.append(''.join(item.get('locator', '')))
 
 
-    def __update_container_title(self):
+    def __update_title(self):
         """
+        Update the container-title if needed for the specific style
+        also apply latex encoding if needed for both title and container-title
 
         :return:
         """
@@ -82,24 +83,32 @@ class CSL:
         # available from adsutils
         if (self.csl_style == 'mnras'):
             for data in self.for_cls:
-                journal = data['container-title']
+                journal = encode_laTex(data['container-title'])
                 abbreviation = get_pub_abbreviation(journal, numBest=1, exact=True)
                 if (len(abbreviation) > 0):
                     journal = abbreviation[0][1].strip('.')
                 data['container-title'] = journal
-        # for AASTex we need a macro of the journal names
+        #         data['title'] = encode_laTex(data['title'])
+        # # for AASTex we need a macro of the journal names
         elif (self.csl_style == 'aastex') or (self.csl_style == 'aasj') or (self.csl_style == 'aspc'):
             journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
             for data in self.for_cls:
-                data['container-title'] = journal_macros.get(data['container-title'].replace('The ', ''), data['container-title'])
+                data['container-title'] = journal_macros.get(data['container-title'].replace('The ', ''), encode_laTex(data['container-title']))
+                data['title'] = encode_laTex(data['title'])
         # for SoPh we use journal abbreviation for some special journals only
         elif (self.csl_style == 'soph'):
             journal_abbrevation = current_app.config['EXPORT_SERVICE_SOPH_JOURNAL_ABBREVIATION']
             for data in self.for_cls:
                 try:
-                    data['container-title'] = journal_abbrevation.get(data['locator'][4:9], data['container-title'])
+                    data['container-title'] = journal_abbrevation.get(data['locator'][4:9], encode_laTex(data['container-title']))
                 except:
-                    pass
+                    data['container-title'] = encode_laTex(data['container-title'])
+                data['title'] = encode_laTex(data['title'])
+        # for the rest just run title and container-title through latex encoding
+        elif (self.csl_style == 'icarus') or (self.csl_style == 'apsj'):
+            for data in self.for_cls:
+                data['container-title'] = encode_laTex(data['container-title'])
+                data['title'] = encode_laTex(data['title'])
 
 
     def __update_author_etal(self, author, bibcode):
@@ -114,10 +123,10 @@ class CSL:
         # hence, from CSL we get something like Siltala, J. et al.\
         # but we need to turn it to Siltala, J., and 12 colleagues
         if (self.csl_style == 'icarus'):
-            if (' et al.\\' in author):
+            if (' et al.\\textbackslash' in author):
                 for data in self.for_cls:
                     if (data['locator'] == bibcode):
-                        return author.replace(' et al.\\', ', and {} colleagues'.format(len(data['author']) - 1))
+                        return author.replace(' et al.\\textbackslash', ', and {} colleagues'.format(len(data['author']) - 1))
         elif (self.csl_style == 'soph'):
             if ('et al.' in author):
                 return author.replace('et al.', 'and, ...')
@@ -184,11 +193,10 @@ class CSL:
             cita_author, cita_year = self.__tokenize_cita(cita)
             biblio_author, biblio_rest = self.__tokenize_biblio(biblio)
 
-        # encode latex stuff
+        # encode author if latex format
         if (self.export_format == adsFormatter.latex):
             cita_author = encode_laTex_author(cita_author)
             biblio_author = encode_laTex_author(biblio_author)
-            biblio_rest = encode_laTex(biblio_rest)
 
         # some adjustments to the what is returned from CSL that we can not do with CSL
         cita_author = html_to_laTex(self.__update_author_etal_add_emph(cita_author))

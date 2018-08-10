@@ -35,12 +35,12 @@ class CustomFormat(Format):
         re.compile(r'(%Z(?:Header|Footer):\".+?\"\s?)'),
     ]
     REGEX_CUSTOME_FORMAT = re.compile(
-        r'''(                                           # start of capture group 1
-            %                                           # literal "%"
-            (?:                                         # first option
-            (?:\d+|\*)?                                 # width
-            (?:\.(?:\d+|\*))?                           # precision
-            [AaBcCdDEFGgHhIJjKLlMmNnOpPQqRSTUuVWXxY]    # type
+        r'''(                                                   # start of capture group 1
+            %                                                   # literal "%"
+            (?:                                                 # first option
+            (?:\d+|\*)?                                         # width
+            (?:\.(?:\d+|\*))?                                   # precision
+            p{0,2}[AaBcCdDEFGgHhIJjKLlMmNnOp{2}PQqRSTUuVWXxY]   # type
             )
         )''', flags=re.X
     )
@@ -167,6 +167,7 @@ class CustomFormat(Format):
             'O': '',  # Object Names
             'p': 'page,page_range',
             'P': 'lastpage,page_range',  # Last Page
+            'pp':'page_range,page',      # page_range is specified in the custom format, but if not available and page is then return that
             'Q': 'pub_raw',
             'q': 'pub',
             'R': 'bibcode',
@@ -179,7 +180,7 @@ class CustomFormat(Format):
             'x': 'comment',
             'Y': 'year'
         }
-        specifier = specifier[-1]
+        specifier = ''.join(re.findall(r'([AaBcCdDEFGgHhIJjKLlMmNnOpPQqRSTUuVWXxY]{1,2})', specifier))
         return fieldDict.get(specifier, '')
 
 
@@ -460,7 +461,6 @@ class CustomFormat(Format):
         :param index:
         :return:
         """
-
         authors = self.from_cls.get(format)[index]
         count = self.author_count.get(format)[index]
         # see if author list needs to get shorten
@@ -560,6 +560,12 @@ class CustomFormat(Format):
                 page_range = a_doc.get('page_range').split('-')
                 if len(page_range) > 1:
                     return page_range[1]
+        if field == 'page_range,page':
+            if 'page_range' in a_doc:
+                page_range = a_doc.get('page_range')
+                return page_range
+            if 'page' in a_doc:
+                return ''.join(a_doc.get('page'))
         return ''
 
 
@@ -667,7 +673,7 @@ class CustomFormat(Format):
             elif (field[2] == 'author'):
                 result = self.__add_in(result, field, self.__get_author_list(field[1], index))
             elif (field[2] == 'doctype'):
-                result = self.__add_in(result, field, self.__get_doc_type(a_doc.get(field[2], '')))
+                result = self.__add_in(result, field, a_doc.get(field[2], ''))
             elif (field[2] == 'date'):
                 result = self.__add_in(result, field, self.__format_date(a_doc.get(field[2], ''), field[1][-1]))
             elif (field[2] == 'aff'):
@@ -685,7 +691,7 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, str(a_doc.get(field[2], '')))
             elif (field[2] == 'eid,identifier'):
                 result = self.__add_in(result, field, get_eprint(a_doc))
-            elif (field[2] == 'page,page_range') or (field[2] == 'lastpage,page_range'):
+            elif (field[2] == 'page,page_range') or (field[2] == 'lastpage,page_range') or (field[2] == 'page_range,page'):
                 result = self.__add_in(result, field, self.__get_page(field[2], a_doc))
 
         return self.__format_line_wrapped(result, index)
