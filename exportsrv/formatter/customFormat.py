@@ -40,7 +40,7 @@ class CustomFormat(Format):
             (?:                                                 # first option
             (?:\d+|\*)?                                         # width
             (?:\.(?:\d+|\*))?                                   # precision
-            p{0,2}[AaBcCdDEFGgHhIJjKLlMmNnOp{2}PQqRSTUuVWXxY]   # type
+            p{0,2}[AaBcCdDEFGgHhIJjKLlMmNnOpPQqRSTUuVWXxY]      # type
             )
         )''', flags=re.X
     )
