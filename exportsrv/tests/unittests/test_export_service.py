@@ -137,7 +137,7 @@ class TestExports(TestCase):
 
     def test_custom(self):
         # format the stubdata using the code
-        custom_format = CustomFormat(custom_format=r'\\bibitem[%m\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p \\n')
+        custom_format = CustomFormat(custom_format=r'%ZEncoding:latex\\bibitem[%m\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p \\n')
         custom_format.set_json_from_solr(solrdata.data)
         # now compare it with an already formatted data that we know is correct
         assert (custom_format.get() == customTest.data)
@@ -156,7 +156,7 @@ class TestExports(TestCase):
     def test_default_solr_fields(self):
         default_fields = 'author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,' \
                          'citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,' \
-                         'reference,comment,property,esources,data,isbn,pubnote,eid'
+                         'reference,comment,property,esources,data,isbn,pubnote,eid,arxiv_class,editor,series'
         assert (views.default_solr_fields() == default_fields)
 
     def test_bibtex_success(self):

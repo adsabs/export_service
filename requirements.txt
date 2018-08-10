@@ -7,4 +7,3 @@ Flask-RESTful==0.3.6
 Flask-Testing==0.6.2
 lxml==3.8.0
 requests==2.4.3
-pylatexenc==1.2

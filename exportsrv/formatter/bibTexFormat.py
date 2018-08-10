@@ -5,6 +5,7 @@ from datetime import datetime
 from flask import current_app
 from textwrap import fill
 import re
+import json
 
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
 from exportsrv.formatter.format import Format
@@ -85,7 +86,7 @@ class BibTexFormat(Format):
                       ('keyword', 'keywords'), ('year', 'year'), ('month', 'month'),
                       ('volume', 'volume'), ('eid', 'eid'), ('page_range', 'pages'),
                       ('abstract', 'abstract'), ('doi', 'doi'), ('eprintid', 'archivePrefix|eprint'),
-                      ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
+                      ('arxiv_class', 'primaryClass'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@BOOK'):
             fields = [('author', 'author'), ('title', 'title'), ('pub_raw', 'booktitle'),
                       ('year', 'year'), ('doi', 'doi'), ('bibcode', 'adsurl'),
@@ -93,26 +94,28 @@ class BibTexFormat(Format):
         elif (doc_type_bibtex == '@INBOOK'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub_raw', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
-                      ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
-                      ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
+                      ('series', 'series'), ('eid', 'eid'), ('page_range', 'pages'),
+                      ('abstract', 'abstract'), ('doi', 'doi'), ('bibcode', 'adsurl'),
+                      ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@PROCEEDINGS'):
             fields = [('title', 'title'), ('keyword', 'keywords'), ('pub', 'booktitle'),
                       ('year', 'year'), ('editor', 'editor'), ('series', 'series'),
                       ('volume', 'volume'), ('month', 'month'), ('doi', 'doi'),
-                      ('eprintid', 'archivePrefix|eprint'), ('abstract', 'abstract'), ('bibcode', 'adsurl'),
-                      ('adsnotes', 'adsnote')]
+                      ('eprintid', 'archivePrefix|eprint'), ('arxiv_class', 'primaryClass'),
+                      ('abstract', 'abstract'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@INPROCEEDINGS'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
                       ('series', 'series'), ('volume', 'volume'), ('month', 'month'),
                       ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
-                      ('doi', 'doi'), ('eprintid', 'archivePrefix|eprint'), ('bibcode', 'adsurl'),
-                      ('adsnotes', 'adsnote')]
+                      ('doi', 'doi'), ('eprintid', 'archivePrefix|eprint'), ('arxiv_class', 'primaryClass'),
+                      ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@MISC'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub', 'howpublished'), ('year', 'year'), ('month', 'month'),
                       ('eid', 'eid'), ('page_range', 'pages'), ('doi', 'doi'),
-                      ('eprintid', 'archivePrefix|eprint'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
+                      ('eprintid', 'archivePrefix|eprint'), ('arxiv_class', 'primaryClass'),
+                      ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@PHDTHESIS') or (doc_type_bibtex == '@MASTERSTHESIS'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('aff', 'school'), ('year', 'year'), ('month', 'month'),
@@ -120,25 +123,26 @@ class BibTexFormat(Format):
         elif (doc_type_bibtex == '@TECHREPORT'):
             fields = [('author', 'author'), ('title', 'title'), ('pub_raw', 'journal'),
                       ('keyword', 'keywords'), ('pub', 'booktitle'), ('year', 'year'),
-                      ('editor', 'editor'), ('month', 'month'), ('eid', 'eid'),
-                      ('page_range', 'pages'), ('volume', 'volume'), ('bibcode', 'adsurl'),
-                      ('adsnotes', 'adsnote')]
+                      ('editor', 'editor'), ('series', 'series'), ('month', 'month'),
+                      ('eid', 'eid'), ('page_range', 'pages'), ('volume', 'volume'),
+                      ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         else:
             fields = []
         return OrderedDict(fields)
 
-    def __get_author_list(self, a_doc):
+    def __get_author_list(self, a_doc, field):
         """
-        format authors
+        format authors/editors
 
         :param a_doc:
+        :param field:
         :return:
         """
-        if 'author' not in a_doc:
+        if field not in a_doc:
             return ''
         and_str = ' and '
         author_list = ''
-        for author in a_doc['author']:
+        for author in a_doc[field]:
             author_parts = encode_laTex_author(author).split(',', 1)
             author_list += '{' + author_parts[0] + '}'
             if (len(author_parts) == 2):
@@ -192,8 +196,8 @@ class BibTexFormat(Format):
         :param journal:
         :return:
         """
-        journalMacros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
-        return journalMacros.get(journal.replace('The ', ''), journal)
+        journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
+        return journal_macros.get(journal.replace('The ', ''), encode_laTex(journal))
 
 
     def __add_clean_pub_raw(self, a_doc):
@@ -208,7 +212,7 @@ class BibTexFormat(Format):
         if ('<' in pub_raw) and ('>' in pub_raw):
             for key in self.REGEX_PUB_RAW:
                 pub_raw = key.sub(self.REGEX_PUB_RAW[key], pub_raw)
-        return pub_raw
+        return encode_laTex(pub_raw)
 
 
     def __add_page(self, a_doc):
@@ -257,6 +261,19 @@ class BibTexFormat(Format):
         return result
 
 
+    def __add_in_arxiv_class(self, field, value, output_format):
+        """
+
+        :param field:
+        :param value:
+        :param output_format:
+        :return:
+        """
+        if (len(value) >= 1):
+            return self.__add_in(field, value[0], output_format)
+        return ''
+
+
     def __add_in_wrapped(self, field, value, output_format):
         """
         add the value into the return structure, only if a value was defined in Solr
@@ -288,8 +305,8 @@ class BibTexFormat(Format):
 
         fields = self.__get_fields(a_doc)
         for field in fields:
-            if (field == 'author'):
-                text += self.__add_in_wrapped(fields[field], self.__get_author_list(a_doc), format_style_bracket)
+            if (field == 'author') or (field == 'editor'):
+                text += self.__add_in_wrapped(fields[field], self.__get_author_list(a_doc, field), format_style_bracket)
             elif (field == 'title'):
                 text += self.__add_in_wrapped(fields[field], encode_laTex(''.join(a_doc.get(field, ''))), format_style_bracket_quotes)
             elif (field == 'aff'):
@@ -320,6 +337,11 @@ class BibTexFormat(Format):
                 text += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_ADS_NOTES'], format_style_bracket)
             elif (field == 'eprintid'):
                 text += self.__add_in_eprint(fields[field], get_eprint(a_doc), format_style_bracket)
+            elif (field == 'arxiv_class'):
+                text += self.__add_in_arxiv_class(fields[field], a_doc.get(field, ''), format_style_bracket)
+            elif (field == 'series'):
+                text += self.__add_in(fields[field], ''.join(a_doc.get(field, '')), format_style_bracket)
+
         # remove the last comma,
         text = text[:-len(',\n')] + '\n'
 
