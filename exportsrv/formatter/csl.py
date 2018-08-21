@@ -23,7 +23,7 @@ from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author, html_
 class CSL:
 
     REGEX_TOKENIZE_CITA = re.compile(r'^(.*)\(?(\d{4})\)?')
-    REGEX_TOKENIZE_BIBLIO = re.compile(r'^(.*?)(\d+.*)')
+    REGEX_TOKENIZE_BIBLIO = re.compile(r'^(.*?)(\\?\s*\d+.*)')
 
 
     def __init__(self, for_cls, csl_style, export_format=adsFormatter.unicode):
@@ -88,8 +88,8 @@ class CSL:
                 if (len(abbreviation) > 0):
                     journal = abbreviation[0][1].strip('.')
                 data['container-title'] = journal
-        #         data['title'] = encode_laTex(data['title'])
-        # # for AASTex we need a macro of the journal names
+                data['title'] = encode_laTex(data['title'])
+        # for AASTex we need a macro of the journal names
         elif (self.csl_style == 'aastex') or (self.csl_style == 'aasj') or (self.csl_style == 'aspc'):
             journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
             for data in self.for_cls:
@@ -111,7 +111,7 @@ class CSL:
                 data['title'] = encode_laTex(data['title'])
 
 
-    def __update_author_etal(self, author, bibcode):
+    def __update_author_etal(self, author, the_rest, bibcode):
         """
 
         :param author:
@@ -123,14 +123,15 @@ class CSL:
         # hence, from CSL we get something like Siltala, J. et al.\
         # but we need to turn it to Siltala, J., and 12 colleagues
         if (self.csl_style == 'icarus'):
-            if (' et al.\\textbackslash' in author):
+            if (' et al.' in author):
                 for data in self.for_cls:
                     if (data['locator'] == bibcode):
-                        return author.replace(' et al.\\textbackslash', ', and {} colleagues'.format(len(data['author']) - 1))
+                        author = author.replace(' et al.', ', and {} colleagues'.format(len(data['author']) - 1))
+                        the_rest = the_rest.lstrip('\\')
         elif (self.csl_style == 'soph'):
             if ('et al.' in author):
-                return author.replace('et al.', 'and, ...')
-        return author
+                author = author.replace('et al.', 'and, ...')
+        return author, the_rest
 
 
     def __update_author_etal_add_emph(self, author):
@@ -170,7 +171,7 @@ class CSL:
         # split the author and rest of biblio
         biblio = self.REGEX_TOKENIZE_BIBLIO.findall(biblio)
         biblio_author, biblio_rest = biblio[0]
-        return biblio_author, biblio_rest.strip(' ')
+        return biblio_author, biblio_rest
 
 
     def __format_output(self, cita, biblio, bibcode, index):
@@ -200,7 +201,8 @@ class CSL:
 
         # some adjustments to the what is returned from CSL that we can not do with CSL
         cita_author = html_to_laTex(self.__update_author_etal_add_emph(cita_author))
-        biblio_author = html_to_laTex(self.__update_author_etal(str(biblio_author), bibcode))
+        biblio_author, biblio_rest = self.__update_author_etal(biblio_author, biblio_rest, bibcode)
+        biblio_author = html_to_laTex(biblio_author)
         biblio_rest = html_to_laTex(biblio_rest)
 
         format_style = {
