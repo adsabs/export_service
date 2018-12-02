@@ -29,6 +29,8 @@ from exportsrv.utils import get_eprint
 class CustomFormat(Format):
 
     REGEX_AUTHOR = re.compile(r'%(\d*\.?\d*)(\w)')
+    REGEX_FIRST_AUTHOR = re.compile(r'%(\^)(\w)')
+    REGEX_AFF = re.compile(r'%(\d*)F')
     REGEX_ENUMERATION = re.compile(r'(%zn)')
     REGEX_COMMAND = [
         re.compile(r'(%Z(?:Encoding|Linelength):(?:unicode|html|latex|csv|\d+)\s?)'),
@@ -40,6 +42,7 @@ class CustomFormat(Format):
             (?:                                                 # first option
             (?:\d+|\*)?                                         # width
             (?:\.(?:\d+|\*))?                                   # precision
+            (?:\^)?
             p{0,2}[AaBcCdDEFGgHhIJjKLlMmNnOpPQqRSTUuVWXxY]      # type
             )
         )''', flags=re.X
@@ -191,7 +194,7 @@ class CustomFormat(Format):
         :param format: 
         :return: 
         """
-        if (format == 'unicode'):
+        if (format == 'unicode') or (format == 'UTF-8'):
             self.export_format = adsFormatter.unicode
         elif (format == 'html'):
             self.export_format = adsFormatter.html
@@ -350,10 +353,17 @@ class CustomFormat(Format):
         :return:
         """
         if ('aff') in a_doc:
-            counter = [''.join(i) for i in self.generate_counter_id(len(a_doc['aff']))]
+            # if a limit of number of affiliation to display is set
+            match = self.REGEX_AFF.findall(self.custom_format)
+            if (len(''.join(match)) >= 1):
+                count = int(''.join(match))
+            else:
+                count = len(a_doc['aff'])
+
+            counter = [''.join(i) for i in self.generate_counter_id(count)]
             separator = '; '
             affiliation_list = ''
-            for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):
+            for affiliation, i in zip(a_doc['aff'], range(count)):
                 affiliation_list += counter[i] + '(' + affiliation + ')' + separator
             # do not need the last separator
             if (len(affiliation_list) > len(separator)):
@@ -376,13 +386,42 @@ class CustomFormat(Format):
         return separator.join(split_parts[:n*n_parts_author])
 
 
+    def __get_first_author(self, author_list, format):
+        """
+
+        :param author_list:
+        :param format:
+        :return:
+        """
+        # split on ; and return 1 element
+        if format[-1] in ['A','a']:
+            split_parts = author_list.split(';')
+            return split_parts[0]
+        # split on space and return 2 elements
+        if format[-1] in ['G']:
+            split_parts = author_list.split(' ')
+            return ' '.join(split_parts[:2])
+        # split on space and return 1 element
+        if format[-1] in ['H','h']:
+            split_parts = author_list.split(' ')
+            return split_parts[0]
+        # split on comma and return 2 elements
+        if format[-1] in ['I','L','N','l','g']:
+            split_parts = author_list.split(',')
+            return ','.join(split_parts[:2])
+        # split on comma and return 1 element
+        if format[-1] in ['M','m','n']:
+            split_parts = author_list.split(',')
+            return split_parts[0]
+        return author_list
+
     def __get_author_list_shorten(self, author_list, num_authors, format, m, n):
         """
         Formats	First Author	Second Author..	Before Last	    shorten
         A	        As in db	    As in db	    and	            first author, et al.
         G	        lastname f. i.	lastname f. i.	                first author, et al.
         H	        lastname	    lastname	    and	            display requested number of authors
-        I	        lastname f. i.	f. i. lastname	and	            first author, and xx colleagues
+        I	        lastname, f. i.	f. i. lastname	and	            first author, and xx colleagues
         L	        lastname, f. i.	lastname, f. i.	and	            first author, and xx colleagues
         N	        lastname, f. i.	lastname, f. i.		            first author, and xx colleagues
         l	        lastname, f. i.	lastname, f. i.	&	            first author, et al.
@@ -418,7 +457,7 @@ class CustomFormat(Format):
         if (format == 'A'):
             # in db we have LastName, FirstName (or FirstInitial.) MiddleInitial.
             # hence the first part is the LastName
-            return format_etal.format(self.__get_n_authors(author_list, n, u',', 2, u', and'))
+            return format_etal.format(self.__get_n_authors(author_list, n, u';', 1, u', and'))
         if (format == 'G'):
             # return LastName et. al. - list is separated by a space
             return format_etal.format(self.__get_n_authors(author_list, n, u' ', 2, u''))
@@ -450,7 +489,7 @@ class CustomFormat(Format):
         if (format == 'a'):
             # return first authors Lastname only
             # this is already done at the CSL level so just return what was passed in
-            return format_etal.format(self.__get_n_authors(author_list, n, u',', 2, u', \&'))
+            return format_etal.format(self.__get_n_authors(author_list, n, u';', 1, u', \&'))
         return author_list
 
 
@@ -478,6 +517,9 @@ class CustomFormat(Format):
                     return self.__get_author_list_shorten(authors, count, matches[0][1], int(str(shorten[0])), int(str(shorten[1])))
                 else:
                     return self.__get_author_list_shorten(authors, count, matches[0][1], int(str(shorten[0])), 1)
+        matches = self.REGEX_FIRST_AUTHOR.findall(format)
+        if (len(matches) >= 1):
+            return self.__get_first_author(authors, format)
         return authors
 
 
@@ -588,6 +630,7 @@ class CustomFormat(Format):
                 return text
             return encode_laTex(text)
         return text
+
 
     def __match_punctuation(self, list_str):
         """
