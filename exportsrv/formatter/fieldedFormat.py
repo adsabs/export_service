@@ -150,20 +150,20 @@ class FieldedFormat(Format):
                                  ('pub_raw', 'JO  -'), ('volume', 'VL  -'), ('date', 'Y1  -'),
                                  ('page', 'SP  -'), ('lastpage', 'EP  -'), ('keyword', 'KW  -'),
                                  ('url', 'UR  -'), ('abstract', 'N2  -'), ('doi', 'DO  -'),
-                                 ('eprintid', 'C1  - eprint:'), ('isbn', 'SN  -'), ('endRecord', 'ER  -')]))
+                                 ('eprintid', 'C1  - eprint:'), ('issn', 'SN  -'), ('endRecord', 'ER  -')]))
         if (export_format == self.EXPORT_FORMAT_REFMAN):
             return (OrderedDict([('doctype', 'TY  -'), ('title', 'T1  -'), ('author', 'A1  -'),
                                  ('pub_raw', 'JO  -'), ('volume', 'VL  -'), ('date', 'Y1  -'),
                                  ('page', 'SP  -'), ('lastpage', 'EP  -'), ('keyword', 'KW  -'),
                                  ('url', 'UR  -'), ('abstract', 'N2  -'), ('doi', 'DO  -'),
-                                 ('eprintid', 'C1  - eprint:'), ('isbn', 'SN  -'), ('endRecord', 'ER  -')]))
+                                 ('eprintid', 'C1  - eprint:'), ('issn', 'SN  -'), ('endRecord', 'ER  -')]))
         if (export_format == self.EXPORT_FORMAT_REFWORKS):
             return (OrderedDict([('doctype', 'RT'), ('title', 'T1'), ('author', 'A1'),
                                  ('aff', 'AD'), ('pub_raw', 'JF'), ('volume', 'VO'),
                                  ('year', 'YR'), ('date', 'FD'), ('page', 'SP'),
                                  ('lastpage', 'OP'), ('keyword', 'K1'), ('url', 'LK'),
                                  ('comment', 'NO'), ('abstract', 'AB'), ('doi', 'DO DOI:'),
-                                 ('eprintid', 'DO eprintid:'), ('isbn', 'SN')]))
+                                 ('eprintid', 'DO eprintid:'), ('issn', 'SN')]))
         if (export_format == self.EXPORT_FORMAT_MEDLARS):
             return (OrderedDict([('doctype', 'PT  -'), ('title', 'TI  -'), ('author', 'AU  -'),
                                  ('pub', 'TA  -'), ('pub_raw', 'SO  -'), ('volume', 'VI  -'),
@@ -478,7 +478,8 @@ class FieldedFormat(Format):
         result = ''
         a_doc = self.from_solr['response'].get('docs')[index]
         for field in fields:
-            if (field == 'title') or (field == 'page') or (field == 'doi') or (field == 'isbn') or (field == 'pubnote'):
+            if (field == 'title') or (field == 'page') or (field == 'doi') or (field == 'isbn') or \
+                    (field == 'pubnote') or (field == 'issn'):
                 result += self.__add_in(fields[field], ''.join(a_doc.get(field, '')))
             elif (field == 'lastpage'):
                 result += self.__add_in(fields[field], self.___get_last_page(a_doc.get('page_range', '')))

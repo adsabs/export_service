@@ -115,6 +115,7 @@ class BibTexFormat(Format):
                       ('pub', 'howpublished'), ('year', 'year'), ('month', 'month'),
                       ('eid', 'eid'), ('page_range', 'pages'), ('doi', 'doi'),
                       ('eprintid', 'archivePrefix|eprint'), ('arxiv_class', 'primaryClass'),
+                      ('version', 'version'), ('publisher', 'publisher'),
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@PHDTHESIS') or (doc_type_bibtex == '@MASTERSTHESIS'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
@@ -339,7 +340,7 @@ class BibTexFormat(Format):
                 text += self.__add_in_eprint(fields[field], get_eprint(a_doc), format_style_bracket)
             elif (field == 'arxiv_class'):
                 text += self.__add_in_arxiv_class(fields[field], a_doc.get(field, ''), format_style_bracket)
-            elif (field == 'series'):
+            elif (field == 'series') or (field == 'version') or (field == 'publisher'):
                 text += self.__add_in(fields[field], ''.join(a_doc.get(field, '')), format_style_bracket)
 
         # remove the last comma,

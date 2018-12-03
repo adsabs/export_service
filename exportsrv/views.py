@@ -29,7 +29,8 @@ def default_solr_fields():
     """
     return 'author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,' \
            'citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,' \
-           'reference,comment,property,esources,data,isbn,pubnote,eid,arxiv_class,editor,series'
+           'reference,comment,property,esources,data,isbn,pubnote,eid,arxiv_class,editor,series,' \
+           'version,publisher,issn'
 
 
 def return_response(results, status, request_type=''):
@@ -161,7 +162,7 @@ def return_rss_format_export(solr_data, link, request_type='POST'):
     return return_response({'error': 'no result from solr'}, 404)
 
 
-def export_post(request, style, format=-1, testing=False):
+def export_post(request, style, format=-1):
     """
 
     :param request:
@@ -195,7 +196,6 @@ def export_post(request, style, format=-1, testing=False):
         current_app.logger.info('received request with bibcodes={bibcodes} to export in {style} style with output format {format}'.
                     format(bibcodes=','.join(bibcodes), style=style, format=format))
 
-    # if in the test mode, return solr data that was passed in
     # if in the test mode, return test solr data
     if current_app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'] == bibcodes:
         return solrdata.data, 200

@@ -17,7 +17,9 @@ class TestExportsCustomFormat(TestCase):
 
     def test_export_format(self):
         custom_format = CustomFormat(custom_format=r'')
-        # init unicode
+        # init unicode (also accepting UTF-8 for backward compatibility)
+        custom_format._CustomFormat__set_export_format('unicode')
+        assert (custom_format.export_format == adsFormatter.unicode)
         custom_format._CustomFormat__set_export_format('unicode')
         assert (custom_format.export_format == adsFormatter.unicode)
         # init html
@@ -74,9 +76,9 @@ class TestExportsCustomFormat(TestCase):
         custom_format = CustomFormat(custom_format=r'')
 
         # long format
-        assert(custom_format._CustomFormat__format_url('2018ApJS..236...24F', 'U') == '<a href="https://ui.adsabs.harvard.edu/#abs">2018ApJS..236...24F</a>')
+        assert(custom_format._CustomFormat__format_url('2018ApJS..236...24F', 'U') == '<a href="https://ui.adsabs.harvard.edu/\#abs">2018ApJS..236...24F</a>')
         # short format
-        assert(custom_format._CustomFormat__format_url('2018ApJS..236...24F', 'u') == 'https://ui.adsabs.harvard.edu/#abs/2018ApJS..236...24F')
+        assert(custom_format._CustomFormat__format_url('2018ApJS..236...24F', 'u') == 'https://ui.adsabs.harvard.edu/\#abs/2018ApJS..236...24F')
         # no bibcode
         assert(custom_format._CustomFormat__format_url('', 'U') == '')
         assert(custom_format._CustomFormat__format_url('', 'u') == '')
@@ -102,17 +104,31 @@ class TestExportsCustomFormat(TestCase):
         assert (custom_format._CustomFormat__get_affiliation_list(a_doc) == '')
 
 
+    def test_get_affiliation_list_limit(self):
+        custom_format = CustomFormat(custom_format=r'%2F')
+        custom_format.set_json_from_solr(solrdata.data)
+
+        # with only 2 affiliations
+        a_doc = solrdata.data['response'].get('docs')[15]
+        expected_aff_list = "AA(Department of Physics, Queen's University, Kingston, Ontario, K7L 3N6, Canada; Space Telescope Science Institute, Baltimore, MD); " \
+                            "AB(Department of Physics and Astronomy, University of Calgary, Calgary, Alberta, T2N 1N4, Canada)"
+        assert (custom_format._CustomFormat__get_affiliation_list(a_doc) == expected_aff_list)
+
+
     def test_get_author_list(self):
         custom_format = CustomFormat(custom_format=r'%A,%3.2A,%a,%3.2a,%G,%3.2G,%g,%3.2g,%H,%3.2H,%1.2H,%h,%3.2h,%I,%3.2I,'
-                                                   r'%L,%3.2L,%l,%3.2l,%M,%3.2M,%m,%3.2m,%N,%3.2N,%n,%3.2n'
+                                                   r'%L,%3.2L,%l,%3.2l,%M,%3.2M,%m,%3.2m,%N,%3.2N,%n,%3.2n,'
+                                                   r'%^A,%^a,%^G,%^g,%^H,%^h,%^I,%^L,%^l,%^M,%^m,%^N,%^n'
         )
         custom_format.set_json_from_solr(solrdata.data)
 
+        # acutal data from solr: ['English, Jayanne', 'Taylor, A. R.', 'Mashchenko, S. Y.', 'Irwin, Judith A.', 'Basu, Shantanu', 'Johnstone, Doug']
+
         author_format = {
-                            '%A':'English, J., Taylor, A. R., Mashchenko, S. Y., Irwin, J. A., Basu, S. and Johnstone, D.',
-                            '%3.2A':'English, J., Taylor, A. R., et al.',
-                            '%a':'English, J., Taylor, A. R., Mashchenko, S. Y., Irwin, J. A., Basu, S. & Johnstone, D.',
-                            '%3.2a':'English, J., Taylor, A. R., et al.',
+                            '%A':'English, Jayanne; Taylor, A. R.; Mashchenko, S. Y.; Irwin, Judith A.; Basu, Shantanu and Johnstone, Doug',
+                            '%3.2A':'English, Jayanne; Taylor, A. R., et al.',
+                            '%a':'English, Jayanne; Taylor, A. R.; Mashchenko, S. Y.; Irwin, Judith A.; Basu, Shantanu & Johnstone, Doug',
+                            '%3.2a':'English, Jayanne; Taylor, A. R., et al.',
                             '%G':'English J. Taylor A. R. Mashchenko S. Y. Irwin J. A. Basu S. and Johnstone D.',
                             '%3.2G':'English J. Taylor A., et al.',
                             '%g':'English, J., Taylor, A. R., Mashchenko, S. Y., Irwin, J. A., Basu, S., Johnstone, D.',
@@ -126,6 +142,8 @@ class TestExportsCustomFormat(TestCase):
                             '%3.2I':'English, and 5 colleagues',
                             '%L': 'English, J., Taylor, A. R., Mashchenko, S. Y., Irwin, J. A., Basu, S. and Johnstone, D.',
                             '%3.2L': 'English, and 5 colleagues',
+                            '%l': 'English, J., Taylor, A. R., Mashchenko, S. Y., Irwin, J. A., Basu, S. & Johnstone, D.',
+                            '%3.2l': 'English, J., Taylor, A. R., et al.',
                             '%M':'English, Taylor, Mashchenko, Irwin, Basu and Johnstone',
                             '%3.2M':'English, Taylor, et al.',
                             '%m':'English, Taylor, Mashchenko, Irwin, Basu & Johnstone',
@@ -134,6 +152,19 @@ class TestExportsCustomFormat(TestCase):
                             '%3.2N': 'English, and 5 colleagues',
                             '%n': 'English,+',
                             '%3.2n': 'English,+',
+                            '%^A':'English, Jayanne',
+                            '%^a':'English, Jayanne',
+                            '%^G':'English J.',
+                            '%^g':'English, J.',
+                            '%^H':'English',
+                            '%^h':'English',
+                            '%^I':'English, J.',
+                            '%^L':'English, J.',
+                            '%^l':'English, J.',
+                            '%^M':'English',
+                            '%^m':'English',
+                            '%^N':'English, J.',
+                            '%^n':'English',
         }
         for key, value in author_format.iteritems():
             assert (custom_format._CustomFormat__get_author_list(format=key, index=15) == value)
