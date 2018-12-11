@@ -189,7 +189,7 @@ class BibTexFormat(Format):
         return encode_laTex(', '.join(a_doc.get('keyword', '')))
 
 
-    def __get_journal(self, doctype, journal):
+    def __get_journal(self, a_doc):
         """
         finds a macro for the journal if available, otherwise
         returns the journal name
@@ -198,9 +198,10 @@ class BibTexFormat(Format):
         :param journal:
         :return:
         """
-        if doctype == 'software':
+        if a_doc.get('doctype', '') == 'software':
             return None
         journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
+        journal = ''.join(a_doc.get('pub', ''))
         return journal_macros.get(journal.replace('The ', ''), encode_laTex(journal))
 
 
@@ -225,8 +226,6 @@ class BibTexFormat(Format):
         :param a_doc:
         :return:
         """
-        if a_doc.get('doctype', '') == 'software':
-            return None
         page = ''.join(a_doc.get('page_range', ''))
         if len(page) == 0:
             page = ''.join(a_doc.get('page', ''))
@@ -307,8 +306,7 @@ class BibTexFormat(Format):
         format_style = u'{0:>13} = {1}'
 
         a_doc = self.from_solr['response'].get('docs')[index]
-        doctype = a_doc.get('doctype', '')
-        text = self.__get_doc_type(doctype) + '{' + a_doc.get('bibcode', '')  + ',\n'
+        text = self.__get_doc_type(a_doc.get('doctype', '')) + '{' + a_doc.get('bibcode', '')  + ',\n'
 
         fields = self.__get_fields(a_doc)
         for field in fields:
@@ -321,7 +319,7 @@ class BibTexFormat(Format):
             elif (field == 'pub_raw'):
                 text += self.__add_in_wrapped(fields[field], self.__add_clean_pub_raw(a_doc), format_style_bracket)
             elif (field == 'pub'):
-                text += self.__add_in(fields[field], self.__get_journal(doctype, ''.join(a_doc.get(field, ''))), format_style_bracket)
+                text += self.__add_in(fields[field], self.__get_journal(a_doc), format_style_bracket)
             elif (field == 'doi'):
                 text += self.__add_in(fields[field], ''.join(a_doc.get(field, '')), format_style_bracket)
             elif (field == 'keyword'):
