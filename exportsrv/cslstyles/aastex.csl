@@ -158,12 +158,7 @@
         </group>
       </else-if>
       <else-if type="software">
-        <group prefix="">
-          <group>
-            <text variable="volume"/>
-          </group>
-          <text variable="page" prefix=", "/>
-        </group>
+        <text variable="page" prefix=", "/>
       </else-if>
       <else-if type="book report thesis" match="any">
         <group delimiter=", ">
