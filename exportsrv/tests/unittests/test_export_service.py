@@ -95,7 +95,7 @@ class TestExports(TestCase):
 
     def test_aastex(self):
         # format the stubdata using the code
-        csl_export = CSL(CSLJson(solrdata.data).get(), 'aastex', adsFormatter.latex).get()
+        csl_export = CSL(CSLJson(solrdata.data).get(True), 'aastex', adsFormatter.latex).get()
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_AASTex)
 

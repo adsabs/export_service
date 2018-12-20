@@ -138,7 +138,7 @@
             <text macro="year-date"/>
           </group>
         </else-if>
-        <else-if type="article">
+        <else-if type="article software">
           <group delimiter=" ">
             <text variable="container-title" form="short" text-case="title"/>
             <group delimiter=", ">
