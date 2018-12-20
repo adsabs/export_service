@@ -33,6 +33,14 @@
           <text variable="collection-title"/>
         </group>
       </else-if>
+      <else-if type="software" match="any">
+        <group delimiter=", ">
+          <text variable="title"/>
+          <text variable="version"/>
+          <text variable="publisher"/>
+          <text variable="DOI" prefix ="doi:"/>
+        </group>
+      </else-if>
       <else>
         <group delimiter=", ">
           <text variable="container-title"/>
@@ -82,7 +90,7 @@
   </macro>
   <macro name="publisher">
     <group delimiter=", ">
-      <text variable="publisher" prefix=" "/>
+      <text variable="publisher-" prefix=" "/>
       <text variable="publisher-place"/>
     </group>
   </macro>
@@ -141,13 +149,16 @@
           <text variable="page"/>
         </group>
       </if>
-      <else-if type="article" match="any">
+      <else-if type="article">
         <group prefix=" ">
           <group>
             <text variable="volume"/>
           </group>
           <text variable="page" prefix=", "/>
         </group>
+      </else-if>
+      <else-if type="software">
+        <text variable="page" prefix=", "/>
       </else-if>
       <else-if type="book report thesis" match="any">
         <group delimiter=", ">
