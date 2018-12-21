@@ -66,7 +66,7 @@ class CSLJson(Format):
         return data
 
 
-    def __get_doc_json(self, index, style_aastex):
+    def __get_doc_json(self, index):
         """
         get a JSON code for one document
         
@@ -90,12 +90,16 @@ class CSLJson(Format):
         data['publisher'] = a_doc.get('publisher', '')
         data['version'] = a_doc.get('version', '')
         data['DOI'] = ''.join(a_doc.get('doi', ''))
-        # for the aastex format if the record is software, we are either displaying page or DOI
-        # according to alberto
+        # for the aastex format if the record is software,
+        # according to alberto we are either displaying DOI or eid
         # \bibitem[...]{bibcode}  {authors} {year}, {title}, {version}, {publisher}, (doi:{doi}|{eid})
-        # so if we have DOI, empty the page.
-        if style_aastex and data['type'] == 'software' and len(data['DOI']) > 0:
-            data['page'] = ''
+        # there is no best variable to assign this either of these to, so go with 'keyword' for now
+        if len(data['DOI']) > 0:
+            data['keyword'] = 'doi:' + data['DOI']
+        elif len(a_doc.get('eid', '')) > 0:
+            data['keyword'] = a_doc.get('eid', '')
+        else:
+            data['keyword'] = ''
         return data
 
 
@@ -112,7 +116,7 @@ class CSLJson(Format):
         return csl_list
 
 
-    def get(self, style_aastex=False):
+    def get(self):
         """
         returns JSON code that includes all the fields to build full citation and bibliography
 
@@ -121,5 +125,5 @@ class CSLJson(Format):
         csl_list = []
         if (self.status == 0):
             for index in range(self.get_num_docs()):
-                csl_list.append(self.__get_doc_json(index, style_aastex))
+                csl_list.append(self.__get_doc_json(index))
         return csl_list
