@@ -130,7 +130,7 @@ def return_csl_format_export(solr_data, csl_style, export_format, request_type='
     :return:
     """
     if (solr_data is not None):
-        csl_export = CSL(CSLJson(solr_data).get(csl_style=='aastex'), csl_style, export_format)
+        csl_export = CSL(CSLJson(solr_data).get(), csl_style, export_format)
         return return_response(csl_export.get(), 200, request_type)
     return return_response({'error': 'no result from solr'}, 404)
 

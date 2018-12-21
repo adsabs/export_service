@@ -38,7 +38,7 @@
           <text variable="title"/>
           <text variable="version"/>
           <text variable="publisher"/>
-          <text variable="DOI" prefix ="doi:"/>
+          <text variable="keyword"/>
         </group>
       </else-if>
       <else>
@@ -156,9 +156,6 @@
           </group>
           <text variable="page" prefix=", "/>
         </group>
-      </else-if>
-      <else-if type="software">
-        <text variable="page" prefix=", "/>
       </else-if>
       <else-if type="book report thesis" match="any">
         <group delimiter=", ">
