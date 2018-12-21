@@ -31,7 +31,7 @@ class CustomFormat(Format):
     REGEX_AUTHOR = re.compile(r'%(\d*\.?\d*)(\w)')
     REGEX_FIRST_AUTHOR = re.compile(r'%(\^)(\w)')
     REGEX_AFF = re.compile(r'%(\d*)F')
-    REGEX_BIBSTEM = re.compile(r'^[^.]*')
+    REGEX_ABBREVIATION = re.compile(r'^[^.]*')
     REGEX_ENUMERATION = re.compile(r'(%zn)')
     REGEX_COMMAND = [
         re.compile(r'(%Z(?:Encoding|Linelength):(?:unicode|html|latex|csv|\d+)\s?)'),
@@ -272,6 +272,7 @@ class CustomFormat(Format):
                 # eliminate the last comma
                 header = header[:-1]
                 self.header = header
+            self.custom_format = self.custom_format + ','
 
 
     def __parse(self):
@@ -578,10 +579,13 @@ class CustomFormat(Format):
             return self.__add_clean_pub_raw(a_doc)
         if (format == 'q'):
             # returns the journal abbreviation
-            abbreviation = get_pub_abbreviation(a_doc.get('pub', ''), numBest=1, exact=False)
+            abbreviation = get_pub_abbreviation(a_doc.get('pub', ''), numBest=1, exact=True)
             if (len(abbreviation) > 0):
-                if (abbreviation[0][0] >= 0.95):
-                    return re.search(self.REGEX_BIBSTEM, abbreviation[0][1]).group(0)
+                return re.search(self.REGEX_ABBREVIATION, abbreviation[0][1]).group(0)
+            # for now grab the bibstem from the bibcode until get_pub_abbreviation is fixed
+            bibcode = a_doc.get('bibcode', '')
+            if len(bibcode) == 19:
+                return re.search(self.REGEX_ABBREVIATION, bibcode[4:8]).group(0)
             return ''
         return ''
 

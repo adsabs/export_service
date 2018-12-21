@@ -313,17 +313,17 @@ class BibTexFormat(Format):
             if (field == 'author') or (field == 'editor'):
                 text += self.__add_in_wrapped(fields[field], self.__get_author_list(a_doc, field), format_style_bracket)
             elif (field == 'title'):
-                text += self.__add_in_wrapped(fields[field], encode_laTex(''.join(a_doc.get(field, ''))), format_style_bracket_quotes)
+                text += self.__add_in(fields[field], encode_laTex(''.join(a_doc.get(field, ''))), format_style_bracket_quotes)
             elif (field == 'aff'):
                 text += self.__add_in_wrapped(fields[field], self.__get_affiliation_list(a_doc), format_style_bracket)
             elif (field == 'pub_raw'):
-                text += self.__add_in_wrapped(fields[field], self.__add_clean_pub_raw(a_doc), format_style_bracket)
+                text += self.__add_in(fields[field], self.__add_clean_pub_raw(a_doc), format_style_bracket)
             elif (field == 'pub'):
                 text += self.__add_in(fields[field], self.__get_journal(a_doc), format_style_bracket)
             elif (field == 'doi'):
                 text += self.__add_in(fields[field], ''.join(a_doc.get(field, '')), format_style_bracket)
             elif (field == 'keyword'):
-                text += self.__add_in_wrapped(fields[field], self.__add_keywords(a_doc), format_style_bracket)
+                text += self.__add_in(fields[field], self.__add_keywords(a_doc), format_style_bracket)
             elif (field == 'year'):
                 text += self.__add_in(fields[field], a_doc.get(field, '') if a_doc.get(field, '') else None, format_style)
             elif (field == 'volume'):
