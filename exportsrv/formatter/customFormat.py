@@ -251,9 +251,9 @@ class CustomFormat(Format):
         """
         # for re backslash needs to be escaped so for matching \\n need to search for \\\\n
         if self.export_format == adsFormatter.html:
-            self.custom_format = re.sub(r'(\\n\b)', '<br / >', self.custom_format.replace('\\t', "&nbsp;&nbsp;&nbsp;&nbsp;").replace('\\\\', '&bsol;'))
+            self.custom_format = re.sub(r'(\\n\b)', '<br / >', re.sub(r'(\\t\b)', "&nbsp;&nbsp;&nbsp;&nbsp;", self.custom_format).replace('\\\\', '&bsol;'))
         else:
-            self.custom_format = re.sub(r'(\\n\b)', self.__get_linefeed(), self.custom_format.replace('\\t', "    ").replace('\\\\', '\\'))
+            self.custom_format = re.sub(r'(\\n\b)', self.__get_linefeed(), re.sub(r'(\\t\b)', "    ", self.custom_format).replace('\\\\', '\\'))
 
 
     def __for_csv(self):
