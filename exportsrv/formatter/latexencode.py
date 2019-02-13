@@ -250,7 +250,7 @@ utf82latex={
 291:'\\c{g}',   # character ģ
 292:'\\^{H}',   # character Ĥ
 293:'\\^{h}',   # character ĥ
-294:'\\={H}',   # character Ħ   the code is wrong, this latex code produces H bar not H stork
+294:'\\={H}',   # character Ħ
 295:'\\={h}',   # character ħ
 296:'\\~{I}',   # character Ĩ
 297:'\\~{i}',   # character ĩ
@@ -268,7 +268,7 @@ utf82latex={
 309:'\\^{j}',   # character ĵ
 310:'\\c{K}',   # character Ķ
 311:'\\c{k}',   # character ķ
-312:'\\textsc\{k\}',    # character ĸ  the code is wrong
+312:'\\textsc\{k\}',    # character ĸ
 313:"\\'L",     # character Ĺ
 314:"\\'l",     # character ĺ
 315:'\\c{L}',   # character Ļ
@@ -277,7 +277,7 @@ utf82latex={
 318:'\\v{l}',   # character ľ
 319:'\\.{L}',   # character Ŀ
 320:'\\.{l}',   # character ŀ
-321:'\\L',      # character Ł   note that stork works for some characters, including here
+321:'\\L',      # character Ł
 322:'\\l',      # character ł
 323:"\\'N",     # character Ń
 324:"\\'n",     # character ń
@@ -343,7 +343,7 @@ utf82latex={
 # ------------------- U+0180 — U+024F Latin Extended-B -------------------
 402:'\\textflorin', # character ƒ
 # these characters seems to be duplicates, but since the unicode
-# is present in classic, included here as well
+# is supported in classic, shall be supported here as well
 461:'\\v{A}',   # character Ǎ
 462:'\\v{a}',   # character ǎ
 463:'\\v{I}',   # character Ǐ
@@ -605,7 +605,7 @@ utf82latex={
 1277:'\\cyrhhk',      # character ӽ
 1278:'\\CYRHHCRS',    # character Ӿ
 1279:'\\cyrhhcrs',    # character ӿ
-    
+
 3647:'\\textbaht',
 
 8204:'\\textcompwordmark',
