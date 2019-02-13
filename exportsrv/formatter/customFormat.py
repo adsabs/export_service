@@ -312,10 +312,10 @@ class CustomFormat(Format):
         """
         # U: has form: <a href="url">bibcode</a>
         # u: has the form: url/bibcode
-        formats = {'U': u'<a href="{}">{}</a>', 'u': u'{}/{}'}
+        formats = {'U': u'<a href="{}/{}">{}</a>', 'u': u'{}/{}'}
         path = current_app.config['EXPORT_SERVICE_FROM_BBB_URL']
         if (len(bibcode) > 0):
-            return formats[url_format].format(path, bibcode)
+            return formats[url_format].format(path, bibcode, bibcode)
         return ''
 
 

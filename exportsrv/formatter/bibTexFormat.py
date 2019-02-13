@@ -69,7 +69,11 @@ class BibTexFormat(Format):
         :param format_style:
         :return:
         """
-        wrapped = fill(right, width=72, subsequent_indent=' ' * 8)
+        # for authors and editors break it on the `and` only
+        if left in ['author', 'editor']:
+            wrapped = "\n        ".join(re.findall(r'.{1,72}(?:and|$)', right))
+        else:
+            wrapped = fill(right, width=72, subsequent_indent=' ' * 8)
         return format_style.format(left, wrapped)
 
 
@@ -303,6 +307,7 @@ class BibTexFormat(Format):
         """
         format_style_bracket_quotes = u'{0:>13} = "{{{1}}}"'
         format_style_bracket = u'{0:>13} = {{{1}}}'
+        format_style_quotes = u'{0:>13} = "{1}"'
         format_style = u'{0:>13} = {1}'
 
         a_doc = self.from_solr['response'].get('docs')[index]
@@ -325,11 +330,11 @@ class BibTexFormat(Format):
             elif (field == 'keyword'):
                 text += self.__add_in(fields[field], self.__add_keywords(a_doc), format_style_bracket)
             elif (field == 'year'):
-                text += self.__add_in(fields[field], a_doc.get(field, '') if a_doc.get(field, '') else None, format_style)
+                text += self.__add_in(fields[field], a_doc.get(field, '') if a_doc.get(field, '') else None, format_style_quotes)
             elif (field == 'volume'):
                 text += self.__add_in(fields[field], a_doc.get(field, '') if a_doc.get(field, '') else None, format_style_bracket)
             elif (field == 'month'):
-                text += self.__add_in(fields[field], self.__format_date(a_doc.get('date', '')), format_style)
+                text += self.__add_in(fields[field], self.__format_date(a_doc.get('date', '')), format_style_quotes)
             elif (field == 'abstract') and (include_abs):
                 text += self.__add_in_wrapped(fields[field], encode_laTex(a_doc.get(field, '')), format_style_bracket_quotes)
             elif (field == 'eid'):

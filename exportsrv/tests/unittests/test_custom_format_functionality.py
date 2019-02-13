@@ -76,7 +76,7 @@ class TestExportsCustomFormat(TestCase):
         custom_format = CustomFormat(custom_format=r'')
 
         # long format
-        assert(custom_format._CustomFormat__format_url('2018ApJS..236...24F', 'U') == '<a href="https://ui.adsabs.harvard.edu/\#abs">2018ApJS..236...24F</a>')
+        assert(custom_format._CustomFormat__format_url('2018ApJS..236...24F', 'U') == '<a href="https://ui.adsabs.harvard.edu/\#abs/2018ApJS..236...24F">2018ApJS..236...24F</a>')
         # short format
         assert(custom_format._CustomFormat__format_url('2018ApJS..236...24F', 'u') == 'https://ui.adsabs.harvard.edu/\#abs/2018ApJS..236...24F')
         # no bibcode
