@@ -28,23 +28,25 @@ from exportsrv.utils import get_eprint
 
 class CustomFormat(Format):
 
-    REGEX_AUTHOR = re.compile(r'%(\d*\.?\d*)(\w)')
+    REGEX_AUTHOR = re.compile(r'%[\\>/=]?(\d*\.?\d*)(\w)')
     REGEX_FIRST_AUTHOR = re.compile(r'%(\^)(\w)')
     REGEX_AFF = re.compile(r'%(\d*)F')
     REGEX_ABBREVIATION = re.compile(r'^[^.]*')
     REGEX_ENUMERATION = re.compile(r'(%zn)')
     REGEX_COMMAND = [
-        re.compile(r'(%Z(?:Encoding|Linelength):(?:unicode|html|latex|csv|\d+)\s?)'),
-        re.compile(r'(%Z(?:Header|Footer):\".+?\"\s?)'),
+        re.compile(r'(%Z(?:Encoding|Linelength):[\w\-]+\s?)'),
+        re.compile(r'(%Z(?:Header|Footer|AuthorSep):\".+?\"\s?)'),
+        re.compile(r'(%Z(?:Markup):\w+)'),
     ]
     REGEX_CUSTOME_FORMAT = re.compile(
         r'''(                                                   # start of capture group 1
             %                                                   # literal "%"
+            (?:[\\>/=])?                                        # field encoding
             (?:                                                 # first option
             (?:\d+|\*)?                                         # width
             (?:\.(?:\d+|\*))?                                   # precision
             (?:\^)?
-            p{0,2}[AaBcCdDEFGgHhIJjKLlMmNnOpPQqRSTUuVWXxY]      # type
+            p{0,2}[AaBcCdDeEfFGgHhiIJjKLlMmNnOpPQqRSTUuVWXxY]   # type
             )
         )''', flags=re.X
     )
@@ -62,9 +64,11 @@ class CustomFormat(Format):
         Format.__init__(self, None)
         self.custom_format = custom_format
         self.export_format = adsFormatter.unicode
-        self.line_length = 80
+        self.line_length = 0
         self.header = ''
         self.footer = ''
+        self.author_sep = ''
+        self.markup_strip = False
         self.enumeration = False
         self.__parse()
 
@@ -153,12 +157,15 @@ class CustomFormat(Format):
             'C': 'copyright',
             'd': 'doi',
             'D': 'date',
+            'e': 'author',
             'F': 'aff',
+            'f': 'author',
             'G': 'author',
             'g': 'author',
             'H': 'author',
             'h': 'author',
             'I': 'author',
+            'i': 'author',
             'J': 'pub',
             'j': 'pub',
             'K': 'keyword',
@@ -184,7 +191,7 @@ class CustomFormat(Format):
             'x': 'comment',
             'Y': 'year'
         }
-        specifier = ''.join(re.findall(r'([AaBcCdDEFGgHhIJjKLlMmNnOpPQqRSTUuVWXxY]{1,2})', specifier))
+        specifier = ''.join(re.findall(r'([AaBcCdDeEfFGgHhiIJjKLlMmNnOpPQqRSTUuVWXxY]{1,2})', specifier))
         return fieldDict.get(specifier, '')
 
 
@@ -195,7 +202,8 @@ class CustomFormat(Format):
         :param format: 
         :return: 
         """
-        if (format == 'unicode') or (format == 'UTF-8'):
+        # support all the forms Unicode, unicode, utf-8, UTF-8
+        if (format.lower() == 'unicode') or (format.lower() == 'utf-8'):
             self.export_format = adsFormatter.unicode
         elif (format == 'html'):
             self.export_format = adsFormatter.html
@@ -241,6 +249,10 @@ class CustomFormat(Format):
                             self.header = parts[1].replace('"', '').decode('string_escape')
                         elif (parts[0] == 'Footer'):
                             self.footer = parts[1].replace('"', '').decode('string_escape')
+                        elif (parts[0] == 'AuthorSep'):
+                            self.author_sep = parts[1].replace('"', '').decode('string_escape')
+                        elif (parts[0] == 'Markup'):
+                            self.markup_strip = (parts[1].lower() == 'strip')
 
 
     def __escape(self):
@@ -345,7 +357,7 @@ class CustomFormat(Format):
         if (self.export_format == adsFormatter.csv):
             result = result[:-1]
 
-        return result + self.__get_linefeed()
+        return result
 
 
     def __get_affiliation_list(self, a_doc):
@@ -362,7 +374,7 @@ class CustomFormat(Format):
             else:
                 count = len(a_doc['aff'])
 
-            counter = [''.join(i) for i in self.generate_counter_id(count)]
+            counter = self.generate_counter_id(count)
             separator = '; '
             affiliation_list = ''
             for affiliation, i in zip(a_doc['aff'], range(count)):
@@ -374,19 +386,18 @@ class CustomFormat(Format):
         return ''
 
 
-    def __get_n_authors(self, author_list, n, separator, n_parts_author, before_last):
+    def __get_n_authors(self, author_list, separator, n_parts_author, before_last, format):
         """
 
         :param author_list:
-        :param n:
         :param separator:
         :param n_parts_author:
         :param before_last:
+        :param format:
         :return:
         """
         split_parts = author_list.replace(before_last, '').split(separator)
-        return separator.join(split_parts[:n*n_parts_author])
-
+        return self.__replace_author_separator(separator.join(split_parts[:n_parts_author]), format)
 
     def __get_first_author(self, author_list, format):
         """
@@ -395,32 +406,67 @@ class CustomFormat(Format):
         :param format:
         :return:
         """
-        # split on ; and return 1 element
-        if format[-1] in ['A','a']:
-            split_parts = author_list.split(';')
+        # formats that have a comma between last name and first/middle names
+        # so that each are author is two elements hence return two elements
+        if format in ['A','a','e','G','I','i','L','l','N']:
+            split_parts = author_list.split(', ')
+            return ', '.join(split_parts[0:2])
+        # formats that have no comma between last name and first/middle names
+        # or only display last name, hence once split each is an element
+        # return one element
+        if format in ['f','g','M','m','n']:
+            split_parts = author_list.split(', ')
             return split_parts[0]
-        # split on space and return 2 elements
-        if format[-1] in ['G']:
+        # seprator is space here, and only last name so a one-element needs to be returned
+        if format in ['H','h']:
             split_parts = author_list.split(' ')
-            return ' '.join(split_parts[:2])
-        # split on space and return 1 element
-        if format[-1] in ['H','h']:
-            split_parts = author_list.split(' ')
             return split_parts[0]
-        # split on comma and return 2 elements
-        if format[-1] in ['I','L','N','l','g']:
-            split_parts = author_list.split(',')
-            return ','.join(split_parts[:2])
-        # split on comma and return 1 element
-        if format[-1] in ['M','m','n']:
-            split_parts = author_list.split(',')
-            return split_parts[0]
+
         return author_list
 
-    def __get_author_list_shorten(self, author_list, num_authors, format, m, n):
+
+    def __replace_author_separator(self, author_list, format):
         """
-        Formats	First Author	Second Author..	Before Last	    shorten
-        A	        As in db	    As in db	    and	            first author, et al.
+        check if a user specified separator needs to be applied
+        :param format:
+        :return:
+        """
+        if len(self.author_sep) == 0:
+            return author_list
+        # formats that have no comma between last name and first/middle names
+        # or only display last name, hence once split each is an one element
+        if format in ['f','g', 'H', 'h', 'M', 'm', 'n']:
+            split_parts = author_list.split(', ')
+            return self.author_sep.join(split_parts)
+        # seprator here is space and since only last names are displayed
+        # one part is one author
+        if format in ['H', 'h']:
+            split_parts = author_list.split(' ')
+            return self.author_sep.join(split_parts)
+        # formats that have a comma between last name and first/middle names
+        # so that each are author is two elements
+        if format in ['A','a','e','G','I','i','L','l','N']:
+            # need to replace commas only up to and or & if any
+            if ' and ' in author_list:
+                end_index = author_list.find(' and ') + 1
+            elif ' & ' in author_list:
+                end_index = author_list.find(' & ') + 1
+            else:
+                end_index = len(author_list)
+            # find indices of everyother comma
+            sep_index = [m.start() for m in re.finditer(', ', author_list[:end_index])][1::2]
+            # replace them
+            for i in sep_index:
+                author_list = author_list[:i] + author_list[i:i+2].replace(', ', self.author_sep) + author_list[i+2:]
+            return author_list
+        return author_list
+
+
+
+    def __get_author_list_abbreviated(self, author_list, num_authors, format, m):
+        """
+        Formats	First Author	Second Author..	Before Last	    abbreviated
+        A	        As in db	    As in db	    and	            first author,..., m authors and xx colleagues
         G	        lastname f. i.	lastname f. i.	                first author, et al.
         H	        lastname	    lastname	    and	            display requested number of authors
         I	        lastname, f. i.	f. i. lastname	and	            first author, and xx colleagues
@@ -430,9 +476,10 @@ class CustomFormat(Format):
         M	        lastname	    lastname	and	                first author, et al.
         m	        lastname	    lastname	&	                first author, et al.
         n	        lastname	    +
-        a	        lastname
+        a	        As in db	    As in db	    &	            first author,..., m authors et al.
         g	        lastname, f.i.	lastname, f.i.	and	            first author, and xx colleagues
         h	        lastname	    lastname	    and	            first author \emph{et al.}
+        i	        lastname, f. i.	f. i. lastname	&	            first author, et al.
 
         n.m: Maximum number of entries in field (optional).
         If the number of authors in the list is larger than n, the list will be truncated and returned as
@@ -442,11 +489,11 @@ class CustomFormat(Format):
         :param num_authors:
         :param format:
         :param m:
-        :param n:
         :return:
         """
         format_etal = u'{}, et al.'
-        format_n_authors = u'{} and {}'
+        format_etal_no_comma = u'{} et al.'
+        format_n_authors = u'{}'
         format_with_n_colleagues = u'{}, and {} colleagues'
         format_escape_emph = u'{} \emph{{et al.}}'
         format_plus = u'{},+'
@@ -454,44 +501,45 @@ class CustomFormat(Format):
         if (format == 'n'):
             authors = author_list.split(',')
             return format_plus.format(authors[0])
-        if (num_authors <= n) or (num_authors <= m):
-            return author_list
-        if (format == 'A'):
-            # in db we have LastName, FirstName (or FirstInitial.) MiddleInitial.
-            # hence the first part is the LastName
-            return format_etal.format(self.__get_n_authors(author_list, n, u';', 1, u', and'))
+        if (format == 'A') or (format == 'I') or (format == 'L') or (format == 'N') or (format == 'e') :
+            authors = author_list.replace(' and', '').split(', ')
+            if (format == 'A') or (format == 'L') or (format == 'N') or (format == 'e') :
+                return format_with_n_colleagues.format(', '.join(authors[:m*2]), num_authors-m)
+            elif (format == 'I'):
+                # here the first author is lastname comma first and middle initials
+                # the rest are first and middle initials, no comma, lastname
+                # hence first author needs two parts concatenated, the rest only 1
+                return format_with_n_colleagues.format(', '.join(authors[:1+m]), num_authors-m)
         if (format == 'G'):
-            # return LastName et. al. - list is separated by a space
-            return format_etal.format(self.__get_n_authors(author_list, n, u' ', 2, u''))
-        if (format == 'M'):
+            # return n authors (LastName, first and middle initials) et. al. - list is seprated by comma
+            return format_etal.format(self.__get_n_authors(author_list, u',', m*2, u'', format))
+        if (format == 'i'):
+            # here the first author is lastname comma first and middle initials
+            # the rest are first and middle initials, no comma, lastname
+            # hence first author needs two parts concatenated, the rest only 1
+            return format_etal.format(self.__get_n_authors(author_list, u',', 1+m, u'', format))
+        if (format == 'M') or (format == 'm'):
             # return n authors (LastName) et. al. - list is separated by a comma
-            return format_etal.format(self.__get_n_authors(author_list, n, u',', 1, u', and'))
-        if (format == 'm'):
-            # return n authors (LastName) et. al. - list is separated by a space
-            return format_etal.format(self.__get_n_authors(author_list, n, u',', 1, u', \&'))
+            # no comma before et al
+            return format_etal_no_comma.format(self.__get_n_authors(author_list, u',', m, u', and', format))
+        if (format == 'f') :
+            return format_escape_emph.format(self.__get_n_authors(author_list, u',', m, u', and', format))
+        if (format == 'g'):
+            # return n authors (LastName) et. al. - list is separated by a comma
+            return format_etal.format(self.__get_n_authors(author_list, u',', m, u', and', format))
         if (format == 'H'):
             # return the asked number of authors - list is separated by space,
             # there is an and before the last author
-            authors = author_list.split(' ')
-            if (m == 1):
-                return authors[0]
-            else:
-                authors.remove('and')
-                return format_n_authors.format(' '.join(authors[:m-1]), authors[m])
-        if (format == 'I') or (format == 'L') or (format == 'N') or (format == 'g'):
-            # return LastName and count list is separated by a comma
-            authors = author_list.split(',')
-            return format_with_n_colleagues.format(authors[0], num_authors-1)
-        if (format == 'l'):
+            authors = author_list.replace(' and', '').split(' ')
+            return format_n_authors.format(' '.join(authors[:m]))
+        if (format == 'a') or (format == 'l'):
             # return n author(s) et. al. - list is separated by a comma
-            return format_etal.format(self.__get_n_authors(author_list, n, u',', 2, u' \&'))
+            return format_etal.format(self.__get_n_authors(author_list, u',', m*2, u' \&', format))
         if (format == 'h'):
-            authors = author_list.split(' ')
-            return format_escape_emph.format(authors[0])
-        if (format == 'a'):
-            # return first authors Lastname only
-            # this is already done at the CSL level so just return what was passed in
-            return format_etal.format(self.__get_n_authors(author_list, n, u';', 1, u', \&'))
+            # return the asked number of authors - list is separated by space,
+            # there is an and before the last author
+            authors = author_list.replace(' &', '').split(' ')
+            return format_n_authors.format(' '.join(authors[:m]))
         return author_list
 
 
@@ -504,7 +552,7 @@ class CustomFormat(Format):
         """
         authors = self.from_cls.get(format)[index]
         count = self.author_count.get(format)[index]
-        # see if author list needs to get shorten
+        # see if author list needs to get abbreviated
         # n.m: Maximum number of entries in author field (optional).
         # If the number of authors in the list is larger than n, the list will be truncated to m entries.
         # If.m is not specified, n.1 is assumed.
@@ -512,17 +560,26 @@ class CustomFormat(Format):
         if (len(matches) >= 1):
             # format n is a special case
             if (matches[0][1] == 'n'):
-                return self.__get_author_list_shorten(authors, count, matches[0][1], 0, 0)
+                return self.__get_author_list_abbreviated(authors, count, matches[0][1], 0)
+            # so is the formst for H and h if not abbreviated
+            elif ((matches[0][1] == 'H') or (matches[0][1] == 'h')) and len(matches[0][0]) == 0:
+                return self.__get_author_list_abbreviated(authors, count, matches[0][1], 1)
             elif (len(matches[0][0]) > 0):
-                shorten = matches[0][0].split('.')
-                if (len(shorten) > 1):
-                    return self.__get_author_list_shorten(authors, count, matches[0][1], int(str(shorten[0])), int(str(shorten[1])))
+                abbreviated = matches[0][0].split('.')
+                n = int(str(abbreviated[0]))
+                if (len(abbreviated) > 1):
+                    m = int(str(abbreviated[1]))
                 else:
-                    return self.__get_author_list_shorten(authors, count, matches[0][1], int(str(shorten[0])), 1)
+                    m = 1
+                if (count <= n) or (count <= m):
+                    return self.__replace_author_separator(authors, format[-1])
+                else:
+                    return self.__get_author_list_abbreviated(authors, count, matches[0][1], m)
+        # see if it is a first author format
         matches = self.REGEX_FIRST_AUTHOR.findall(format)
-        if (len(matches) >= 1):
-            return self.__get_first_author(authors, format)
-        return authors
+        if len(matches) >= 1:
+            return self.__get_first_author(authors, format[-1])
+        return self.__replace_author_separator(authors, format[-1])
 
 
     def __get_keywords(self, a_doc):
@@ -579,7 +636,7 @@ class CustomFormat(Format):
             return self.__add_clean_pub_raw(a_doc)
         if (format == 'q'):
             # returns the journal abbreviation
-            abbreviation = get_pub_abbreviation(a_doc.get('pub', ''), numBest=1, exact=True)
+            abbreviation = get_pub_abbreviation(a_doc.get('pub', ''), numBest=1, exact=False)
             if (len(abbreviation) > 0):
                 return re.search(self.REGEX_ABBREVIATION, abbreviation[0][1]).group(0)
             # for now grab the bibstem from the bibcode until get_pub_abbreviation is fixed
@@ -617,25 +674,62 @@ class CustomFormat(Format):
         return ''
 
 
-    def __encode(self, text, name):
+    def __encode_latex(self, value, field):
         """
 
-        :param text:
-        :param name:
+        :param value:
+        :param field:
         :return:
         """
+        if (field == 'author'):
+            return encode_laTex_author(value)
+        # do not encode publication since it could be the macro
+        if (field == 'pub'):
+            return value
+        return encode_laTex(value)
+
+    def __markup_strip(self, value):
+        """
+        # see if HTML markup found in input fields (such as <SUB>) needs to be removed
+        :param value:
+        :return:
+        """
+        return re.sub(r'<.*?>', '', value)
+
+    def __encode(self, value, field, field_format=None):
+        """
+
+        :param value:
+        :param field:
+        :param format:
+        :return:
+        """
+        if self.markup_strip:
+            value = self.__markup_strip(value)
+
+        # first check for field encoding
+        if field_format is not None:
+            if '\\' in field_format:
+                return self.__encode_latex(value, field)
+            if '>' in field_format:
+                return cgi.escape(value)
+            if '=' in field_format:
+                return value.encode('hex')
+            if '/' in field_format:
+                # This encoding converts the characters &, ?, and + to the hex encoded values.
+                # get more information about this from Alberto later
+                value = value.replace(' ', '+').replace('"', '%22')
+                return value
+
+        # if no field encoding defined, check for global encoding
         if (self.export_format == adsFormatter.unicode):
-            return text
+            return value
         if (self.export_format == adsFormatter.html):
-            return cgi.escape(text)
+            return cgi.escape(value)
         if (self.export_format == adsFormatter.latex):
-            if (name == 'author'):
-                return encode_laTex_author(text)
-            # do not encode publication since it could be the macro
-            if (name == 'pub'):
-                return text
-            return encode_laTex(text)
-        return text
+            return self.__encode_latex(value, field)
+
+        return value
 
 
     def __match_punctuation(self, list_str):
@@ -662,7 +756,10 @@ class CustomFormat(Format):
                         if count % 2 != 0:
                             str = str.replace(left, '')
                     else:
-                        str = str.replace(left,'').replace(right,'')
+                        if left in str:
+                            str = str.replace(left, '')
+                        elif right in str:
+                            str = str.partition(right)[0]
                 # take care of a special case when string starts and finishes with a comma
                 # if found remove the one from the beginning
                 if str.startswith(',') and str.endswith(','):
@@ -684,26 +781,29 @@ class CustomFormat(Format):
         :param value:
         :return:
         """
-        precede = r'(\\?[\(|\{|\[|\"]?[\\\\(a-z){2}\s]?[\\|\s|,|-]?'
+        precede = r'([\\]?[\(|\{|\[|\"]?(\\(it|bf|sc|em)\s)?[\\|\s|,|-]?'
         succeed = r'[\\|,]?[\)|\}|\]|\"]?[\\|,]?)'
 
         # in the csv format we add double quotes followed by a comma
         # whether there is a value or not
         if self.export_format == adsFormatter.csv:
             if (len(value) > 0):
-                insert_value = '"' + self.__encode(value, field[2]) + '",'
+                insert_value = '"' + self.__encode(value, field[2], field[1]) + '",'
             else:
                 insert_value = '"",'
-            pattern = self.__match_punctuation(re.findall(precede + field[1] + succeed, result))
+            pattern = self.__match_punctuation([elem[0] for elem in re.findall(precede + field[1].encode('utf8').encode('string-escape') + succeed, result.replace('\\n ', ''))])
             for p in pattern:
                 result = result.replace(p, insert_value)
             return result
 
         if (len(value) > 0):
-            return result.replace(field[1], self.__encode(value, field[2]))
+            return result.replace(field[1], self.__encode(value, field[2], field[1]))
         else:
-            pattern = self.__match_punctuation(re.findall(precede + field[1] + succeed, result))
+            pattern = self.__match_punctuation([elem[0] for elem in re.findall(precede + field[1].encode('utf8').encode('string-escape') + succeed, result.replace('\\n ', ''))])
             for p in pattern:
+                # check for the spearator, if it is the same on both side, eliminate the one at the end
+                if p[0] == p[-1] and len(p) > 1:
+                    p = p[:-1]
                 result = result.replace(p, '')
             return result
 
@@ -754,12 +854,13 @@ class CustomFormat(Format):
         num_docs = 0
         results = []
         if (self.status == 0):
-            if len(self.header):
+            if len(self.header) > 0:
                 results.append(self.header + self.__get_linefeed())
             num_docs = self.get_num_docs()
             for index in range(num_docs):
                 results.append(self.__get_doc(index))
-            results.append(self.__get_linefeed() + self.footer)
+            if len(self.footer) > 0:
+                results.append(self.__get_linefeed() + self.footer)
         result_dict = {}
         result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
         result_dict['export'] = ''.join(result for result in results)

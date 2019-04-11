@@ -11,7 +11,7 @@ REGEX_LATEX = OrderedDict([
             (re.compile(r"(\d+)<SUB>(\d+)</SUB>"),  r"{}\1$_{\2}$"),
             (re.compile(r"<SUP>(.+?)</SUP>"),       r"$^{\1}$"),                  # translate <SUP>foo</SUP> and <SUB>bar</SUB> sequences into
             (re.compile(r"<SUB>(.+?)</SUB>"),       r"$_{\1}$"),                  # the proper latex equivalent of $^{foo}$ and $_{bar}$
-            (re.compile(r"\"(.*?)\""),              u"“\1”")                      # straight double quotes to curly quotes
+            (re.compile(r"''(.*?)''"),              r"``\1''")                    # straight double quotes to curly quotes
 ])
 REGEX_LATEX_AUTHOR = dict([
         (re.compile(r"([A-Z]\.)\s(?=([A-Z]\.))"), r"\1~")   # replace something like 'Tendulkar, S. P.' with 'Tendulkar, S.~P.'
