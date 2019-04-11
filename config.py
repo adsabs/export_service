@@ -9,7 +9,7 @@ EXPORT_SERVICE_ADSWS_API_TOKEN = 'this is a secret api token!'
 EXPORT_SERVICE_MAX_RECORDS_SOLR = 2000
 
 # these are used for linkout links
-EXPORT_SERVICE_FROM_BBB_URL = 'https://ui.adsabs.harvard.edu/\#abs'
+EXPORT_SERVICE_FROM_BBB_URL = 'https://ui.adsabs.harvard.edu/abs'
 EXPORT_SERVICE_RESOLVE_URL = "https://ui.adsabs.harvard.edu/link_gateway"
 
 # added to the end of bibTex

@@ -77,7 +77,7 @@ class XMLFormat(Format):
         """
         if ('aff') not in a_doc:
             return ''
-        counter = [''.join(i) for i in self.generate_counter_id(len(a_doc['aff']))]
+        counter = self.generate_counter_id(len(a_doc['aff']))
         separator = ', '
         affiliation_list = ''
         for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):

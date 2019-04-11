@@ -137,15 +137,16 @@ class TestExports(TestCase):
 
     def test_custom(self):
         # format the stubdata using the code
-        custom_format = CustomFormat(custom_format=r'%ZEncoding:latex\\bibitem[%m\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p \\n')
+        custom_format = CustomFormat(custom_format=r'%ZEncoding:latex\\bibitem[%2.1m\\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p \\n')
         custom_format.set_json_from_solr(solrdata.data)
         # now compare it with an already formatted data that we know is correct
         assert (custom_format.get() == customTest.data)
         # verify correct solr fields are fetched
+
         assert (custom_format.get_solr_fields() == 'author,year,pub,volume,page,page_range,bibcode')
 
     def test_convert(self):
-        assert(convert("\\\\bibitem[%\\2m%(y)]\{%za1%y} %\\8l %\\Y,%\\j,%\\V,%\\p") == "\\\\bibitem[%2m\\(%Y)]\\{%H%Y} %8l\\ %Y\\,%j\\,%V\\,%p\\")
+        assert(convert("\\\\bibitem[%\\2m%(y)]\{%za1%y} %\\8l %\\Y,%\\j,%\\V,%\\p") == "\\\\bibitem[%\\2m(%Y)]\\{%1H%Y} %\\8l %\\Y,%\\j,%\\V,%\\p")
 
     def test_ads_formatter(self):
         assert(adsFormatter().verify('1'), True)

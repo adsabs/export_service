@@ -1,6 +1,6 @@
 
 import re
-from itertools import product
+from itertools import product, islice
 from string import ascii_uppercase
 
 class Format:
@@ -47,7 +47,14 @@ class Format:
         return 0
 
     def generate_counter_id(self, length):
-        if length < 26^2:
-            return product(ascii_uppercase, repeat=2)
-        return product(ascii_uppercase, repeat=3)
+        """
+        Generate two-character labels, if run out, then move to three characters
+        :param length:
+        :return:
+        """
+        if length < 26**2:
+            return [''.join(i) for i in islice(product(ascii_uppercase, repeat=2), 0, length)]
+        return [''.join(i) for i in islice(product(ascii_uppercase, repeat=2), 0, 26**2)] + \
+               [''.join(i) for i in islice(product(ascii_uppercase, repeat=3), 0, length-(26**2))]
+
 

@@ -88,19 +88,20 @@ class BibTexFormat(Format):
         if (doc_type_bibtex == '@ARTICLE'):
             fields = [('author', 'author'), ('title', 'title'), ('pub', 'journal'),
                       ('keyword', 'keywords'), ('year', 'year'), ('month', 'month'),
-                      ('volume', 'volume'), ('eid', 'eid'), ('page_range', 'pages'),
-                      ('abstract', 'abstract'), ('doi', 'doi'), ('eprintid', 'archivePrefix|eprint'),
-                      ('arxiv_class', 'primaryClass'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
+                      ('volume', 'volume'), ('issue', 'number'), ('eid', 'eid'),
+                      ('page_range', 'pages'), ('abstract', 'abstract'), ('doi', 'doi'),
+                      ('eprintid', 'archivePrefix|eprint'), ('arxiv_class', 'primaryClass'),
+                      ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@BOOK'):
-            fields = [('author', 'author'), ('title', 'title'), ('pub_raw', 'booktitle'),
-                      ('year', 'year'), ('doi', 'doi'), ('bibcode', 'adsurl'),
-                      ('adsnotes', 'adsnote')]
+            fields = [('author', 'author'), ('title', 'title'),
+                      ('year', 'year'), ('volume', 'volume'), ('doi', 'doi'),
+                      ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@INBOOK'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub_raw', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
-                      ('series', 'series'), ('eid', 'eid'), ('page_range', 'pages'),
-                      ('abstract', 'abstract'), ('doi', 'doi'), ('bibcode', 'adsurl'),
-                      ('adsnotes', 'adsnote')]
+                      ('volume', 'volume'), ('series', 'series'), ('eid', 'eid'),
+                      ('page_range', 'pages'), ('abstract', 'abstract'), ('doi', 'doi'),
+                      ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@PROCEEDINGS'):
             fields = [('title', 'title'), ('keyword', 'keywords'), ('pub', 'booktitle'),
                       ('year', 'year'), ('editor', 'editor'), ('series', 'series'),
@@ -166,7 +167,7 @@ class BibTexFormat(Format):
         """
         if ('aff') not in a_doc:
             return ''
-        counter = [''.join(i) for i in self.generate_counter_id(len(a_doc['aff']))]
+        counter = self.generate_counter_id(len(a_doc['aff']))
         separator = ', '
         affiliation_list = ''
         addCount = not (a_doc.get('doctype', '') in ['phdthesis', 'mastersthesis'])
@@ -331,7 +332,7 @@ class BibTexFormat(Format):
                 text += self.__add_in(fields[field], self.__add_keywords(a_doc), format_style_bracket)
             elif (field == 'year'):
                 text += self.__add_in(fields[field], a_doc.get(field, '') if a_doc.get(field, '') else None, format_style_quotes)
-            elif (field == 'volume'):
+            elif (field == 'volume') or (field == 'issue'):
                 text += self.__add_in(fields[field], a_doc.get(field, '') if a_doc.get(field, '') else None, format_style_bracket)
             elif (field == 'month'):
                 text += self.__add_in(fields[field], self.__format_date(a_doc.get('date', '')), format_style_quotes)
