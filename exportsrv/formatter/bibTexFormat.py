@@ -207,7 +207,7 @@ class BibTexFormat(Format):
             return None
         journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
         journal = ''.join(a_doc.get('pub', ''))
-        return journal_macros.get(journal.replace('The ', ''), encode_laTex(journal))
+        return journal_macros.get(journal, encode_laTex(journal))
 
 
     def __add_clean_pub_raw(self, a_doc):

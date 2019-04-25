@@ -456,9 +456,10 @@ class CustomFormat(Format):
             # find indices of everyother comma
             sep_index = [m.start() for m in re.finditer(', ', author_list[:end_index])][1::2]
             # replace them
-            for i in sep_index:
-                author_list = author_list[:i] + author_list[i:i+2].replace(', ', self.author_sep) + author_list[i+2:]
-            return author_list
+            author_list_slice = []
+            for i,j in zip([-len(', ')]+sep_index, sep_index+[len(author_list)]):
+                author_list_slice.append(author_list[i+len(', '):j])
+            return self.author_sep.join(author_list_slice)
         return author_list
 
 
@@ -629,8 +630,8 @@ class CustomFormat(Format):
         if (format == 'j'):
             # returns an AASTeX macro for the journal if available, otherwise
             # returns the journal name
-            journalMacros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
-            return journalMacros.get(a_doc.get('pub', '').replace('The ', ''), a_doc.get('pub', ''))
+            journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
+            return journal_macros.get(a_doc.get('pub', ''), a_doc.get('pub', ''))
         if (format == 'Q'):
             # returns the full journal information
             return self.__add_clean_pub_raw(a_doc)
