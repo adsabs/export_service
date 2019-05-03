@@ -7,12 +7,12 @@ from exportsrv.client import client
 
 def get_solr_data(bibcodes, fields, sort, start=0):
     """
-    
-    :param bibcodes: 
-    :param fields: 
-    :param start: 
-    :param sort: 
-    :return: 
+
+    :param bibcodes:
+    :param fields:
+    :param start:
+    :param sort:
+    :return:
     """
     data = 'bibcode\n' + '\n'.join(bibcodes)
 
@@ -28,7 +28,10 @@ def get_solr_data(bibcodes, fields, sort, start=0):
         'fq': '{!bitset}'
     }
 
-    headers = {'Authorization':'Bearer '+current_app.config['EXPORT_SERVICE_ADSWS_API_TOKEN']}
+    headers = {
+        'Authorization': 'Bearer '+current_app.config['EXPORT_SERVICE_ADSWS_API_TOKEN'],
+        'Content-Type': 'big-query/csv',
+    }
 
     try:
         response = client().post(
