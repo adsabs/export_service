@@ -112,7 +112,7 @@ utf82latex={
 123:'\\{', 	# character {
 #124: character |
 125:'\\}', 	# character }
-126:'\\textasciitilde', # character ~
+126:'\\raisebox{-0.5ex}\\textasciitilde', # character ~
 #127: unrecognizable character
 # ------------------- U+0080 — U+00FF Latin-1 Supplement -------------------
 #128-160: unrecognizable characters
@@ -363,10 +363,12 @@ utf82latex={
 501:"\\'{g}",   # character ǵ
 504:"\\`{N}",   # character Ǹ
 505:"\\`{n}",   # character ǹ
-536:'\\c{S}',   # character Ș
-537:'\\c{s}',   # character ș
-538:'\\c{T}',   # character Ț
-539:'\\c{t}',   # character ț
+# Romanian charset: 536-539
+536:'\\textcommabelow S',   # character Ș
+537:'\\textcommabelow s',   # character ș
+538:'\\textcommabelow T',   # character Ț
+539:'\\textcommabelow t',   # character ț
+#
 542:'\\v{H}',   # character Ȟ
 543:'\\v{h}',   # character ȟ
 550:'\\.{A}',   # character Ȧ
