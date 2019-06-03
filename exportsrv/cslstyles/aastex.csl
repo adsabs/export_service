@@ -28,10 +28,7 @@
         </group>
       </else-if>
       <else-if type="article" match="any">
-        <group delimiter=", ">
-          <text variable="container-title"/>
-          <text variable="collection-title"/>
-        </group>
+        <text variable="container-title"/>
       </else-if>
       <else-if type="software" match="any">
         <group delimiter=", ">
@@ -150,9 +147,9 @@
         </group>
       </if>
       <else-if type="article">
-        <group prefix=" ">
+        <group prefix="">
           <group>
-            <text variable="volume"/>
+            <text variable="volume" prefix=" "/>
           </group>
           <text variable="page" prefix=", "/>
         </group>
@@ -199,7 +196,7 @@
       <key macro="issued" sort="ascending"/>
     </sort>
     <layout>
-      <group suffix=".">
+      <group suffix="">
         <text macro="author" suffix="\ "/>
         <text macro="issued"/>
         <group>
