@@ -149,7 +149,7 @@
       <else-if type="article">
         <group prefix="">
           <group>
-            <text variable="volume"/>
+            <text variable="volume" prefix=" "/>
           </group>
           <text variable="page" prefix=", "/>
         </group>
