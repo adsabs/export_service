@@ -31,10 +31,23 @@ def encode_laTex(text):
     :return:
     """
     if (len(text) > 1):
-        # character subtitution
-        text = utf8tolatex(text, ascii_no_brackets=True)
-        for key in REGEX_LATEX:
-            text = key.sub(REGEX_LATEX[key], text)
+        chunks = re.split('(\$)', text)
+        latex = []
+        i = 0
+        while i < len(chunks):
+            # no substitution in the math mode
+            if chunks[i] == '$':
+                for j in range(3):
+                    latex.append(chunks[i+j])
+                i = i + 3
+            else:
+                # character subtitution
+                chunks[i] = utf8tolatex(chunks[i], ascii_no_brackets=True)
+                for key in REGEX_LATEX:
+                    chunks[i] = key.sub(REGEX_LATEX[key], chunks[i])
+                latex.append(chunks[i])
+                i = i + 1
+        return ''.join(latex)
     return text
 
 def encode_laTex_author(text):
