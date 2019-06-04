@@ -684,8 +684,8 @@ class CustomFormat(Format):
         """
         if (field == 'author'):
             return encode_laTex_author(value)
-        # do not encode publication since it could be the macro
-        if (field == 'pub'):
+        # do not encode publication or bibcode since it could be the macro
+        if (field == 'pub') or (field == 'bibcode'):
             return value
         return encode_laTex(value)
 

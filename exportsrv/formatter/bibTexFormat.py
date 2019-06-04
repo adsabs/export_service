@@ -131,7 +131,7 @@ class BibTexFormat(Format):
                       ('keyword', 'keywords'), ('pub', 'booktitle'), ('year', 'year'),
                       ('editor', 'editor'), ('series', 'series'), ('month', 'month'),
                       ('eid', 'eid'), ('page_range', 'pages'), ('volume', 'volume'),
-                      ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
+                      ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         else:
             fields = []
         return OrderedDict(fields)
