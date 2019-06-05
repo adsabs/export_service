@@ -3,6 +3,8 @@ import re
 from itertools import product, islice
 from string import ascii_uppercase
 
+from adsutils.ads_utils import get_pub_abbreviation
+
 class Format:
     """
     This is a parent class for all the formats that get data from solr to maniuplate.
@@ -17,6 +19,7 @@ class Format:
         (re.compile(r"(?:\<ISBN\>)(.*)(?:\</ISBN\>)"), r"\1"),  # get value inside the tag for these
         (re.compile(r"(?:\<NUMPAGES\>)(.*)(?:</NUMPAGES>)"), r"\1"),
     ])
+    REGEX_ABBREVIATION = re.compile(r'^[^.]*')
 
 
     def __init__(self, from_solr):
@@ -58,3 +61,17 @@ class Format:
                [''.join(i) for i in islice(product(ascii_uppercase, repeat=3), 0, length-(26**2))]
 
 
+    def get_pub_abbrev(self, pub, bibcode):
+        """
+
+        :param pub:
+        :param bibcode:
+        :return:
+        """
+        abbreviation = get_pub_abbreviation(pub, numBest=1, exact=False)
+        if (len(abbreviation) > 0):
+            return re.search(self.REGEX_ABBREVIATION, abbreviation[0][1]).group(0)
+        # for now grab the bibstem from the bibcode until get_pub_abbreviation is fixed
+        if len(bibcode) == 19:
+            return re.search(self.REGEX_ABBREVIATION, bibcode[4:8]).group(0)
+        return ''

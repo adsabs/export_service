@@ -63,15 +63,16 @@ def return_response(results, status, request_type=''):
     return None
 
 
-def return_bibTex_format_export(solr_data, include_abs, request_type='POST'):
+def return_bibTex_format_export(solr_data, include_abs, keyformat, maxauthor, request_type='POST'):
     """
 
     :param include_abs:
     :return:
     """
     if (solr_data is not None):
-        bibTex_export = BibTexFormat(solr_data)
-        return return_response(bibTex_export.get(include_abs=include_abs), 200, request_type)
+        bibTex_export = BibTexFormat(solr_data, keyformat=keyformat)
+        return return_response(bibTex_export.get(include_abs=include_abs, maxauthor=maxauthor),
+                               200, request_type)
     return return_response({'error': 'no result from solr'}, 404)
 
 
@@ -202,6 +203,40 @@ def export_post(request, style, format=-1):
 
     return get_solr_data(bibcodes=bibcodes, fields=default_solr_fields(), sort=sort), 200
 
+def export_post_extras(request, style):
+    """
+
+    :param request:
+    :param style:
+    :return:
+    """
+    try:
+        payload = request.get_json(force=True)  # post data in json
+    except:
+        payload = dict(request.form)  # post data in form encoding
+
+    if payload:
+        if style in ['BibTex', 'BibTex Abs']:
+            if 'maxauthor' in payload:
+                if type(payload['maxauthor']) is list:
+                    maxauthor = payload['maxauthor'][0]
+                else:
+                    maxauthor = payload['maxauthor']
+            elif style == 'BibTex':
+                maxauthor = 10
+            else:
+                # for BibTex Abs default is to display all authors and hence 0
+                maxauthor = 0
+            if 'keyformat' in payload:
+                if type(payload['keyformat']) is list:
+                    keyformat = payload['keyformat'][0]
+                else:
+                    keyformat = payload['keyformat']
+            else:
+                keyformat = '%R'
+            return maxauthor, keyformat
+    return None, None
+
 def export_get(bibcode, style, format=-1):
     """
 
@@ -234,7 +269,9 @@ def bibTex_format_export_post():
     """
     results, status = export_post(request, 'BibTex')
     if status == 200:
-        return return_bibTex_format_export(solr_data=results, include_abs=False)
+        maxauthor, keyformat = export_post_extras(request, 'BibTex')
+        return return_bibTex_format_export(solr_data=results, include_abs=False,
+                                           keyformat=keyformat, maxauthor=maxauthor)
     return return_response(results, status)
 
 
@@ -246,7 +283,8 @@ def bibTex_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_bibTex_format_export(solr_data=export_get(bibcode, 'BibTex'), include_abs=False, request_type='GET')
+    return return_bibTex_format_export(solr_data=export_get(bibcode, 'BibTex'), include_abs=False,
+                                       keyformat='%R', maxauthor=10, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -258,7 +296,9 @@ def bibTex_abs_format_export_post():
     """
     results, status = export_post(request, 'BibTex Abs')
     if status == 200:
-        return return_bibTex_format_export(solr_data=results, include_abs=True)
+        maxauthor, keyformat = export_post_extras(request, 'BibTex Abs')
+        return return_bibTex_format_export(solr_data=results, include_abs=True,
+                                           keyformat=keyformat, maxauthor=maxauthor)
     return return_response(results, status)
 
 
@@ -270,7 +310,8 @@ def bibTex_abs_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_bibTex_format_export(solr_data=export_get(bibcode, 'BibTex Abs'), include_abs=True, request_type='GET')
+    return return_bibTex_format_export(solr_data=export_get(bibcode, 'BibTex Abs'), include_abs=True,
+                                       keyformat='%R', maxauthor=0, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])

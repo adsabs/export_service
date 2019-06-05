@@ -29,13 +29,13 @@ class TestExports(TestCase):
 
     def test_bibtex(self):
         # format the stubdata using the code
-        bibtex_export = BibTexFormat(solrdata.data).get(include_abs=False)
+        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=False, maxauthor=10)
         # now compare it with an already formatted data that we know is correct
         assert (bibtex_export == bibTexTest.data)
 
     def test_bibtex_with_abs(self):
         # format the stubdata using the code
-        bibtex_export = BibTexFormat(solrdata.data).get(include_abs=True)
+        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=True, maxauthor=0)
         # now compare it with an already formatted data that we know is correct
         assert (bibtex_export == bibTexTest.data_with_abs)
 
@@ -162,11 +162,11 @@ class TestExports(TestCase):
         assert (views.default_solr_fields() == default_fields)
 
     def test_bibtex_success(self):
-        response = views.return_bibTex_format_export(solrdata.data, False)
+        response = views.return_bibTex_format_export(solrdata.data, False, '%R', 10)
         assert(response._status_code == 200)
 
     def test_bibtex_no_data(self):
-        response = views.return_bibTex_format_export(None, False)
+        response = views.return_bibTex_format_export(None, False, '', 0)
         assert(response._status_code == 404)
 
     def test_fielded_success(self):
@@ -358,6 +358,15 @@ class TestExports(TestCase):
         for ep in endpoints:
             response = self.client.post(ep, data=json.dumps(payload))
             assert (response._status_code == 200)
+
+
+    def test_bibtex_keyformat(self):
+        payload = {'bibcode': self.app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'],
+                   'link': '',
+                   'keyformat': '%1H:%Y:%q',
+                   'maxauthor': 2}
+        response = self.client.post('/bibtex', data=json.dumps(payload))
+        assert (response._status_code == 200)
 
 
 if __name__ == '__main__':

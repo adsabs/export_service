@@ -6,8 +6,6 @@ from textwrap import fill
 import re
 import cgi
 
-from adsutils.ads_utils import get_pub_abbreviation
-
 from exportsrv.formatter.format import Format
 from exportsrv.formatter.ads import adsFormatter, adsOrganizer
 from exportsrv.formatter.cslJson import CSLJson
@@ -31,7 +29,6 @@ class CustomFormat(Format):
     REGEX_AUTHOR = re.compile(r'%[\\>/=]?(\d*\.?\d*)(\w)')
     REGEX_FIRST_AUTHOR = re.compile(r'%(\^)(\w)')
     REGEX_AFF = re.compile(r'%(\d*)F')
-    REGEX_ABBREVIATION = re.compile(r'^[^.]*')
     REGEX_ENUMERATION = re.compile(r'(%zn)')
     REGEX_COMMAND = [
         re.compile(r'(%Z(?:Encoding|Linelength):[\w\-]+\s?)'),
@@ -637,14 +634,7 @@ class CustomFormat(Format):
             return self.__add_clean_pub_raw(a_doc)
         if (format == 'q'):
             # returns the journal abbreviation
-            abbreviation = get_pub_abbreviation(a_doc.get('pub', ''), numBest=1, exact=False)
-            if (len(abbreviation) > 0):
-                return re.search(self.REGEX_ABBREVIATION, abbreviation[0][1]).group(0)
-            # for now grab the bibstem from the bibcode until get_pub_abbreviation is fixed
-            bibcode = a_doc.get('bibcode', '')
-            if len(bibcode) == 19:
-                return re.search(self.REGEX_ABBREVIATION, bibcode[4:8]).group(0)
-            return ''
+            return self.get_pub_abbrev(a_doc.get('pub', ''), a_doc.get('bibcode', ''))
         return ''
 
 
