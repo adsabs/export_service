@@ -701,9 +701,8 @@ def custom_format_export():
     except Exception as e:
         return return_response({'error': 'unable to read custom format'}, 400)
 
-
     current_app.logger.info('received request with bibcodes={bibcodes} to export in a custom format: {custom_format_str}'.
-                 format(bibcodes=','.join(bibcodes), custom_format_str=custom_format_str))
+                 format(bibcodes=','.join(bibcodes), custom_format_str=custom_format_str.encode('utf8')))
 
     if (len(bibcodes) == 0) or (len(custom_format_str) == 0):
         return return_response({'error': 'not all the needed information received'}, 400)
