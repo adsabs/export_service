@@ -28,6 +28,43 @@ class BibTexFormat(Format):
         (re.compile(r"(?:\<ISBN\>)(.*)(?:\</ISBN\>)"), r"\1"),  # get value inside the tag for these
         (re.compile(r"(?:\<NUMPAGES\>)(.*)(?:</NUMPAGES>)"), r"\1"),
     ])
+    REGEX_KEY = re.compile(
+        r'''(                   # start of capture group 1
+            %                   # literal "%"
+            (?:                 # first option
+            (?:\d+|\*)?         # width
+            [HqRY]              # type
+            )
+        )''', flags=re.X
+    )
+
+    def __init__(self, from_solr, keyformat):
+        """
+
+        :param keyformat:
+        """
+        Format.__init__(self, from_solr)
+        self.keyformat = keyformat
+        self.parsed_spec = []
+        for m in self.REGEX_KEY.finditer(self.keyformat):
+            self.parsed_spec.append(tuple((m.start(1), m.group(1), self.__get_solr_field(m.group(1)))))
+
+    def __get_solr_field(self, specifier):
+        """
+        from specifier to Solr fields
+
+        :param specifier:
+        :return:
+        """
+        fieldDict = {
+            'H': 'author',
+            'q': 'pub',
+            'R': 'bibcode',
+            'Y': 'year'
+        }
+        specifier = ''.join(re.findall(r'([HqRY])', specifier))
+        return fieldDict.get(specifier, '')
+
 
     def __get_doc_type(self, solr_type):
         """
@@ -136,25 +173,54 @@ class BibTexFormat(Format):
             fields = []
         return OrderedDict(fields)
 
-    def __get_author_list(self, a_doc, field):
+    def __get_author_list(self, a_doc, field, maxauthor):
         """
         format authors/editors
 
         :param a_doc:
         :param field:
+        :param maxauthor:
         :return:
         """
         if field not in a_doc:
             return ''
         and_str = ' and '
         author_list = ''
+        author_count = 0
         for author in a_doc[field]:
             author_parts = encode_laTex_author(author).split(',', 1)
             author_list += '{' + author_parts[0] + '}'
             if (len(author_parts) == 2):
                 author_list += ',' +  author_parts[1]
+            author_count += 1
+            # if reached number of required authors return
+            # zero author is indication of all available authors
+            if author_count == maxauthor and not maxauthor == 0:
+                return author_list
             author_list += and_str
         author_list = author_list[:-len(and_str)]
+        return author_list
+
+
+    def __get_author_lastname_list(self, a_doc, maxauthor):
+        """
+        format authors
+
+        :param a_doc:
+        :param field:
+        :param maxauthor:
+        :return:
+        """
+        if 'author' not in a_doc:
+            return ''
+        author_list = ''
+        author_count = 0
+        for author in a_doc['author']:
+            author_parts = author.split(',', 1)
+            author_list += author_parts[0]
+            author_count += 1
+            if author_count == maxauthor:
+                return author_list
         return author_list
 
 
@@ -298,13 +364,32 @@ class BibTexFormat(Format):
         return ''
 
 
-    def __get_doc(self, index, include_abs):
+    def __get_key(self, a_doc):
+        """
+
+        :param a_doc:
+        :return:
+        """
+        key = self.keyformat
+        for field in self.parsed_spec:
+            if (field[2] == 'author'):
+                key = key.replace(field[1], self.__get_author_lastname_list(a_doc, re.match(r'%(\d)H', field[1])))
+            elif (field[2] == 'year'):
+                key = key.replace(field[1], a_doc.get('year', ''))
+            elif (field[2] == 'bibcode'):
+                key = key.replace(field[1], a_doc.get('bibcode', ''))
+            elif (field[2] == 'pub'):
+                key = key.replace(field[1], self.get_pub_abbrev(a_doc.get('pub', ''), a_doc.get('bibcode', '')))
+        return key
+
+    def __get_doc(self, index, include_abs, maxauthor):
         """
         for each document from Solr, get the fields, and format them accordingly
-        
-        :param index: 
-        :param include_abs: 
-        :return: 
+
+        :param index:
+        :param include_abs:
+        :param maxauthor:
+        :return:
         """
         format_style_bracket_quotes = u'{0:>13} = "{{{1}}}"'
         format_style_bracket = u'{0:>13} = {{{1}}}'
@@ -312,12 +397,12 @@ class BibTexFormat(Format):
         format_style = u'{0:>13} = {1}'
 
         a_doc = self.from_solr['response'].get('docs')[index]
-        text = self.__get_doc_type(a_doc.get('doctype', '')) + '{' + a_doc.get('bibcode', '')  + ',\n'
+        text = self.__get_doc_type(a_doc.get('doctype', '')) + '{' + self.__get_key(a_doc) + ',\n'
 
         fields = self.__get_fields(a_doc)
         for field in fields:
             if (field == 'author') or (field == 'editor'):
-                text += self.__add_in_wrapped(fields[field], self.__get_author_list(a_doc, field), format_style_bracket)
+                text += self.__add_in_wrapped(fields[field], self.__get_author_list(a_doc, field, maxauthor), format_style_bracket)
             elif (field == 'title'):
                 text += self.__add_in(fields[field], encode_laTex(''.join(a_doc.get(field, ''))), format_style_bracket_quotes)
             elif (field == 'aff'):
@@ -359,7 +444,7 @@ class BibTexFormat(Format):
         return text + '}\n\n'
 
 
-    def get(self, include_abs=False):
+    def get(self, include_abs, maxauthor):
         """
         
         :param include_abs: if ture include abstract
@@ -370,7 +455,7 @@ class BibTexFormat(Format):
         if (self.status == 0):
             num_docs = self.get_num_docs()
             for index in range(num_docs):
-                ref_BibTex.append(self.__get_doc(index, include_abs))
+                ref_BibTex.append(self.__get_doc(index, include_abs, maxauthor))
         result_dict = {}
         result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
         result_dict['export'] = ''.join(record for record in ref_BibTex)
