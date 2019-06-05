@@ -73,6 +73,22 @@ Note that there is an optional parameter `sort` for sorting the records from sol
 * **/votable** *VOTables*
 * **/rss** *RSS*
 
+Note that for endpoints `/bibtex` and `/bibtexabs` optional parameter `maxauthor` and `keyformat` can be passed in. 
+`maxauthor` is maxinum number of users displayed. The default values for `maxauthor` for `/bibtex` and `/bibtexabs` respectivley are 10 and 0, where 0 means all.
+`keyformat` allows user to customize bibtex key that could contain some combination of authors' last name(s), publication year, journal, and bibcode. User is now able to pick the key generation algorithm by specifying a custom format for it. To provide a specific example, this is our default format for 2019AAS...23338108A:
+
+    @INPROCEEDINGS{2019AAS...23338108A,
+       author = {{Accomazzi}, Alberto and {Kurtz}, Michael J. and {Henneken}, Edwin and
+    ...
+
+Now user can define one of the following:
+
+    Accomazzi:2019              -- %1H:%Y
+    Accomazzi:2019:AAS          -- %1H:%Y:%q
+    Accomazzi2019               -- %1H%Y
+    Accomazzi2019AAS            -- %1H%Y%q
+    AccomazziKurtz2019          -- %2H%Y
+
 Note that for endpoint `/rss` an optional parameter `link` can be passed in. `link` is the query url that generated the bibcodes. 
 
 For example querying ADS Bumblebee for
