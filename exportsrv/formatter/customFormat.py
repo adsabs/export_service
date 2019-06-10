@@ -27,6 +27,7 @@ from exportsrv.utils import get_eprint
 class CustomFormat(Format):
 
     REGEX_AUTHOR = re.compile(r'%[\\>/=]?(\d*\.?\d*)(\w)')
+    REGEX_PUB_MACRO = re.compile(r'(^\\[a-z]*$)')
     REGEX_FIRST_AUTHOR = re.compile(r'%(\^)(\w)')
     REGEX_AFF = re.compile(r'%(\d*)F')
     REGEX_ENUMERATION = re.compile(r'(%zn)')
@@ -674,8 +675,8 @@ class CustomFormat(Format):
         """
         if (field == 'author'):
             return encode_laTex_author(value)
-        # do not encode publication or bibcode since it could be the macro
-        if (field == 'pub') or (field == 'bibcode'):
+        # do not encode publication when the format is a macro or if it is bibcode
+        if ((field == 'pub') and (self.REGEX_PUB_MACRO.match(value))) or (field == 'bibcode'):
             return value
         return encode_laTex(value)
 

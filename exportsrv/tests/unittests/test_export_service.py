@@ -142,9 +142,8 @@ class TestExports(TestCase):
         # now compare it with an already formatted data that we know is correct
         assert (custom_format.get() == customTest.data)
         # verify correct solr fields are fetched
-
         assert (custom_format.get_solr_fields() == 'author,year,pub,volume,page,page_range,bibcode')
-
+ 
     def test_convert(self):
         assert(convert("\\\\bibitem[%\\2m%(y)]\{%za1%y} %\\8l %\\Y,%\\j,%\\V,%\\p") == "\\\\bibitem[%\\2m(%Y)]\\{%1H%Y} %\\8l %\\Y,%\\j,%\\V,%\\p")
 
