@@ -191,11 +191,11 @@ def export_post(request, style, format=-1):
     bibcodes = payload['bibcode']
 
     if format == -1:
-        current_app.logger.info('received request with bibcodes={bibcodes} to export in {style} style'.
-                    format(bibcodes=','.join(bibcodes), style=style))
+        current_app.logger.info('received request with bibcodes={bibcodes} to export in {style} style using sort order={sort}'.
+                    format(bibcodes=','.join(bibcodes), style=style, sort=sort))
     else:
-        current_app.logger.info('received request with bibcodes={bibcodes} to export in {style} style with output format {format}'.
-                    format(bibcodes=','.join(bibcodes), style=style, format=format))
+        current_app.logger.info('received request with bibcodes={bibcodes} to export in {style} style with output format {format} using sort order={sort}'.
+                    format(bibcodes=','.join(bibcodes), style=style, format=format, sort=sort))
 
     # if in the test mode, return test solr data
     if current_app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'] == bibcodes:
