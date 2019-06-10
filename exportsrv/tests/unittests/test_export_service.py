@@ -143,7 +143,7 @@ class TestExports(TestCase):
         assert (custom_format.get() == customTest.data)
         # verify correct solr fields are fetched
         assert (custom_format.get_solr_fields() == 'author,year,pub,volume,page,page_range,bibcode')
- 
+
     def test_convert(self):
         assert(convert("\\\\bibitem[%\\2m%(y)]\{%za1%y} %\\8l %\\Y,%\\j,%\\V,%\\p") == "\\\\bibitem[%\\2m(%Y)]\\{%1H%Y} %\\8l %\\Y,%\\j,%\\V,%\\p")
 
@@ -359,13 +359,54 @@ class TestExports(TestCase):
             assert (response._status_code == 200)
 
 
-    def test_bibtex_keyformat(self):
+    def test_bibtex_keyformat_endpoint(self):
         payload = {'bibcode': self.app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'],
                    'link': '',
                    'keyformat': '%1H:%Y:%q',
                    'maxauthor': 2}
         response = self.client.post('/bibtex', data=json.dumps(payload))
         assert (response._status_code == 200)
+
+
+    def test_bibtex_keyformat(self):
+        solr_data = \
+            {
+                "responseHeader": {
+                    "status": 0,
+                    "QTime": 51,
+                    "params": {
+                        "q": "author:\"^accomazzi\" year:2019",
+                        "indent": "on",
+                        "fl": "bibcode,author,pub,year",
+                        "wt": "json",
+                        "_": "1560183872951"}},
+                "response": {"numFound": 2, "start": 0, "docs": [
+                    {
+                        "year": "2019",
+                        "bibcode": "2019AAS...23338108A",
+                        "author": ["Accomazzi, Alberto",
+                                   "Kurtz, Michael J.",
+                                   "Henneken, Edwin",
+                                   "Grant, Carolyn S.",
+                                   "Thompson, Donna M.",
+                                   "Chyla, Roman",
+                                   "McDonald, Stephen",
+                                   "Blanco-Cuaresma, Sergi",
+                                   "Shapurian, Golnaz",
+                                   "Hostetler, Timothy",
+                                   "Templeton, Matthew",
+                                   "Lockhart, Kelly"],
+                        "pub": "American Astronomical Society Meeting Abstracts #233"},
+                    {
+                        "year": "2019",
+                        "bibcode": "2019AAS...23320704A",
+                        "author": ["Accomazzi, Alberto"],
+                        "pub": "American Astronomical Society Meeting Abstracts #233"}
+                ]}
+            }
+        bibtex_export = BibTexFormat(solrdata.data, "%1H:%Y:%q")
+        # both author and title exists
+        assert(bibtex_export._BibTexFormat__get_key(solr_data['response'].get('docs')[0]) == 'Accomazzi:2019:AAS')
 
 
 if __name__ == '__main__':
