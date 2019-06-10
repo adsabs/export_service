@@ -373,7 +373,12 @@ class BibTexFormat(Format):
         key = self.keyformat
         for field in self.parsed_spec:
             if (field[2] == 'author'):
-                key = key.replace(field[1], self.__get_author_lastname_list(a_doc, re.match(r'%(\d)H', field[1])))
+                match = re.search(r'%(\d)H', field[1])
+                if match:
+                    maxauthor = int(match.group(1))
+                else:
+                    maxauthor = 1
+                key = key.replace(field[1], self.__get_author_lastname_list(a_doc, maxauthor))
             elif (field[2] == 'year'):
                 key = key.replace(field[1], a_doc.get('year', ''))
             elif (field[2] == 'bibcode'):
