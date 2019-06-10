@@ -662,8 +662,8 @@ def csl_format_export():
     if (not adsFormatter().verify(export_format)):
         return return_response({'error': 'unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)'}, 400)
 
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}'.
-                 format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format))
+    current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}  style using sort order={sort}'.
+                 format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format, sort=sort))
 
     solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields(), sort=sort)
     return return_csl_format_export(solr_data, csl_style, export_format)
@@ -701,8 +701,8 @@ def custom_format_export():
     except Exception as e:
         return return_response({'error': 'unable to read custom format'}, 400)
 
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in a custom format: {custom_format_str}'.
-                 format(bibcodes=','.join(bibcodes), custom_format_str=custom_format_str.encode('utf8')))
+    current_app.logger.info('received request with bibcodes={bibcodes} to export in a custom format: {custom_format_str}  style using sort order={sort}'.
+                 format(bibcodes=','.join(bibcodes), custom_format_str=custom_format_str.encode('utf8'), sort=sort))
 
     if (len(bibcodes) == 0) or (len(custom_format_str) == 0):
         return return_response({'error': 'not all the needed information received'}, 400)
