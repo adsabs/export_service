@@ -349,7 +349,7 @@ class CustomFormat(Format):
             # and then add them in before returning, or add a character or two to the end of
             # of the text and remove them after it has been filled, to give to illusion of
             # \n not at the end of string, if there were any
-            result = fill(text+'<END>', width=self.line_length, replace_whitespace=False)
+            result = fill(text+'<END>', width=self.line_length, replace_whitespace=False, subsequent_indent=' ' * 12)
             result = result[:-len('<END>')]
         # in csv format there is a comma at the very end, remove that before adding the linefeed
         if (self.export_format == adsFormatter.csv):
@@ -680,6 +680,7 @@ class CustomFormat(Format):
             return value
         return encode_laTex(value)
 
+
     def __markup_strip(self, value):
         """
         # see if HTML markup found in input fields (such as <SUB>) needs to be removed
@@ -687,6 +688,7 @@ class CustomFormat(Format):
         :return:
         """
         return re.sub(r'<.*?>', '', value)
+
 
     def __encode(self, value, field, field_format=None):
         """
