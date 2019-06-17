@@ -89,7 +89,12 @@ class CSLJson(Format):
         # before and after the dash, hence accepts only one dash in the page field
         # renaming the page to eid produces tones of warning
         # so instead of eid went with PMCID that is a known identifer
-        data['PMCID'] = data['page'] = ''.join(a_doc.get('page', ''))
+        data['PMCID'] = ''.join(a_doc.get('page', ''))
+        # lets keep the data in the page as well, eventhough it is not being used
+        if data['PMCID'].count('-') > 1:
+            data['page'] = data['PMCID'].replace('-', ' ')
+        else:
+            data['page'] = data['PMCID']
         data['type'] = self.__get_doc_type(a_doc.get('doctype', ''))
         data['locator'] = a_doc.get('bibcode')
         data['genre'] = str(a_doc.get('bibcode')[4:13]).strip('.')
