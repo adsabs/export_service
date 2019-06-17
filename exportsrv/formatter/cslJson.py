@@ -83,7 +83,13 @@ class CSLJson(Format):
         data['container-title-short'] = ''
         data['volume'] = a_doc.get('volume', '')
         data['issue'] = a_doc.get('issue', '')
-        data['page'] = ''.join(a_doc.get('page', ''))
+        # both eid and page go into the page field in solr
+        # eid can be of the form E1.7-23-18 which crashes csl having two dashes
+        # since it parses it and tries to determine the first page and the last page
+        # before and after the dash, hence accepts only one dash in the page field
+        # renaming the page to eid produces tones of warning
+        # so instead of eid went with PMCID that is a known identifer
+        data['PMCID'] = data['page'] = ''.join(a_doc.get('page', ''))
         data['type'] = self.__get_doc_type(a_doc.get('doctype', ''))
         data['locator'] = a_doc.get('bibcode')
         data['genre'] = str(a_doc.get('bibcode')[4:13]).strip('.')
