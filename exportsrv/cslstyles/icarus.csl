@@ -145,7 +145,7 @@
           <group>
             <text variable="volume"/>
           </group>
-          <text variable="page"/>
+          <text variable="PMCID"/>
         </group>
       </if>
       <else-if type="book report thesis" match="any">
@@ -159,7 +159,7 @@
           <text macro="event"/>
           <text macro="publisher"/>
           <group>
-            <text variable="page" prefix=" "/>
+            <text variable="PMCID" prefix=" "/>
           </group>
         </group>
       </else-if>
