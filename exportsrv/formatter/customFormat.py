@@ -154,7 +154,7 @@ class CustomFormat(Format):
             'c': 'citation_count',
             'C': 'copyright',
             'd': 'doi',
-            'D': 'date',
+            'D': 'pubdate',
             'e': 'author',
             'F': 'aff',
             'f': 'author',
@@ -307,8 +307,8 @@ class CustomFormat(Format):
         :param date_format:
         :return:
         """
-        # solr_date has the format 2017-12-01T00:00:00Z
-        date_time = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
+        # solr_date has the format 2017-12-01
+        date_time = datetime.strptime(solr_date.replace('-00', '-01'), '%Y-%m-%d')
         formats = {'D': '%m/%Y', 'Y': '%Y'}
         return strftime(date_time, formats[date_format])
 
@@ -629,13 +629,13 @@ class CustomFormat(Format):
             # returns an AASTeX macro for the journal if available, otherwise
             # returns the journal name
             journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
-            return journal_macros.get(a_doc.get('pub', ''), a_doc.get('pub', ''))
+            return journal_macros.get(self.get_main_bibstem(a_doc.get('bibstem', '')), a_doc.get('pub', ''))
         if (format == 'Q'):
             # returns the full journal information
             return self.__add_clean_pub_raw(a_doc)
         if (format == 'q'):
             # returns the journal abbreviation
-            return self.get_pub_abbrev(a_doc.get('pub', ''), a_doc.get('bibcode', ''))
+            return self.get_main_bibstem(a_doc.get('bibstem', self.get_pub_abbrev(a_doc.get('pub', ''), a_doc.get('bibcode'))))
         return ''
 
 
@@ -817,7 +817,7 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, self.__get_author_list(field[1], index))
             elif (field[2] == 'doctype'):
                 result = self.__add_in(result, field, a_doc.get(field[2], ''))
-            elif (field[2] == 'date'):
+            elif (field[2] == 'pubdate'):
                 result = self.__add_in(result, field, self.__format_date(a_doc.get(field[2], ''), field[1][-1]))
             elif (field[2] == 'aff'):
                 result = self.__add_in(result, field, self.__get_affiliation_list(a_doc))

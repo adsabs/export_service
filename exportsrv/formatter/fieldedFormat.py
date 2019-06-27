@@ -106,8 +106,8 @@ class FieldedFormat(Format):
         :param export_format:
         :return:
         """
-        # solr_date has the format 2017-12-01T00:00:00Z
-        date_time = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
+        # solr_date has the format 2017-12-01
+        date_time = datetime.strptime(solr_date.replace('-00', '-01'), '%Y-%m-%d')
         formats = {self.EXPORT_FORMAT_ADS: '%m/%Y', self.EXPORT_FORMAT_ENDNOTE: '%B %d, %Y',
                    self.EXPORT_FORMAT_PROCITE: '%Y/%m/X%d', self.EXPORT_FORMAT_REFMAN: '%Y/%m/X%d',
                    self.EXPORT_FORMAT_REFWORKS: '%Y/%m/X%d', self.EXPORT_FORMAT_MEDLARS: '%Y %b %d'}
@@ -133,7 +133,7 @@ class FieldedFormat(Format):
         if (export_format == self.EXPORT_FORMAT_ADS):
             return (OrderedDict([('bibcode', '%R'), ('title', '%T'), ('author', '%A'),
                                  ('aff', '%F'), ('pub_raw', '%J'), ('volume', '%V'),
-                                 ('date', '%D'), ('page', '%P'), ('lastpage', '%L'),
+                                 ('pubdate', '%D'), ('page', '%P'), ('lastpage', '%L'),
                                  ('keyword', '%K'), ('', '%G'), ('copyright', '%C'),
                                  ('links', '%I'), ('url', '%U'), ('comment', '%X'),
                                  ('', '%S'), ('abstract', '%B'), ('doi', '%Y DOI:'),
@@ -141,33 +141,33 @@ class FieldedFormat(Format):
         if (export_format == self.EXPORT_FORMAT_ENDNOTE):
             return (OrderedDict([('doctype', '%0'), ('title', '%T'), ('author', '%A'),
                                  ('aff', '%+'), ('pub', '%B'), ('volume', '%V'),
-                                 ('year', '%D'), ('date', '%8'), ('page_range', '%P'),
+                                 ('year', '%D'), ('pubdate', '%8'), ('page_range', '%P'),
                                  ('keyword', '%K'), ('url', '%U'), ('comment', '%Z'),
                                  ('abstract', '%X'), ('doi', '%3'), ('eprintid', '%= eprint:'),
                                  ('isbn', '%@')]))
         if (export_format == self.EXPORT_FORMAT_PROCITE):
             return (OrderedDict([('doctype', 'TY  -'), ('title', 'T1  -'), ('author', 'A1  -'),
-                                 ('pub_raw', 'JO  -'), ('volume', 'VL  -'), ('date', 'Y1  -'),
+                                 ('pub_raw', 'JO  -'), ('volume', 'VL  -'), ('pubdate', 'Y1  -'),
                                  ('page', 'SP  -'), ('lastpage', 'EP  -'), ('keyword', 'KW  -'),
                                  ('url', 'UR  -'), ('abstract', 'N2  -'), ('doi', 'DO  -'),
                                  ('eprintid', 'C1  - eprint:'), ('issn', 'SN  -'), ('endRecord', 'ER  -')]))
         if (export_format == self.EXPORT_FORMAT_REFMAN):
             return (OrderedDict([('doctype', 'TY  -'), ('title', 'T1  -'), ('author', 'A1  -'),
-                                 ('pub_raw', 'JO  -'), ('volume', 'VL  -'), ('date', 'Y1  -'),
+                                 ('pub_raw', 'JO  -'), ('volume', 'VL  -'), ('pubdate', 'Y1  -'),
                                  ('page', 'SP  -'), ('lastpage', 'EP  -'), ('keyword', 'KW  -'),
                                  ('url', 'UR  -'), ('abstract', 'N2  -'), ('doi', 'DO  -'),
                                  ('eprintid', 'C1  - eprint:'), ('issn', 'SN  -'), ('endRecord', 'ER  -')]))
         if (export_format == self.EXPORT_FORMAT_REFWORKS):
             return (OrderedDict([('doctype', 'RT'), ('title', 'T1'), ('author', 'A1'),
                                  ('aff', 'AD'), ('pub_raw', 'JF'), ('volume', 'VO'),
-                                 ('year', 'YR'), ('date', 'FD'), ('page', 'SP'),
+                                 ('year', 'YR'), ('pubdate', 'FD'), ('page', 'SP'),
                                  ('lastpage', 'OP'), ('keyword', 'K1'), ('url', 'LK'),
                                  ('comment', 'NO'), ('abstract', 'AB'), ('doi', 'DO DOI:'),
                                  ('eprintid', 'DO eprintid:'), ('issn', 'SN')]))
         if (export_format == self.EXPORT_FORMAT_MEDLARS):
             return (OrderedDict([('doctype', 'PT  -'), ('title', 'TI  -'), ('author', 'AU  -'),
                                  ('pub', 'TA  -'), ('pub_raw', 'SO  -'), ('volume', 'VI  -'),
-                                 ('date', 'DP  -'), ('page_range', 'PG  -'), ('url', '4099-'),
+                                 ('pubdate', 'DP  -'), ('page_range', 'PG  -'), ('url', '4099-'),
                                  ('abstract', 'AB  -'), ('isbn', 'IS  -')]))
 
 
@@ -487,7 +487,7 @@ class FieldedFormat(Format):
                 result += self.__add_author_list(a_doc, export_format, fields[field])
             elif (field == 'doctype'):
                 result += self.__add_in(fields[field], self.__get_doc_type(a_doc.get(field, ''), export_format))
-            elif (field == 'date'):
+            elif (field == 'pubdate'):
                 result += self.__add_in(fields[field], self.__format_date(a_doc.get(field, ''), export_format))
             elif (field == 'abstract'):
                 result += self.__add_in(fields[field], self.__format_line_wrapped(a_doc.get(field, '')))

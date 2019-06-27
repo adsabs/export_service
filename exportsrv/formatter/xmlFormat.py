@@ -36,8 +36,8 @@ class XMLFormat(Format):
         :param export_format:
         :return:
         """
-        # solr_date has the format 2017-12-01T00:00:00Z
-        dateTime = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
+        # solr_date has the format 2017-12-01
+        dateTime = datetime.strptime(solr_date.replace('-00', '-01'), '%Y-%m-%d')
         formats = {self.EXPORT_FORMAT_DUBLIN_XML: '%Y-%m-%d', self.EXPORT_FORMAT_REF_XML: '%b %Y'}
         return strftime(dateTime, formats[export_format])
 
@@ -316,14 +316,14 @@ class XMLFormat(Format):
         if (export_format == self.EXPORT_FORMAT_REF_XML):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
                       ('aff', 'affiliation'), ('pub_raw', 'journal'), ('volume', 'volume'),
-                      ('date', 'pubdate'), ('page', 'page'), ('page_range', 'lastpage'),
+                      ('pubdate', 'pubdate'), ('page', 'page'), ('page_range', 'lastpage'),
                       ('keyword', 'keywords'), ('', 'origin'), ('copyright', 'copyright'),
                       ('link', 'link'), ('url', 'url'), ('comment', 'comment'),
                       ('', 'score'), ('citation_count', 'citations'), ('abstract', 'abstract'),
                       ('doi', 'DOI'), ('eprintid', 'eprintid')]
         elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
             fields = [('bibcode', 'dc:identifier'), ('title', 'dc:title'), ('author', 'dc:creator'),
-                      ('pub_raw', 'dc:source'), ('date', 'dc:date'), ('keyword', 'dc:subject'),
+                      ('pub_raw', 'dc:source'), ('pubdate', 'dc:date'), ('keyword', 'dc:subject'),
                       ('copyright', 'dc:rights'), ('url', 'dc:relation'), ('citation_count', 'dc:relation'),
                       ('abstract', 'dc:description'), ('doi', 'dc:identifier')]
         else:
@@ -410,7 +410,7 @@ class XMLFormat(Format):
                 self.__add_author_list(a_doc, record, fields[field])
             elif (field == 'pub_raw'):
                 self.__add_pub_raw(a_doc, record, fields[field], self.EXPORT_FORMAT_DUBLIN_XML)
-            elif (field == 'date'):
+            elif (field == 'pubdate'):
                 self.__add_in(record, fields[field], self.__format_date(a_doc.get(field, ''), self.EXPORT_FORMAT_DUBLIN_XML))
             elif (field == 'keyword'):
                 self.__add_keywords(a_doc, record, self.EXPORT_FORMAT_DUBLIN_XML)
@@ -446,7 +446,7 @@ class XMLFormat(Format):
                 self.__add_author_list(a_doc, record, fields[field])
             elif (field == 'aff'):
                 self.__add_affiliation_list(a_doc, record, fields[field])
-            elif (field == 'date'):
+            elif (field == 'pubdate'):
                 self.__add_in(record, fields[field], self.__format_date(a_doc.get(field, ''), self.EXPORT_FORMAT_REF_XML))
             elif (field == 'pub_raw'):
                 self.__add_pub_raw(a_doc, record, fields[field], self.EXPORT_FORMAT_REF_XML)

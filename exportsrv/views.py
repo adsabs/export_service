@@ -27,10 +27,10 @@ def default_solr_fields():
 
     :return: list of fields needed from solr
     """
-    return 'author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,' \
+    return 'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,' \
            'citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,' \
            'reference,comment,property,esources,data,isbn,pubnote,eid,arxiv_class,editor,series,' \
-           'version,publisher,issn'
+           'version,publisher,issn,bibstem'
 
 
 def return_response(results, status, request_type=''):

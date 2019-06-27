@@ -75,3 +75,13 @@ class Format:
         if len(bibcode) == 19:
             return re.search(self.REGEX_ABBREVIATION, bibcode[4:8]).group(0)
         return ''
+
+    def get_main_bibstem(self, bibstem):
+        """
+
+        :param bibstem:
+        :return:
+        """
+        if len(bibstem) > 0:
+            return bibstem[0]
+        return ''

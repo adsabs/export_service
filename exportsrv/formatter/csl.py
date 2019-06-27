@@ -93,7 +93,7 @@ class CSL:
         elif (self.csl_style == 'aastex') or (self.csl_style == 'aasj') or (self.csl_style == 'aspc'):
             journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
             for data in self.for_cls:
-                data['container-title'] = journal_macros.get(data['container-title'], encode_laTex(data['container-title']))
+                data['container-title'] = journal_macros.get(data['bibstem'], encode_laTex(data['container-title']))
                 data['title'] = encode_laTex(data['title'])
         # for SoPh we use journal abbreviation for some special journals only
         elif (self.csl_style == 'soph'):
