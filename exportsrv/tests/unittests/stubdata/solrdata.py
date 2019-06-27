@@ -64,7 +64,7 @@ data = \
             "bibcode":"2017SenIm..18...17Z",
             "copyright":"(c) 2017: Springer Science+Business Media New York",
             "doctype":"article",
-            "date":"2017-12-01T00:00:00Z",
+            "pubdate":"2017-12-00",
             "author":[
                "Zhang, Yangjun",
                "Aratani, Yuki",
@@ -108,7 +108,7 @@ data = \
             ],
             "pub_raw":"Instrument Science Report WFC3 2017-16, 6 pages",
             "year":"2017",
-            "date":"2017-06-01T00:00:00Z",
+            "pubdate":"2017-06-00",
             "title":[
                "Possible Overlaps Between Blobs, Grism Apertures, and Dithers"
             ],
@@ -153,7 +153,7 @@ data = \
             ],
             "pub_raw":"PhD Thesis, Leiden University, 2017",
             "year":"2017",
-            "date":"2017-06-01T00:00:00Z",
+            "pubdate":"2017-06-00",
             "property":[
                "OPENACCESS",
                "REFEREED",
@@ -188,7 +188,7 @@ data = \
             ],
             "pub_raw":"Astrophysics Source Code Library, record ascl:1706.009",
             "year":"2017",
-            "date":"2017-06-01T00:00:00Z",
+            "pubdate":"2017-06-00",
             "property":[
                "OPENACCESS",
                "PUB_OPENACCESS",
@@ -218,7 +218,7 @@ data = \
             ],
             "pub_raw":"Central Bureau Electronic Telegrams, 4403, 2 (2017). Edited by Green, D. W. E.",
             "year":"2017",
-            "date":"2017-06-01T00:00:00Z",
+            "pubdate":"2017-06-00",
             "title":[
                "Potential New Meteor Shower from Comet C/2015 D4 (Borisov)"
             ],
@@ -261,7 +261,7 @@ data = \
                "PUB_HTML"
             ],
             "doctype":"pressrelease",
-            "date":"2017-06-01T00:00:00Z",
+            "pubdate":"2017-06-00",
             "property":[
                "NONARTICLE",
                "NOT REFEREED"
@@ -306,7 +306,7 @@ data = \
                "MWC 560)"
             ],
             "year":"2017",
-            "date":"2017-05-01T00:00:00Z",
+            "pubdate":"2017-05-00",
             "title":[
                "V694 Mon (MWC 560) spectroscopy requested"
             ],
@@ -354,7 +354,7 @@ data = \
             "citation_count":0,
             "pub_raw":"VizieR On-line Data Catalog: J/AN/338/453. Originally published in: 2017AN....338..453S",
             "year":"2017",
-            "date":"2017-05-01T00:00:00Z",
+            "pubdate":"2017-05-00",
             "property":[
                "NONARTICLE",
                "NOT REFEREED"
@@ -400,7 +400,7 @@ data = \
             "page_range":"13168",
             "pub_raw":"Spitzer Proposal ID 13168",
             "year":"2017",
-            "date":"2017-04-01T00:00:00Z",
+            "pubdate":"2017-04-00",
             "property":[
                "NONARTICLE",
                "NOT REFEREED"
@@ -438,7 +438,7 @@ data = \
             ],
             "pub_raw":"Masters thesis, University of Stellenbosch, March 2017, 120 pages",
             "year":"2017",
-            "date":"2017-03-01T00:00:00Z",
+            "pubdate":"2017-03-00",
             "title":[
                "Surface Accuracy and Pointing Error Prediction of a 32 m Diameter Class Radio Astronomy Telescope"
             ],
@@ -475,7 +475,7 @@ data = \
             "citation_count":0,
             "pub_raw":"http://www.astronomy.ro/forum/viewtopic.php?p=159287#159287 (Comments in Romanian)",
             "year":"2016",
-            "date":"2016-10-01T00:00:00Z",
+            "pubdate":"2016-10-00",
             "property":[
                "NONARTICLE",
                "NOT REFEREED"
@@ -509,7 +509,7 @@ data = \
                "PUB_HTML"
             ],
             "year":"2016",
-            "date":"2016-03-01T00:00:00Z",
+            "pubdate":"2016-03-00",
             "property":[
                "NONARTICLE",
                "NOT REFEREED"
@@ -559,7 +559,7 @@ data = \
             ],
             "pub_raw":"Biophysics and the Challenges of Emerging Threats, NATO Science for Peace and Security Series B: Physics and Biophysics. ISBN 978-90-481-2367-4. Springer Netherlands, 2009, p. 65",
             "year":"2009",
-            "date":"2009-01-01T00:00:00Z",
+            "pubdate":"2009-00-00",
             "title":[
                "The Diversity of Nuclear Magnetic Resonance Spectroscopy"
             ],
@@ -618,7 +618,7 @@ data = \
             "citation_count":0,
             "pub_raw":"American Astronomical Society Meeting 210, id.21.04; <ALTJOURNAL>Bulletin of the American Astronomical Society, Vol. 39, p.124</ALTJOURNAL>",
             "year":"2007",
-            "date":"2007-05-01T00:00:00Z",
+            "pubdate":"2007-05-00",
             "property":[
                "NONARTICLE",
                "NOT REFEREED"
@@ -667,7 +667,7 @@ data = \
             ],
             "pub_raw":"Research Journal of Physics, vol. 1, issue 1, pp. 35-41",
             "year":"2007",
-            "date":"2007-01-01T00:00:00Z",
+            "pubdate":"2007-01-00",
             "title":[
                "Analysis of Thermal Losses in the Flat-Plate Collector of a Thermosyphon Solar Water Heater"
             ],
@@ -704,6 +704,8 @@ data = \
             "doctype":"article",
             "year":"2000",
             "bibcode":"2000ApJ...533L..25E",
+            "bibstem": ["ApJL",
+                        "ApJL..533"],
             "author":[
                "English, Jayanne",
                "Taylor, A. R.",
@@ -731,7 +733,7 @@ data = \
             "pub":"The Astrophysical Journal",
             "volume":"533",
             "page_range":"L25-L28",
-            "date":"2000-04-01T00:00:00Z",
+            "pubdate":"2000-04-00",
             "data":[
                "SIMBAD:3"
             ],
@@ -796,7 +798,7 @@ data = \
             "page_range":"390-405",
             "pub_raw":"In AGARD, Aerospace Navigation Systems p 390-405 (SEE N96-13404 02-04)",
             "year":"1995",
-            "date":"1995-06-01T00:00:00Z",
+            "pubdate":"1995-06-00",
             "property":[
                "ARTICLE",
                "NOT REFEREED"
@@ -826,7 +828,7 @@ data = \
             "pub":"Wiley series in nonlinear science",
             "citation_count":116,
             "year":"1995",
-            "date":"1995-01-01T00:00:00Z",
+            "pubdate":"1995-00-00",
             "property":[
                "NONARTICLE",
                "NOT REFEREED"
@@ -866,7 +868,7 @@ data = \
             "citation_count":0,
             "pub_raw":"American Institute of Aeronautics and Astronautics, Aerospace Sciences Meeting, 21st, Reno, NV, Jan. 10-13, 1983. 7 p.",
             "year":"1983",
-            "date":"1983-01-01T00:00:00Z",
+            "pubdate":"1983-01-00",
             "property":[
                "NONARTICLE",
                "NOT REFEREED"
@@ -890,9 +892,9 @@ one = \
     "status":0,
     "QTime":43,
     "params":{
-      "q":"bibcode:2018AAS...23221409A",
+         "q":"bibcode:2018AAS...23221409A",
       "indent":"on",
-      "fl":"author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,  citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,  reference,comment,property,esources,data,isbn,pubnote,eid",
+      "fl":"author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,  citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,  reference,comment,property,esources,data,isbn,pubnote,eid",
       "wt":"json",
       "_":"1529341837285"}},
   "response":{"numFound":1,"start":0,"docs":[
@@ -900,10 +902,11 @@ one = \
         "read_count":0,
         "abstract":"The NASA Astrophysics Data System (ADS) is used daily by researchers and curators as a discovery platform for the Astronomy literature. Over the past several years, the ADS has been adding to the breadth and depth of its contents. Scholarly astronomy articles are now indexed as full-text documents, allowing for complete and accurate literature searches. High-level data products, data links, and software used in refereed astronomy papers are now also being ingested and indexed in our database. All the search functionality exposed in the new ADS interface is also available via its API, which we are continuing to develop and enhance. In this talk I will describe the current system, our current roadmap, and solicit input from the community regarding what additional data, services, and discovery capabilities the ADS should support.",
         "citation_count":0,
-        "date":"2018-06-01T00:00:00Z",
+        "pubdate":"2018-06-00",
         "year":"2018",
         "page":["214.09"],
         "bibcode":"2018AAS...23221409A",
+        "bibstem":["AAS","AAS...232"],
         "identifier":["2018AAS...23221409A"],
         "copyright":"(c) 2018: American Astronomical Society",
         "author":["Accomazzi, Alberto",
@@ -918,6 +921,43 @@ one = \
         "pub_raw":"American Astronomical Society, AAS Meeting #232, id.#214.09",
         "eid":"214.09",
         "title":["The NASA Astrophysics Data System: Capabilities and Roadmap for the 2020s"]}]
+  }
+}
+
+with_bibstem = \
+{
+  "responseHeader":{
+    "status":0,
+    "QTime":1,
+    "params":{
+      "q":"bibcode:2019ApJ...875L..25M",
+      "indent":"on",
+      "fl":"author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,doi,citation_count,read_count,bibcode,doctype,isbn,pubnote,eid,arxiv_class,editor,series,version,publisher,issn,bibstem",
+      "wt":"json",
+      "_":"1561649139598"}},
+  "response":{"numFound":1,"start":0,"docs":[
+      {
+        "arxiv_class":["astro-ph.EP"],
+        "year":"2019",
+        "pubnote":["Accepted at ApJ Letters; doi:10.3847/2041-8213/ab0aea"],
+        "page":["L25"],
+        "bibcode":"2019ApJ...875L..25M",
+        "author":["Martin, David V.",
+          "Fabrycky, Daniel C.",
+          "Montet, Benjamin T."],
+        "issue":"2",
+        "citation_count":0,
+        "pub":"The Astrophysical Journal",
+        "volume":"875",
+        "pubdate":"2019-04-00",
+        "doi":["10.3847/2041-8213/ab0aea"],
+        "bibstem":["ApJL",
+          "ApJL..875"],
+        "doctype":"article",
+        "read_count":172,
+        "pub_raw":"The Astrophysical Journal Letters, Volume 875, Issue 2, article id. L25, <NUMPAGES>9</NUMPAGES> pp. (2019).",
+        "eid":"L25",
+        "title":["Transits of Inclined Exomoons—Hide and Seek and an Application to Kepler-1625"]}]
   }
 }
 

@@ -65,7 +65,7 @@ class VOTableFormat(Format):
 
         :return:
         """
-        return ['bibcode', 'title', 'author', 'pub_raw', 'date', 'url']
+        return ['bibcode', 'title', 'author', 'pub_raw', 'pubdate', 'url']
 
 
     def __add_clean_pub_raw(self, a_doc):
@@ -89,8 +89,8 @@ class VOTableFormat(Format):
         :param solr_date:
         :return:
         """
-        # solr_date has the format 2017-12-01T00:00:00Z
-        date_time = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
+        # solr_date has the format 2017-12-01
+        date_time = datetime.strptime(solr_date.replace('-00', '-01'), '%Y-%m-%d')
         return strftime(date_time, '%Y-%m-X%d').replace('X0', 'X').replace('X', '')
 
 
@@ -126,7 +126,7 @@ class VOTableFormat(Format):
                 self.__add_in_table_data(row, '; '.join(a_doc.get(field, '')))
             elif (field == 'pub_raw'):
                 self.__add_in_table_data(row, self.__add_clean_pub_raw(a_doc))
-            elif (field == 'date'):
+            elif (field == 'pubdate'):
                 self.__add_in_table_data(row, self.__format_date(a_doc.get(field, '')))
             elif (field == 'url'):
                 self.__add_in_table_data(row, current_app.config.get('EXPORT_SERVICE_FROM_BBB_URL') + '/' + a_doc.get('bibcode', ''))

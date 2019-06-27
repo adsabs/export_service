@@ -69,9 +69,9 @@ class TestExportsCustomFormat(TestCase):
         custom_format = CustomFormat(custom_format=r'')
 
         # format year
-        assert(custom_format._CustomFormat__format_date('2017-06-01T00:00:00Z', 'Y') == '2017')
+        assert(custom_format._CustomFormat__format_date('2017-06-01', 'Y') == '2017')
         # format date
-        assert(custom_format._CustomFormat__format_date('2017-06-01T00:00:00Z', 'D') == '06/2017')
+        assert(custom_format._CustomFormat__format_date('2017-06-01', 'D') == '06/2017')
 
 
     def test_format_url(self):
@@ -212,16 +212,16 @@ class TestExportsCustomFormat(TestCase):
 
     def test_get_publication(self):
         custom_format = CustomFormat(custom_format=r'')
-        custom_format.set_json_from_solr(solrdata.data)
+        custom_format.set_json_from_solr(solrdata.with_bibstem)
 
         publication_format = {
                             '%J':'The Astrophysical Journal',
-                            '%j':'\\apj',
-                            '%Q':'The Astrophysical Journal, Volume 533, Issue 1, pp. L25-L28.',
-                            '%q':'ApJ',
+                            '%j':'\\apjl',
+                            '%Q':'The Astrophysical Journal Letters, Volume 875, Issue 2, article id. L25, 9 pp. (2019).',
+                            '%q':'ApJL',
                             '%%':'',
         }
-        a_doc = solrdata.data['response'].get('docs')[15]
+        a_doc = solrdata.with_bibstem['response'].get('docs')[0]
         for key, value in publication_format.iteritems():
             assert (custom_format._CustomFormat__get_publication(key, a_doc) == value)
 

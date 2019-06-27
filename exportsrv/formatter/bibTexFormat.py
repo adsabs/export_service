@@ -93,8 +93,8 @@ class BibTexFormat(Format):
         :param solr_date:
         :return:
         """
-        # solr_date has the format 2017-12-01T00:00:00Z
-        date_time = datetime.strptime(solr_date, '%Y-%m-%dT%H:%M:%SZ')
+        # solr_date has the format 2017-12-01
+        date_time = datetime.strptime(solr_date.replace('-00', '-01'), '%Y-%m-%d')
         return strftime(date_time, '%b')
 
 
@@ -272,8 +272,7 @@ class BibTexFormat(Format):
         if a_doc.get('doctype', '') == 'software':
             return None
         journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
-        journal = ''.join(a_doc.get('pub', ''))
-        return journal_macros.get(journal, encode_laTex(journal))
+        return journal_macros.get(self.get_main_bibstem(a_doc.get('bibstem', '')), encode_laTex(''.join(a_doc.get('pub', ''))))
 
 
     def __add_clean_pub_raw(self, a_doc):
@@ -425,7 +424,7 @@ class BibTexFormat(Format):
             elif (field == 'volume') or (field == 'issue'):
                 text += self.__add_in(fields[field], a_doc.get(field, '') if a_doc.get(field, '') else None, format_style_bracket)
             elif (field == 'month'):
-                text += self.__add_in(fields[field], self.__format_date(a_doc.get('date', '')), format_style_quotes)
+                text += self.__add_in(fields[field], self.__format_date(a_doc.get('pubdate', '')), format_style_quotes)
             elif (field == 'abstract') and (include_abs):
                 text += self.__add_in_wrapped(fields[field], encode_laTex(a_doc.get(field, '')), format_style_bracket_quotes)
             elif (field == 'eid'):
