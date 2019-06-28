@@ -384,6 +384,8 @@ class TestExports(TestCase):
                     {
                         "year": "2019",
                         "bibcode": "2019AAS...23338108A",
+                        "bibstem": ["AAS",
+                                    "AAS...233"],
                         "author": ["Accomazzi, Alberto",
                                    "Kurtz, Michael J.",
                                    "Henneken, Edwin",
@@ -400,11 +402,13 @@ class TestExports(TestCase):
                     {
                         "year": "2019",
                         "bibcode": "2019AAS...23320704A",
+                        "bibstem":["AAS",
+                          "AAS...233"],
                         "author": ["Accomazzi, Alberto"],
                         "pub": "American Astronomical Society Meeting Abstracts #233"}
                 ]}
             }
-        bibtex_export = BibTexFormat(solrdata.data, "%1H:%Y:%q")
+        bibtex_export = BibTexFormat(solr_data, "%1H:%Y:%q")
         # both author and title exists
         assert(bibtex_export._BibTexFormat__get_key(solr_data['response'].get('docs')[0]) == 'Accomazzi:2019:AAS')
 

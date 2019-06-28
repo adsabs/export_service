@@ -86,6 +86,9 @@ class CustomFormat(Format):
         # of custom formating this line fails, but until then we should be OK
         if 'bibcode' not in solr_fields:
             solr_fields += 'bibcode,'
+        # the same as bibstem
+        if 'bibstem' not in solr_fields:
+            solr_fields += 'bibstem,'
         # don't need the last comma
         return solr_fields[:-len(',')]
 
@@ -629,13 +632,13 @@ class CustomFormat(Format):
             # returns an AASTeX macro for the journal if available, otherwise
             # returns the journal name
             journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
-            return journal_macros.get(self.get_main_bibstem(a_doc.get('bibstem', '')), a_doc.get('pub', ''))
+            return journal_macros.get(self.get_bibstem(a_doc.get('bibstem', '')), a_doc.get('pub', ''))
         if (format == 'Q'):
             # returns the full journal information
             return self.__add_clean_pub_raw(a_doc)
         if (format == 'q'):
             # returns the journal abbreviation
-            return self.get_main_bibstem(a_doc.get('bibstem', self.get_pub_abbrev(a_doc.get('pub', ''), a_doc.get('bibcode'))))
+            return self.get_pub_abbrev(a_doc.get('bibstem', ''))
         return ''
 
 
