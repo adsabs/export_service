@@ -212,16 +212,16 @@ class TestExportsCustomFormat(TestCase):
 
     def test_get_publication(self):
         custom_format = CustomFormat(custom_format=r'')
-        custom_format.set_json_from_solr(solrdata.with_bibstem)
+        custom_format.set_json_from_solr(solrdata.data)
 
         publication_format = {
                             '%J':'The Astrophysical Journal',
                             '%j':'\\apjl',
-                            '%Q':'The Astrophysical Journal Letters, Volume 875, Issue 2, article id. L25, 9 pp. (2019).',
+                            '%Q':'The Astrophysical Journal, Volume 533, Issue 1, pp. L25-L28.',
                             '%q':'ApJL',
                             '%%':'',
         }
-        a_doc = solrdata.with_bibstem['response'].get('docs')[0]
+        a_doc = solrdata.data['response'].get('docs')[15]
         for key, value in publication_format.iteritems():
             assert (custom_format._CustomFormat__get_publication(key, a_doc) == value)
 

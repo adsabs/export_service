@@ -142,7 +142,7 @@ class TestExports(TestCase):
         # now compare it with an already formatted data that we know is correct
         assert (custom_format.get() == customTest.data)
         # verify correct solr fields are fetched
-        assert (custom_format.get_solr_fields() == 'author,year,pub,volume,page,page_range,bibcode')
+        assert (custom_format.get_solr_fields() == 'author,year,pub,volume,page,page_range,bibcode,bibstem')
 
     def test_convert(self):
         assert(convert("\\\\bibitem[%\\2m%(y)]\{%za1%y} %\\8l %\\Y,%\\j,%\\V,%\\p") == "\\\\bibitem[%\\2m(%Y)]\\{%1H%Y} %\\8l %\\Y,%\\j,%\\V,%\\p")
@@ -384,6 +384,8 @@ class TestExports(TestCase):
                     {
                         "year": "2019",
                         "bibcode": "2019AAS...23338108A",
+                        "bibstem": ["AAS",
+                                    "AAS...233"],
                         "author": ["Accomazzi, Alberto",
                                    "Kurtz, Michael J.",
                                    "Henneken, Edwin",
@@ -400,11 +402,13 @@ class TestExports(TestCase):
                     {
                         "year": "2019",
                         "bibcode": "2019AAS...23320704A",
+                        "bibstem":["AAS",
+                          "AAS...233"],
                         "author": ["Accomazzi, Alberto"],
                         "pub": "American Astronomical Society Meeting Abstracts #233"}
                 ]}
             }
-        bibtex_export = BibTexFormat(solrdata.data, "%1H:%Y:%q")
+        bibtex_export = BibTexFormat(solr_data, "%1H:%Y:%q")
         # both author and title exists
         assert(bibtex_export._BibTexFormat__get_key(solr_data['response'].get('docs')[0]) == 'Accomazzi:2019:AAS')
 

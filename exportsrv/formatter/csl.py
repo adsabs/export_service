@@ -9,9 +9,8 @@ from citeproc.source.json import CiteProcJSON
 import re
 import os
 
-from adsutils.ads_utils import get_pub_abbreviation
-
 from exportsrv.formatter.ads import adsFormatter, adsOrganizer
+from exportsrv.formatter.format import Format
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author, html_to_laTex
 
 # This class accepts JSON and sends it to citeproc library to get reformated
@@ -83,26 +82,19 @@ class CSL:
         # available from adsutils
         if (self.csl_style == 'mnras'):
             for data in self.for_cls:
-                journal = encode_laTex(data['container-title'])
-                abbreviation = get_pub_abbreviation(journal, numBest=1, exact=True)
-                if (len(abbreviation) > 0):
-                    journal = abbreviation[0][1].strip('.')
-                data['container-title'] = journal
+                data['container-title'] = Format(None).get_pub_abbrev(data['bibstem'])
                 data['title'] = encode_laTex(data['title'])
         # for AASTex we need a macro of the journal names
         elif (self.csl_style == 'aastex') or (self.csl_style == 'aasj') or (self.csl_style == 'aspc'):
             journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
             for data in self.for_cls:
-                data['container-title'] = journal_macros.get(data['bibstem'], encode_laTex(data['container-title']))
+                data['container-title'] = journal_macros.get(Format(None).get_bibstem(data['bibstem']), encode_laTex(data['container-title']))
                 data['title'] = encode_laTex(data['title'])
         # for SoPh we use journal abbreviation for some special journals only
         elif (self.csl_style == 'soph'):
             journal_abbrevation = current_app.config['EXPORT_SERVICE_SOPH_JOURNAL_ABBREVIATION']
             for data in self.for_cls:
-                try:
-                    data['container-title'] = journal_abbrevation.get(data['locator'][4:9], encode_laTex(data['container-title']))
-                except:
-                    data['container-title'] = encode_laTex(data['container-title'])
+                data['container-title'] = journal_abbrevation.get(Format(None).get_bibstem(data['bibstem']), encode_laTex(data['container-title']))
                 data['title'] = encode_laTex(data['title'])
         # for the rest just run title and container-title through latex encoding
         elif (self.csl_style == 'icarus') or (self.csl_style == 'apsj'):

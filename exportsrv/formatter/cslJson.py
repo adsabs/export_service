@@ -111,7 +111,7 @@ class CSLJson(Format):
             data['keyword'] = a_doc.get('eid', '')
         else:
             data['keyword'] = ''
-        data['bibstem'] = self.get_main_bibstem(a_doc.get('bibstem', ''))
+        data['bibstem'] = a_doc.get('bibstem', '')
         return data
 
 

@@ -62,6 +62,8 @@ data = \
                "PUB_HTML"
             ],
             "bibcode":"2017SenIm..18...17Z",
+            "bibstem": ["SenIm",
+                        "SenIm..18"],
             "copyright":"(c) 2017: Springer Science+Business Media New York",
             "doctype":"article",
             "pubdate":"2017-12-00",
@@ -85,6 +87,8 @@ data = \
          {
             "read_count":0,
             "bibcode":"2017wfc..rept...16R",
+            "bibstem": ["wfc",
+                        "wfc..rept"],
             "keyword":[
                "Hubble Space Telescope",
                "HST",
@@ -127,6 +131,8 @@ data = \
          {
             "read_count":7,
             "bibcode":"2017PhDT........14C",
+            "bibstem": ["PhDT",
+                        "PhDT....."],
             "keyword":[
                "galaxies: evolution",
                "galaxies: abundances",
@@ -167,6 +173,8 @@ data = \
          {
             "read_count":4,
             "bibcode":"2017ascl.soft06009C",
+            "bibstem": ["ascl",
+                        "ascl.soft"],
             "keyword":[
                "Software"
             ],
@@ -202,6 +210,8 @@ data = \
          {
             "read_count":0,
             "bibcode":"2017CBET.4403....2G",
+            "bibstem": ["CBET",
+                        "CBET.4403"],
             "page_range":"2",
             "aff":[
                "-"
@@ -235,6 +245,8 @@ data = \
          {
             "read_count":5,
             "bibcode":"2017nova.pres.2388K",
+            "bibstem": ["nova",
+                        "nova.pres"],
             "author":[
                "Kohler, Susanna"
             ],
@@ -277,6 +289,8 @@ data = \
          {
             "read_count":3,
             "bibcode":"2017AAVSN.429....1W",
+            "bibstem": ["AAVSN",
+                        "AAVSN.429"],
             "copyright":"(C) AAVSO 2017",
             "reference":[
                "2001ASPC..242..187I",
@@ -327,6 +341,8 @@ data = \
             ],
             "read_count":4,
             "bibcode":"2017yCat.113380453S",
+            "bibstem": ["yCat",
+                        "yCat.1133"],
             "keyword":[
                "Stars: variable"
             ],
@@ -384,6 +400,8 @@ data = \
          {
             "read_count":3,
             "bibcode":"2017sptz.prop13168Y",
+            "bibstem": ["sptz",
+                        "sptz.prop"],
             "author":[
                "Yan, Lin"
             ],
@@ -415,6 +433,8 @@ data = \
          {
             "read_count":0,
             "bibcode":"2017MsT..........2A",
+            "bibstem": ["MsT",
+                        "MsT......"],
             "reference":[
                "1966IEEEP..54..633R",
                "2004SPIE.5489.1029P",
@@ -454,6 +474,8 @@ data = \
          {
             "read_count":2,
             "bibcode":"2016emo6.rept.....R",
+            "bibstem": ["emo6",
+                        "emo6.rept"],
             "keyword":[
                "THE MOON",
                "ECLIPSES",
@@ -489,6 +511,8 @@ data = \
          {
             "read_count":0,
             "bibcode":"2016iac..talk..872V",
+            "bibstem": ["iac",
+                        "iac..talk"],
             "reference":[
                "2016MNRAS.460.3519V"
             ],
@@ -523,6 +547,8 @@ data = \
          {
             "read_count":0,
             "bibcode":"2009bcet.book...65L",
+            "bibstem": ["bcet",
+                        "bcet.book"],
             "keyword":[
                "Physics"
             ],
@@ -593,6 +619,8 @@ data = \
          {
             "read_count":0,
             "bibcode":"2007AAS...210.2104M",
+            "bibstem": ["AAS",
+                        "AAS...210"],
             "author":[
                "Mahabal, Ashish A.",
                "Drake, A. J.",
@@ -646,6 +674,8 @@ data = \
          {
             "read_count":0,
             "bibcode":"2007RJPh....1...35.",
+            "bibstem": ["RJPh",
+                        "RJPh....1"],
             "page_range":"35-41",
             "aff":[
                "-",
@@ -766,6 +796,8 @@ data = \
          {
             "read_count":0,
             "bibcode":"1995ans..agar..390M",
+            "bibstem": ["ans",
+                        "ans..agar"],
             "keyword":[
                "Earth Orbits",
                "Navigation Aids",
@@ -813,6 +845,8 @@ data = \
          {
             "read_count":7,
             "bibcode":"1995anda.book.....N",
+            "bibstem": ["anda",
+                        "anda.book"],
             "author":[
                "Nayfeh, Ali H.",
                "Balachandran, Balakumar"
@@ -838,6 +872,8 @@ data = \
          {
             "read_count":0,
             "bibcode":"1983aiaa.meetY....K",
+            "bibstem": ["aiaa",
+                        "aiaa.meet"],
             "keyword":[
                "Artificial Satellites",
                "Autonomous Navigation",
@@ -924,42 +960,6 @@ one = \
   }
 }
 
-with_bibstem = \
-{
-  "responseHeader":{
-    "status":0,
-    "QTime":1,
-    "params":{
-      "q":"bibcode:2019ApJ...875L..25M",
-      "indent":"on",
-      "fl":"author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,doi,citation_count,read_count,bibcode,doctype,isbn,pubnote,eid,arxiv_class,editor,series,version,publisher,issn,bibstem",
-      "wt":"json",
-      "_":"1561649139598"}},
-  "response":{"numFound":1,"start":0,"docs":[
-      {
-        "arxiv_class":["astro-ph.EP"],
-        "year":"2019",
-        "pubnote":["Accepted at ApJ Letters; doi:10.3847/2041-8213/ab0aea"],
-        "page":["L25"],
-        "bibcode":"2019ApJ...875L..25M",
-        "author":["Martin, David V.",
-          "Fabrycky, Daniel C.",
-          "Montet, Benjamin T."],
-        "issue":"2",
-        "citation_count":0,
-        "pub":"The Astrophysical Journal",
-        "volume":"875",
-        "pubdate":"2019-04-00",
-        "doi":["10.3847/2041-8213/ab0aea"],
-        "bibstem":["ApJL",
-          "ApJL..875"],
-        "doctype":"article",
-        "read_count":172,
-        "pub_raw":"The Astrophysical Journal Letters, Volume 875, Issue 2, article id. L25, <NUMPAGES>9</NUMPAGES> pp. (2019).",
-        "eid":"L25",
-        "title":["Transits of Inclined Exomoons—Hide and Seek and an Application to Kepler-1625"]}]
-  }
-}
 
 ###################
 # to produce the above data

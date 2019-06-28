@@ -272,7 +272,7 @@ class BibTexFormat(Format):
         if a_doc.get('doctype', '') == 'software':
             return None
         journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
-        return journal_macros.get(self.get_main_bibstem(a_doc.get('bibstem', '')), encode_laTex(''.join(a_doc.get('pub', ''))))
+        return journal_macros.get(self.get_bibstem(a_doc.get('bibstem', '')), encode_laTex(''.join(a_doc.get('pub', ''))))
 
 
     def __add_clean_pub_raw(self, a_doc):
@@ -383,7 +383,7 @@ class BibTexFormat(Format):
             elif (field[2] == 'bibcode'):
                 key = key.replace(field[1], a_doc.get('bibcode', ''))
             elif (field[2] == 'pub'):
-                key = key.replace(field[1], self.get_pub_abbrev(a_doc.get('pub', ''), a_doc.get('bibcode', '')))
+                key = key.replace(field[1], self.get_bibstem(a_doc.get('bibstem', '')))
         return key
 
     def __get_doc(self, index, include_abs, maxauthor):
