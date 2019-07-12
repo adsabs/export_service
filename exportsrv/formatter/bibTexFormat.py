@@ -37,6 +37,7 @@ class BibTexFormat(Format):
             )
         )''', flags=re.X
     )
+    MAX_AUTHOR_SHOW = 200
 
     def __init__(self, from_solr, keyformat):
         """
@@ -187,16 +188,19 @@ class BibTexFormat(Format):
         and_str = ' and '
         author_list = ''
         author_count = 0
+        # if number of authors exceed the maximum that we display, cut to shorter list
+        # only if maxauthor is none zero, zero is indication of return all available authors
+        cut_authors = (len(a_doc[field]) > self.MAX_AUTHOR_SHOW) and not maxauthor == 0
         for author in a_doc[field]:
             author_parts = encode_laTex_author(author).split(',', 1)
             author_list += '{' + author_parts[0] + '}'
             if (len(author_parts) == 2):
                 author_list += ',' +  author_parts[1]
             author_count += 1
-            # if reached number of required authors return
-            # zero author is indication of all available authors
-            if author_count == maxauthor and not maxauthor == 0:
-                return author_list
+            if cut_authors:
+                # if reached number of required authors return
+                if author_count == maxauthor:
+                    return author_list + " and et al."
             author_list += and_str
         author_list = author_list[:-len(and_str)]
         return author_list
