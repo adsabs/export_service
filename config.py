@@ -1,5 +1,4 @@
 
-
 # configuration for accessing solr db
 # these values can be overwritten by local_config values
 # maximum number of records that can be fetched by bigquery is for now 2000
