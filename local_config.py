@@ -5,6 +5,7 @@ LOG_STDOUT = True
 EXPORT_SERVICE_CLASSIC_EXPORT_URL = ""
 EXPORT_SOLRQUERY_URL = ""
 EXPORT_SERVICE_ADSWS_API_TOKEN = ''
+EXPORT_SERVICE_FROM_BBB_URL = ""
 
 # added by eb-deploy (over-write config values) from environment
 try:
