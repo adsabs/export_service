@@ -1,6 +1,6 @@
 import logging
 LOG_LEVEL = 30 # To be deprecated when all microservices use ADSFlask
-LOGGING_LEVEL = "INFO"
+LOGGING_LEVEL = "DEBUG"
 LOG_STDOUT = True
 EXPORT_SERVICE_CLASSIC_EXPORT_URL = ""
 EXPORT_SOLRQUERY_URL = ""
