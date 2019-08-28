@@ -563,7 +563,7 @@ class CustomFormat(Format):
             # format n is a special case
             if (matches[0][1] == 'n'):
                 return self.__get_author_list_abbreviated(authors, count, matches[0][1], 0)
-            # so is the formst for H and h if not abbreviated
+            # so is the format for H and h if not abbreviated
             elif ((matches[0][1] == 'H') or (matches[0][1] == 'h')) and len(matches[0][0]) == 0:
                 return self.__get_author_list_abbreviated(authors, count, matches[0][1], 1)
             elif (len(matches[0][0]) > 0):
