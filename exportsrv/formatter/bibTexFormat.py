@@ -276,7 +276,6 @@ class BibTexFormat(Format):
         if a_doc.get('doctype', '') == 'software':
             return None
         journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
-        current_app.logger.debug("journal_macros dict %s"%journal_macros)
         return journal_macros.get(self.get_bibstem(a_doc.get('bibstem', '')), encode_laTex(''.join(a_doc.get('pub', ''))))
 
 
