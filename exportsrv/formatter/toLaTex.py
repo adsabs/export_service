@@ -31,8 +31,8 @@ def encode_laTex(text):
     :return:
     """
     if (len(text) > 1):
-        # make we want to break on $...$ (In-line math) and not apply latex substitution there
-        # however, it could be dollar sign as in the following record's title
+        # make we want to break on $...$ (In-line math) where we are not appling latex substitution
+        # however, it could be dollar sign representation as in the following record's title
         # "bibcode":"1979AstQ....3..143M",
         # "title":["The Gemini Syndrome: Star Wars of the Oldest Kind. Roger Culver and Philip Ianna The Astronomy
         # Quarterly Library Volume 1 Pachart Publishing House $11.95"],
