@@ -6,6 +6,7 @@ from flask import current_app
 from textwrap import fill
 import re
 import json
+import unicodedata
 
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
 from exportsrv.formatter.format import Format
@@ -37,7 +38,6 @@ class BibTexFormat(Format):
             )
         )''', flags=re.X
     )
-    MAX_AUTHOR_SHOW = 200
 
     def __init__(self, from_solr, keyformat):
         """
@@ -174,13 +174,14 @@ class BibTexFormat(Format):
             fields = []
         return OrderedDict(fields)
 
-    def __get_author_list(self, a_doc, field, maxauthor):
+    def __get_author_list(self, a_doc, field, maxauthor, authorcutoff):
         """
         format authors/editors
 
         :param a_doc:
         :param field:
         :param maxauthor:
+        :param authorcutoff:
         :return:
         """
         if field not in a_doc:
@@ -190,7 +191,7 @@ class BibTexFormat(Format):
         author_count = 0
         # if number of authors exceed the maximum that we display, cut to shorter list
         # only if maxauthor is none zero, zero is indication of return all available authors
-        cut_authors = (len(a_doc[field]) > self.MAX_AUTHOR_SHOW) and not maxauthor == 0
+        cut_authors = (len(a_doc[field]) > authorcutoff) and not maxauthor == 0
         for author in a_doc[field]:
             author_parts = encode_laTex_author(author).split(',', 1)
             author_list += '{' + author_parts[0] + '}'
@@ -388,15 +389,16 @@ class BibTexFormat(Format):
                 key = key.replace(field[1], a_doc.get('bibcode', ''))
             elif (field[2] == 'pub'):
                 key = key.replace(field[1], self.get_bibstem(a_doc.get('bibstem', '')))
-        return key
+        return unicodedata.normalize('NFKD', key.decode('utf-8')).encode('ascii','ignore')
 
-    def __get_doc(self, index, include_abs, maxauthor):
+    def __get_doc(self, index, include_abs, maxauthor, authorcutoff):
         """
         for each document from Solr, get the fields, and format them accordingly
 
         :param index:
         :param include_abs:
         :param maxauthor:
+        :param authorcutoff:
         :return:
         """
         format_style_bracket_quotes = u'{0:>13} = "{{{1}}}"'
@@ -410,7 +412,7 @@ class BibTexFormat(Format):
         fields = self.__get_fields(a_doc)
         for field in fields:
             if (field == 'author') or (field == 'editor'):
-                text += self.__add_in_wrapped(fields[field], self.__get_author_list(a_doc, field, maxauthor), format_style_bracket)
+                text += self.__add_in_wrapped(fields[field], self.__get_author_list(a_doc, field, maxauthor, authorcutoff), format_style_bracket)
             elif (field == 'title'):
                 text += self.__add_in(fields[field], encode_laTex(''.join(a_doc.get(field, ''))), format_style_bracket_quotes)
             elif (field == 'aff'):
@@ -452,10 +454,12 @@ class BibTexFormat(Format):
         return text + '}\n\n'
 
 
-    def get(self, include_abs, maxauthor):
+    def get(self, include_abs, maxauthor, authorcutoff):
         """
         
         :param include_abs: if ture include abstract
+        :param maxauthor:
+        :param authorcutoff:
         :return: result of formatted records in a dict
         """
         num_docs = 0
@@ -463,7 +467,7 @@ class BibTexFormat(Format):
         if (self.status == 0):
             num_docs = self.get_num_docs()
             for index in range(num_docs):
-                ref_BibTex.append(self.__get_doc(index, include_abs, maxauthor))
+                ref_BibTex.append(self.__get_doc(index, include_abs, maxauthor, authorcutoff))
         result_dict = {}
         result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
         result_dict['export'] = ''.join(record for record in ref_BibTex)
