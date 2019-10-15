@@ -51,7 +51,7 @@ class VOTableFormat(Format):
         format_xml = ET.tostring(votable, encoding='utf8', method='xml')
         # apprently the functionality to add in the doctype is not avaialble in ET
         # so have to add it manually after the first line <?xml version='1.0' encoding='utf8'?>
-        format_xml = format_xml.replace('?>', '?><!DOCTYPE VOTABLE SYSTEM "http://cdsweb.u-strasbg.fr/xml/VOTable.dtd" />')
+        format_xml = format_xml.replace('?>', '?><!DOCTYPE VOTABLE SYSTEM "http://cdsweb.u-strasbg.fr/xml/VOTable.dtd" >')
         # insert linefeed
         format_xml = ('>\n<'.join(format_xml.split('><')))
         format_xml = format_xml.replace('</TR>', '</TR>\n')
@@ -104,6 +104,8 @@ class VOTableFormat(Format):
         """
         if (len(value) > 0):
             ET.SubElement(parent, 'TD').text = value
+        else:
+            ET.SubElement(parent, 'TD')
 
 
     def __get_doc(self, index, parent):

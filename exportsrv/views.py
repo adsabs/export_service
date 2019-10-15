@@ -63,7 +63,7 @@ def return_response(results, status, request_type=''):
     return None
 
 
-def return_bibTex_format_export(solr_data, include_abs, keyformat, maxauthor, request_type='POST'):
+def return_bibTex_format_export(solr_data, include_abs, keyformat, maxauthor, authorcutoff, request_type='POST'):
     """
 
     :param include_abs:
@@ -71,7 +71,7 @@ def return_bibTex_format_export(solr_data, include_abs, keyformat, maxauthor, re
     """
     if (solr_data is not None):
         bibTex_export = BibTexFormat(solr_data, keyformat=keyformat)
-        return return_response(bibTex_export.get(include_abs=include_abs, maxauthor=maxauthor),
+        return return_response(bibTex_export.get(include_abs=include_abs, maxauthor=maxauthor, authorcutoff=authorcutoff),
                                200, request_type)
     return return_response({'error': 'no result from solr'}, 404)
 
@@ -222,6 +222,8 @@ def export_post_extras(request, style):
                     maxauthor = payload['maxauthor'][0]
                 else:
                     maxauthor = payload['maxauthor']
+                if maxauthor < 0:
+                    maxauthor = 0
             elif style == 'BibTex':
                 maxauthor = 10
             else:
@@ -234,8 +236,18 @@ def export_post_extras(request, style):
                     keyformat = payload['keyformat']
             else:
                 keyformat = '%R'
-            return maxauthor, keyformat
-    return None, None
+            if 'authorcutoff' in payload:
+                if type(payload['authorcutoff']) is list:
+                    authorcutoff = payload['authorcutoff'][0]
+                else:
+                    authorcutoff = payload['authorcutoff']
+                if authorcutoff <= 0:
+                    authorcutoff = 200
+            else:
+                authorcutoff = 200
+
+            return maxauthor, keyformat, authorcutoff
+    return None, None, None
 
 def export_get(bibcode, style, format=-1):
     """
@@ -269,9 +281,9 @@ def bibTex_format_export_post():
     """
     results, status = export_post(request, 'BibTex')
     if status == 200:
-        maxauthor, keyformat = export_post_extras(request, 'BibTex')
+        maxauthor, keyformat, authorcutoff = export_post_extras(request, 'BibTex')
         return return_bibTex_format_export(solr_data=results, include_abs=False,
-                                           keyformat=keyformat, maxauthor=maxauthor)
+                                           keyformat=keyformat, maxauthor=maxauthor, authorcutoff=authorcutoff)
     return return_response(results, status)
 
 
@@ -284,7 +296,7 @@ def bibTex_format_export_get(bibcode):
     :return:
     """
     return return_bibTex_format_export(solr_data=export_get(bibcode, 'BibTex'), include_abs=False,
-                                       keyformat='%R', maxauthor=10, request_type='GET')
+                                       keyformat='%R', maxauthor=10, authorcutoff=200, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -296,9 +308,9 @@ def bibTex_abs_format_export_post():
     """
     results, status = export_post(request, 'BibTex Abs')
     if status == 200:
-        maxauthor, keyformat = export_post_extras(request, 'BibTex Abs')
+        maxauthor, keyformat, authorcutoff = export_post_extras(request, 'BibTex Abs')
         return return_bibTex_format_export(solr_data=results, include_abs=True,
-                                           keyformat=keyformat, maxauthor=maxauthor)
+                                           keyformat=keyformat, maxauthor=maxauthor, authorcutoff=authorcutoff)
     return return_response(results, status)
 
 
@@ -311,7 +323,7 @@ def bibTex_abs_format_export_get(bibcode):
     :return:
     """
     return return_bibTex_format_export(solr_data=export_get(bibcode, 'BibTex Abs'), include_abs=True,
-                                       keyformat='%R', maxauthor=0, request_type='GET')
+                                       keyformat='%R', maxauthor=0, authorcutoff=200, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])

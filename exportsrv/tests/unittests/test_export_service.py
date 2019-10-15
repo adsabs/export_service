@@ -29,13 +29,13 @@ class TestExports(TestCase):
 
     def test_bibtex(self):
         # format the stubdata using the code
-        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=False, maxauthor=10)
+        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200)
         # now compare it with an already formatted data that we know is correct
         assert (bibtex_export == bibTexTest.data)
 
     def test_bibtex_with_abs(self):
         # format the stubdata using the code
-        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=True, maxauthor=0)
+        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=True, maxauthor=0, authorcutoff=200)
         # now compare it with an already formatted data that we know is correct
         assert (bibtex_export == bibTexTest.data_with_abs)
 
@@ -161,11 +161,11 @@ class TestExports(TestCase):
         assert (views.default_solr_fields() == default_fields)
 
     def test_bibtex_success(self):
-        response = views.return_bibTex_format_export(solrdata.data, False, '%R', 10)
+        response = views.return_bibTex_format_export(solrdata.data, False, '%R', 10, 200)
         assert(response._status_code == 200)
 
     def test_bibtex_no_data(self):
-        response = views.return_bibTex_format_export(None, False, '', 0)
+        response = views.return_bibTex_format_export(None, False, '', 0, 0)
         assert(response._status_code == 404)
 
     def test_fielded_success(self):
@@ -380,7 +380,7 @@ class TestExports(TestCase):
                         "fl": "bibcode,author,pub,year",
                         "wt": "json",
                         "_": "1560183872951"}},
-                "response": {"numFound": 2, "start": 0, "docs": [
+                "response": {"numFound": 3, "start": 0, "docs": [
                     {
                         "year": "2019",
                         "bibcode": "2019AAS...23338108A",
@@ -405,12 +405,36 @@ class TestExports(TestCase):
                         "bibstem":["AAS",
                           "AAS...233"],
                         "author": ["Accomazzi, Alberto"],
-                        "pub": "American Astronomical Society Meeting Abstracts #233"}
+                        "pub": "American Astronomical Society Meeting Abstracts #233"},
+                    {
+                        "year":"2019",
+                        "bibcode":"2019hsax.conf..526G",
+                        "author":["Garzón, F.",
+                          "Patrick, L.",
+                          "Hammersley, P.",
+                          "Streblyanska, A.",
+                          "Insausti, M.",
+                          "Barreto, M.",
+                          "Fernández, P.",
+                          "Joven, E.",
+                          "López, P.",
+                          "Mato, A.",
+                          "Moreno, H.",
+                          "Núñez, M.",
+                          "Patrón, J.",
+                          "Pascual, S.",
+                          "Cardiel, N."],
+                        "pub":"Highlights on Spanish Astrophysics X",
+                        "bibstem":["hsax",
+                          "hsax.conf"]
+                    }
                 ]}
             }
         bibtex_export = BibTexFormat(solr_data, "%1H:%Y:%q")
         # both author and title exists
         assert(bibtex_export._BibTexFormat__get_key(solr_data['response'].get('docs')[0]) == 'Accomazzi:2019:AAS')
+        # verify that key is ascii
+        assert(bibtex_export._BibTexFormat__get_key(solr_data['response'].get('docs')[2]) == 'Garzon:2019:hsax')
 
 
 if __name__ == '__main__':
