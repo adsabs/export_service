@@ -73,13 +73,14 @@ Note that there is an optional parameter `sort` for sorting the records from sol
 * **/votable** *VOTables*
 * **/rss** *RSS*
 
-Note that for endpoints `/bibtex` and `/bibtexabs` optional parameters `maxauthor` and `keyformat` can be passed in. 
-`maxauthor` is maxinum number of users displayed. The default values for `maxauthor` for `/bibtex` and `/bibtexabs` respectivley are 10 and 0, where 0 means all.
-`keyformat` allows user to customize bibtex key and could contain some combination of authors' last name(s), publication year, journal, and bibcode. User is now able to pick the key generation algorithm by specifying a custom format for it. To provide a specific example, this is our default format for 2019AAS...23338108A:
+Note that for endpoints `/bibtex` and `/bibtexabs` optional parameters `maxauthor`, `authorcutoff` and `keyformat` can be passed in. 
+* `maxauthor` is maxinum number of authors displayed. The default values for `maxauthor` for `/bibtex` and `/bibtexabs` respectivley are 10 and 0, where 0 means all.
+* `authorcutoff` is the threshold for truncating number of authors. If the number of authors is larger than `authorcutoff`, author list is truncated and `maxauthor` number of authors will be returned followed by `et al.`. If `authorcutoff` is not specified, the default of 200 is used.
+* `keyformat` allows user to customize bibtex key and could contain some combination of authors' last name(s), publication year, journal, and bibcode. User is now able to pick the key generation algorithm by specifying a custom format for it. To provide a specific example, this is our default format for 2019AAS...23338108A:
 
-    @INPROCEEDINGS{2019AAS...23338108A,
-       author = {{Accomazzi}, Alberto and {Kurtz}, Michael J. and {Henneken}, Edwin and
-    ...
+        @INPROCEEDINGS{2019AAS...23338108A,
+           author = {{Accomazzi}, Alberto and {Kurtz}, Michael J. and {Henneken}, Edwin and
+        ...
 
 Now user can define one of the following:
 
