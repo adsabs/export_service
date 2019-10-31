@@ -6,7 +6,7 @@ from flask import current_app
 from textwrap import fill
 import re
 import json
-import unicodedata
+from unidecode import unidecode
 
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
 from exportsrv.formatter.format import Format
@@ -382,14 +382,18 @@ class BibTexFormat(Format):
                     maxauthor = int(match.group(1))
                 else:
                     maxauthor = 1
-                key = key.replace(field[1], self.__get_author_lastname_list(a_doc, maxauthor))
+                # need to make sure the key is returned in ascii format
+                authors = self.__get_author_lastname_list(a_doc, maxauthor)
+                if type(authors) != unicode:
+                    authors = authors.decode('utf-8', 'ignore')
+                key = key.replace(field[1], unidecode(authors))
             elif (field[2] == 'year'):
                 key = key.replace(field[1], a_doc.get('year', ''))
             elif (field[2] == 'bibcode'):
                 key = key.replace(field[1], a_doc.get('bibcode', ''))
             elif (field[2] == 'pub'):
                 key = key.replace(field[1], self.get_bibstem(a_doc.get('bibstem', '')))
-        return unicodedata.normalize('NFKD', key.decode('utf-8')).encode('ascii','ignore')
+        return key
 
     def __get_doc(self, index, include_abs, maxauthor, authorcutoff):
         """

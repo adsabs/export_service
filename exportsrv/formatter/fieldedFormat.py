@@ -144,7 +144,7 @@ class FieldedFormat(Format):
                                  ('year', '%D'), ('pubdate', '%8'), ('page_range', '%P'),
                                  ('keyword', '%K'), ('url', '%U'), ('comment', '%Z'),
                                  ('abstract', '%X'), ('doi', '%3'), ('eprintid', '%= eprint:'),
-                                 ('isbn', '%@')]))
+                                 ('issn', '%@')]))
         if (export_format == self.EXPORT_FORMAT_PROCITE):
             return (OrderedDict([('doctype', 'TY  -'), ('title', 'T1  -'), ('author', 'A1  -'),
                                  ('pub', 'JO  -'), ('volume', 'VL  -'), ('pubdate', 'Y1  -'),
