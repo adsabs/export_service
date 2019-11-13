@@ -24,10 +24,14 @@ class XMLFormat(Format):
     EXPORT_FORMAT_REF_XML = 'ReferenceXML'
     EXPORT_FORMAT_DUBLIN_XML = 'DublinXML'
 
-    EXPORT_SERVICE_RECORDS_SET_XML = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/abstracts'),
-                                      ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
-                                      ('xsi:schemaLocation',
-                                       'http://ads.harvard.edu/schema/abs/1.1/abstracts http://ads.harvard.edu/schema/abs/1.1/abstracts.xsd')]
+    EXPORT_SERVICE_RECORDS_SET_XML_REF = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/references'),
+                                          ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
+                                          ('xsi:schemaLocation', 'http://ads.harvard.edu/schema/abs/1.1/references http://ads.harvard.edu/schema/abs/1.1/references.xsd')]
+
+    EXPORT_SERVICE_RECORDS_SET_XML_DUBLIN = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/dc'),
+                                             ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
+                                             ('xmlns:dc', 'http://purl.org/dc/elements/1.1/'),
+                                             ('xsi:schemaLocation', 'http://ads.harvard.edu/schema/abs/1.1/dc http://ads.harvard.edu/schema/abs/1.1/dc.xsd')]
 
     def __format_date(self, solr_date, export_format):
         """
@@ -390,6 +394,19 @@ class XMLFormat(Format):
             ET.SubElement(parent, field).text = value
 
 
+    def __get_attrib(self, export_format):
+        """
+
+        :param export_format:
+        :return:
+        """
+        if (export_format == self.EXPORT_FORMAT_REF_XML):
+            return OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML_REF)
+        if (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
+            return OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML_DUBLIN)
+        return OrderedDict([])
+
+
     def __get_doc_dublin_xml(self, index, parent):
         """
         for each document from Solr, get the fields, and format them accordingly for Dublin format
@@ -479,7 +496,7 @@ class XMLFormat(Format):
         if (self.status == 0):
             num_docs = self.get_num_docs()
             records = ET.Element("records")
-            attribs = OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML)
+            attribs = self.__get_attrib(export_format)
             for attrib in attribs:
                 records.set(attrib, attribs[attrib])
             records.set('retrieved', str(num_docs))
