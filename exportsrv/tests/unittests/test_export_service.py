@@ -155,9 +155,8 @@ class TestExports(TestCase):
 
     def test_default_solr_fields(self):
         default_fields = 'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,' \
-                         'citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,' \
-                         'reference,comment,property,esources,data,isbn,pubnote,eid,arxiv_class,editor,series,' \
-                         'version,publisher,issn,bibstem'
+                         'read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,' \
+                         'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem'
         assert (views.default_solr_fields() == default_fields)
 
     def test_bibtex_success(self):

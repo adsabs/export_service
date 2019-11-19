@@ -49,17 +49,15 @@ class CustomFormat(Format):
         )''', flags=re.X
     )
 
-    custom_format = ''
-    parsed_spec = []
-    from_cls = {}
-    author_count = {}
-
     def __init__(self, custom_format):
         """
 
         :param custom_format:
         """
         Format.__init__(self, None)
+        self.parsed_spec = []
+        self.from_cls = {}
+        self.author_count = {}
         self.custom_format = custom_format
         self.export_format = adsFormatter.unicode
         self.line_length = 0

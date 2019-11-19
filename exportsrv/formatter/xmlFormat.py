@@ -22,11 +22,16 @@ from exportsrv.formatter.strftime import strftime
 class XMLFormat(Format):
 
     EXPORT_FORMAT_REF_XML = 'ReferenceXML'
+    EXPORT_FORMAT_REF_ABS_XML = 'ReferenceAbsXML'
     EXPORT_FORMAT_DUBLIN_XML = 'DublinXML'
 
     EXPORT_SERVICE_RECORDS_SET_XML_REF = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/references'),
                                           ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
                                           ('xsi:schemaLocation', 'http://ads.harvard.edu/schema/abs/1.1/references http://ads.harvard.edu/schema/abs/1.1/references.xsd')]
+
+    EXPORT_SERVICE_RECORDS_SET_XML_REF_ABS = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/abstract'),
+                                              ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
+                                              ('xsi:schemaLocation', 'http://ads.harvard.edu/schema/abs/1.1/abstract http://ads.harvard.edu/schema/abs/1.1/abstract.xsd')]
 
     EXPORT_SERVICE_RECORDS_SET_XML_DUBLIN = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/dc'),
                                              ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
@@ -42,7 +47,7 @@ class XMLFormat(Format):
         """
         # solr_date has the format 2017-12-01
         dateTime = datetime.strptime(solr_date.replace('-00', '-01'), '%Y-%m-%d')
-        formats = {self.EXPORT_FORMAT_DUBLIN_XML: '%Y-%m-%d', self.EXPORT_FORMAT_REF_XML: '%b %Y'}
+        formats = {self.EXPORT_FORMAT_DUBLIN_XML: '%Y-%m-%d', self.EXPORT_FORMAT_REF_XML: '%b %Y', self.EXPORT_FORMAT_REF_ABS_XML: '%b %Y'}
         return strftime(dateTime, formats[export_format])
 
 
@@ -120,9 +125,9 @@ class XMLFormat(Format):
     def __add_doc_links_property(self, a_doc, parent):
         """
         format links that are defined in the property field
-        :param a_doc: 
-        :param parent: 
-        :return: 
+        :param a_doc:
+        :param parent:
+        :return:
         """
         link_url_format = current_app.config['EXPORT_SERVICE_RESOLVE_URL'] + '/{bibcode}/{link_type}'
         bibcode = a_doc.get('bibcode', '')
@@ -196,7 +201,7 @@ class XMLFormat(Format):
                         ('AcA', 'Acta Astronomica Data Files'),
                         ('ISO', 'Infrared Space Observatory'),
                         ('ESO', 'European Southern Observatory'),
-                        ('CXO', 'Chandra X-Ray Observatory'),
+                        ('Chandra', 'Chandra X-Ray Observatory'),
                         ('NOAO', 'National Optical Astronomy Observatory'),
                         ('XMM', 'XMM Newton Science Archive'),
                         ('Spitzer', 'Spitzer Space Telescope'),
@@ -210,7 +215,15 @@ class XMLFormat(Format):
                         ('CADC', 'Canadian Astronomy Data Center'),
                         ('Zenodo', 'Zenodo Archive'),
                         ('TNS', 'Transient Name Server'),
-                ])
+                        ('IRSA', 'NASA/IPAC Infrared Science Archive'),
+                        ('Github', 'Git Repository Hosting Service'),
+                        ('Dryad', 'International Repository of Research Data'),
+                        ('Figshare', 'Online Open Access Repository'),
+                        ('JWST', 'JWST Proposal Info'),
+                        ('PANGAEA', 'Digital Data Library and a Data Publisher for Earth System Science'),
+                        ('protocols', 'Collaborative Platform and Preprint Server for Science Methods and Protocols'),
+                        ('BAVJ', 'Data of the German Association for Variable Stars'),
+        ])
         data_dict = {}
         for d in a_doc.get('data', ''):
             data_dict[d.split(':')[0]] = int(d.split(':')[1])
@@ -235,7 +248,7 @@ class XMLFormat(Format):
                         #(link type:[include if, name, has count])
                         ('abstract', [len(a_doc.get('abstract', '')), 'abstract', False]),
                         ('citations', [a_doc.get('citation_count', 0), 'Citations to the Article', 'citations', True]),
-                        ('reference', [len(a_doc.get('reference', '')), 'References in the Article', 'references', True]),
+                        ('reference', [a_doc.get('reference', 0), 'References in the Article', 'references', True]),
                         ('coreads', [a_doc.get('read_count', 0), 'Co-Reads', False]),
         ])
         for link in link_dict:
@@ -260,7 +273,7 @@ class XMLFormat(Format):
         """
         if 'keyword' not in a_doc:
             return
-        if (export_format == self.EXPORT_FORMAT_REF_XML):
+        if (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
             record = ET.SubElement(parent, "keywords")
             for keyword in a_doc['keyword']:
                 ET.SubElement(record, 'keyword').text = keyword
@@ -296,7 +309,7 @@ class XMLFormat(Format):
         if 'pub_raw' not in a_doc:
             return
         pub_raw = self.__add_clean_pub_raw(a_doc)
-        if (export_format == self.EXPORT_FORMAT_REF_XML):
+        if (export_format == self.EXPORT_FORMAT_REF_XML) or (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
             ET.SubElement(parent, field).text = pub_raw
 
         elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
@@ -318,6 +331,11 @@ class XMLFormat(Format):
         :return:
         """
         if (export_format == self.EXPORT_FORMAT_REF_XML):
+            fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
+                      ('pub_raw', 'journal'), ('pubdate', 'pubdate'), ('link', 'link'),
+                      ('url', 'url'), ('', 'score'), ('citation_count', 'citations'),
+                      ('doi', 'DOI'), ('eprintid', 'eprintid')]
+        elif (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
                       ('aff', 'affiliation'), ('pub_raw', 'journal'), ('volume', 'volume'),
                       ('pubdate', 'pubdate'), ('page', 'page'), ('page_range', 'lastpage'),
@@ -353,7 +371,7 @@ class XMLFormat(Format):
         :return:
         """
         if citation_count != 0:
-            if (export_format == self.EXPORT_FORMAT_REF_XML):
+            if (export_format == self.EXPORT_FORMAT_REF_XML) or (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
                 return str(citation_count)
             if (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
                 return 'citations:' + str(citation_count)
@@ -402,6 +420,8 @@ class XMLFormat(Format):
         """
         if (export_format == self.EXPORT_FORMAT_REF_XML):
             return OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML_REF)
+        if (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
+            return OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML_REF_ABS)
         if (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
             return OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML_DUBLIN)
         return OrderedDict([])
@@ -441,18 +461,25 @@ class XMLFormat(Format):
                 self.__add_in(record, fields[field], self.__get_citation(int(a_doc.get(field, 0)), self.EXPORT_FORMAT_DUBLIN_XML))
 
 
-    def __get_doc_reference_xml(self, index, parent, includeAbs):
+    def __get_doc_reference_xml(self, index, parent, export_format):
         """
         for each document from Solr, get the fields, and format them accordingly for Reference format
 
         :param index:
         :param parent:
-        :param includeAbs:
+        :param export_format:
         :return:
         """
         a_doc = self.from_solr['response'].get('docs')[index]
-        fields = self.__get_fields(self.EXPORT_FORMAT_REF_XML)
+        fields = self.__get_fields(export_format)
         record = ET.SubElement(parent, "record")
+        if (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
+            property = a_doc.get('property', [])
+            if 'REFEREED' in property:
+                record.set('refereed', 'true')
+            if 'ARTICLE' in property:
+                record.set('article', 'true')
+            record.set('type', a_doc.get('doctype', ''))
         for field in fields:
             if (field == 'bibcode') or (field == 'pub') or (field == 'volume') or \
                (field == 'copyright'):
@@ -464,18 +491,18 @@ class XMLFormat(Format):
             elif (field == 'aff'):
                 self.__add_affiliation_list(a_doc, record, fields[field])
             elif (field == 'pubdate'):
-                self.__add_in(record, fields[field], self.__format_date(a_doc.get(field, ''), self.EXPORT_FORMAT_REF_XML))
+                self.__add_in(record, fields[field], self.__format_date(a_doc.get(field, ''), export_format))
             elif (field == 'pub_raw'):
-                self.__add_pub_raw(a_doc, record, fields[field], self.EXPORT_FORMAT_REF_XML)
+                self.__add_pub_raw(a_doc, record, fields[field], export_format)
             elif (field == 'page') or (field == 'page_range'):
                 self.__add_page(a_doc, record, fields[field])
             elif (field == 'keyword'):
-                self.__add_keywords(a_doc, record, self.EXPORT_FORMAT_REF_XML)
+                self.__add_keywords(a_doc, record, export_format)
             elif (field == 'url'):
                 self.__add_in(record, fields[field], current_app.config.get('EXPORT_SERVICE_FROM_BBB_URL') + '/' + a_doc.get('bibcode', ''))
             elif (field == 'citation_count'):
-                self.__add_in(record, fields[field], self.__get_citation(int(a_doc.get(field, 0)), self.EXPORT_FORMAT_REF_XML))
-            elif (field == 'abstract') and (includeAbs):
+                self.__add_in(record, fields[field], self.__get_citation(int(a_doc.get(field, 0)), export_format))
+            elif (field == 'abstract'):
                 self.__add_in(record, fields[field], self.__format_line_wrapped(a_doc.get(field, '')))
             elif (field == 'link'):
                 self.__add_doc_links(a_doc, record)
@@ -483,12 +510,11 @@ class XMLFormat(Format):
                 self.__add_in(record, fields[field], get_eprint(a_doc))
 
 
-    def __get_xml(self, export_format, include_abs=False):
+    def __get_xml(self, export_format):
         """
         setup the outer xml structure
 
         :param export_format:
-        :param include_abs:
         :return:
         """
         num_docs = 0
@@ -500,9 +526,11 @@ class XMLFormat(Format):
             for attrib in attribs:
                 records.set(attrib, attribs[attrib])
             records.set('retrieved', str(num_docs))
-            if (export_format == self.EXPORT_FORMAT_REF_XML):
+            records.set('start', str(1))
+            records.set('selected', str(num_docs))
+            if (export_format == self.EXPORT_FORMAT_REF_XML) or (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
                 for index in range(num_docs):
-                    self.__get_doc_reference_xml(index, records, include_abs)
+                    self.__get_doc_reference_xml(index, records, export_format)
             elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
                 for index in range(num_docs):
                     self.__get_doc_dublin_xml(index, records)
@@ -518,10 +546,12 @@ class XMLFormat(Format):
     def get_reference_xml(self, include_abs=False):
         """
 
-        :param include_abs: 
+        :param include_abs:
         :return: reference xml format with or without abstract
         """
-        return self.__get_xml(self.EXPORT_FORMAT_REF_XML, include_abs)
+        if include_abs:
+            return self.__get_xml(self.EXPORT_FORMAT_REF_ABS_XML)
+        return self.__get_xml(self.EXPORT_FORMAT_REF_XML)
 
 
     def get_dublincore_xml(self):

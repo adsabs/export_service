@@ -46,6 +46,12 @@ def get_solr_data(bibcodes, fields, sort, start=0):
             if (from_solr.get('response')):
                 num_docs = from_solr['response'].get('numFound', 0)
                 if num_docs > 0:
+                    for doc in from_solr['response']['docs']:
+                        # before proceeding remove the compunded field and assign it to individual count variables
+                        citations = doc.pop('[citations]', None)
+                        if citations is not None:
+                            doc.update({u'num_references':citations['num_references']})
+                            doc.update({u'num_citations':citations['num_citations']})
                     return from_solr
         current_app.logger.error('Solr returned {response}.'.format(response=response))
         return None
