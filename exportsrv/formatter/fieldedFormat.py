@@ -357,7 +357,7 @@ class FieldedFormat(Format):
             # (link type:[include if, name, has count])
             ('abstract', [len(a_doc.get('abstract', '')), 'ABSTRACT', 'Abstract']),
             ('citations', [a_doc.get('citation_count', 0), 'CITATIONS', 'Citations to the Article']),
-            ('reference', [len(a_doc.get('reference', '')), 'REFERENCES', 'References in the Article']),
+            ('reference', [a_doc.get('reference_count', 0), 'REFERENCES', 'References in the Article']),
             ('coreads', [a_doc.get('read_count', 0), 'Co-Reads', 'Co-Reads']),
         ])
         link_list = ''

@@ -88,16 +88,16 @@ class TestExportsCustomFormat(TestCase):
 
     def test_get_affiliation_list(self):
         custom_format = CustomFormat(custom_format=r'')
-        custom_format.set_json_from_solr(solrdata.data)
+        custom_format.set_json_from_solr(solrdata.data_3)
 
         # with affiliation
-        a_doc = solrdata.data['response'].get('docs')[15]
-        expected_aff_list = "AA(Department of Physics, Queen's University, Kingston, Ontario, K7L 3N6, Canada; Space Telescope Science Institute, Baltimore, MD); " \
-                            "AB(Department of Physics and Astronomy, University of Calgary, Calgary, Alberta, T2N 1N4, Canada); " \
-                            "AC(Department de Physique, Universit\u00e9 de Montr\u00e9al, Montr\u00e9al, Qu\u00e9bec, H3C 3J7, Canada); " \
-                            "AD(Department of Physics, Queen's University, Kingston, Ontario, K7L 3N6, Canada); " \
-                            "AE(Department of Physics and Astronomy, University of Western Ontario, London, Ontario, N6A 3K7, Canada); " \
-                            "AF(University of Toronto, 60 St. George Street, Toronto, Ontario, M5S 3H8, Canada)"
+        a_doc = solrdata.data_3['response'].get('docs')[0]
+        expected_aff_list = u"AA(Department of Physics, Queen's University, Kingston, Ontario, K7L 3N6, Canada; Space Telescope Science Institute, Baltimore, MD); " \
+                            u"AB(Department of Physics and Astronomy, University of Calgary, Calgary, Alberta, T2N 1N4, Canada); " \
+                            u"AC(Department de Physique, Université de Montréal, Montréal, Québec, H3C 3J7, Canada); " \
+                            u"AD(Department of Physics, Queen's University, Kingston, Ontario, K7L 3N6, Canada); " \
+                            u"AE(Department of Physics and Astronomy, University of Western Ontario, London, Ontario, N6A 3K7, Canada); " \
+                            u"AF(University of Toronto, 60 St. George Street, Toronto, Ontario, M5S 3H8, Canada)"
         assert (custom_format._CustomFormat__get_affiliation_list(a_doc) == expected_aff_list)
 
         # without affiliation
@@ -108,10 +108,10 @@ class TestExportsCustomFormat(TestCase):
 
     def test_get_affiliation_list_limit(self):
         custom_format = CustomFormat(custom_format=r'%2F')
-        custom_format.set_json_from_solr(solrdata.data)
+        custom_format.set_json_from_solr(solrdata.data_3)
 
         # with only 2 affiliations
-        a_doc = solrdata.data['response'].get('docs')[15]
+        a_doc = solrdata.data_3['response'].get('docs')[0]
         expected_aff_list = "AA(Department of Physics, Queen's University, Kingston, Ontario, K7L 3N6, Canada; Space Telescope Science Institute, Baltimore, MD); " \
                             "AB(Department of Physics and Astronomy, University of Calgary, Calgary, Alberta, T2N 1N4, Canada)"
         assert (custom_format._CustomFormat__get_affiliation_list(a_doc) == expected_aff_list)
@@ -124,7 +124,7 @@ class TestExportsCustomFormat(TestCase):
                                                    r'%L,%3.2L,%l,%3.2l,%M,%3.2M,%m,%3.2m,%N,%3.2N,%n,%3.2n,%i,%3.2i,%e,%3.2e,%f,%3.2f'
                                                    r'%^A,%^a,%^G,%^g,%^H,%^h,%^I,%^i,%^L,%^l,%^M,%^m,%^N,%^n,%^e,%^f'
         )
-        custom_format.set_json_from_solr(solrdata.data)
+        custom_format.set_json_from_solr(solrdata.data_3)
 
         # acutal data from solr: ['English, Jayanne', 'Taylor, A. R.', 'Mashchenko, S. Y.', 'Irwin, Judith A.', 'Basu, Shantanu', 'Johnstone, Doug']
         author_format = OrderedDict([
@@ -179,15 +179,15 @@ class TestExportsCustomFormat(TestCase):
                             ('%^f', 'English'),
         ])
         for key, value in author_format.iteritems():
-            assert (custom_format._CustomFormat__get_author_list(format=key, index=15) == value)
+            assert (custom_format._CustomFormat__get_author_list(format=key, index=0) == value)
 
 
     def test_get_keywords(self):
         custom_format = CustomFormat(custom_format=r'')
-        custom_format.set_json_from_solr(solrdata.data)
+        custom_format.set_json_from_solr(solrdata.data_3)
 
         # with keywords
-        a_doc = solrdata.data['response'].get('docs')[15]
+        a_doc = solrdata.data_3['response'].get('docs')[0]
         expected_keywords = "GALAXY: HALO, GALAXY: STRUCTURE, ISM: BUBBLES, ISM: INDIVIDUAL: ALPHANUMERIC: GW 123.4-1.5, ISM: STRUCTURE, Astrophysics"
         assert (custom_format._CustomFormat__get_keywords(a_doc) == expected_keywords)
 
@@ -202,17 +202,17 @@ class TestExportsCustomFormat(TestCase):
         custom_format.set_json_from_solr(solrdata.data)
 
         # need clean up
-        a_doc = solrdata.data['response'].get('docs')[13]
+        a_doc = solrdata.data['response'].get('docs')[16]
         assert (custom_format._CustomFormat__add_clean_pub_raw(a_doc) == 'American Astronomical Society Meeting 210, id.21.04')
 
         # no change required
-        a_doc = solrdata.data['response'].get('docs')[14]
+        a_doc = solrdata.data['response'].get('docs')[17]
         assert (custom_format._CustomFormat__add_clean_pub_raw(a_doc) == 'Research Journal of Physics, vol. 1, issue 1, pp. 35-41')
 
 
     def test_get_publication(self):
         custom_format = CustomFormat(custom_format=r'')
-        custom_format.set_json_from_solr(solrdata.data)
+        custom_format.set_json_from_solr(solrdata.data_3)
 
         publication_format = {
                             '%J':'The Astrophysical Journal',
@@ -221,7 +221,7 @@ class TestExportsCustomFormat(TestCase):
                             '%q':'ApJL',
                             '%%':'',
         }
-        a_doc = solrdata.data['response'].get('docs')[15]
+        a_doc = solrdata.data_3['response'].get('docs')[0]
         for key, value in publication_format.iteritems():
             assert (custom_format._CustomFormat__get_publication(key, a_doc) == value)
 
@@ -265,9 +265,9 @@ class TestExportsCustomFormat(TestCase):
 
         # verify when the parameter is defined, comma is replaced by the defined seprator
         custom_format = CustomFormat(custom_format=r'%ZAuthorSep:"; " %A')
-        custom_format.set_json_from_solr(solrdata.data)
+        custom_format.set_json_from_solr(solrdata.data_3)
         author_list_with_new_sep = u'English, Jayanne; Taylor, A. R.; Mashchenko, S. Y.; Irwin, Judith A.; Basu, Shantanu; and Johnstone, Doug'
-        assert (custom_format._CustomFormat__get_author_list('%A', index=15) == author_list_with_new_sep)
+        assert (custom_format._CustomFormat__get_author_list('%A', index=0) == author_list_with_new_sep)
 
     def test_markup_strip(self):
         # verify when missing it is False
@@ -292,11 +292,11 @@ class TestExportsCustomFormat(TestCase):
 
     def test_field_encoding(self):
         # latex field encoding
-        custom_format = CustomFormat(custom_format=r'%\\A')
-        custom_format.set_json_from_solr(solrdata.data)
+        custom_format = CustomFormat(custom_format=r'%\A')
+        custom_format.set_json_from_solr(solrdata.data_4)
         author_list_encoded = u'Ryan, R.~E. and McCullough, P.~R.'
-        assert (custom_format._CustomFormat__encode(value=custom_format._CustomFormat__get_author_list(format=r'%A', index=1),
-                                                    field='author', field_format=r'%\\A') == author_list_encoded)
+        assert (custom_format._CustomFormat__encode(value=custom_format._CustomFormat__get_author_list(format=r'%\A', index=0),
+                                                    field='author', field_format=r'%\A') == author_list_encoded)
         # html field encoding
         abstract = u"We present a large grid of stellar evolutionary tracks, which are suitable to modelling star clusters and galaxies by means of population synthesis. The tracks are presented for the initial chemical compositions [Z=0.0004, Y=0.23], [Z=0.001, Y=0.23], [Z=0.004, Y=0.24], [Z=0.008, Y=0.25], [Z=0.019, Y=0.273] (solar composition), and [Z=0.03, Y=0.30]. They are computed with updated opacities and equation of state, and a moderate amount of convective overshoot. The range of initial masses goes from 0.15 M<SUB>sun</SUB> to 7 M<SUB>sun</SUB>, and the evolutionary phases extend from the zero age main sequence (ZAMS) till either the thermally pulsing AGB regime or carbon ignition. We also present an additional set of models with solar composition, computed using the classical Schwarzschild criterion for convective boundaries. From all these tracks, we derive the theoretical isochrones in the Johnson-Cousins UBVRIJHK broad-band photometric system."
         abstract_html = "We present a large grid of stellar evolutionary tracks, which are suitable to modelling star clusters and galaxies by means of population synthesis. The tracks are presented for the initial chemical compositions [Z=0.0004, Y=0.23], [Z=0.001, Y=0.23], [Z=0.004, Y=0.24], [Z=0.008, Y=0.25], [Z=0.019, Y=0.273] (solar composition), and [Z=0.03, Y=0.30]. They are computed with updated opacities and equation of state, and a moderate amount of convective overshoot. The range of initial masses goes from 0.15 M&lt;SUB&gt;sun&lt;/SUB&gt; to 7 M&lt;SUB&gt;sun&lt;/SUB&gt;, and the evolutionary phases extend from the zero age main sequence (ZAMS) till either the thermally pulsing AGB regime or carbon ignition. We also present an additional set of models with solar composition, computed using the classical Schwarzschild criterion for convective boundaries. From all these tracks, we derive the theoretical isochrones in the Johnson-Cousins UBVRIJHK broad-band photometric system."

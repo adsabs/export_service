@@ -28,9 +28,8 @@ def default_solr_fields():
     :return: list of fields needed from solr
     """
     return 'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,' \
-           'citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,' \
-           'reference,comment,property,esources,data,isbn,pubnote,eid,arxiv_class,editor,series,' \
-           'version,publisher,issn,bibstem'
+           'read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,' \
+           'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem'
 
 
 def return_response(results, status, request_type=''):
@@ -268,7 +267,7 @@ def export_get(bibcode, style, format=-1):
 
     # if in the test mode, return test solr data
     if current_app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'] == bibcode:
-        return solrdata.one
+        return solrdata.data_2
 
     return get_solr_data(bibcodes=[bibcode], fields=default_solr_fields(), sort=sort)
 
