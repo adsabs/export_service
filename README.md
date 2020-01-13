@@ -90,8 +90,6 @@ Now user can define one of the following:
     Accomazzi2019AAS            -- %1H%Y%q
     AccomazziKurtz2019          -- %2H%Y
 
-Note that for endpoints `dcxml`, `refxml` and `refabsxml` there is an optional prameter `start` that is the index of document at the top search page where the first document is selected. Default is 1.
-
 Note that for endpoint `/rss` an optional parameter `link` can be passed in. `link` is the query url that generated the bibcodes. 
 
 For example querying ADS Bumblebee for

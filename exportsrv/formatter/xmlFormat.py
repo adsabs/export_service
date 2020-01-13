@@ -510,7 +510,7 @@ class XMLFormat(Format):
                 self.__add_in(record, fields[field], get_eprint(a_doc))
 
 
-    def __get_xml(self, export_format, start):
+    def __get_xml(self, export_format):
         """
         setup the outer xml structure
 
@@ -526,7 +526,7 @@ class XMLFormat(Format):
             for attrib in attribs:
                 records.set(attrib, attribs[attrib])
             records.set('retrieved', str(num_docs))
-            records.set('start', str(start))
+            records.set('start', str(1))
             records.set('selected', str(num_docs))
             if (export_format == self.EXPORT_FORMAT_REF_XML) or (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
                 for index in range(num_docs):
@@ -543,21 +543,21 @@ class XMLFormat(Format):
         return result_dict
 
 
-    def get_reference_xml(self, start, include_abs=False):
+    def get_reference_xml(self, include_abs=False):
         """
 
         :param include_abs:
         :return: reference xml format with or without abstract
         """
         if include_abs:
-            return self.__get_xml(self.EXPORT_FORMAT_REF_ABS_XML, start)
-        return self.__get_xml(self.EXPORT_FORMAT_REF_XML, start)
+            return self.__get_xml(self.EXPORT_FORMAT_REF_ABS_XML)
+        return self.__get_xml(self.EXPORT_FORMAT_REF_XML)
 
 
-    def get_dublincore_xml(self, start):
+    def get_dublincore_xml(self):
         """
 
         :return: dublin xml format
         """
-        return self.__get_xml(self.EXPORT_FORMAT_DUBLIN_XML, start)
+        return self.__get_xml(self.EXPORT_FORMAT_DUBLIN_XML)
 
