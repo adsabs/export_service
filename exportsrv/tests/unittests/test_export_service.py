@@ -77,19 +77,19 @@ class TestExports(TestCase):
 
     def test_dublinxml(self):
         # format the stubdata using the code
-        xml_export = XMLFormat(solrdata.data).get_dublincore_xml(start=1)
+        xml_export = XMLFormat(solrdata.data).get_dublincore_xml()
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_dublin_core)
 
     def test_refxml(self):
         # format the stubdata using the code
-        xml_export = XMLFormat(solrdata.data).get_reference_xml(start=1, include_abs=False)
+        xml_export = XMLFormat(solrdata.data).get_reference_xml(include_abs=False)
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_ref)
 
     def test_refxml_with_abs(self):
         # format the stubdata using the code
-        xml_export = XMLFormat(solrdata.data).get_reference_xml(start=1, include_abs=True)
+        xml_export = XMLFormat(solrdata.data).get_reference_xml(include_abs=True)
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_ref_with_abs)
 
@@ -179,12 +179,12 @@ class TestExports(TestCase):
 
     def test_xml_success(self):
         for xml_style in ['DublinCore','Reference','ReferenceAbs']:
-            response = views.return_xml_format_export(solrdata.data, xml_style, start=1)
+            response = views.return_xml_format_export(solrdata.data, xml_style)
             assert(response._status_code == 200)
 
     def test_xml_no_data(self):
         for xml_style in ['DublinCore','Reference','ReferenceAbs']:
-            response = views.return_xml_format_export(None, xml_style, start=1)
+            response = views.return_xml_format_export(None, xml_style)
             assert(response._status_code == 404)
 
     def test_csl(self):
