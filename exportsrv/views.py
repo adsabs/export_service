@@ -100,7 +100,7 @@ def return_fielded_format_export(solr_data, fielded_style, request_type='POST'):
     return return_response({'error': 'no result from solr'}, 404)
 
 
-def return_xml_format_export(solr_data, xml_style, request_type='POST'):
+def return_xml_format_export(solr_data, xml_style, start, request_type='POST'):
     """
 
     :param solr_data:
@@ -111,11 +111,11 @@ def return_xml_format_export(solr_data, xml_style, request_type='POST'):
     if (solr_data is not None):
         xml_export = XMLFormat(solr_data)
         if xml_style == 'DublinCore':
-            return return_response(xml_export.get_dublincore_xml(), 200, request_type)
+            return return_response(xml_export.get_dublincore_xml(start), 200, request_type)
         if xml_style == 'Reference':
-            return return_response(xml_export.get_reference_xml(include_abs=False), 200, request_type)
+            return return_response(xml_export.get_reference_xml(start, include_abs=False), 200, request_type)
         if xml_style == 'ReferenceAbs':
-            return return_response(xml_export.get_reference_xml(include_abs=True), 200, request_type)
+            return return_response(xml_export.get_reference_xml(start, include_abs=True), 200, request_type)
 
     return return_response({'error': 'no result from solr'}, 404)
 
@@ -246,7 +246,20 @@ def export_post_extras(request, style):
                 authorcutoff = 200
 
             return maxauthor, keyformat, authorcutoff
-    return None, None, None
+
+        if style in ['DublinCore', 'Reference', 'ReferenceAbs']:
+            if 'start' in payload:
+                if type(payload['start']) is list:
+                    start = payload['start'][0]
+                else:
+                    start = payload['start']
+                if start < 1:
+                    start = 1
+            else:
+                start = 1
+
+            return start
+    return None
 
 def export_get(bibcode, style, format=-1):
     """
@@ -478,7 +491,8 @@ def xml_dublincore_format_export_post():
     """
     results, status = export_post(request, 'DublinCore')
     if status == 200:
-        return return_xml_format_export(solr_data=results, xml_style='DublinCore', request_type='POST')
+        start = export_post_extras(request, 'DublinCore')
+        return return_xml_format_export(solr_data=results, xml_style='DublinCore', start=start)
     return return_response(results, status)
 
 
@@ -490,7 +504,7 @@ def xml_dublincore_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_xml_format_export(solr_data=export_get(bibcode, 'DublinCore'), xml_style='DublinCore', request_type='GET')
+    return return_xml_format_export(solr_data=export_get(bibcode, 'DublinCore'), xml_style='DublinCore', start=1, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -502,7 +516,8 @@ def xml_ref_format_export_post():
     """
     results, status = export_post(request, 'Reference')
     if status == 200:
-        return return_xml_format_export(solr_data=results, xml_style='Reference', request_type='POST')
+        start = export_post_extras(request, 'Reference')
+        return return_xml_format_export(solr_data=results, xml_style='Reference', start=start)
     return return_response(results, status)
 
 
@@ -514,7 +529,7 @@ def xml_ref_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_xml_format_export(solr_data=export_get(bibcode, 'Reference'), xml_style='Reference', request_type='GET')
+    return return_xml_format_export(solr_data=export_get(bibcode, 'Reference'), xml_style='Reference', start=1, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -526,7 +541,8 @@ def xml_refabs_format_export_post():
     """
     results, status = export_post(request, 'ReferenceAbs')
     if status == 200:
-        return return_xml_format_export(solr_data=results, xml_style='ReferenceAbs', request_type='POST')
+        start = export_post_extras(request, 'ReferenceAbs')
+        return return_xml_format_export(solr_data=results, xml_style='ReferenceAbs', start=start)
     return return_response(results, status)
 
 
@@ -538,7 +554,7 @@ def xml_refabs_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_xml_format_export(solr_data=export_get(bibcode, 'ReferenceAbs'), xml_style='ReferenceAbs', request_type='GET')
+    return return_xml_format_export(solr_data=export_get(bibcode, 'ReferenceAbs'), xml_style='ReferenceAbs', start=1, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])

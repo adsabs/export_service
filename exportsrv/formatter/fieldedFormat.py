@@ -132,7 +132,7 @@ class FieldedFormat(Format):
         """
         if (export_format == self.EXPORT_FORMAT_ADS):
             return (OrderedDict([('bibcode', '%R'), ('title', '%T'), ('author', '%A'),
-                                 ('aff', '%F'), ('pub', '%J'), ('volume', '%V'),
+                                 ('aff_raw', '%F'), ('pub', '%J'), ('volume', '%V'),
                                  ('pubdate', '%D'), ('page', '%P'), ('lastpage', '%L'),
                                  ('keyword', '%K'), ('', '%G'), ('copyright', '%C'),
                                  ('links', '%I'), ('url', '%U'), ('comment', '%X'),
@@ -140,7 +140,7 @@ class FieldedFormat(Format):
                                  ('eprintid', '%Y eprintid:')]))
         if (export_format == self.EXPORT_FORMAT_ENDNOTE):
             return (OrderedDict([('doctype', '%0'), ('title', '%T'), ('author', '%A'),
-                                 ('aff', '%+'), ('pub', '%B'), ('volume', '%V'),
+                                 ('aff_raw', '%+'), ('pub', '%B'), ('volume', '%V'),
                                  ('year', '%D'), ('pubdate', '%8'), ('page_range', '%P'),
                                  ('keyword', '%K'), ('url', '%U'), ('comment', '%Z'),
                                  ('abstract', '%X'), ('doi', '%3'), ('eprintid', '%= eprint:'),
@@ -159,7 +159,7 @@ class FieldedFormat(Format):
                                  ('eprintid', 'C1  - eprint:'), ('issn', 'SN  -'), ('endRecord', 'ER  -')]))
         if (export_format == self.EXPORT_FORMAT_REFWORKS):
             return (OrderedDict([('doctype', 'RT'), ('title', 'T1'), ('author', 'A1'),
-                                 ('aff', 'AD'), ('pub', 'JF'), ('volume', 'VO'),
+                                 ('aff_raw', 'AD'), ('pub', 'JF'), ('volume', 'VO'),
                                  ('year', 'YR'), ('pubdate', 'FD'), ('page', 'SP'),
                                  ('lastpage', 'OP'), ('keyword', 'K1'), ('url', 'LK'),
                                  ('comment', 'NO'), ('abstract', 'AB'), ('doi', 'DO DOI:'),
@@ -217,14 +217,14 @@ class FieldedFormat(Format):
         :param tag:
         :return:
         """
-        if ('aff') not in a_doc:
+        if ('aff_raw') not in a_doc:
             return ''
 
-        counter = self.generate_counter_id(len(a_doc['aff']))
+        counter = self.generate_counter_id(len(a_doc['aff_raw']))
         separator = ', '
 
         affiliation_list = ''
-        for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):
+        for affiliation, i in zip(a_doc['aff_raw'], range(len(a_doc['aff_raw']))):
             if (affiliation != '-'):
                 affiliation_list += counter[i] + '(' + affiliation + ')' + separator
         # do not need the last separator
@@ -491,7 +491,7 @@ class FieldedFormat(Format):
                 result += self.__add_in(fields[field], self.__format_date(a_doc.get(field, ''), export_format))
             elif (field == 'abstract'):
                 result += self.__add_in(fields[field], self.__format_line_wrapped(a_doc.get(field, '')))
-            elif (field == 'aff'):
+            elif (field == 'aff_raw'):
                 result += self.__get_affiliation_list(a_doc, export_format, fields[field])
             elif (field == 'keyword'):
                 result += self.__add_keywords(a_doc, export_format, fields[field])
