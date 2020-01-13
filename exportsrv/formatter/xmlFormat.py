@@ -554,7 +554,7 @@ class XMLFormat(Format):
         return self.__get_xml(self.EXPORT_FORMAT_REF_XML, start)
 
 
-    def get_dublincore_xml(self, start=1):
+    def get_dublincore_xml(self, start):
         """
 
         :return: dublin xml format

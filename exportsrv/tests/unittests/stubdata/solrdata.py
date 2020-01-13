@@ -21,7 +21,7 @@ data = \
             u'q': u'*:*',
             u'start': u'0',
             u'wt': u'json',
-            u'fl': u'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem'
+            u'fl': u'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff_raw,doi,abstract,read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem'
         }
     },
     u'response': {
@@ -531,7 +531,7 @@ data_2 = \
         u'params': {
             u'q':'bibcode:2018AAS...23221409A',
             u'indent':'on',
-            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
+            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff_raw,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
             'wt':'json',
             '_':'1529341837285'
         }
@@ -574,7 +574,7 @@ data_3 = \
         u'params': {
             u'q':'bibcode:2000ApJ...533L..25E',
             u'indent':'on',
-            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
+            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff_raw,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
             'wt':'json',
             '_':'1529341837285'
         }
@@ -620,7 +620,7 @@ data_4 = \
         u'params': {
             u'q':'bibcode:2017wfc..rept...16R',
             u'indent':'on',
-            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
+            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff_raw,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
             'wt':'json',
             '_':'1529341837285'
         }
