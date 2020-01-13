@@ -21,7 +21,7 @@ data = \
             u'q': u'*:*',
             u'start': u'0',
             u'wt': u'json',
-            u'fl': u'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem'
+            u'fl': u'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff_raw,doi,abstract,read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem'
         }
     },
     u'response': {
@@ -60,7 +60,7 @@ data = \
                 u'year': u'2018',
                 u'bibcode': u'2018TDM.....5a0201F',
                 u'bibstem': [u'TDM', u'TDM.....5'],
-                u'aff': [u'Editor in Chief, National Graphene Institute, University of Manchester, United Kingdom', u'Publisher, IOP Publishing, Bristol, United Kingdom'],
+                u'aff_raw': [u'Editor in Chief, National Graphene Institute, University of Manchester, United Kingdom', u'Publisher, IOP Publishing, Bristol, United Kingdom'],
                 u'esources': [u'PUB_HTML'],
                 u'issue': u'1',
                 u'pub_raw': u'2D Materials, Volume 5, Issue 1, article id. 010201 (2018).',
@@ -84,7 +84,7 @@ data = \
                 u'bibcode': u'2018Spin....877001P',
                 u'copyright': u'(c) 2018: World Scientific Publishing Company',
                 u'bibstem': [u'Spin', u'Spin....8'],
-                u'aff': [u'-', u'-', u'-'],
+                u'aff_raw': [u'-', u'-', u'-'],
                 u'esources': [u'PUB_HTML', u'PUB_PDF'],
                 u'issue': u'4',
                 u'pub_raw': u'Spin, Volume 8, Issue 4, id. 1877001',
@@ -112,7 +112,7 @@ data = \
                 u'bibcode': u'2018SAAS...38.....D',
                 u'copyright': u'(c) 2018: Springer-Verlag GmbH Germany, part of Springer Nature',
                 u'author': [u'Dessauges-Zavadsky, Miroslava', u'Pfenniger, Daniel'],
-                u'aff': [u'-', u'-'],
+                u'aff_raw': [u'-', u'-'],
                 u'esources': [u'PUB_HTML'],
                 u'pub_raw': u'Millimeter Astronomy: Saas-Fee Advanced Course 38. Swiss Society for Astrophysics and Astronomy, Saas-Fee Advanced Course, Volume 38. ISBN 978-3-662-57545-1. Springer-Verlag GmbH Germany, part of Springer Nature, 2018',
                 u'num_references': 0,
@@ -134,7 +134,7 @@ data = \
                 u'year': u'2018',
                 u'bibcode': u'2018PhRvL.120b9901P',
                 u'bibstem': [u'PhRvL', u'PhRvL.120'],
-                u'aff': [u'-', u'-', u'-', u'-'],
+                u'aff_raw': [u'-', u'-', u'-', u'-'],
                 u'esources': [u'PUB_HTML'],
                 u'issue': u'2',
                 u'pub_raw': u'Physical Review Letters, Volume 120, Issue 2, id.029901',
@@ -168,7 +168,7 @@ data = \
                 u'year': u'2017',
                 u'title': [u'Resolving Gas-Phase Metallicity In Galaxies'],
                 u'identifier': [u'2017PhDT........14C', u'10.5281/zenodo.581221', u'10.5281/zenodo.581221'],
-                u'aff': [u'Leiden University'],
+                u'aff_raw': [u'Leiden University'],
                 u'num_references': 1
             },
             {
@@ -183,7 +183,7 @@ data = \
                 u'bibcode': u'2017nova.pres.2388K',
                 u'keyword': [u'Features', u'Highlights', u'interstellar medium', u'stellar evolution', u'supernova remnant', u'supernovae', u'white dwarfs'],
                 u'author': [u'Kohler, Susanna'],
-                u'aff': [u'-'],
+                u'aff_raw': [u'-'],
                 u'bibstem': [u'nova', u'nova.pres'],
                 u'doctype': u'pressrelease',
                 u'page': [u'2388'],
@@ -212,7 +212,7 @@ data = \
                 u'year': u'2017',
                 u'title': [u'Potential New Meteor Shower from Comet C/2015 D4 (Borisov)'],
                 u'identifier': [u'2017CBET.4403....2G'],
-                u'aff': [u'-'],
+                u'aff_raw': [u'-'],
                 u'page_range': u'2',
                 u'page': [u'2']
             },
@@ -236,7 +236,7 @@ data = \
                 u'title': [u'sick: Spectroscopic inference crank'],
                 u'identifier': [u'2017ascl.soft06009C', u'ascl:1706.009'],
                 u'page': [u'ascl:1706.009'],
-                u'aff': [u'-']
+                u'aff_raw': [u'-']
             },
             {
                 u'comment': [u'phot.dat 2930x19 Differential photometry of BM CVn; phot_mlc.dat 2930x19 Differential photometry of BM CVn with MLC removed; res.dat 1319x185 *Numerical results of the CPS analysis; res_mlc.dat 1319x185 *Results of the CPS analysis with MLC removed'],
@@ -251,7 +251,7 @@ data = \
                 u'bibcode': u'2017yCat.113380453S',
                 u'keyword': [u'Stars: variable'],
                 u'bibstem': [u'yCat', u'yCat.1133'],
-                u'aff': [u'-', u'-', u'-', u'-', u'-', u'-', u'-', u'-', u'-', u'-', u'-', u'-', u'-'],
+                u'aff_raw': [u'-', u'-', u'-', u'-', u'-', u'-', u'-', u'-', u'-', u'-', u'-', u'-', u'-'],
                 u'author': [u'Siltala, J.', u'Jetsu, L.', u'Hackman, T.', u'Henry, G. W.', u'Immonen, L.', u'Kajatkari, P.', u'Lankinen, J.', u'Lehtinen, J.', u'Monira, S.', u'Nikbakhsh, S.', u'Viitanen, A.', u'Viuho, J.', u'Willamo, T.'],
                 u'doctype': u'catalog',
                 u'page': [u'J/AN/338/453'],
@@ -275,7 +275,7 @@ data = \
                 u'keyword': [u'astronomical databases: miscellaneous', u'binaries: symbiotic', u'stars: individual (V694 Mon', u'MWC 560)'],
                 u'copyright': u'(C) AAVSO 2017',
                 u'author': [u'Waagen, Elizabeth O.'],
-                u'aff': [u'AAVSO'],
+                u'aff_raw': [u'AAVSO'],
                 u'bibstem': [u'AAVSN', u'AAVSN.429'],
                 u'doctype': u'newsletter',
                 u'page': [u'1'],
@@ -303,7 +303,7 @@ data = \
                 u'title': [u'Confirm the Nature of a TDE Candidate in ULIRG F01004-2237 Using Spitzer mid-IR Light Curves'],
                 u'identifier': [u'2017sptz.prop13168Y'],
                 u'data': [u'Spitzer:1'],
-                u'aff': [u'-'],
+                u'aff_raw': [u'-'],
                 u'page': [u'13168']
             },
             {
@@ -323,7 +323,7 @@ data = \
                 u'year': u'2017',
                 u'title': [u'Surface Accuracy and Pointing Error Prediction of a 32 m Diameter Class Radio Astronomy Telescope'],
                 u'identifier': [u'2017MsT..........2A'],
-                u'aff': [u'University of Stellenbosch'],
+                u'aff_raw': [u'University of Stellenbosch'],
                 u'page_range': u'2',
                 u'page': [u'2']
             },
@@ -343,7 +343,7 @@ data = \
                 u'year': u'2016',
                 u'title': [u"The penumbral Moon's eclipse form 16 september 2016"],
                 u'identifier': [u'2016emo6.rept.....R'],
-                u'aff': [u'Bragadiru, Romania', u'Private Astronomical Observatory, Arad, Romania', u'Private Astronomical Observatory, Ploiesti, Romania'],
+                u'aff_raw': [u'Bragadiru, Romania', u'Private Astronomical Observatory, Arad, Romania', u'Private Astronomical Observatory, Ploiesti, Romania'],
                 u'num_references': 0
             },
             {
@@ -364,7 +364,7 @@ data = \
                 u'year': u'2016',
                 u'title': [u'Living on the edge: Adaptive Optics+Lucky Imaging'],
                 u'identifier': [u'2016iac..talk..872V'],
-                u'aff': [u'Instituto de Astrof\xedsica de Canarias'],
+                u'aff_raw': [u'Instituto de Astrof\xedsica de Canarias'],
                 u'page': [u'872']
             },
             {
@@ -377,7 +377,7 @@ data = \
                 u'bibcode': u'2009bcet.book...65L',
                 u'copyright': u'(c) 2009: Springer Netherlands',
                 u'bibstem': [u'bcet', u'bcet.book'],
-                u'aff': [u'Stanford Magnetic Resonance Laboratory, Stanford University', u'Department of Chemistry, Stanford University; , Genencor', u'Department of Geological &amp; Environmental Sciences, Stanford University; , ConocoPhillips Company', u'Department of Molecular and Cellular Physiology, Stanford University; Department of Structural Biology, Stanford University', u'Department of Geological &amp; Environmental Sciences, Stanford University; , Agriculture and Agri-Food Canada', u'Stanford Genome Technology Center, Stanford University; Department of Biochemistry, Stanford University', u'Department of Geological &amp; Environmental Sciences, Stanford University; Air Products and Chemicals, Inc. Allentown', u'Department of Molecular and Cellular Physiology, Stanford University; Department of Structural Biology, Stanford University', u'Department of Biochemistry, Stanford University', u'Department of Chemistry, Stanford University; Department of Biochemistry, Stanford University', u'Department of Biochemistry, Stanford University; Department of Biochemistry, Molecular Biology and Cell Biology, Northwestern University', u'Department of Chemistry, Stanford University; , Institute for Research in Biomedicine', u'Stanford Genome Technology Center, Stanford University; Department of Biochemistry, Stanford University', u'Stanford Magnetic Resonance Laboratory, Stanford University; Department of Structural Biology, Stanford University', u'Department of Molecular and Cellular Physiology, Stanford University; Department of Structural Biology, Stanford University', u'Department of Geological &amp; Environmental Sciences, Stanford University', u'Department of Molecular and Cellular Physiology, Stanford University; Department of Structural Biology, Stanford University'],
+                u'aff_raw': [u'Stanford Magnetic Resonance Laboratory, Stanford University', u'Department of Chemistry, Stanford University; , Genencor', u'Department of Geological &amp; Environmental Sciences, Stanford University; , ConocoPhillips Company', u'Department of Molecular and Cellular Physiology, Stanford University; Department of Structural Biology, Stanford University', u'Department of Geological &amp; Environmental Sciences, Stanford University; , Agriculture and Agri-Food Canada', u'Stanford Genome Technology Center, Stanford University; Department of Biochemistry, Stanford University', u'Department of Geological &amp; Environmental Sciences, Stanford University; Air Products and Chemicals, Inc. Allentown', u'Department of Molecular and Cellular Physiology, Stanford University; Department of Structural Biology, Stanford University', u'Department of Biochemistry, Stanford University', u'Department of Chemistry, Stanford University; Department of Biochemistry, Stanford University', u'Department of Biochemistry, Stanford University; Department of Biochemistry, Molecular Biology and Cell Biology, Northwestern University', u'Department of Chemistry, Stanford University; , Institute for Research in Biomedicine', u'Stanford Genome Technology Center, Stanford University; Department of Biochemistry, Stanford University', u'Stanford Magnetic Resonance Laboratory, Stanford University; Department of Structural Biology, Stanford University', u'Department of Molecular and Cellular Physiology, Stanford University; Department of Structural Biology, Stanford University', u'Department of Geological &amp; Environmental Sciences, Stanford University', u'Department of Molecular and Cellular Physiology, Stanford University; Department of Structural Biology, Stanford University'],
                 u'esources': [u'PUB_HTML'],
                 u'editor': [u'Puglisi, Joseph D.'],
                 u'pub_raw': u'Biophysics and the Challenges of Emerging Threats, NATO Science for Peace and Security Series B: Physics and Biophysics. ISBN 978-90-481-2367-4. Springer Netherlands, 2009, p. 65',
@@ -411,7 +411,7 @@ data = \
                 u'title': [u'Time Domain Exploration with the Palomar-QUEST Sky Survey'],
                 u'identifier': [u'2007BAAS...39..124M', u'2007AAS...210.2104M', u'2007BAAS...39..124M'],
                 u'page': [u'21.04'],
-                u'aff': [u'Caltech', u'Caltech', u'Caltech', u'Caltech', u'Caltech', u'Caltech', u'Caltech', u'Yale University', u'Yale University', u'-', u'-', u'-', u'-', u'-']
+                u'aff_raw': [u'Caltech', u'Caltech', u'Caltech', u'Caltech', u'Caltech', u'Caltech', u'Caltech', u'Yale University', u'Yale University', u'-', u'-', u'-', u'-', u'-']
             },
             {
                 u'read_count': 0,
@@ -422,7 +422,7 @@ data = \
                 u'year': u'2007',
                 u'bibcode': u'2007RJPh....1...35.',
                 u'bibstem': [u'RJPh', u'RJPh....1'],
-                u'aff': [u'-', u'-'],
+                u'aff_raw': [u'-', u'-'],
                 u'esources': [u'PUB_HTML'],
                 u'issue': u'1',
                 u'pub_raw': u'Research Journal of Physics, vol. 1, issue 1, pp. 35-41',
@@ -457,7 +457,7 @@ data = \
                 u'title': [u'Spacecraft navigation requirements'],
                 u'identifier': [u'1995ans..agar..390M'],
                 u'page': [u'390'],
-                u'aff': [u'Draper (Charles Stark) Lab., Inc., Cambridge, MA.']
+                u'aff_raw': [u'Draper (Charles Stark) Lab., Inc., Cambridge, MA.']
             },
             {
                 u'read_count': 2,
@@ -474,7 +474,7 @@ data = \
                 u'year': u'1995',
                 u'title': [u'Applied nonlinear dynamics: analytical, computational and experimental methods'],
                 u'identifier': [u'1995anda.book.....N'],
-                u'aff': [u'-', u'-'],
+                u'aff_raw': [u'-', u'-'],
                 u'num_references': 0
             },
             {
@@ -489,7 +489,7 @@ data = \
                 u'bibcode': u'1991hep.th....8028G',
                 u'keyword': [u'High Energy Physics - Theory'],
                 u'author': [u'Ginsparg, Paul'],
-                u'aff': [u'-'],
+                u'aff_raw': [u'-'],
                 u'bibstem': [u'arXiv', u'arXiv....'],
                 u'doctype': u'eprint',
                 u'page': [u'hep-th/9108028'],
@@ -516,7 +516,7 @@ data = \
                 u'year': u'1983',
                 u'title': [u'Autonomous navigation using lunar beacons'],
                 u'identifier': [u'1983aiaa.meetY....K'],
-                u'aff': [u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA'],
+                u'aff_raw': [u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA'],
                 u'num_references': 0
             }
         ]
@@ -531,7 +531,7 @@ data_2 = \
         u'params': {
             u'q':'bibcode:2018AAS...23221409A',
             u'indent':'on',
-            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
+            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff_raw,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
             'wt':'json',
             '_':'1529341837285'
         }
@@ -553,7 +553,7 @@ data_2 = \
                 u'identifier': [u'2018AAS...23221409A'],
                 u'copyright': u'(c) 2018: American Astronomical Society',
                 u'author': [u'Accomazzi, Alberto', u'ADS Team'],
-                u'aff': [u'Harvard Smithsonian, CfA', u'-'],
+                u'aff_raw': [u'Harvard Smithsonian, CfA', u'-'],
                 u'volume': u'232',
                 u'pub': u'American Astronomical Society Meeting Abstracts #232',
                 u'property': [u'NONARTICLE', u'NOT REFEREED'],
@@ -574,7 +574,7 @@ data_3 = \
         u'params': {
             u'q':'bibcode:2000ApJ...533L..25E',
             u'indent':'on',
-            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
+            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff_raw,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
             'wt':'json',
             '_':'1529341837285'
         }
@@ -591,7 +591,7 @@ data_3 = \
                 u'bibcode': u'2000ApJ...533L..25E',
                 u'bibstem': [u'ApJL', u'ApJL..533'],
                 u'author': [u'English, Jayanne', u'Taylor, A. R.', u'Mashchenko, S. Y.', u'Irwin, Judith A.', u'Basu, Shantanu', u'Johnstone, Doug'],
-                u'aff': [u"Department of Physics, Queen's University, Kingston, Ontario, K7L 3N6, Canada; Space Telescope Science Institute, Baltimore, MD", u"Department of Physics and Astronomy, University of Calgary, Calgary, Alberta, T2N 1N4, Canada", u"Department de Physique, Universit\u00e9 de Montr\u00e9al, Montr\u00e9al, Qu\u00e9bec, H3C 3J7, Canada", u"Department of Physics, Queen's University, Kingston, Ontario, K7L 3N6, Canada", u"Department of Physics and Astronomy, University of Western Ontario, London, Ontario, N6A 3K7, Canada", u"University of Toronto, 60 St. George Street, Toronto, Ontario, M5S 3H8, Canada"],
+                u'aff_raw': [u"Department of Physics, Queen's University, Kingston, Ontario, K7L 3N6, Canada; Space Telescope Science Institute, Baltimore, MD", u"Department of Physics and Astronomy, University of Calgary, Calgary, Alberta, T2N 1N4, Canada", u"Department de Physique, Universit\u00e9 de Montr\u00e9al, Montr\u00e9al, Qu\u00e9bec, H3C 3J7, Canada", u"Department of Physics, Queen's University, Kingston, Ontario, K7L 3N6, Canada", u"Department of Physics and Astronomy, University of Western Ontario, London, Ontario, N6A 3K7, Canada", u"University of Toronto, 60 St. George Street, Toronto, Ontario, M5S 3H8, Canada"],
                 u'esources': [u'EPRINT_HTML', u'EPRINT_PDF', u'PUB_HTML', u'PUB_PDF'],
                 u'issue': u'1',
                 u'pub_raw': u'The Astrophysical Journal, Volume 533, Issue 1, pp. L25-L28.',
@@ -620,7 +620,7 @@ data_4 = \
         u'params': {
             u'q':'bibcode:2017wfc..rept...16R',
             u'indent':'on',
-            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
+            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff_raw,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
             'wt':'json',
             '_':'1529341837285'
         }
@@ -648,7 +648,7 @@ data_4 = \
                 u'title': [u'Possible Overlaps Between Blobs, Grism Apertures, and Dithers'],
                 u'property': [u'NONARTICLE', u'NOT REFEREED'],
                 u'page': [u'16'],
-                u'aff': [u'Space Telescope Science Institute', u'Space Telescope Science Institute']
+                u'aff_raw': [u'Space Telescope Science Institute', u'Space Telescope Science Institute']
             }
         ]
     }

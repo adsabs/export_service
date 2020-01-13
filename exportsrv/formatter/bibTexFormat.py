@@ -136,7 +136,7 @@ class BibTexFormat(Format):
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@INBOOK'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
-                      ('pub_raw', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
+                      ('pub', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
                       ('volume', 'volume'), ('series', 'series'), ('eid', 'eid'),
                       ('page_range', 'pages'), ('abstract', 'abstract'), ('doi', 'doi'),
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
@@ -162,7 +162,7 @@ class BibTexFormat(Format):
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@PHDTHESIS') or (doc_type_bibtex == '@MASTERSTHESIS'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
-                      ('aff', 'school'), ('year', 'year'), ('month', 'month'),
+                      ('aff_raw', 'school'), ('year', 'year'), ('month', 'month'),
                       ('bibcode', 'adsurl'),('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@TECHREPORT'):
             fields = [('author', 'author'), ('title', 'title'), ('pub_raw', 'journal'),
@@ -174,12 +174,13 @@ class BibTexFormat(Format):
             fields = []
         return OrderedDict(fields)
 
+
     def __get_author_list(self, a_doc, field, maxauthor, authorcutoff):
         """
         format authors/editors
 
         :param a_doc:
-        :param field:
+        :param field: author or editor
         :param maxauthor:
         :param authorcutoff:
         :return:
@@ -188,20 +189,17 @@ class BibTexFormat(Format):
             return ''
         and_str = ' and '
         author_list = ''
-        author_count = 0
         # if number of authors exceed the maximum that we display, cut to shorter list
         # only if maxauthor is none zero, zero is indication of return all available authors
         cut_authors = (len(a_doc[field]) > authorcutoff) and not maxauthor == 0
-        for author in a_doc[field]:
+        for author, i in zip(a_doc[field], range(len(a_doc[field]))):
             author_parts = encode_laTex_author(author).split(',', 1)
             author_list += '{' + author_parts[0] + '}'
             if (len(author_parts) == 2):
                 author_list += ',' +  author_parts[1]
-            author_count += 1
-            if cut_authors:
+            if cut_authors and i + 1 == maxauthor:
                 # if reached number of required authors return
-                if author_count == maxauthor:
-                    return author_list + " and et al."
+                return author_list + " and et al."
             author_list += and_str
         author_list = author_list[:-len(and_str)]
         return author_list
@@ -229,24 +227,32 @@ class BibTexFormat(Format):
         return author_list
 
 
-    def __get_affiliation_list(self, a_doc):
+    def __get_affiliation_list(self, a_doc, maxauthor, authorcutoff):
         """
         format affiliation
 
         :param a_doc:
         :return:
         """
-        if ('aff') not in a_doc:
+        if 'aff_raw' not in a_doc:
             return ''
-        counter = self.generate_counter_id(len(a_doc['aff']))
+        counter = self.generate_counter_id(maxauthor if maxauthor != 0 else len(a_doc['aff_raw']))
         separator = ', '
         affiliation_list = ''
+        affiliation_count = 0
+        # if number of affiliations exceed the maximum that we display, cut to shorter list
+        # only if maxauthor is none zero (note number of authors and number of affiliations displayed should match),
+        # zero is indication of return all available affiliations
+        cut_affiliations = (len(a_doc['aff_raw']) > authorcutoff) and not maxauthor == 0
         addCount = not (a_doc.get('doctype', '') in ['phdthesis', 'mastersthesis'])
-        for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):
+        for affiliation, i in zip(a_doc['aff_raw'], range(len(a_doc['aff_raw']))):
             if (addCount):
                 affiliation_list += counter[i] + '(' + affiliation + ')' + separator
             else:
                 affiliation_list += affiliation + separator
+            if cut_affiliations and i + 1 == maxauthor:
+                # if reached number of required affiliations stop
+                break
         # do not need the last separator
         if (len(affiliation_list) > len(separator)):
             affiliation_list = affiliation_list[:-len(separator)]
@@ -419,8 +425,8 @@ class BibTexFormat(Format):
                 text += self.__add_in_wrapped(fields[field], self.__get_author_list(a_doc, field, maxauthor, authorcutoff), format_style_bracket)
             elif (field == 'title'):
                 text += self.__add_in(fields[field], encode_laTex(''.join(a_doc.get(field, ''))), format_style_bracket_quotes)
-            elif (field == 'aff'):
-                text += self.__add_in_wrapped(fields[field], self.__get_affiliation_list(a_doc), format_style_bracket)
+            elif (field == 'aff_raw'):
+                text += self.__add_in_wrapped(fields[field], self.__get_affiliation_list(a_doc, maxauthor, authorcutoff), format_style_bracket)
             elif (field == 'pub_raw'):
                 text += self.__add_in(fields[field], self.__add_clean_pub_raw(a_doc), format_style_bracket)
             elif (field == 'pub'):

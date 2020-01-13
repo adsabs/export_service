@@ -157,7 +157,7 @@ class CustomFormat(Format):
             'd': 'doi',
             'D': 'pubdate',
             'e': 'author',
-            'F': 'aff',
+            'F': 'aff_raw',
             'f': 'author',
             'G': 'author',
             'g': 'author',
@@ -365,18 +365,18 @@ class CustomFormat(Format):
         :param a_doc:
         :return:
         """
-        if ('aff') in a_doc:
+        if ('aff_raw') in a_doc:
             # if a limit of number of affiliation to display is set
             match = self.REGEX_AFF.findall(self.custom_format)
             if (len(''.join(match)) >= 1):
                 count = int(''.join(match))
             else:
-                count = len(a_doc['aff'])
+                count = len(a_doc['aff_raw'])
 
             counter = self.generate_counter_id(count)
             separator = '; '
             affiliation_list = ''
-            for affiliation, i in zip(a_doc['aff'], range(count)):
+            for affiliation, i in zip(a_doc['aff_raw'], range(count)):
                 affiliation_list += counter[i] + '(' + affiliation + ')' + separator
             # do not need the last separator
             if (len(affiliation_list) > len(separator)):
@@ -820,7 +820,7 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, a_doc.get(field[2], ''))
             elif (field[2] == 'pubdate'):
                 result = self.__add_in(result, field, self.__format_date(a_doc.get(field[2], ''), field[1][-1]))
-            elif (field[2] == 'aff'):
+            elif (field[2] == 'aff_raw'):
                 result = self.__add_in(result, field, self.__get_affiliation_list(a_doc))
             elif (field[2] == 'keyword'):
                 result = self.__add_in(result, field, self.__get_keywords(a_doc))

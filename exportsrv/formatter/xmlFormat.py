@@ -84,12 +84,12 @@ class XMLFormat(Format):
         :param field:
         :return:
         """
-        if ('aff') not in a_doc:
+        if ('aff_raw') not in a_doc:
             return ''
-        counter = self.generate_counter_id(len(a_doc['aff']))
+        counter = self.generate_counter_id(len(a_doc['aff_raw']))
         separator = ', '
         affiliation_list = ''
-        for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):
+        for affiliation, i in zip(a_doc['aff_raw'], range(len(a_doc['aff_raw']))):
             if (affiliation != '-'):
                 affiliation_list += counter[i] + '(' + affiliation + ')' + separator
         # do not need the last separator
@@ -337,7 +337,7 @@ class XMLFormat(Format):
                       ('doi', 'DOI'), ('eprintid', 'eprintid')]
         elif (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
-                      ('aff', 'affiliation'), ('pub_raw', 'journal'), ('volume', 'volume'),
+                      ('aff_raw', 'affiliation'), ('pub_raw', 'journal'), ('volume', 'volume'),
                       ('pubdate', 'pubdate'), ('page', 'page'), ('page_range', 'lastpage'),
                       ('keyword', 'keywords'), ('', 'origin'), ('copyright', 'copyright'),
                       ('link', 'link'), ('url', 'url'), ('comment', 'comment'),
@@ -488,7 +488,7 @@ class XMLFormat(Format):
                 self.__add_in(record, fields[field], ''.join(a_doc.get(field, '')))
             elif (field == 'author'):
                 self.__add_author_list(a_doc, record, fields[field])
-            elif (field == 'aff'):
+            elif (field == 'aff_raw'):
                 self.__add_affiliation_list(a_doc, record, fields[field])
             elif (field == 'pubdate'):
                 self.__add_in(record, fields[field], self.__format_date(a_doc.get(field, ''), export_format))
@@ -510,7 +510,7 @@ class XMLFormat(Format):
                 self.__add_in(record, fields[field], get_eprint(a_doc))
 
 
-    def __get_xml(self, export_format):
+    def __get_xml(self, export_format, start):
         """
         setup the outer xml structure
 
@@ -526,7 +526,7 @@ class XMLFormat(Format):
             for attrib in attribs:
                 records.set(attrib, attribs[attrib])
             records.set('retrieved', str(num_docs))
-            records.set('start', str(1))
+            records.set('start', str(start))
             records.set('selected', str(num_docs))
             if (export_format == self.EXPORT_FORMAT_REF_XML) or (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
                 for index in range(num_docs):
@@ -543,21 +543,21 @@ class XMLFormat(Format):
         return result_dict
 
 
-    def get_reference_xml(self, include_abs=False):
+    def get_reference_xml(self, start, include_abs=False):
         """
 
         :param include_abs:
         :return: reference xml format with or without abstract
         """
         if include_abs:
-            return self.__get_xml(self.EXPORT_FORMAT_REF_ABS_XML)
-        return self.__get_xml(self.EXPORT_FORMAT_REF_XML)
+            return self.__get_xml(self.EXPORT_FORMAT_REF_ABS_XML, start)
+        return self.__get_xml(self.EXPORT_FORMAT_REF_XML, start)
 
 
-    def get_dublincore_xml(self):
+    def get_dublincore_xml(self, start):
         """
 
         :return: dublin xml format
         """
-        return self.__get_xml(self.EXPORT_FORMAT_DUBLIN_XML)
+        return self.__get_xml(self.EXPORT_FORMAT_DUBLIN_XML, start)
 
