@@ -23,7 +23,7 @@ def get_solr_data(bibcodes, fields, sort, start=0):
         'wt': 'json',
         'rows': rows,
         'start': start,
-        'sort': sort,
+        'sort': sort if sort != current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'] else '',
         'fl': fields,
         'fq': '{!bitset}'
     }
@@ -52,6 +52,16 @@ def get_solr_data(bibcodes, fields, sort, start=0):
                         if citations is not None:
                             doc.update({u'num_references':citations['num_references']})
                             doc.update({u'num_citations':citations['num_citations']})
+                    # reorder the list based on the list of bibcodes provided
+                    if sort == current_app.config['EXPORT_SERVICE_NO_SORT_SOLR']:
+                        new_docs = []
+                        for bibcode in bibcodes:
+                            for i, doc in enumerate(from_solr['response']['docs']):
+                                if bibcode in doc['identifier']:
+                                    new_docs.append(doc)
+                                    from_solr['response']['docs'].pop(i)
+                                    break
+                        from_solr['response']['docs'] = new_docs
                     return from_solr
         current_app.logger.error('Solr returned {response}.'.format(response=response))
         return None

@@ -84,12 +84,12 @@ class XMLFormat(Format):
         :param field:
         :return:
         """
-        if ('aff_raw') not in a_doc:
+        if ('aff') not in a_doc:
             return ''
-        counter = self.generate_counter_id(len(a_doc['aff_raw']))
+        counter = self.generate_counter_id(len(a_doc['aff']))
         separator = ', '
         affiliation_list = ''
-        for affiliation, i in zip(a_doc['aff_raw'], range(len(a_doc['aff_raw']))):
+        for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):
             if (affiliation != '-'):
                 affiliation_list += counter[i] + '(' + affiliation + ')' + separator
         # do not need the last separator
@@ -337,7 +337,7 @@ class XMLFormat(Format):
                       ('doi', 'DOI'), ('eprintid', 'eprintid')]
         elif (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
-                      ('aff_raw', 'affiliation'), ('pub_raw', 'journal'), ('volume', 'volume'),
+                      ('aff', 'affiliation'), ('pub_raw', 'journal'), ('volume', 'volume'),
                       ('pubdate', 'pubdate'), ('page', 'page'), ('page_range', 'lastpage'),
                       ('keyword', 'keywords'), ('', 'origin'), ('copyright', 'copyright'),
                       ('link', 'link'), ('url', 'url'), ('comment', 'comment'),
@@ -488,7 +488,7 @@ class XMLFormat(Format):
                 self.__add_in(record, fields[field], ''.join(a_doc.get(field, '')))
             elif (field == 'author'):
                 self.__add_author_list(a_doc, record, fields[field])
-            elif (field == 'aff_raw'):
+            elif (field == 'aff'):
                 self.__add_affiliation_list(a_doc, record, fields[field])
             elif (field == 'pubdate'):
                 self.__add_in(record, fields[field], self.__format_date(a_doc.get(field, ''), export_format))

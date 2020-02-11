@@ -29,13 +29,13 @@ class TestExports(TestCase):
 
     def test_bibtex(self):
         # format the stubdata using the code
-        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200)
+        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalmacro=1)
         # now compare it with an already formatted data that we know is correct
         assert (bibtex_export == bibTexTest.data)
 
     def test_bibtex_with_abs(self):
         # format the stubdata using the code
-        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=True, maxauthor=0, authorcutoff=200)
+        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=True, maxauthor=0, authorcutoff=200, journalmacro=1)
         # now compare it with an already formatted data that we know is correct
         assert (bibtex_export == bibTexTest.data_with_abs)
 
@@ -154,17 +154,17 @@ class TestExports(TestCase):
         assert(adsFormatter().verify(10), False)
 
     def test_default_solr_fields(self):
-        default_fields = 'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff_raw,doi,abstract,' \
+        default_fields = 'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,' \
                          'read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,' \
                          'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem'
         assert (views.default_solr_fields() == default_fields)
 
     def test_bibtex_success(self):
-        response = views.return_bibTex_format_export(solrdata.data, False, '%R', 10, 200)
+        response = views.return_bibTex_format_export(solrdata.data, False, '%R', 10, 200, 1)
         assert(response._status_code == 200)
 
     def test_bibtex_no_data(self):
-        response = views.return_bibTex_format_export(None, False, '', 0, 0)
+        response = views.return_bibTex_format_export(None, False, '', 0, 0, 1)
         assert(response._status_code == 404)
 
     def test_fielded_success(self):
@@ -189,14 +189,16 @@ class TestExports(TestCase):
 
     def test_csl(self):
         export_format = 2
+        journal_macro = 1
         for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj']:
-            response = views.return_csl_format_export(solrdata.data, csl_style, export_format)
+            response = views.return_csl_format_export(solrdata.data, csl_style, export_format, journal_macro)
             assert(response._status_code == 200)
 
     def test_csl_no_data(self):
         export_format = 2
+        journal_macro = 1
         for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj']:
-            response = views.return_csl_format_export(None, csl_style, export_format)
+            response = views.return_csl_format_export(None, csl_style, export_format, journal_macro)
             assert(response._status_code == 404)
 
     def test_eprint(self):
@@ -234,7 +236,7 @@ class TestExports(TestCase):
                      "q":"*:*",
                      "start":"0",
                      "wt":"json",
-                     "fl":"author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff_raw,doi,abstract,citation_count,read_count,bibcode,identification,copyright,keyword,doctype,reference,comment,property,esources,data"
+                     "fl":"author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identification,copyright,keyword,doctype,reference,comment,property,esources,data"
                   }
                }
             }
@@ -282,7 +284,7 @@ class TestExports(TestCase):
                         "q": "*:*",
                         "start": "0",
                         "wt": "json",
-                        "fl": "author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff_raw,doi,abstract,citation_count,read_count,bibcode,identification,copyright,keyword,doctype,reference,comment,property,esources,data"
+                        "fl": "author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identification,copyright,keyword,doctype,reference,comment,property,esources,data"
                     }
                 },
                 "response": {
@@ -431,10 +433,34 @@ class TestExports(TestCase):
             }
         bibtex_export = BibTexFormat(solr_data, "%1H:%Y:%q")
         # both author and title exists
-        assert(bibtex_export._BibTexFormat__get_key(solr_data['response'].get('docs')[0]) == 'Accomazzi:2019:AAS')
+        assert(bibtex_export._BibTexFormat__format_key(solr_data['response'].get('docs')[0]) == 'Accomazzi:2019:AAS')
         # verify that key is ascii
-        assert(bibtex_export._BibTexFormat__get_key(solr_data['response'].get('docs')[2]) == 'Garzon:2019:hsax')
+        assert(bibtex_export._BibTexFormat__format_key(solr_data['response'].get('docs')[2]) == 'Garzon:2019:hsax')
 
+
+    def test_no_journal_macro(self):
+        # test by passing replacing journal macros for journal names
+
+        # bibTex format
+        bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalmacro=0)
+        bibtex_no_journal_macro = {'msg': 'Retrieved 1 abstracts, starting with number 1.',
+                                   'export': u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and\n         {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {Physical Review Letters},\n         year = "2018",\n        month = "jan",\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'}
+        assert (bibtex_export == bibtex_no_journal_macro)
+
+        # aastex format
+        csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, journalmacro=0).get()
+        # now compare it with an already formatted data that we know is correct
+        aastex_no_journal_macro = {'msg': 'Retrieved 1 abstracts, starting with number 1.',
+                                   'export': u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, Physical Review Letters, 120, 029901\n'}
+        assert (csl_export == aastex_no_journal_macro)
+
+
+    def test_bibtex_enumeration(self):
+        # test bibtex key_format enumeration
+        bibtex_export = BibTexFormat(solrdata.data_6, "%1H%Y%zm")
+        key_formats_enumerated = ['Accomazzi2020', 'Accomazzi2019a', 'Accomazzi2015', 'Accomazzi2019b', 'Accomazzi2019c',
+                                  'Accomazzi2018a', 'Accomazzi2018b', 'Accomazzi2017', 'Accomazzi2018c', 'Accomazzi2018d']
+        assert (bibtex_export._BibTexFormat__enumerate_keys() == key_formats_enumerated)
 
 if __name__ == '__main__':
   unittest.main()
