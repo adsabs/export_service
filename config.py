@@ -14,6 +14,11 @@ EXPORT_SERVICE_RESOLVE_URL = "https://ui.adsabs.harvard.edu/link_gateway"
 # added to the end of bibTex
 EXPORT_SERVICE_ADS_NOTES = 'Provided by the SAO/NASA Astrophysics Data System'
 
+# sort specified by user when they want the service to keep the same order they have specified
+# going to be useful when used through the API
+# not giong to be implemented from the UI
+EXPORT_SERVICE_NO_SORT_SOLR = 'no sort'
+
 # Journal Abbreviations used in the ADS BibTeX entries
 # From http://adsabs.harvard.edu/abs_doc/aas_macros.html
 # Journal name   TeX macro

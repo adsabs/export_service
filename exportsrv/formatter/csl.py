@@ -25,7 +25,7 @@ class CSL:
     REGEX_TOKENIZE_BIBLIO = re.compile(r'^(.*?)(\\?\s*\d+.*)')
 
 
-    def __init__(self, for_cls, csl_style, export_format=adsFormatter.unicode):
+    def __init__(self, for_cls, csl_style, export_format=adsFormatter.unicode, journalmacro=1):
         """
 
         :param for_cls: input data for this class
@@ -35,6 +35,7 @@ class CSL:
         self.for_cls = for_cls
         self.csl_style = csl_style
         self.export_format = export_format
+        self.journalmacro = journalmacro
         self.citation_item = []
         self.bibcode_list = []
 
@@ -86,10 +87,16 @@ class CSL:
                 data['title'] = encode_laTex(data['title'])
         # for AASTex we need a macro of the journal names
         elif (self.csl_style == 'aastex') or (self.csl_style == 'aasj') or (self.csl_style == 'aspc'):
-            journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
-            for data in self.for_cls:
-                data['container-title'] = journal_macros.get(Format(None).get_bibstem(data['bibstem']), encode_laTex(data['container-title']))
-                data['title'] = encode_laTex(data['title'])
+            # change the journal name to macro only if requested
+            if self.journalmacro == 1:
+                journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
+                for data in self.for_cls:
+                    data['container-title'] = journal_macros.get(Format(None).get_bibstem(data['bibstem']), encode_laTex(data['container-title']))
+                    data['title'] = encode_laTex(data['title'])
+            else:
+                for data in self.for_cls:
+                    data['container-title'] = encode_laTex(data['container-title'])
+                    data['title'] = encode_laTex(data['title'])
         # for SoPh we use journal abbreviation for some special journals only
         elif (self.csl_style == 'soph'):
             journal_abbrevation = current_app.config['EXPORT_SERVICE_SOPH_JOURNAL_ABBREVIATION']

@@ -5,3 +5,4 @@ Flask-RESTful==0.3.6
 Flask-Testing==0.6.2
 lxml==3.8.0
 unidecode===1.1.1
+Werkzeug==0.11.15

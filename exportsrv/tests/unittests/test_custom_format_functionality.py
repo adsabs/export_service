@@ -102,7 +102,7 @@ class TestExportsCustomFormat(TestCase):
 
         # without affiliation
         a_doc = dict(a_doc)
-        a_doc.pop('aff_raw')
+        a_doc.pop('aff')
         assert (custom_format._CustomFormat__get_affiliation_list(a_doc) == '')
 
 

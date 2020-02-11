@@ -67,7 +67,6 @@ class Format:
         """
         if len(bibstem) == 2:
             short, long = bibstem[0], bibstem[1]
-            print '......', long, short
             if re.match(r'^[\.\d]+$', long[5:9]):
                 # is a serial publication, use short bibstem
                 return short.replace('.', '')

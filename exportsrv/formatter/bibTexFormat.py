@@ -38,6 +38,8 @@ class BibTexFormat(Format):
             )
         )''', flags=re.X
     )
+    ENUMERATION_KEY = '%zm'
+    REGEX_ENUMERATION = re.compile(r'(%s)'%ENUMERATION_KEY)
 
     def __init__(self, from_solr, keyformat):
         """
@@ -49,6 +51,13 @@ class BibTexFormat(Format):
         self.parsed_spec = []
         for m in self.REGEX_KEY.finditer(self.keyformat):
             self.parsed_spec.append(tuple((m.start(1), m.group(1), self.__get_solr_field(m.group(1)))))
+        self.enumeration = False
+        matches = self.REGEX_ENUMERATION.findall(self.keyformat)
+        if (len(matches) >= 1):
+            for match in matches:
+                self.enumeration = True
+            self.keyformat = self.keyformat.replace(self.ENUMERATION_KEY, '')
+        self.enumerated_keys = []
 
     def __get_solr_field(self, specifier):
         """
@@ -96,7 +105,8 @@ class BibTexFormat(Format):
         """
         # solr_date has the format 2017-12-01
         date_time = datetime.strptime(solr_date.replace('-00', '-01'), '%Y-%m-%d')
-        return strftime(date_time, '%b')
+        # 2/7/2020 as per Alberto, month should be lower case
+        return strftime(date_time, '%b').lower()
 
 
     def __format_line_wrapped(self, left, right, format_style):
@@ -153,7 +163,7 @@ class BibTexFormat(Format):
                       ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
                       ('doi', 'doi'), ('eprintid', 'archivePrefix|eprint'), ('arxiv_class', 'primaryClass'),
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
-        elif (doc_type_bibtex == '@MISC'):
+        elif (doc_type_bibtex == '@MISC') or (doc_type_bibtex == '@TECHREPORT'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub', 'howpublished'), ('year', 'year'), ('month', 'month'),
                       ('eid', 'eid'), ('page_range', 'pages'), ('doi', 'doi'),
@@ -162,14 +172,16 @@ class BibTexFormat(Format):
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@PHDTHESIS') or (doc_type_bibtex == '@MASTERSTHESIS'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
-                      ('aff_raw', 'school'), ('year', 'year'), ('month', 'month'),
+                      ('aff', 'school'), ('year', 'year'), ('month', 'month'),
                       ('bibcode', 'adsurl'),('adsnotes', 'adsnote')]
-        elif (doc_type_bibtex == '@TECHREPORT'):
-            fields = [('author', 'author'), ('title', 'title'), ('pub_raw', 'journal'),
-                      ('keyword', 'keywords'), ('pub', 'booktitle'), ('year', 'year'),
-                      ('editor', 'editor'), ('series', 'series'), ('month', 'month'),
-                      ('eid', 'eid'), ('page_range', 'pages'), ('volume', 'volume'),
-                      ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
+        # 2/7/2020 as per request of Markus, for now the output of techreport is going to have
+        # the same format as misc doctype.
+        # elif (doc_type_bibtex == '@TECHREPORT'):
+        #     fields = [('author', 'author'), ('title', 'title'), ('pub_raw', 'journal'),
+        #               ('keyword', 'keywords'), ('pub', 'booktitle'), ('year', 'year'),
+        #               ('editor', 'editor'), ('series', 'series'), ('month', 'month'),
+        #               ('eid', 'eid'), ('page_range', 'pages'), ('volume', 'volume'),
+        #               ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         else:
             fields = []
         return OrderedDict(fields)
@@ -234,18 +246,18 @@ class BibTexFormat(Format):
         :param a_doc:
         :return:
         """
-        if 'aff_raw' not in a_doc:
+        if 'aff' not in a_doc:
             return ''
-        counter = self.generate_counter_id(maxauthor if maxauthor != 0 else len(a_doc['aff_raw']))
+        counter = self.generate_counter_id(maxauthor if maxauthor != 0 else len(a_doc['aff']))
         separator = ', '
         affiliation_list = ''
         affiliation_count = 0
         # if number of affiliations exceed the maximum that we display, cut to shorter list
         # only if maxauthor is none zero (note number of authors and number of affiliations displayed should match),
         # zero is indication of return all available affiliations
-        cut_affiliations = (len(a_doc['aff_raw']) > authorcutoff) and not maxauthor == 0
+        cut_affiliations = (len(a_doc['aff']) > authorcutoff) and not maxauthor == 0
         addCount = not (a_doc.get('doctype', '') in ['phdthesis', 'mastersthesis'])
-        for affiliation, i in zip(a_doc['aff_raw'], range(len(a_doc['aff_raw']))):
+        for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):
             if (addCount):
                 affiliation_list += counter[i] + '(' + affiliation + ')' + separator
             else:
@@ -271,17 +283,21 @@ class BibTexFormat(Format):
         return encode_laTex(', '.join(a_doc.get('keyword', '')))
 
 
-    def __get_journal(self, a_doc):
+    def __get_journal(self, a_doc, journalmacro):
         """
         finds a macro for the journal if available, otherwise
         returns the journal name
         note that for doctype = software this field is ignored
+        let client decide if macro should be replaced by journal name
 
-        :param journal:
+        :param a_doc:
+        :param journalmacro
         :return:
         """
         if a_doc.get('doctype', '') == 'software':
             return None
+        if journalmacro != 1:
+            return encode_laTex(''.join(a_doc.get('pub', '')))
         journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
         return journal_macros.get(self.get_bibstem(a_doc.get('bibstem', '')), encode_laTex(''.join(a_doc.get('pub', ''))))
 
@@ -374,8 +390,9 @@ class BibTexFormat(Format):
         return ''
 
 
-    def __get_key(self, a_doc):
+    def __format_key(self, a_doc):
         """
+        format keyformat for a_doc document
 
         :param a_doc:
         :return:
@@ -401,7 +418,21 @@ class BibTexFormat(Format):
                 key = key.replace(field[1], self.get_bibstem(a_doc.get('bibstem', '')))
         return key
 
-    def __get_doc(self, index, include_abs, maxauthor, authorcutoff):
+
+    def __get_key(self, index):
+        """
+
+        :param index:
+        :return:
+        """
+        # if enumeration is on, keys have been formatted already, so grab it from the list
+        # otherwise format the key and return it
+        if self.enumeration:
+            return self.enumerated_keys[index]
+        return self.__format_key(self.from_solr['response'].get('docs')[index])
+
+
+    def __get_doc(self, index, include_abs, maxauthor, authorcutoff, journalmacro):
         """
         for each document from Solr, get the fields, and format them accordingly
 
@@ -409,6 +440,7 @@ class BibTexFormat(Format):
         :param include_abs:
         :param maxauthor:
         :param authorcutoff:
+        :param journalmacro:
         :return:
         """
         format_style_bracket_quotes = u'{0:>13} = "{{{1}}}"'
@@ -417,7 +449,7 @@ class BibTexFormat(Format):
         format_style = u'{0:>13} = {1}'
 
         a_doc = self.from_solr['response'].get('docs')[index]
-        text = self.__get_doc_type(a_doc.get('doctype', '')) + '{' + self.__get_key(a_doc) + ',\n'
+        text = self.__get_doc_type(a_doc.get('doctype', '')) + '{' + self.__get_key(index) + ',\n'
 
         fields = self.__get_fields(a_doc)
         for field in fields:
@@ -425,12 +457,12 @@ class BibTexFormat(Format):
                 text += self.__add_in_wrapped(fields[field], self.__get_author_list(a_doc, field, maxauthor, authorcutoff), format_style_bracket)
             elif (field == 'title'):
                 text += self.__add_in(fields[field], encode_laTex(''.join(a_doc.get(field, ''))), format_style_bracket_quotes)
-            elif (field == 'aff_raw'):
+            elif (field == 'aff'):
                 text += self.__add_in_wrapped(fields[field], self.__get_affiliation_list(a_doc, maxauthor, authorcutoff), format_style_bracket)
             elif (field == 'pub_raw'):
                 text += self.__add_in(fields[field], self.__add_clean_pub_raw(a_doc), format_style_bracket)
             elif (field == 'pub'):
-                text += self.__add_in(fields[field], self.__get_journal(a_doc), format_style_bracket)
+                text += self.__add_in(fields[field], self.__get_journal(a_doc, journalmacro), format_style_bracket)
             elif (field == 'doi'):
                 text += self.__add_in(fields[field], ''.join(a_doc.get(field, '')), format_style_bracket)
             elif (field == 'keyword'):
@@ -464,20 +496,49 @@ class BibTexFormat(Format):
         return text + '}\n\n'
 
 
-    def get(self, include_abs, maxauthor, authorcutoff):
+    def __enumerate_keys(self):
+        """
+        when enumeration is specified create all keys at once
+        go through the list, creating key, check to see if it exists
+        if found, attached a, b, c, ... to it
+
+        :return:
+        """
+        self.enumerated_keys = []
+        for i, a_doc in enumerate(self.from_solr['response'].get('docs')):
+            new_key = self.__format_key(a_doc)
+            count = sum(new_key == key[:-1] or new_key == key for key in self.enumerated_keys)
+            if count == 0:
+                self.enumerated_keys.append(new_key)
+            # if there is an element exactly like new_key
+            # update it with adding an `a` to it, and then add this one to the end with 'b' attached to it
+            elif count == 1:
+                self.enumerated_keys[self.enumerated_keys.index(new_key)] = new_key + 'a'
+                self.enumerated_keys.append(new_key + 'b')
+            # if more than one element is found
+            # add this one to the end with the next character attached to i
+            else:
+                self.enumerated_keys.append(new_key + str(unichr(ord('a') + count)))
+        return self.enumerated_keys
+
+
+    def get(self, include_abs, maxauthor, authorcutoff, journalmacro):
         """
         
         :param include_abs: if ture include abstract
         :param maxauthor:
         :param authorcutoff:
+        :param journalmacro:
         :return: result of formatted records in a dict
         """
         num_docs = 0
         ref_BibTex = []
         if (self.status == 0):
             num_docs = self.get_num_docs()
+            if self.enumeration:
+                self.__enumerate_keys()
             for index in range(num_docs):
-                ref_BibTex.append(self.__get_doc(index, include_abs, maxauthor, authorcutoff))
+                ref_BibTex.append(self.__get_doc(index, include_abs, maxauthor, authorcutoff, journalmacro))
         result_dict = {}
         result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
         result_dict['export'] = ''.join(record for record in ref_BibTex)
