@@ -9,7 +9,7 @@ from citeproc.source.json import CiteProcJSON
 import re
 import os
 
-from exportsrv.formatter.ads import adsFormatter, adsOrganizer
+from exportsrv.formatter.ads import adsFormatter, adsOrganizer, adsJournalFormat
 from exportsrv.formatter.format import Format
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author, html_to_laTex
 
@@ -25,7 +25,7 @@ class CSL:
     REGEX_TOKENIZE_BIBLIO = re.compile(r'^(.*?)(\\?\s*\d+.*)')
 
 
-    def __init__(self, for_cls, csl_style, export_format=adsFormatter.unicode, journalmacro=1):
+    def __init__(self, for_cls, csl_style, export_format=adsFormatter.unicode, journal_format=adsJournalFormat.default):
         """
 
         :param for_cls: input data for this class
@@ -35,7 +35,7 @@ class CSL:
         self.for_cls = for_cls
         self.csl_style = csl_style
         self.export_format = export_format
-        self.journalmacro = journalmacro
+        self.journal_format = journal_format
         self.citation_item = []
         self.bibcode_list = []
 
@@ -85,15 +85,18 @@ class CSL:
             for data in self.for_cls:
                 data['container-title'] = Format(None).get_pub_abbrev(data['bibstem'])
                 data['title'] = encode_laTex(data['title'])
-        # for AASTex we need a macro of the journal names
         elif (self.csl_style == 'aastex') or (self.csl_style == 'aasj') or (self.csl_style == 'aspc'):
-            # change the journal name to macro only if requested
-            if self.journalmacro == 1:
+            # use macro (default)
+            if self.journal_format == adsJournalFormat.macro or self.journal_format == adsJournalFormat.default:
                 journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
                 for data in self.for_cls:
                     data['container-title'] = journal_macros.get(Format(None).get_bibstem(data['bibstem']), encode_laTex(data['container-title']))
                     data['title'] = encode_laTex(data['title'])
-            else:
+            elif self.journal_format == adsJournalFormat.abbreviated:
+                for data in self.for_cls:
+                    data['container-title'] = Format(None).get_pub_abbrev(data['bibstem'])
+                    data['title'] = encode_laTex(data['title'])
+            elif self.journal_format == adsJournalFormat.full:
                 for data in self.for_cls:
                     data['container-title'] = encode_laTex(data['container-title'])
                     data['title'] = encode_laTex(data['title'])

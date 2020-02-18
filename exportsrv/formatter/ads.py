@@ -56,3 +56,6 @@ class adsCSLStyle:
         for style in self.ads_CLS:
             styles += style + separator
         return styles[:-len(separator)]
+
+class adsJournalFormat:
+    default, macro, abbreviated, full = range(4)

@@ -20,14 +20,14 @@ class TestSolrData(TestCase):
         Tests POST for readhist endpoint when no optional param passed in, so default is returned
         """
         # the mock is for solr call
-        with mock.patch.object(self.current_app.client, 'post') as post_mock:
+        with mock.patch.object(self.current_app.client, 'get') as post_mock:
             post_mock.return_value = mock_response = mock.Mock()
             mock_response.json.return_value = solrdata.data_6
             mock_response.status_code = 200
             bibcodes = ["2020AAS...23528705A", "2019EPSC...13.1911A", "2019AAS...23338108A", "2019AAS...23320704A",
                         "2018EPJWC.18608001A", "2018AAS...23221409A", "2018AAS...23136217A", "2018AAS...23130709A",
                         "2017ASPC..512...45A", "2015scop.confE...3A"]
-            solr_data = get_solr_data(bibcodes=bibcodes, fields='bibcode,author,year,pub,bibstem',
+            solr_data = get_solr_data(user_token=None, bibcodes=bibcodes, fields='bibcode,author,year,pub,bibstem',
                                       sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
             matched = 0
             for i, doc in enumerate(solr_data['response']['docs']):

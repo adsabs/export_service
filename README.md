@@ -69,7 +69,7 @@ To return the records in the exact order of input bibcode list, set `sort` to `n
 * **/mnras** *MNRAS format*
 * **/soph** *SoPh format*
 
-Note that for the endpoints /aastex there is an optional parameter `journalmacro` which allows user to decide to keep the journal name, or instead of replacing it by macro if one is available. The defualt value is `1` for replace.
+Note that for the endpoints `/aastex` there is an optional parameter `journalformat` which allows user to decide on the format of journal name. `1` indicates to use AASTeX macros if there are any (default), otherwise full journal name is exported. `2` means use journal abbreviations and `3` means use full journal name.
 
 ###### 3. For the following endpoints output is in xml format:
 * **/dcxml** *Dublin Core XML*
@@ -78,7 +78,7 @@ Note that for the endpoints /aastex there is an optional parameter `journalmacro
 * **/votable** *VOTables*
 * **/rss** *RSS*
 
-Note that for endpoints `/bibtex` and `/bibtexabs` optional parameters `maxauthor`, `authorcutoff`, `keyformat` and `journalmacro` can be passed in. 
+Note that for endpoints `/bibtex` and `/bibtexabs` optional parameters `maxauthor`, `authorcutoff`, `keyformat` and `journalformat` can be passed in. 
 * `maxauthor` is maxinum number of authors displayed. The default values for `maxauthor` for `/bibtex` and `/bibtexabs` respectivley are 10 and 0, where 0 means all.
 * `authorcutoff` is the threshold for truncating number of authors. If the number of authors is larger than `authorcutoff`, author list is truncated and `maxauthor` number of authors will be returned followed by `et al.`. If `authorcutoff` is not specified, the default of 200 is used.
 * `keyformat` allows user to customize bibtex key and could contain some combination of authors' last name(s), publication year, journal, and bibcode. User is now able to pick the key generation algorithm by specifying a custom format for it. To provide a specific example, this is our default format for 2019AAS...23338108A:
@@ -97,7 +97,7 @@ Note that for endpoints `/bibtex` and `/bibtexabs` optional parameters `maxautho
         Accomazzi2019AAS            -- %1H%Y%q
         AccomazziKurtz2019          -- %2H%Y
 
-* `journalmacro` allows user to decide to keep the journal name, or instead of replacing it by macro if one is available. The defualt value is `1` for replace.
+* `journalformat` allows user to decide on the format of journal name. `1` indicates to use AASTeX macros if there are any (default), otherwise full journal name is exported. `2` means use journal abbreviations and `3` means use full journal name.
 
 Note that for endpoint `/rss` an optional parameter `link` can be passed in. `link` is the query url that generated the bibcodes. 
 
@@ -116,9 +116,8 @@ which can be passed as payload to `/rss` endpoint.
 
     {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"", "format":"", sort:"date desc, bibcode, desc"}
 
-    where style can be: aastex, icarus, mnras, soph, aspc, apsj, or aasj and format can be: 1, 2 or 3, for output formats Unicode, HTML or LaTeX respectively.
+    where style can be: aastex, icarus, mnras, soph, aspc, apsj, or aasj and format can be: 1, 2 or 3, for output formats Unicode, HTML or LaTeX respectively. There is an optional parameter journalformat applicable to the three formats: aastex, aspc, and aasj, which allows user to decide on the format of journal name, with values 1, 2, and 3 respectively to indicate uses AASTeX macros (default), use journal abbreviations, or use full journal name.
 
-    Note that for the three formats: aastex, aspc, and aasj there is an optinal parameter `journalmacro` which allows user to decide to keep the journal name, or instead of replacing it by macro if one is available. The defualt value is `1` for replace.
 
 ###### 5. For endpoint /custom define payload as:
 

@@ -45,10 +45,10 @@ class FieldedFormat(Format):
     def __get_doc_type(self, solr_type, export_format):
         """
         from solr to each fielded document type
-        
-        :param solr_type: 
-        :param export_format: 
-        :return: 
+
+        :param solr_type:
+        :param export_format:
+        :return:
         """
         fields = {}
         if (export_format == self.EXPORT_FORMAT_ENDNOTE):
@@ -59,7 +59,8 @@ class FieldedFormat(Format):
                       'pressrelease':'Journal Article', 'circular':'Journal Article', 'newsletter':'Journal Article',
                       'catalog':'Journal Article', 'phdthesis':'Thesis', 'mastersthesis':'Thesis',
                       'techreport':'Report', 'intechreport':'Report',
-                      'bookreview': 'Journal Article', 'erratum': 'Journal Article', 'obituary': 'Journal Article'}
+                      'bookreview': 'Journal Article', 'erratum': 'Journal Article', 'obituary': 'Journal Article',
+                      'editorial': 'Journal Article'}
         elif (export_format == self.EXPORT_FORMAT_PROCITE):
             fields = {'article': 'Journal', 'book': 'Book, Whole', 'inbook': 'Book Chapter',
                       'proceedings': 'Journal', 'inproceedings': 'Conference',
@@ -68,7 +69,7 @@ class FieldedFormat(Format):
                       'pressrelease':'Journal', 'circular':'Journal', 'newsletter':'Journal',
                       'catalog':'Journal', 'phdthesis':'Thesis/Dissertation', 'mastersthesis':'Thesis/Dissertation',
                       'techreport':'Report', 'intechreport':'Report',
-                      'bookreview': 'Journal', 'erratum': 'Journal', 'obituary': 'Journal'}
+                      'bookreview': 'Journal', 'erratum': 'Journal', 'obituary': 'Journal', 'editorial': 'Journal'}
         elif (export_format == self.EXPORT_FORMAT_REFMAN):
             fields = {'article': 'JOUR', 'book': 'BOOK', 'inbook': 'CHAP',
                       'proceedings': 'JOUR', 'inproceedings': 'CONF',
@@ -77,7 +78,7 @@ class FieldedFormat(Format):
                       'pressrelease':'JOUR', 'circular':'JOUR', 'newsletter':'JOUR',
                       'catalog':'JOUR', 'phdthesis':'Thesis/Dissertation', 'mastersthesis':'Thesis/Dissertation',
                       'techreport':'RPRT', 'intechreport':'RPRT',
-                      'bookreview': 'JOUR', 'erratum': 'JOUR', 'obituary': 'JOUR'}
+                      'bookreview': 'JOUR', 'erratum': 'JOUR', 'obituary': 'JOUR', 'editorial': 'JOUR'}
         elif (export_format == self.EXPORT_FORMAT_REFWORKS):
             fields = {'article': 'Journal', 'book': 'Book, Whole', 'inbook': 'Book, Chapter',
                       'proceedings': 'Journal', 'inproceedings': 'Conference Proceeding',
@@ -86,7 +87,7 @@ class FieldedFormat(Format):
                       'pressrelease':'Journal', 'circular':'Journal', 'newsletter':'Journal',
                       'catalog':'Journal', 'phdthesis':'Thesis/Dissertation', 'mastersthesis':'Thesis/Dissertation',
                       'techreport':'Report', 'intechreport':'Report',
-                      'bookreview': 'Journal', 'erratum': 'Journal', 'obituary': 'Journal'}
+                      'bookreview': 'Journal', 'erratum': 'Journal', 'obituary': 'Journal', 'editorial': 'Journal'}
         elif (export_format == self.EXPORT_FORMAT_MEDLARS):
             fields = {'article': 'Journal Article', 'book': 'Book', 'inbook': 'Book Chapter',
                       'proceedings': 'Journal Article', 'inproceedings': 'Conference',
@@ -95,7 +96,8 @@ class FieldedFormat(Format):
                       'pressrelease':'Journal Article', 'circular':'Journal Article', 'newsletter':'Journal Article',
                       'catalog':'Journal Article', 'phdthesis':'Thesis', 'mastersthesis':'Thesis',
                       'techreport':'Report', 'intechreport':'Report',
-                      'bookreview': 'Journal Article', 'erratum': 'Journal Article', 'obituary': 'Journal Article'}
+                      'bookreview': 'Journal Article', 'erratum': 'Journal Article', 'obituary': 'Journal Article',
+                      'editorial': 'Journal Article'}
         return fields.get(solr_type, '')
 
 
@@ -126,9 +128,9 @@ class FieldedFormat(Format):
     def __get_tags(self, export_format):
         """
         convert from solr to each fielded types' tags
-        
-        :param export_format: 
-        :return: 
+
+        :param export_format:
+        :return:
         """
         if (export_format == self.EXPORT_FORMAT_ADS):
             return (OrderedDict([('bibcode', '%R'), ('title', '%T'), ('author', '%A'),
@@ -174,7 +176,7 @@ class FieldedFormat(Format):
     def __add_author_list(self, a_doc, export_format, tag):
         """
         format authors
-        
+
         :param a_doc: 
         :param export_format: 
         :param tag: 
