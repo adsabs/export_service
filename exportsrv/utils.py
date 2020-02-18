@@ -5,7 +5,7 @@ import re
 
 from exportsrv.client import client
 
-def get_solr_data(bibcodes, fields, sort, start=0):
+def get_solr_data(user_token, bibcodes, fields, sort, start=0):
     """
 
     :param bibcodes:
@@ -14,32 +14,41 @@ def get_solr_data(bibcodes, fields, sort, start=0):
     :param sort:
     :return:
     """
-    data = 'bibcode\n' + '\n'.join(bibcodes)
-
-    rows = min(current_app.config['EXPORT_SERVICE_MAX_RECORDS_SOLR'], len(bibcodes))
-
-    params = {
-        'q': '*:*',
-        'wt': 'json',
-        'rows': rows,
-        'start': start,
-        'sort': sort if sort != current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'] else '',
-        'fl': fields,
-        'fq': '{!bitset}'
-    }
-
-    headers = {
-        'Authorization': 'Bearer '+current_app.config['EXPORT_SERVICE_ADSWS_API_TOKEN'],
-        'Content-Type': 'big-query/csv',
-    }
+    rows = min(current_app.config['EXPORT_SERVICE_MAX_RECORDS_SOLR_BIGQUERY'], len(bibcodes))
 
     try:
-        response = client().post(
-            url=current_app.config['EXPORT_SOLRQUERY_URL'],
-            params=params,
-            data=data,
-            headers=headers
-        )
+        # use query if rows <= allowed number of bibcodes for query
+        if rows <= current_app.config['EXPORT_SERVICE_MAX_RECORDS_SOLR_QUERY']:
+            params = {
+                'q': 'bibcode:' + ' OR '.join(bibcodes),
+                'rows': rows,
+                'start': start,
+                'sort': sort if sort != current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'] else '',
+                'fl': fields,
+            }
+            response = client().get(
+                url=current_app.config['EXPORT_SOLR_QUERY_URL'],
+                params=params,
+                headers={'Authorization': user_token},
+            )
+        # otherwise go with bigquery
+        else:
+            params = {
+                'q': '*:*',
+                'wt': 'json',
+                'rows': rows,
+                'start': start,
+                'sort': sort if sort != current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'] else '',
+                'fl': fields,
+                'fq': '{!bitset}'
+            }
+            response = client().post(
+                url=current_app.config['EXPORT_SOLR_BIGQUERY_URL'],
+                params=params,
+                data='bibcode\n' + '\n'.join(bibcodes),
+                headers={'Authorization': user_token, 'Content-Type': 'big-query/csv'}
+            )
+
         if (response.status_code == 200):
             # make sure solr found the documents
             from_solr = response.json()
@@ -63,14 +72,14 @@ def get_solr_data(bibcodes, fields, sort, start=0):
                                     break
                         from_solr['response']['docs'] = new_docs
                     return from_solr
+
         current_app.logger.error('Solr returned {response}.'.format(response=response))
         return None
     except requests.exceptions.RequestException as e:
         # catastrophic error. bail.
         current_app.logger.error('Solr exception. Terminated request.')
-        current_app.logger.error(e)
+        current_app.logger.error(str(e))
         return None
-
 
 def get_eprint(solr_doc):
     """

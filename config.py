@@ -3,9 +3,11 @@
 # these values can be overwritten by local_config values
 # maximum number of records that can be fetched by bigquery is for now 2000
 # this can be overwritten to become smaller but it cannot become larger
-EXPORT_SOLRQUERY_URL = "https://api.adsabs.harvard.edu/v1/search/bigquery"
-EXPORT_SERVICE_ADSWS_API_TOKEN = 'this is a secret api token!'
-EXPORT_SERVICE_MAX_RECORDS_SOLR = 2000
+# cutoff to use query vs bigquery is 100, anything equal and lower calls query, otherwise bigquery is called
+EXPORT_SOLR_BIGQUERY_URL = "https://api.adsabs.harvard.edu/v1/search/bigquery"
+EXPORT_SERVICE_MAX_RECORDS_SOLR_BIGQUERY = 2000
+EXPORT_SOLR_QUERY_URL = "https://api.adsabs.harvard.edu/v1/search/query"
+EXPORT_SERVICE_MAX_RECORDS_SOLR_QUERY = 100
 
 # these are used for linkout links
 EXPORT_SERVICE_FROM_BBB_URL = 'https://ui.adsabs.harvard.edu/abs'

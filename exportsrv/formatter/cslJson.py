@@ -101,16 +101,22 @@ class CSLJson(Format):
         data['publisher'] = a_doc.get('publisher', '')
         data['version'] = a_doc.get('version', '')
         data['DOI'] = ''.join(a_doc.get('doi', ''))
-        # for the aastex format if the record is software,
+        # from edwin: if there is no volume and page,
+        # and there is DOI, display DOI.
+        # hence DOI is assigned to volume, to be displayed in the same location, only if this is not software
+        if len(data['volume']) == 0 and len(data['page']) == 0 and len(data['DOI']) > 0 and data['type'] != 'software':
+            data['volume'] = 'doi:' + data['DOI']
+        # if the record is software (applies to aastex format only, do not care what style it is at this point though),
         # according to alberto we are either displaying DOI or eid
         # \bibitem[...]{bibcode}  {authors} {year}, {title}, {version}, {publisher}, (doi:{doi}|{eid})
         # there is no best variable to assign this either of these to, so go with 'keyword' for now
-        if len(data['DOI']) > 0:
-            data['keyword'] = 'doi:' + data['DOI']
-        elif len(a_doc.get('eid', '')) > 0:
-            data['keyword'] = a_doc.get('eid', '')
-        else:
-            data['keyword'] = ''
+        if data['type'] == 'software':
+            if len(data['DOI']) > 0:
+                data['keyword'] = 'doi:' + data['DOI']
+            elif len(a_doc.get('eid', '')) > 0:
+                data['keyword'] = a_doc.get('eid', '')
+            else:
+                data['keyword'] = ''
         data['bibstem'] = a_doc.get('bibstem', '')
         return data
 

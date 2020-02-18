@@ -8,6 +8,7 @@ import re
 import json
 from unidecode import unidecode
 
+from exportsrv.formatter.ads import adsJournalFormat
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
 from exportsrv.formatter.format import Format
 from exportsrv.utils import get_eprint
@@ -85,7 +86,7 @@ class BibTexFormat(Format):
         """
         fields = {'article':'@ARTICLE', 'circular':'@ARTICLE', 'newsletter':'@ARTICLE',
                   'bookreview':'@ARTICLE', 'erratum':'@ARTICLE', 'obituary':'@ARTICLE',
-                  'eprint':'@ARTICLE', 'catalog':'@ARTICLE',
+                  'eprint':'@ARTICLE', 'catalog':'@ARTICLE', 'editorial':'@ARTICLE',
                   'book':'@BOOK', 
                   'inbook':'@INBOOK',
                   'proceedings':'@PROCEEDINGS', 
@@ -93,7 +94,7 @@ class BibTexFormat(Format):
                   'misc':'@MISC', 'software':'@MISC','proposal':'@MISC', 'pressrelease':'@MISC',
                   'talk':'@MISC',
                   'phdthesis':'@PHDTHESIS','mastersthesis':'@MASTERSTHESIS',
-                  'techreport':'@TECHREPORT', 'intechreport':'@TECHREPORT'}
+                  'techreport':'@MISC', 'intechreport':'@MISC'}
         return fields.get(solr_type, '')
 
 
@@ -163,7 +164,7 @@ class BibTexFormat(Format):
                       ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
                       ('doi', 'doi'), ('eprintid', 'archivePrefix|eprint'), ('arxiv_class', 'primaryClass'),
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
-        elif (doc_type_bibtex == '@MISC') or (doc_type_bibtex == '@TECHREPORT'):
+        elif (doc_type_bibtex == '@MISC'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub', 'howpublished'), ('year', 'year'), ('month', 'month'),
                       ('eid', 'eid'), ('page_range', 'pages'), ('doi', 'doi'),
@@ -174,8 +175,7 @@ class BibTexFormat(Format):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('aff', 'school'), ('year', 'year'), ('month', 'month'),
                       ('bibcode', 'adsurl'),('adsnotes', 'adsnote')]
-        # 2/7/2020 as per request of Markus, for now the output of techreport is going to have
-        # the same format as misc doctype.
+        # 2/14 mapping techreport and intechreport to @MISC per Markus request for now
         # elif (doc_type_bibtex == '@TECHREPORT'):
         #     fields = [('author', 'author'), ('title', 'title'), ('pub_raw', 'journal'),
         #               ('keyword', 'keywords'), ('pub', 'booktitle'), ('year', 'year'),
@@ -283,23 +283,26 @@ class BibTexFormat(Format):
         return encode_laTex(', '.join(a_doc.get('keyword', '')))
 
 
-    def __get_journal(self, a_doc, journalmacro):
+    def __get_journal(self, a_doc, journalformat):
         """
-        finds a macro for the journal if available, otherwise
-        returns the journal name
+        let client decide on the format of journal, macro if one is available, abbreviated journal name, or full journal name
         note that for doctype = software this field is ignored
-        let client decide if macro should be replaced by journal name
 
         :param a_doc:
-        :param journalmacro
+        :param journalformat
         :return:
         """
         if a_doc.get('doctype', '') == 'software':
             return None
-        if journalmacro != 1:
+
+        # use macro (default)
+        if journalformat == adsJournalFormat.macro or journalformat == adsJournalFormat.default:
+            journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
+            return journal_macros.get(self.get_bibstem(a_doc.get('bibstem', '')), encode_laTex(''.join(a_doc.get('pub', ''))))
+        elif journalformat == adsJournalFormat.abbreviated:
+            return Format(None).get_pub_abbrev(a_doc.get('bibstem', ''))
+        elif journalformat == adsJournalFormat.full:
             return encode_laTex(''.join(a_doc.get('pub', '')))
-        journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
-        return journal_macros.get(self.get_bibstem(a_doc.get('bibstem', '')), encode_laTex(''.join(a_doc.get('pub', ''))))
 
 
     def __add_clean_pub_raw(self, a_doc):
@@ -432,7 +435,7 @@ class BibTexFormat(Format):
         return self.__format_key(self.from_solr['response'].get('docs')[index])
 
 
-    def __get_doc(self, index, include_abs, maxauthor, authorcutoff, journalmacro):
+    def __get_doc(self, index, include_abs, maxauthor, authorcutoff, journalformat):
         """
         for each document from Solr, get the fields, and format them accordingly
 
@@ -440,7 +443,7 @@ class BibTexFormat(Format):
         :param include_abs:
         :param maxauthor:
         :param authorcutoff:
-        :param journalmacro:
+        :param journalformat:
         :return:
         """
         format_style_bracket_quotes = u'{0:>13} = "{{{1}}}"'
@@ -462,7 +465,7 @@ class BibTexFormat(Format):
             elif (field == 'pub_raw'):
                 text += self.__add_in(fields[field], self.__add_clean_pub_raw(a_doc), format_style_bracket)
             elif (field == 'pub'):
-                text += self.__add_in(fields[field], self.__get_journal(a_doc, journalmacro), format_style_bracket)
+                text += self.__add_in(fields[field], self.__get_journal(a_doc, journalformat), format_style_bracket)
             elif (field == 'doi'):
                 text += self.__add_in(fields[field], ''.join(a_doc.get(field, '')), format_style_bracket)
             elif (field == 'keyword'):
@@ -522,13 +525,13 @@ class BibTexFormat(Format):
         return self.enumerated_keys
 
 
-    def get(self, include_abs, maxauthor, authorcutoff, journalmacro):
+    def get(self, include_abs, maxauthor, authorcutoff, journalformat=adsJournalFormat.macro):
         """
         
         :param include_abs: if ture include abstract
         :param maxauthor:
         :param authorcutoff:
-        :param journalmacro:
+        :param journalformat:
         :return: result of formatted records in a dict
         """
         num_docs = 0
@@ -538,7 +541,7 @@ class BibTexFormat(Format):
             if self.enumeration:
                 self.__enumerate_keys()
             for index in range(num_docs):
-                ref_BibTex.append(self.__get_doc(index, include_abs, maxauthor, authorcutoff, journalmacro))
+                ref_BibTex.append(self.__get_doc(index, include_abs, maxauthor, authorcutoff, journalformat))
         result_dict = {}
         result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
         result_dict['export'] = ''.join(record for record in ref_BibTex)

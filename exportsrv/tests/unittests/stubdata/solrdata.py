@@ -389,7 +389,8 @@ data = \
                 u'keyword': [u'Physics'],
                 u'author': [u'Liu, Corey W.', u'Alekseyev, Viktor Y.', u'Allwardt, Jeffrey R.', u'Bankovich, Alexander J.', u'Cade-Menun, Barbara J.', u'Davis, Ronald W.', u'Du, Lin-Shu', u'Garcia, K. Christopher', u'Herschlag, Daniel', u'Khosla, Chaitan', u'Kraut, Daniel A.', u'Li, Qing', u'Null, Brian', u'Puglisi, Joseph D.', u'Sigala, Paul A.', u'Stebbins, Jonathan F.', u'Varani, Luca'], u'doctype': u'inbook', u'title': [u'The Diversity of Nuclear Magnetic Resonance Spectroscopy'],
                 u'property': [u'ESOURCE', u'TOC', u'ARTICLE', u'NOT REFEREED'],
-                u'page': [u'65']
+                u'page': [u'65'],
+                u'doctype': u'inbook'
             },
             {
                 u'read_count': 0,
@@ -799,6 +800,47 @@ data_6 = \
                 u'bibstem':['AAS', 'AAS...231'],
                 u'identifier': ['2018AAS...23130709A'],
             },
+        ]
+    }
+}
+
+data_7 = \
+{
+    u'responseHeader':{
+        u'status': 0,
+        u'QTime': 8,
+        u'params':{
+            u'q': u'bibcode:2005GML...tmp....1A',
+            u'indent': u'on',
+            u'fl': u'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem',
+            u'wt': u'json'
+        }
+    },
+    u'response': {
+        u'numFound': 1,
+        u'start': 0,
+        u'docs':[
+            {
+                u'read_count': 0,
+                u'doctype': u'article',
+                u'bibstem': [u'GML', u'GML...tmp'],
+                u'bibcode': u'2005GML...tmp....1A',
+                u'identifier': [u'2005GML...tmp....1A', u'10.1007/s00367-005-0006-y', u'10.1007/s00367-005-0006-y'],
+                u'pubdate': u'2005-12-00',
+                u'copyright': u'(c) 2005: Springer-Verlag',
+                u'aff': [u'Department of Geological Sciences, The University of Alabama'],
+                u'esources': [u'PUB_HTML'],
+                u'year': u'2005',
+                u'pub': u'Geo-Marine Letters',
+                u'doi': [u'10.1007/s00367-005-0006-y'],
+                u'author': [u'Aharon, Paul'],
+                u'pub_raw': u'Geo-Marine Letters, Online First',
+                u'issn': [u'0276-0460'],
+                u'title': [u'Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico'],
+                u'property': [u'ESOURCE', u'ARTICLE', u'REFEREED'],
+                u'num_references': 0,
+                u'num_citations': 2
+            }
         ]
     }
 }

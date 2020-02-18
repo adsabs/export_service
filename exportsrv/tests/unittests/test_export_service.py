@@ -9,6 +9,7 @@ import exportsrv.app as app
 import exportsrv.views as views
 
 from stubdata import solrdata, bibTexTest, fieldedTest, xmlTest, cslTest, customTest, voTableTest, rssTest
+from exportsrv.formatter.ads import adsCSLStyle, adsJournalFormat
 from exportsrv.formatter.format import Format
 from exportsrv.formatter.bibTexFormat import BibTexFormat
 from exportsrv.formatter.fieldedFormat import FieldedFormat
@@ -29,13 +30,13 @@ class TestExports(TestCase):
 
     def test_bibtex(self):
         # format the stubdata using the code
-        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalmacro=1)
+        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=1)
         # now compare it with an already formatted data that we know is correct
         assert (bibtex_export == bibTexTest.data)
 
     def test_bibtex_with_abs(self):
         # format the stubdata using the code
-        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=True, maxauthor=0, authorcutoff=200, journalmacro=1)
+        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=True, maxauthor=0, authorcutoff=200, journalformat=1)
         # now compare it with an already formatted data that we know is correct
         assert (bibtex_export == bibTexTest.data_with_abs)
 
@@ -442,17 +443,35 @@ class TestExports(TestCase):
         # test by passing replacing journal macros for journal names
 
         # bibTex format
-        bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalmacro=0)
-        bibtex_no_journal_macro = {'msg': 'Retrieved 1 abstracts, starting with number 1.',
-                                   'export': u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and\n         {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {Physical Review Letters},\n         year = "2018",\n        month = "jan",\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'}
-        assert (bibtex_export == bibtex_no_journal_macro)
+        # display full journal name
+        bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=3).get('export', '')
+        bibtex_full_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and\n         {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {Physical Review Letters},\n         year = "2018",\n        month = "jan",\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
+        assert (bibtex_export == bibtex_full_journal_name)
+        # display abbreviated journal name
+        bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=2).get('export', '')
+        bibtex_abbrev_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and\n         {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {PhRvL},\n         year = "2018",\n        month = "jan",\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
+        assert (bibtex_export == bibtex_abbrev_journal_name)
+        # macro (default)
+        bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=0).get('export', '')
+        bibtex_default_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and\n         {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {\\prl},\n         year = "2018",\n        month = "jan",\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
+        assert (bibtex_export == bibtex_default_journal_name)
 
         # aastex format
-        csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, journalmacro=0).get()
+        # display full journal name
+        csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.full).get().get('export', '')
         # now compare it with an already formatted data that we know is correct
-        aastex_no_journal_macro = {'msg': 'Retrieved 1 abstracts, starting with number 1.',
-                                   'export': u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, Physical Review Letters, 120, 029901\n'}
-        assert (csl_export == aastex_no_journal_macro)
+        aastex_full_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, Physical Review Letters, 120, 029901\n'
+        assert (csl_export == aastex_full_journal_name)
+        # display full journal name
+        csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get().get('export', '')
+        # now compare it with an already formatted data that we know is correct
+        aastex_abbrev_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, PhRvL, 120, 029901\n'
+        assert (csl_export == aastex_abbrev_journal_name)
+        # display full journal name
+        csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.default).get().get('export', '')
+        # now compare it with an already formatted data that we know is correct
+        aastex_default_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, \\prl, 120, 029901\n'
+        assert (csl_export == aastex_default_journal_name)
 
 
     def test_bibtex_enumeration(self):
@@ -461,6 +480,23 @@ class TestExports(TestCase):
         key_formats_enumerated = ['Accomazzi2020', 'Accomazzi2019a', 'Accomazzi2015', 'Accomazzi2019b', 'Accomazzi2019c',
                                   'Accomazzi2018a', 'Accomazzi2018b', 'Accomazzi2017', 'Accomazzi2018c', 'Accomazzi2018d']
         assert (bibtex_export._BibTexFormat__enumerate_keys() == key_formats_enumerated)
+
+
+    def test_tmp_bibcode_format(self):
+        # test bibcodes that have no volume and page but doi for all CSL formats
+        csl_export_output = {
+            'aastex': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters, doi:10.1007/s00367-005-0006-y\n',
+            'icarus': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005.\\ Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico.\\ Geo-Marine Letters doi:10.1007/s00367-005-0006-y.\n',
+            'mnras': u'\\bibitem[\\protect\\citeauthoryear{Aharon}{2005}]{2005GML...tmp....1A} Aharon P., 2005, GML...tmp, doi:10.1007/s00367-005-0006-y\n',
+            'soph': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A}Aharon, P.: 2005, {\\it Geo-Marine Letters} {\\bf doi:10.1007/s00367-005-0006-y}.\n',
+            'aspc': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters, doi:10.1007/s00367-005-0006-y.\n',
+            'apsj': u'P. Aharon, {\\bf doi:10.1007/s00367-005-0006-y}, (2005).\n',
+            'aasj': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters, doi:10.1007/s00367-005-0006-y.\n',
+        }
+        for style in adsCSLStyle.ads_CLS:
+            csl_export = CSL(CSLJson(solrdata.data_7).get(), style, adsFormatter.latex).get().get('export', '')
+            assert (csl_export == csl_export_output[style])
+
 
 if __name__ == '__main__':
   unittest.main()
