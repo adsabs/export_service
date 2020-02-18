@@ -12,14 +12,14 @@ from stubdata import solrdata
 
 class TestSolrData(TestCase):
     def create_app(self):
-        self.current_app = app.create_app()
+        self.current_app = app.create_app(**{'EXPORT_SERVICE_MAX_RECORDS_SOLR_QUERY': 10})
         return self.current_app
 
     def test_get_solr_data(self):
         """
-        Tests POST for readhist endpoint when no optional param passed in, so default is returned
+        Tests query and bigquery requests from solr depending on the number of bibcodes
         """
-        # the mock is for solr call
+        # the mock is for solr call query, with 10 bibcodes
         with mock.patch.object(self.current_app.client, 'get') as post_mock:
             post_mock.return_value = mock_response = mock.Mock()
             mock_response.json.return_value = solrdata.data_6
@@ -29,6 +29,25 @@ class TestSolrData(TestCase):
                         "2017ASPC..512...45A", "2015scop.confE...3A"]
             solr_data = get_solr_data(user_token=None, bibcodes=bibcodes, fields='bibcode,author,year,pub,bibstem',
                                       sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
+            matched = 0
+            for i, doc in enumerate(solr_data['response']['docs']):
+                if doc['bibcode'] == bibcodes[i]:
+                    matched += 1
+            self.assertEqual(matched, len(bibcodes))
+
+        # the mock is for solr call bigquery, with 22 bibcodes
+        with mock.patch.object(self.current_app.client, 'post') as post_mock:
+            post_mock.return_value = mock_response = mock.Mock()
+            mock_response.json.return_value = solrdata.data
+            mock_response.status_code = 200
+            bibcodes = ["2018Wthr...73Q..35.", "2018TDM.....5a0201F", "2018Spin....877001P", "2018SAAS...38.....D",
+                        "2018PhRvL.120b9901P", "2017PhDT........14C", "2017nova.pres.2388K", "2017CBET.4403....2G",
+                        "2017ascl.soft06009C", "2017yCat.113380453S", "2017AAVSN.429....1W", "2017sptz.prop13168Y",
+                        "2017MsT..........2A", "2016emo6.rept.....R", "2016iac..talk..872V", "2009bcet.book...65L",
+                        "2007AAS...210.2104M", "2007RJPh....1...35.", "1995ans..agar..390M", "1995anda.book.....N",
+                        "1991hep.th....8028G", "1983aiaa.meetY....K"]
+            solr_data = get_solr_data(user_token=None, bibcodes=bibcodes, fields='bibcode,author,year,pub,bibstem',
+                                      sort='')
             matched = 0
             for i, doc in enumerate(solr_data['response']['docs']):
                 if doc['bibcode'] == bibcodes[i]:

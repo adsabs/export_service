@@ -20,7 +20,7 @@ def get_solr_data(user_token, bibcodes, fields, sort, start=0):
         # use query if rows <= allowed number of bibcodes for query
         if rows <= current_app.config['EXPORT_SERVICE_MAX_RECORDS_SOLR_QUERY']:
             params = {
-                'q': 'bibcode:' + ' OR '.join(bibcodes),
+                'q': 'identifier:' + ' OR '.join(bibcodes),
                 'rows': rows,
                 'start': start,
                 'sort': sort if sort != current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'] else '',
