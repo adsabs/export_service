@@ -309,6 +309,21 @@ class TestExportsCustomFormat(TestCase):
         url_encoded = '<a+href=%22http://adsabs.harvard.edu/abs/1997AAS...190.1403E%22>1997AAS...190.1403E</a>'
         assert (custom_format._CustomFormat__encode(value=url, field='url', field_format='%/U') == url_encoded)
 
+    def test_end_record_insert(self):
+        # verify string specified with %ZEOL gets inserted after each record
+        # no EOL string
+        custom_format = CustomFormat(custom_format=r'%ZEOL:"" %R')
+        custom_format.set_json_from_solr(solrdata.data_6)
+        assert (custom_format.get().get('export', ''), "2020AAS...23528705A2019EPSC...13.1911A2015scop.confE...3A2019AAS...23338108A2019AAS...23320704A2018EPJWC.18608001A2018AAS...23221409A2017ASPC..512...45A2018AAS...23136217A2018AAS...23130709A")
+        # do not specify EOL string, and default linefeed is added in
+        custom_format = CustomFormat(custom_format=r'%R')
+        custom_format.set_json_from_solr(solrdata.data_6)
+        assert (custom_format.get().get('export', ''), "2020AAS...23528705A\n2019EPSC...13.1911A\n2015scop.confE...3A\n2019AAS...23338108A\n2019AAS...23320704A\n2018EPJWC.18608001A\n2018AAS...23221409A\n2017ASPC..512...45A\n2018AAS...23136217A\n2018AAS...23130709A\n")
+        # specify EOL string
+        custom_format = CustomFormat(custom_format=r'%ZEOL:"--END" %R')
+        custom_format.set_json_from_solr(solrdata.data_6)
+        assert (custom_format.get().get('export', ''), "2020AAS...23528705A--END2019EPSC...13.1911A--END2015scop.confE...3A--END2019AAS...23338108A--END2019AAS...23320704A--END2018EPJWC.18608001A--END2018AAS...23221409A--END2017ASPC..512...45A--END2018AAS...23136217A--END2018AAS...23130709A--END")
+
 
 if __name__ == '__main__':
     unittest.main()
