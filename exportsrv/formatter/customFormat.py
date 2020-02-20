@@ -35,6 +35,7 @@ class CustomFormat(Format):
         re.compile(r'(%Z(?:Encoding|Linelength):[\w\-]+\s?)'),
         re.compile(r'(%Z(?:Header|Footer|AuthorSep):\".+?\"\s?)'),
         re.compile(r'(%Z(?:Markup):\w+)'),
+        re.compile(r'(%Z(?:EOL):\".*\"\s?)'),
     ]
     REGEX_CUSTOME_FORMAT = re.compile(
         r'''(                                                   # start of capture group 1
@@ -66,6 +67,7 @@ class CustomFormat(Format):
         self.author_sep = ''
         self.markup_strip = False
         self.enumeration = False
+        self.line_feed = self.__get_linefeed()
         self.__parse()
 
 
@@ -252,6 +254,8 @@ class CustomFormat(Format):
                             self.author_sep = parts[1].replace('"', '').decode('string_escape')
                         elif (parts[0] == 'Markup'):
                             self.markup_strip = (parts[1].lower() == 'strip')
+                        elif (parts[0] == 'EOL'):
+                            self.line_feed = parts[1].replace('"', '').decode('string_escape')
 
 
     def __escape(self):
@@ -260,11 +264,7 @@ class CustomFormat(Format):
         linefeeds, tabs, and backslash are escaped, so remove the escape
         :return:
         """
-        # for re backslash needs to be escaped so for matching \\n need to search for \\\\n
-        if self.export_format == adsFormatter.html:
-            self.custom_format = re.sub(r'(\\n\b)', '<br / >', re.sub(r'(\\t\b)', "&nbsp;&nbsp;&nbsp;&nbsp;", self.custom_format).replace('\\\\', '&bsol;'))
-        else:
-            self.custom_format = re.sub(r'(\\n\b)', self.__get_linefeed(), re.sub(r'(\\t\b)', "    ", self.custom_format).replace('\\\\', '\\'))
+        self.custom_format = re.sub(r'(\\n\b)', '\n', re.sub(r'(\\t\b)', "    ", self.custom_format).replace('\\\\', '\\'))
 
 
     def __for_csv(self):
@@ -837,6 +837,7 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, get_eprint(a_doc))
             elif (field[2] == 'page,page_range') or (field[2] == 'lastpage,page_range') or (field[2] == 'page_range,page'):
                 result = self.__add_in(result, field, self.__get_page(field[2], a_doc))
+        result += self.line_feed
 
         return self.__format_line_wrapped(result, index)
 
