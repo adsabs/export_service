@@ -6,7 +6,7 @@ from flask_discoverer import advertise
 import json
 
 from exportsrv.utils import get_solr_data
-from exportsrv.formatter.ads import adsFormatter, adsCSLStyle
+from exportsrv.formatter.ads import adsFormatter, adsCSLStyle, adsJournalFormat
 from exportsrv.formatter.cslJson import CSLJson
 from exportsrv.formatter.csl import CSL
 from exportsrv.formatter.xmlFormat import XMLFormat
@@ -228,10 +228,10 @@ def export_post_extras(request, style):
                 journalformat = payload['journalformat'][0]
             else:
                 journalformat = payload['journalformat']
-            if journalformat not in [1, 2, 3]:
-                journalformat = 1
+            if not adsJournalFormat().verify(journalformat):
+                journalformat = adsJournalFormat.default
         else:
-            journalformat = 1
+            journalformat = adsJournalFormat.default
         return journalformat
 
 
