@@ -58,4 +58,10 @@ class adsCSLStyle:
         return styles[:-len(separator)]
 
 class adsJournalFormat:
-    default, macro, abbreviated, full = range(4)
+    ads_journal_Format = default, macro, abbreviated, full = range(4)
+
+    def verify(self, style):
+        if (style in self.ads_journal_Format):
+            return True
+        return False
+

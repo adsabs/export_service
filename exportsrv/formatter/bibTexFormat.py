@@ -471,11 +471,11 @@ class BibTexFormat(Format):
             elif (field == 'keyword'):
                 text += self.__add_in(fields[field], self.__add_keywords(a_doc), format_style_bracket)
             elif (field == 'year'):
-                text += self.__add_in(fields[field], a_doc.get(field, '') if a_doc.get(field, '') else None, format_style_quotes)
+                text += self.__add_in(fields[field], a_doc.get(field, '') if a_doc.get(field, '') else None, format_style)
             elif (field == 'volume') or (field == 'issue'):
                 text += self.__add_in(fields[field], a_doc.get(field, '') if a_doc.get(field, '') else None, format_style_bracket)
             elif (field == 'month'):
-                text += self.__add_in(fields[field], self.__format_date(a_doc.get('pubdate', '')), format_style_quotes)
+                text += self.__add_in(fields[field], self.__format_date(a_doc.get('pubdate', '')), format_style)
             elif (field == 'abstract') and (include_abs):
                 text += self.__add_in_wrapped(fields[field], encode_laTex(a_doc.get(field, '')), format_style_bracket_quotes)
             elif (field == 'eid'):
