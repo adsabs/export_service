@@ -55,8 +55,7 @@ class BibTexFormat(Format):
         self.enumeration = False
         matches = self.REGEX_ENUMERATION.findall(self.keyformat)
         if (len(matches) >= 1):
-            for match in matches:
-                self.enumeration = True
+            self.enumeration = True
             self.keyformat = self.keyformat.replace(self.ENUMERATION_KEY, '')
         self.enumerated_keys = []
 
@@ -419,7 +418,7 @@ class BibTexFormat(Format):
                 key = key.replace(field[1], a_doc.get('bibcode', ''))
             elif (field[2] == 'pub'):
                 key = key.replace(field[1], self.get_bibstem(a_doc.get('bibstem', '')))
-        return key
+        return key.replace(' ','')
 
 
     def __get_key(self, index):

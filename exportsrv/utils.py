@@ -61,6 +61,7 @@ def get_solr_data(user_token, bibcodes, fields, sort, start=0):
                         if citations is not None:
                             doc.update({u'num_references':citations['num_references']})
                             doc.update({u'num_citations':citations['num_citations']})
+                    from_solr['response']['numFound'] = len(from_solr['response']['docs'])
                     # reorder the list based on the list of bibcodes provided
                     if sort == current_app.config['EXPORT_SERVICE_NO_SORT_SOLR']:
                         new_docs = []
@@ -71,6 +72,7 @@ def get_solr_data(user_token, bibcodes, fields, sort, start=0):
                                     from_solr['response']['docs'].pop(i)
                                     break
                         from_solr['response']['docs'] = new_docs
+                        from_solr['response']['numFound'] = len(new_docs)
                     return from_solr
 
         current_app.logger.error('Solr returned {response}.'.format(response=response))
