@@ -46,7 +46,10 @@ def get_solr_data(user_token, bibcodes, fields, sort, start=0):
                 url=current_app.config['EXPORT_SOLR_BIGQUERY_URL'],
                 params=params,
                 data='bibcode\n' + '\n'.join(bibcodes),
-                headers={'Authorization': user_token, 'Content-Type': 'big-query/csv'}
+                # headers={'Authorization': user_token, 'Content-Type': 'big-query/csv'}
+                # 2/28 revert back to using service token for now
+                headers={'Authorization': 'Bearer '+current_app.config['EXPORT_SERVICE_ADSWS_API_TOKEN'],
+                         'Content-Type': 'big-query/csv'}
             )
 
         if (response.status_code == 200):
