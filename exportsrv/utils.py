@@ -26,7 +26,7 @@ def get_solr_data(user_token, bibcodes, fields, sort, start=0):
                 'sort': sort if sort != current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'] else '',
                 'fl': fields,
             }
-            response = client().get(
+            response = current_app.client.get(
                 url=current_app.config['EXPORT_SOLR_QUERY_URL'],
                 params=params,
                 headers={'Authorization': user_token},
@@ -42,7 +42,7 @@ def get_solr_data(user_token, bibcodes, fields, sort, start=0):
                 'fl': fields,
                 'fq': '{!bitset}'
             }
-            response = client().post(
+            response = current_app.client.post(
                 url=current_app.config['EXPORT_SOLR_BIGQUERY_URL'],
                 params=params,
                 data='bibcode\n' + '\n'.join(bibcodes),
