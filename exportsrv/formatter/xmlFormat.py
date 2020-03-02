@@ -57,7 +57,9 @@ class XMLFormat(Format):
         :param text:
         :return:
         """
-        return fill(text, width=72)
+        # 3/2 for now do not wrap text, it is way too slow
+        return text
+        return fill(text, width=72, break_on_hyphens=False)
 
 
     def __add_author_list(self, a_doc, parent, tag):
