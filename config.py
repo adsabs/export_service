@@ -9,9 +9,6 @@ EXPORT_SERVICE_MAX_RECORDS_SOLR_BIGQUERY = 2000
 EXPORT_SOLR_QUERY_URL = "https://api.adsabs.harvard.edu/v1/search/query"
 EXPORT_SERVICE_MAX_RECORDS_SOLR_QUERY = 100
 
-# 2/28 revert back to using service token for now
-EXPORT_SERVICE_ADSWS_API_TOKEN = 'this is a secret api token!'
-
 # these are used for linkout links
 EXPORT_SERVICE_FROM_BBB_URL = 'https://ui.adsabs.harvard.edu/abs'
 EXPORT_SERVICE_RESOLVE_URL = "https://ui.adsabs.harvard.edu/link_gateway"
