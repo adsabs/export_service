@@ -1,11 +1,11 @@
 
-from flask import current_app
+from flask import current_app, request
 import requests
 import re
 
 from exportsrv.client import client
 
-def get_solr_data(user_token, bibcodes, fields, sort, start=0):
+def get_solr_data(bibcodes, fields, sort, start=0):
     """
 
     :param bibcodes:
@@ -15,7 +15,7 @@ def get_solr_data(user_token, bibcodes, fields, sort, start=0):
     :return:
     """
     rows = min(current_app.config['EXPORT_SERVICE_MAX_RECORDS_SOLR_BIGQUERY'], len(bibcodes))
-
+    user_token = 'Bearer %s' % request.headers.get('X-Forwarded-Authorization', request.headers.get('Authorization', ''))
     try:
         # use query if rows <= allowed number of bibcodes for query
         if rows <= current_app.config['EXPORT_SERVICE_MAX_RECORDS_SOLR_QUERY']:
@@ -46,11 +46,11 @@ def get_solr_data(user_token, bibcodes, fields, sort, start=0):
                 url=current_app.config['EXPORT_SOLR_BIGQUERY_URL'],
                 params=params,
                 data='bibcode\n' + '\n'.join(bibcodes),
-                # headers={'Authorization': user_token, 'Content-Type': 'big-query/csv'}
-                # 2/28 revert back to using service token for now
-                headers={'Authorization': 'Bearer '+current_app.config['EXPORT_SERVICE_ADSWS_API_TOKEN'],
+                headers={'Authorization': user_token,
                          'Content-Type': 'big-query/csv'}
             )
+        
+        response.raise_for_status()
 
         if (response.status_code == 200):
             # make sure solr found the documents

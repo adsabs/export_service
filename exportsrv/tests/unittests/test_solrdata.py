@@ -27,7 +27,7 @@ class TestSolrData(TestCase):
             bibcodes = ["2020AAS...23528705A", "2019EPSC...13.1911A", "2019AAS...23338108A", "2019AAS...23320704A",
                         "2018EPJWC.18608001A", "2018AAS...23221409A", "2018AAS...23136217A", "2018AAS...23130709A",
                         "2017ASPC..512...45A", "2015scop.confE...3A"]
-            solr_data = get_solr_data(user_token=None, bibcodes=bibcodes, fields='bibcode,author,year,pub,bibstem',
+            solr_data = get_solr_data(bibcodes=bibcodes, fields='bibcode,author,year,pub,bibstem',
                                       sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
             matched = 0
             for i, doc in enumerate(solr_data['response']['docs']):
@@ -46,7 +46,7 @@ class TestSolrData(TestCase):
                         "2017MsT..........2A", "2016emo6.rept.....R", "2016iac..talk..872V", "2009bcet.book...65L",
                         "2007AAS...210.2104M", "2007RJPh....1...35.", "1995ans..agar..390M", "1995anda.book.....N",
                         "1991hep.th....8028G", "1983aiaa.meetY....K"]
-            solr_data = get_solr_data(user_token=None, bibcodes=bibcodes, fields='bibcode,author,year,pub,bibstem',
+            solr_data = get_solr_data(bibcodes=bibcodes, fields='bibcode,author,year,pub,bibstem',
                                       sort='')
             matched = 0
             for i, doc in enumerate(solr_data['response']['docs']):

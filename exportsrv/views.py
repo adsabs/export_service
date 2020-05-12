@@ -200,11 +200,8 @@ def export_post(request, style, format=-1):
     if current_app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'] == bibcodes:
         return solrdata.data, 200
 
-    user_token = request.headers.get('Authorization', None)
-    if not user_token:
-        return {'error': 'Unauthorized'}, 401
 
-    return get_solr_data(user_token=user_token, bibcodes=bibcodes, fields=default_solr_fields(), sort=sort), 200
+    return get_solr_data(bibcodes=bibcodes, fields=default_solr_fields(), sort=sort), 200
 
 def export_post_extras(request, style):
     """
@@ -307,11 +304,7 @@ def export_get(request, bibcode, style, format=-1):
     if current_app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'] == bibcode:
         return solrdata.data_2
 
-    user_token = request.headers.get('Authorization', None)
-    if not user_token:
-        return {'error': 'Unauthorized'}, 401
-
-    return get_solr_data(user_token=user_token, bibcodes=[bibcode], fields=default_solr_fields(), sort=sort)
+    return get_solr_data(bibcodes=[bibcode], fields=default_solr_fields(), sort=sort)
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/bibtex', methods=['POST'])
@@ -730,11 +723,8 @@ def csl_format_export():
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}  style using sort order={sort}'.
                  format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format, sort=sort))
 
-    user_token = request.headers.get('Authorization', None)
-    if not user_token:
-        return {'error': 'Unauthorized'}, 401
 
-    solr_data = get_solr_data(user_token=user_token, bibcodes=bibcodes, fields=default_solr_fields(), sort=sort)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields(), sort=sort)
     journal_format = export_post_extras(request, csl_style)
     return return_csl_format_export(solr_data, csl_style, export_format, journal_format)
 
@@ -782,12 +772,9 @@ def custom_format_export():
     custom_export = CustomFormat(custom_format=custom_format_str)
     fields = custom_export.get_solr_fields()
 
-    user_token = request.headers.get('Authorization', None)
-    if not user_token:
-        return {'error': 'Unauthorized'}, 401
 
     # now get the required data from Solr and send it to customFormat for formatting
-    solr_data = get_solr_data(user_token=user_token, bibcodes=bibcodes, fields=fields, sort=sort)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=fields, sort=sort)
     if (solr_data is not None):
         if ('error' in solr_data):
             return return_response({'error': 'unable to query solr'}, 400)
