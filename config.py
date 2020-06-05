@@ -1,4 +1,8 @@
 
+# must be here for adsmutils to override it using env vars
+# but if left empty (resolving to False) it won't be used
+SERVICE_TOKEN = None
+
 # configuration for accessing solr db
 # these values can be overwritten by local_config values
 # maximum number of records that can be fetched by bigquery is for now 2000
