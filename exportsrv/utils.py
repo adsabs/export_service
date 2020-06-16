@@ -15,7 +15,7 @@ def get_solr_data(bibcodes, fields, sort, start=0):
     :return:
     """
     rows = min(current_app.config['EXPORT_SERVICE_MAX_RECORDS_SOLR_BIGQUERY'], len(bibcodes))
-    user_token = current_app.config.get('SERVICE_TOKEN', request.headers.get('X-Forwarded-Authorization', request.headers.get('Authorization', '')))
+    user_token = current_app.config.get('SERVICE_TOKEN', None) or request.headers.get('X-Forwarded-Authorization', request.headers.get('Authorization', ''))
     try:
         # use query if rows <= allowed number of bibcodes for query
         if rows <= current_app.config['EXPORT_SERVICE_MAX_RECORDS_SOLR_QUERY']:
