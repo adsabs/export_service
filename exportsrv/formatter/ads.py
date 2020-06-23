@@ -4,9 +4,17 @@
 
 class adsFormatter:
     """
-    We are supporting four format in custom format, however only support the first three in csl format.
+    We are supporting four formats (unicode, html, latex, and csv) for custom format,
+    for most of csl formats, we are supporting the first three only (unicode, html, and latex).
+    There are formats that are inherently xml, or latex.
+    The csl formats, listed below in ads_CLS, are the ones that can encoded as per user
+    specification, and we assume that they are inherently unicode.
+
     """
-    unicode, html, latex, csv = range(4)
+    default, unicode, html, latex, csv, xml = range(6)
+
+    native_latex = ['BibTex', 'BibTex Abs', '3']
+    native_xml = ['DublinCore', 'Reference', 'ReferenceAbs']
 
     def __is_number(self, s):
         """
@@ -38,6 +46,18 @@ class adsFormatter:
             if (format == adsFormatter.unicode) or (format == adsFormatter.html) or (format == adsFormatter.latex):
                 return True
         return False
+
+    def native_encoding(self, native_format):
+        """
+        to determine which encoding to apply, unicode, xml, or latex
+        :param native_format:
+        :return:
+        """
+        if native_format in self.native_latex:
+            return adsFormatter.latex
+        if native_format in self.native_xml:
+            return adsFormatter.xml
+        return self.native_unicode
 
 class adsOrganizer:
     plain, citation_bibliography, bibliography = range(3)

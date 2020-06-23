@@ -6,38 +6,15 @@
     <id>www.astrosociety.org</id>
     <category citation-format="note"/>
     <category field="astronomy"/>
-    <updated>2017-06-02T16:29:38+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <macro name="container">
     <choose>
       <if type="chapter paper-conference" match="any">
-        <names variable="editor translator" delimiter=", " prefix=" " suffix=", ">
-          <name delimiter-precedes-last="always" initialize-with="." name-as-sort-order="all"/>
-          <label form="short" text-case="capitalize-first" prefix=" (" suffix=")"/>
-        </names>
-        <group delimiter=", ">
-          <text variable="container-title" text-case="title"/>
-          <text variable="collection-title" text-case="title"/>
-        </group>
+        <text variable="container-title" text-case="title"/>
       </if>
-      <else-if type="book report" match="any">
-        <group delimiter=", ">
-          <text variable="container-title"/>
-          <text variable="collection-title"/>
-        </group>
-      </else-if>
-      <else-if type="article software" match="any">
-        <group delimiter=", ">
-          <text variable="container-title"/>
-          <text variable="collection-title"/>
-        </group>
-      </else-if>
       <else>
-        <group delimiter=", ">
-          <text variable="container-title"/>
-          <text variable="collection-title"/>
-        </group>
+        <text variable="container-title"/>
       </else>
     </choose>
   </macro>
@@ -61,38 +38,6 @@
         <text macro="anon"/>
       </substitute>
     </names>
-  </macro>
-  <macro name="access">
-    <choose>
-      <if type="webpage">
-        <group delimiter=" ">
-          <text value="URL"/>
-          <text variable="URL"/>
-          <group prefix="(" suffix=").">
-            <text term="accessed" suffix=" "/>
-            <date variable="accessed">
-              <date-part name="month" form="numeric" suffix="."/>
-              <date-part name="day" suffix="."/>
-              <date-part name="year" form="short"/>
-            </date>
-          </group>
-        </group>
-      </if>
-    </choose>
-  </macro>
-  <macro name="publisher">
-    <group delimiter=", ">
-      <text variable="publisher" prefix=" "/>
-      <text variable="publisher-place"/>
-    </group>
-  </macro>
-  <macro name="event">
-    <choose>
-      <if variable="event">
-        <text term="presented at" text-case="capitalize-first" suffix=" "/>
-        <text variable="event"/>
-      </if>
-    </choose>
   </macro>
   <macro name="issued">
     <choose>
@@ -118,54 +63,24 @@
       </else>
     </choose>
   </macro>
-  <macro name="edition">
-    <group delimiter=" ">
-      <choose>
-        <if is-numeric="edition">
-          <number variable="edition" form="ordinal"/>
-        </if>
-        <else>
-          <text variable="edition" suffix="."/>
-        </else>
-      </choose>
-      <text value="ed"/>
-    </group>
-  </macro>
   <macro name="locators">
     <choose>
-      <if type="article-journal" match="any">
-        <group delimiter=", " prefix=", ">
+      <if type="article paper-conference personal_communication review-book thesis" match="any">
+        <group prefix="">
           <group>
-            <text variable="volume"/>
-          </group>
-          <text variable="PMCID"/>
-        </group>
-      </if>
-      <else-if type="article software" match="any">
-        <group prefix=" ">
-          <group>
-            <text variable="volume"/>
+            <text variable="volume" prefix=", "/>
           </group>
           <text variable="PMCID" prefix=", "/>
         </group>
+      </if>
+      <else-if type="book chapter entry" match="any">
+        <text variable="PMCID" prefix=", "/>
       </else-if>
-      <else-if type="book report thesis" match="any">
-        <group delimiter=", ">
-          <text macro="event"/>
-          <text macro="publisher"/>
-        </group>
+      <else-if type="manuscript" match="any">
+        <text variable="PMCID" prefix=""/>
       </else-if>
-      <else-if type="chapter paper-conference" match="any">
-        <group delimiter=", " prefix=", ">
-          <text macro="event"/>
-          <text macro="publisher"/>
-          <group>
-            <text variable="PMCID"/>
-          </group>
-        </group>
-      </else-if>
-      <else-if type="patent">
-        <text variable="number" prefix=". "/>
+      <else-if type="report software" match="any">
+        <text variable="volume" prefix=", "/>
       </else-if>
     </choose>
   </macro>
@@ -199,7 +114,6 @@
           <text macro="locators"/>
         </group>
       </group>
-      <text macro="access" prefix=". "/>
     </layout>
   </bibliography>
 </style>

@@ -11,17 +11,19 @@ REGEX_LATEX = OrderedDict([
             (re.compile(r"(\d+)<SUB>(\d+)</SUB>"),  r"{}\1$_{\2}$"),
             (re.compile(r"<SUP>(.+?)</SUP>"),       r"$^{\1}$"),                  # translate <SUP>foo</SUP> and <SUB>bar</SUB> sequences into
             (re.compile(r"<SUB>(.+?)</SUB>"),       r"$_{\1}$"),                  # the proper latex equivalent of $^{foo}$ and $_{bar}$
-            (re.compile(r"''(.*?)''"),              r"``\1''")                    # straight double quotes to curly quotes
+            (re.compile(r"''(.*?)''"),              r"``\1''"),                   # straight double quotes to curly quotes
 ])
 REGEX_LATEX_AUTHOR = dict([
         (re.compile(r"([A-Z]\.)\s(?=([A-Z]\.))"), r"\1~")   # replace something like 'Tendulkar, S. P.' with 'Tendulkar, S.~P.'
                                                             # also can replace 'Miller, S. N. A.' with 'Miller, S.~N.~A.'
     ])
-REGEX_HTML_TAG = dict([
-    (re.compile(r"<i>(.*)</i>"), r"{\it \1}"),  # we get italic and bold tags from CSL and we need to modify them
+REGEX_HTML_TAG = OrderedDict([
+    (re.compile(r"<i>(.*)</i>"), r"{\\it \1}"),             # we get italic and bold tags from CSL and we need to modify them
     (re.compile(r"<b>(.*)</b>"), r"{\\bf \1}"),
-    (re.compile(r"(&amp;)"), r"&"),
-    (re.compile(r"(,?\s*\{\\&\}amp;)"), r" \&")
+    (re.compile(r"(\\?&amp;)"), r"\\&"),
+    (re.compile(r"(\\&lt;)"), r"$\\lt$"),                   # html entity less-than
+    (re.compile(r"(\\&gt;)"), r"$\\gt$"),                   # html entity greater-than
+    (re.compile(r"(,?\s*\{\\&\}amp;)"), r" \&"),
 ])
 
 def encode_laTex(text):
@@ -31,7 +33,7 @@ def encode_laTex(text):
     :return:
     """
     if (len(text) > 1):
-        # make sure we want to break on $...$ (In-line math) where we are not appling latex substitution
+        # make sure we want to break on $...$ (In-line math) where we are not applying latex substitution
         # however, it could be dollar sign representation as in the following record's title
         # "bibcode":"1979AstQ....3..143M",
         # "title":["The Gemini Syndrome: Star Wars of the Oldest Kind. Roger Culver and Philip Ianna The Astronomy
@@ -49,11 +51,11 @@ def encode_laTex(text):
                     latex.append(chunks[i+j])
                 i = i + 3
             else:
-                # character subtitution
+                # character substitution
                 chunks[i] = utf8tolatex(chunks[i], ascii_no_brackets=True)
                 for key in REGEX_LATEX:
                     chunks[i] = key.sub(REGEX_LATEX[key], chunks[i])
-                latex.append(chunks[i])
+                latex.append(html_to_laTex(chunks[i]))
                 i = i + 1
         return ''.join(latex)
     return text
@@ -77,6 +79,6 @@ def html_to_laTex(text):
     :param text:
     :return:
     """
-    for key in REGEX_HTML_TAG:
+    for key in REGEX_HTML_TAG.keys():
         text = key.sub(REGEX_HTML_TAG[key], text)
     return text

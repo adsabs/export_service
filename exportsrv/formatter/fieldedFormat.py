@@ -142,23 +142,25 @@ class FieldedFormat(Format):
                                  ('eprintid', '%Y eprintid:')]))
         if (export_format == self.EXPORT_FORMAT_ENDNOTE):
             return (OrderedDict([('doctype', '%0'), ('title', '%T'), ('author', '%A'),
-                                 ('aff', '%+'), ('pub', '%B'), ('volume', '%V'),
+                                 ('aff', '%+'), ('pub', '%J'), ('volume', '%V'),
                                  ('year', '%D'), ('pubdate', '%8'), ('page', '%P'),
                                  ('keyword', '%K'), ('url', '%U'), ('comment', '%Z'),
-                                 ('abstract', '%X'), ('doi', '%3'), ('eprintid', '%= eprint:'),
+                                 ('abstract', '%X'), ('doi', '%R'), ('eprintid', '%= eprint:'),
                                  ('issn', '%@')]))
         if (export_format == self.EXPORT_FORMAT_PROCITE):
-            return (OrderedDict([('doctype', 'TY  -'), ('title', 'T1  -'), ('author', 'A1  -'),
-                                 ('pub', 'JO  -'), ('volume', 'VL  -'), ('pubdate', 'Y1  -'),
-                                 ('page', 'SP  -'), ('lastpage', 'EP  -'), ('keyword', 'KW  -'),
-                                 ('url', 'UR  -'), ('abstract', 'N2  -'), ('doi', 'DO  -'),
-                                 ('eprintid', 'C1  - eprint:'), ('issn', 'SN  -'), ('endRecord', 'ER  -')]))
+            return (OrderedDict([('doctype', 'TY  -'), ('title', 'TI  -'), ('author', 'AU  -'),
+                                 ('aff', 'AD  -'), ('pub', 'JO  -'), ('volume', 'VL  -'),
+                                 ('pubdate', 'Y1  -'), ('page', 'SP  -'), ('lastpage', 'EP  -'),
+                                 ('keyword', 'KW  -'), ('url', 'UR  -'), ('abstract', 'N2  -'),
+                                 ('doi', 'DO  -'),('eprintid', 'C1  - eprint:'), ('issn', 'SN  -'),
+                                 ('endRecord', 'ER  -')]))
         if (export_format == self.EXPORT_FORMAT_REFMAN):
-            return (OrderedDict([('doctype', 'TY  -'), ('title', 'T1  -'), ('author', 'A1  -'),
-                                 ('pub', 'JO  -'), ('volume', 'VL  -'), ('pubdate', 'Y1  -'),
-                                 ('page', 'SP  -'), ('lastpage', 'EP  -'), ('keyword', 'KW  -'),
-                                 ('url', 'UR  -'), ('abstract', 'N2  -'), ('doi', 'DO  -'),
-                                 ('eprintid', 'C1  - eprint:'), ('issn', 'SN  -'), ('endRecord', 'ER  -')]))
+            return (OrderedDict([('doctype', 'TY  -'), ('title', 'TI  -'), ('author', 'AU  -'),
+                                 ('aff', 'AD  -'), ('pub', 'JO  -'), ('volume', 'VL  -'),
+                                 ('pubdate', 'Y1  -'), ('page', 'SP  -'), ('lastpage', 'EP  -'),
+                                 ('keyword', 'KW  -'), ('url', 'UR  -'), ('abstract', 'N2  -'),
+                                 ('doi', 'DO  -'), ('eprintid', 'C1  - eprint:'), ('issn', 'SN  -'),
+                                 ('endRecord', 'ER  -')]))
         if (export_format == self.EXPORT_FORMAT_REFWORKS):
             return (OrderedDict([('doctype', 'RT'), ('title', 'T1'), ('author', 'A1'),
                                  ('aff', 'AD'), ('pub', 'JF'), ('volume', 'VO'),
@@ -168,9 +170,9 @@ class FieldedFormat(Format):
                                  ('eprintid', 'DO eprintid:'), ('issn', 'SN')]))
         if (export_format == self.EXPORT_FORMAT_MEDLARS):
             return (OrderedDict([('doctype', 'PT  -'), ('title', 'TI  -'), ('author', 'AU  -'),
-                                 ('pub', 'TA  -'), ('pub_raw', 'SO  -'), ('volume', 'VI  -'),
-                                 ('pubdate', 'DP  -'), ('page', 'PG  -'), ('url', '4099-'),
-                                 ('abstract', 'AB  -'), ('isbn', 'IS  -')]))
+                                 ('aff', 'AD  -'), ('bibstem', 'TA  -'), ('pub_raw', 'SO  -'),
+                                 ('volume', 'VI  -'), ('pubdate', 'DP  -'), ('page', 'PG  -'),
+                                 ('url', '4099-'), ('abstract', 'AB  -'), ('issn', 'IS  -')]))
 
 
     def __add_author_list(self, a_doc, export_format, tag):
@@ -509,6 +511,8 @@ class FieldedFormat(Format):
                 result += self.__add_doc_links(a_doc, fields[field])
             elif (field == 'eprintid'):
                 result += self.__add_in(fields[field], get_eprint(a_doc))
+            elif (field == 'bibstem'):
+                result += self.__add_in(fields[field], a_doc.get(field, ['', ''])[0])
             else:
                 result += self.__add_in(fields[field], a_doc.get(field, ''))
         # line feed once the doc is complete

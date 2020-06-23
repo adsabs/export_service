@@ -200,8 +200,7 @@ def export_post(request, style, format=-1):
     if current_app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'] == bibcodes:
         return solrdata.data, 200
 
-
-    return get_solr_data(bibcodes=bibcodes, fields=default_solr_fields(), sort=sort), 200
+    return get_solr_data(bibcodes=bibcodes, fields=default_solr_fields(), sort=sort, encode_style=adsFormatter().native_encoding(format)), 200
 
 def export_post_extras(request, style):
     """
@@ -283,7 +282,7 @@ def export_post_extras(request, style):
     return -1
 
 
-def export_get(request, bibcode, style, format=-1):
+def export_get(bibcode, style, format=-1):
     """
 
     :param bibcode:
@@ -304,7 +303,7 @@ def export_get(request, bibcode, style, format=-1):
     if current_app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'] == bibcode:
         return solrdata.data_2
 
-    return get_solr_data(bibcodes=[bibcode], fields=default_solr_fields(), sort=sort)
+    return get_solr_data(bibcodes=[bibcode], fields=default_solr_fields(), sort=sort, encode_style=adsFormatter().native_encoding(format))
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/bibtex', methods=['POST'])
@@ -330,7 +329,7 @@ def bibTex_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_bibTex_format_export(solr_data=export_get(request, bibcode, 'BibTex'), include_abs=False,
+    return return_bibTex_format_export(solr_data=export_get(bibcode, 'BibTex'), include_abs=False,
                                        keyformat='%R', maxauthor=10, authorcutoff=200, journalformat=1, request_type='GET')
 
 
@@ -358,7 +357,7 @@ def bibTex_abs_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_bibTex_format_export(solr_data=export_get(request, bibcode, 'BibTex Abs'), include_abs=True,
+    return return_bibTex_format_export(solr_data=export_get(bibcode, 'BibTex Abs'), include_abs=True,
                                        keyformat='%R', maxauthor=0, authorcutoff=200, journalformat=1, request_type='GET')
 
 
@@ -383,7 +382,7 @@ def fielded_ads_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_fielded_format_export(solr_data=export_get(request, bibcode, 'ADS'), fielded_style='ADS', request_type='GET')
+    return return_fielded_format_export(solr_data=export_get(bibcode, 'ADS'), fielded_style='ADS', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -407,7 +406,7 @@ def fielded_endnote_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_fielded_format_export(solr_data=export_get(request, bibcode, 'EndNote'), fielded_style='EndNote', request_type='GET')
+    return return_fielded_format_export(solr_data=export_get(bibcode, 'EndNote'), fielded_style='EndNote', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -431,7 +430,7 @@ def fielded_procite_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_fielded_format_export(solr_data=export_get(request, bibcode, 'ProCite'), fielded_style='ProCite', request_type='GET')
+    return return_fielded_format_export(solr_data=export_get(bibcode, 'ProCite'), fielded_style='ProCite', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -455,7 +454,7 @@ def fielded_refman_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_fielded_format_export(solr_data=export_get(request, bibcode, 'Refman'), fielded_style='Refman', request_type='GET')
+    return return_fielded_format_export(solr_data=export_get(bibcode, 'Refman'), fielded_style='Refman', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -479,7 +478,7 @@ def fielded_refworks_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_fielded_format_export(solr_data=export_get(request, bibcode, 'RefWorks'), fielded_style='RefWorks', request_type='GET')
+    return return_fielded_format_export(solr_data=export_get(bibcode, 'RefWorks'), fielded_style='RefWorks', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -503,7 +502,7 @@ def fielded_medlars_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_fielded_format_export(solr_data=export_get(request, bibcode, 'MEDLARS'), fielded_style='MEDLARS', request_type='GET')
+    return return_fielded_format_export(solr_data=export_get(bibcode, 'MEDLARS'), fielded_style='MEDLARS', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -527,7 +526,7 @@ def xml_dublincore_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_xml_format_export(solr_data=export_get(request, bibcode, 'DublinCore'), xml_style='DublinCore', request_type='GET')
+    return return_xml_format_export(solr_data=export_get(bibcode, 'DublinCore'), xml_style='DublinCore', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -551,7 +550,7 @@ def xml_ref_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_xml_format_export(solr_data=export_get(request, bibcode, 'Reference'), xml_style='Reference', request_type='GET')
+    return return_xml_format_export(solr_data=export_get(bibcode, 'Reference'), xml_style='Reference', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -575,7 +574,7 @@ def xml_refabs_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_xml_format_export(solr_data=export_get(request, bibcode, 'ReferenceAbs'), xml_style='ReferenceAbs', request_type='GET')
+    return return_xml_format_export(solr_data=export_get(bibcode, 'ReferenceAbs'), xml_style='ReferenceAbs', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -602,7 +601,7 @@ def csl_aastex_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_csl_format_export(solr_data=export_get(request, bibcode, 'aastex', 2),
+    return return_csl_format_export(solr_data=export_get(bibcode, 'aastex', 2),
                                     csl_style='aastex', export_format=2, journal_format=1, request_type='GET')
 
 
@@ -628,7 +627,7 @@ def csl_icarus_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_csl_format_export(solr_data=export_get(request, bibcode, 'icarus', 2),
+    return return_csl_format_export(solr_data=export_get(bibcode, 'icarus', 2),
                                     csl_style='icarus', export_format=2, journal_format=3, request_type='GET')
 
 
@@ -654,7 +653,7 @@ def csl_mnras_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_csl_format_export(solr_data=export_get(request, bibcode, 'mnras', 2),
+    return return_csl_format_export(solr_data=export_get(bibcode, 'mnras', 2),
                                     csl_style='mnras', export_format=2, journal_format=3, request_type='GET')
 
 
@@ -680,7 +679,7 @@ def csl_soph_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_csl_format_export(solr_data=export_get(request, bibcode, 'soph', 2),
+    return return_csl_format_export(solr_data=export_get(bibcode, 'soph', 2),
                                     csl_style='soph', export_format=2, journal_format=3, request_type='GET')
 
 
@@ -723,8 +722,7 @@ def csl_format_export():
     current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}  style using sort order={sort}'.
                  format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format, sort=sort))
 
-
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields(), sort=sort)
+    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields(), sort=sort, encode_style=export_format)
     journal_format = export_post_extras(request, csl_style)
     return return_csl_format_export(solr_data, csl_style, export_format, journal_format)
 
@@ -771,7 +769,6 @@ def custom_format_export():
     # in Solr we need to query on
     custom_export = CustomFormat(custom_format=custom_format_str)
     fields = custom_export.get_solr_fields()
-
 
     # now get the required data from Solr and send it to customFormat for formatting
     solr_data = get_solr_data(bibcodes=bibcodes, fields=fields, sort=sort)
@@ -827,7 +824,7 @@ def votable_format_export_get(bibcode):
     :param bibcode:
     :return:
     """
-    return return_votable_format_export(solr_data=export_get(request, bibcode, 'VOTable'), request_type='GET')
+    return return_votable_format_export(solr_data=export_get(bibcode, 'VOTable'), request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -866,5 +863,5 @@ def rss_format_export_get(bibcode, link):
     :param link:
     :return:
     """
-    return return_rss_format_export(solr_data=export_get(request, bibcode, 'RSS'), link=link, request_type='GET')
+    return return_rss_format_export(solr_data=export_get(bibcode, 'RSS'), link=link, request_type='GET')
 

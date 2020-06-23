@@ -5,6 +5,8 @@ import unittest
 
 import json
 
+from collections import OrderedDict
+
 import exportsrv.app as app
 import exportsrv.views as views
 
@@ -20,7 +22,7 @@ from exportsrv.formatter.customFormat import CustomFormat
 from exportsrv.formatter.convertCF import convert
 from exportsrv.formatter.voTableFormat import VOTableFormat
 from exportsrv.formatter.rssFormat import RSSFormat
-from exportsrv.utils import get_eprint
+from exportsrv.utils import get_eprint, replace_html_entity
 
 
 class TestExports(TestCase):
@@ -219,6 +221,46 @@ class TestExports(TestCase):
                 "eid": "ascl:1308.009"
             }
         assert (get_eprint(a_doc_ascl) == 'ascl:1308.009')
+
+    def test_replace_html_entity(self):
+        solr_data = \
+            {
+                "responseHeader": {
+                    "status": 0,
+                    "QTime": 2,
+                    "params": {
+                        "q": "title:\"lt;\"",
+                        "indent": "on",
+                        "fl": "bibcode,title,abstract",
+                        "wt": "json",
+                        "_": "1592510843440"}},
+                "response": {"numFound": 4, "start": 0, "docs": [
+                    {
+                        "bibcode": "2016JLwT...34.4926L",
+                        "title": ["Study of SiO{}_{{{x}}} (1 &lt; x lt; 2) Thin-Film Optical Waveguides"]},
+                    {
+                        "abstract": "Using Hubble Space Telescope Cosmic Origins Spectrograph observations of 89 QSO sightlines through the Sloan Digital Sky Survey footprint, we study the relationships between C IV absorption systems and the properties of nearby galaxies, as well as the large-scale environment. To maintain sensitivity to very faint galaxies, we restrict our sample to 0.0015&lt; z&lt; 0.015, which defines a complete galaxy survey to L≳ 0.01 L\\ast or stellar mass {M}<SUB>* </SUB>≳ {10}<SUP>8</SUP> {M}<SUB>☉ </SUB>. We report two principal findings. First, for galaxies with impact parameter ρ &lt; 1 {r}<SUB>{vir</SUB>}, C IV detection strongly depends on the luminosity/stellar mass of the nearby galaxy. C IV is preferentially associated with galaxies with {M}<SUB>* </SUB>&gt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB>; lower-mass galaxies rarely exhibit significant C IV absorption (covering fraction {f}<SUB>C</SUB>={9}<SUB>-6</SUB><SUP>+12</SUP> % for 11 galaxies with {M}<SUB>* </SUB>&lt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB>). Second, C IV detection within the {M}<SUB>* </SUB>&gt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB> population depends on environment. Using a fixed-aperture environmental density metric for galaxies with ρ &lt; 160 kpc at z&lt; 0.055, we find that {57}<SUB>-13</SUB><SUP>+12</SUP> % (8/14) of galaxies in low-density regions (regions with fewer than seven L&gt; 0.15 L\\ast galaxies within 1.5 Mpc) have affiliated C IV absorption; however, none (0/7) of the galaxies in denser regions show C IV. Similarly, the C IV detection rate is lower for galaxies residing in groups with dark matter halo masses of {M}<SUB>{halo</SUB>}&gt; {10}<SUP>12.5</SUP> {M}<SUB>☉ </SUB>. In contrast to C IV, H I is pervasive in the circumgalactic medium without regard to mass or environment. These results indicate that C IV absorbers with {log} N({{C}} {{IV}})≳ 13.5 {{cm}}<SUP>-2</SUP> trace the halos of {M}<SUB>* </SUB>&gt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB> galaxies but also reflect larger-scale environmental conditions.",
+                        "bibcode": "2016ApJ...832..124B"},
+                    {
+                        "bibcode": "2015hst..prop14424B",
+                        "title": ["STIS CCD Amp A, C, &amp; D Gains"]},
+                    {
+                        "bibcode": "2016BaltA..25..310K",
+                        "abstract": "We use the Apparent Motion Parameters (AMP) method for the determination of orbits of visual double stars (Kiselev &amp; Kiyaeva 1980). The quality of AMP orbits is completely dependent on the precision of parameters of relative positions and motions at the same instant. They are calculated on the basis of a short arc of observations. To determine these parameters, we use recent high precision observations obtained with the best modern techniques. New orbits of three stars are presented."},
+                ]}
+            }
+        # note that if there is a entity error in the text it does not get replaced (ie, the first title lt; missing &)
+        result = OrderedDict([
+            ('1_title', [u'Study of SiO{}_{{{x}}} (1 < x lt; 2) Thin-Film Optical Waveguides']),
+            ('2_abstract', u'Using Hubble Space Telescope Cosmic Origins Spectrograph observations of 89 QSO sightlines through the Sloan Digital Sky Survey footprint, we study the relationships between C IV absorption systems and the properties of nearby galaxies, as well as the large-scale environment. To maintain sensitivity to very faint galaxies, we restrict our sample to 0.0015< z< 0.015, which defines a complete galaxy survey to L≳ 0.01 L\\ast or stellar mass {M}<SUB>* </SUB>≳ {10}<SUP>8</SUP> {M}<SUB>☉ </SUB>. We report two principal findings. First, for galaxies with impact parameter ρ < 1 {r}<SUB>{vir</SUB>}, C IV detection strongly depends on the luminosity/stellar mass of the nearby galaxy. C IV is preferentially associated with galaxies with {M}<SUB>* </SUB>> {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB>; lower-mass galaxies rarely exhibit significant C IV absorption (covering fraction {f}<SUB>C</SUB>={9}<SUB>-6</SUB><SUP>+12</SUP> % for 11 galaxies with {M}<SUB>* </SUB>< {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB>). Second, C IV detection within the {M}<SUB>* </SUB>> {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB> population depends on environment. Using a fixed-aperture environmental density metric for galaxies with ρ < 160 kpc at z< 0.055, we find that {57}<SUB>-13</SUB><SUP>+12</SUP> % (8/14) of galaxies in low-density regions (regions with fewer than seven L> 0.15 L\\ast galaxies within 1.5 Mpc) have affiliated C IV absorption; however, none (0/7) of the galaxies in denser regions show C IV. Similarly, the C IV detection rate is lower for galaxies residing in groups with dark matter halo masses of {M}<SUB>{halo</SUB>}> {10}<SUP>12.5</SUP> {M}<SUB>☉ </SUB>. In contrast to C IV, H I is pervasive in the circumgalactic medium without regard to mass or environment. These results indicate that C IV absorbers with {log} N({{C}} {{IV}})≳ 13.5 {{cm}}<SUP>-2</SUP> trace the halos of {M}<SUB>* </SUB>> {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB> galaxies but also reflect larger-scale environmental conditions.'),
+            ('3_title', [u'STIS CCD Amp A, C, & D Gains']),
+            ('4_abstract', u'We use the Apparent Motion Parameters (AMP) method for the determination of orbits of visual double stars (Kiselev & Kiyaeva 1980). The quality of AMP orbits is completely dependent on the precision of parameters of relative positions and motions at the same instant. They are calculated on the basis of a short arc of observations. To determine these parameters, we use recent high precision observations obtained with the best modern techniques. New orbits of three stars are presented.'),
+        ])
+        for key, doc in zip(result.keys(), solr_data['response']['docs']):
+            if isinstance(doc[key[2:]], list):
+                assert(replace_html_entity(doc[key[2:]][0], encode_style=adsFormatter.unicode) == result[key][0])
+            elif isinstance(doc[key[2:]], str):
+                assert(replace_html_entity(doc[key[2:]], encode_style=adsFormatter.unicode) == result[key])
 
     def test_format_status(self):
         format_export = Format(solrdata.data)

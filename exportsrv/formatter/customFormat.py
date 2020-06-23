@@ -12,7 +12,7 @@ from exportsrv.formatter.cslJson import CSLJson
 from exportsrv.formatter.csl import CSL
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
 from exportsrv.formatter.strftime import strftime
-from exportsrv.utils import get_eprint
+from exportsrv.utils import get_eprint, replace_html_entity
 
 # This class accepts JSON object created by Solr and can reformats it
 # for the user define Custom Format Export.
@@ -183,6 +183,7 @@ class CustomFormat(Format):
             'Q': 'pub_raw',
             'q': 'pub',
             'R': 'bibcode',
+            'S': 'issue',
             'T': 'title',
             'U': 'url',
             'u': 'url',
@@ -458,6 +459,7 @@ class CustomFormat(Format):
             author_list_slice = []
             for i,j in zip([-len(', ')]+sep_index, sep_index+[len(author_list)]):
                 author_list_slice.append(author_list[i+len(', '):j])
+            print '.......----------', self.author_sep.join(author_list_slice)
             return self.author_sep.join(author_list_slice)
         return author_list
 
@@ -718,10 +720,18 @@ class CustomFormat(Format):
 
         # if no field encoding defined, check for global encoding
         if (self.export_format == adsFormatter.unicode):
+            if field == 'abstract':
+                # per alberto translate <P /> to blank lines, and <BR /> to a newline
+                value = value.replace('<P />', '\n\n').replace('<BR />', '\n')
+            if field in ['abstract', 'title']:
+                value = replace_html_entity(value, adsFormatter.unicode)
             return value
         if (self.export_format == adsFormatter.html):
             return cgi.escape(value)
         if (self.export_format == adsFormatter.latex):
+            # per alberto for bibtex translate <P /> to \\
+            if field == 'abstract':
+                value = value.replace('<P />', '\\\\').replace('<BR />', '\\')
             return self.__encode_latex(value, field)
 
         return value
@@ -827,7 +837,7 @@ class CustomFormat(Format):
             elif (field[2] == 'url'):
                 result = self.__add_in(result, field, self.__format_url(a_doc.get('bibcode', ''), field[1][-1]))
             elif (field[2] == 'abstract') or (field[2] == 'copyright') or (field[2] == 'bibcode') or \
-                 (field[2] == 'volume') or (field[2] == 'year'):
+                 (field[2] == 'volume') or (field[2] == 'year') or (field[2] == 'issue'):
                 result = self.__add_in(result, field, a_doc.get(field[2], ''))
             elif (field[2] == 'pub') or (field[2] == 'pub_raw'):
                 result = self.__add_in(result, field, self.__get_publication(field[1], a_doc))
