@@ -588,7 +588,7 @@ def csl_aastex_format_export_post():
     if status == 200:
         journal_format = export_post_extras(request, 'aastex')
         return return_csl_format_export(solr_data=results,
-                                        csl_style='aastex', export_format=2, journal_format=journal_format,
+                                        csl_style='aastex', export_format=adsFormatter.latex, journal_format=journal_format,
                                         request_type='POST')
     return return_response(results, status)
 
@@ -602,7 +602,7 @@ def csl_aastex_format_export_get(bibcode):
     :return:
     """
     return return_csl_format_export(solr_data=export_get(bibcode, 'aastex', 2),
-                                    csl_style='aastex', export_format=2, journal_format=1, request_type='GET')
+                                    csl_style='aastex', export_format=adsFormatter.latex, journal_format=adsJournalFormat.macro, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -615,7 +615,7 @@ def csl_icarus_format_export_post():
     results, status = export_post(request, 'icarus', 2)
     if status == 200:
         return return_csl_format_export(solr_data=results,
-                                        csl_style='icarus', export_format=2, journal_format=3, request_type='POST')
+                                        csl_style='icarus', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='POST')
     return return_response(results, status)
 
 
@@ -628,7 +628,7 @@ def csl_icarus_format_export_get(bibcode):
     :return:
     """
     return return_csl_format_export(solr_data=export_get(bibcode, 'icarus', 2),
-                                    csl_style='icarus', export_format=2, journal_format=3, request_type='GET')
+                                    csl_style='icarus', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -641,7 +641,7 @@ def csl_mnras_format_export_post():
     results, status = export_post(request, 'mnras', 2)
     if status == 200:
         return return_csl_format_export(solr_data=results,
-                                        csl_style='mnras', export_format=2, journal_format=3, request_type='POST')
+                                        csl_style='mnras', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='POST')
     return return_response(results, status)
 
 
@@ -654,7 +654,7 @@ def csl_mnras_format_export_get(bibcode):
     :return:
     """
     return return_csl_format_export(solr_data=export_get(bibcode, 'mnras', 2),
-                                    csl_style='mnras', export_format=2, journal_format=3, request_type='GET')
+                                    csl_style='mnras', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -667,7 +667,7 @@ def csl_soph_format_export_post():
     results, status = export_post(request, 'soph', 2)
     if status == 200:
         return return_csl_format_export(solr_data=results,
-                                        csl_style='soph', export_format=2, journal_format=3, request_type='POST')
+                                        csl_style='soph', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='POST')
     return return_response(results, status)
 
 
@@ -680,7 +680,7 @@ def csl_soph_format_export_get(bibcode):
     :return:
     """
     return return_csl_format_export(solr_data=export_get(bibcode, 'soph', 2),
-                                    csl_style='soph', export_format=2, journal_format=3, request_type='GET')
+                                    csl_style='soph', export_format=adsFormatter.latex, journal_format=3, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
