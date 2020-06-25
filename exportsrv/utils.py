@@ -14,8 +14,11 @@ def get_solr_data(bibcodes, fields, sort, start=0):
     :param sort:
     :return:
     """
+    authorization = current_app.config.get('SERVICE_TOKEN', None) or \
+                    request.headers.get('X-Forwarded-Authorization', request.headers.get('Authorization', ''))
+
     rows = min(current_app.config['EXPORT_SERVICE_MAX_RECORDS_SOLR_BIGQUERY'], len(bibcodes))
-    user_token = current_app.config.get('SERVICE_TOKEN', None) or request.headers.get('X-Forwarded-Authorization', request.headers.get('Authorization', ''))
+
     try:
         # use query if rows <= allowed number of bibcodes for query
         if rows <= current_app.config['EXPORT_SERVICE_MAX_RECORDS_SOLR_QUERY']:
@@ -29,7 +32,7 @@ def get_solr_data(bibcodes, fields, sort, start=0):
             response = current_app.client.get(
                 url=current_app.config['EXPORT_SOLR_QUERY_URL'],
                 params=params,
-                headers={'Authorization': user_token},
+                headers={'Authorization': authorization},
             )
         # otherwise go with bigquery
         else:
@@ -46,7 +49,7 @@ def get_solr_data(bibcodes, fields, sort, start=0):
                 url=current_app.config['EXPORT_SOLR_BIGQUERY_URL'],
                 params=params,
                 data='bibcode\n' + '\n'.join(bibcodes),
-                headers={'Authorization': user_token,
+                headers={'Authorization': authorization,
                          'Content-Type': 'big-query/csv'}
             )
         
