@@ -57,7 +57,7 @@ class adsFormatter:
             return adsFormatter.latex
         if native_format in self.native_xml:
             return adsFormatter.xml
-        return self.native_unicode
+        return adsFormatter.unicode
 
 class adsOrganizer:
     plain, citation_bibliography, bibliography = range(3)
