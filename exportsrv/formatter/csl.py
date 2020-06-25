@@ -131,7 +131,7 @@ class CSL:
             if (' et al.' in author):
                 for data in self.for_cls:
                     if (data['locator'] == bibcode):
-                        author = author.replace(' et al.', ', and {} colleagues'.format(len(data['author']) - 1))
+                        author = author.replace('et al.', 'and {} colleagues'.format(len(data['author']) - 1))
                         the_rest = the_rest.lstrip('\\')
         elif (self.csl_style == 'soph'):
             if ('et al.' in author):

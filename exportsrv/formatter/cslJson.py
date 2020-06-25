@@ -94,7 +94,7 @@ class CSLJson(Format):
         data['title'] = ''.join(a_doc.get('title', ''))
         data['author'] = self.__get_cls_author_list(a_doc)
         data['container-title'] = self.__get_doc_pub(a_doc)
-        data['container-title-short'] = a_doc.get('', '')
+        data['container-title-short'] = ''
         data['volume'] = a_doc.get('volume', '')
         data['issue'] = a_doc.get('issue', '')
         # both eid and page go into the page field in solr

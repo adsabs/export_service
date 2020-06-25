@@ -17,13 +17,13 @@
   </macro>
   <macro name="author">
     <names variable="author">
-      <name delimiter=", " and="symbol" delimiter-precedes-et-al="always" delimiter-precedes-last="always" et-al-min="4" et-al-use-first="3" et-al-subsequent-min="4" et-al-subsequent-use-first="3" initialize-with=". " name-as-sort-order="all"/>
+      <name delimiter=", " and="symbol" delimiter-precedes-et-al="contextual" delimiter-precedes-last="contextual" et-al-min="4" et-al-use-first="3" initialize-with=". " name-as-sort-order="all"/>
       <label form="short" prefix=" (" suffix=")" text-case="capitalize-first"/>
     </names>
   </macro>
   <macro name="author-short">
     <names variable="author">
-      <name delimiter=", " form="short" and="symbol" delimiter-precedes-et-al="never" delimiter-precedes-last="never" et-al-min="3" et-al-use-first="1" et-al-subsequent-min="3" et-al-subsequent-use-first="1" initialize-with=". " name-as-sort-order="all"/>
+      <name delimiter=", " form="short" and="symbol" delimiter-precedes-et-al="contextual" delimiter-precedes-last="contextual" et-al-min="3" et-al-use-first="1" initialize-with=". " name-as-sort-order="all"/>
     </names>
   </macro>
   <macro name="issued">
@@ -71,7 +71,7 @@
       </else-if>
     </choose>
   </macro>
-  <citation et-al-min="3" et-al-use-first="1" disambiguate-add-givenname="true" disambiguate-add-year-suffix="true" collapse="year" cite-group-delimiter=", ">
+  <citation disambiguate-add-givenname="true" disambiguate-add-year-suffix="true" collapse="year" cite-group-delimiter=", ">
     <sort>
       <key macro="author"/>
       <key macro="issued" sort="descending"/>

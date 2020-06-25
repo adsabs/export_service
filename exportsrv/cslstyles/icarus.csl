@@ -16,7 +16,7 @@
   </macro>
   <macro name="author">
     <names variable="author">
-      <name delimiter-precedes-last="always" et-al-min="7" et-al-use-first="1" et-al-subsequent-min="7" et-al-subsequent-use-first="1" initialize-with=". " name-as-sort-order="all"/>
+      <name delimiter=", " delimiter-precedes-et-al="contextual" delimiter-precedes-last="contextual" et-al-min="7" et-al-use-first="1" initialize-with=". " name-as-sort-order="all"/>
       <label form="short" prefix=" (" suffix=")" text-case="capitalize-first"/>
       <substitute>
         <names variable="editor"/>
@@ -27,7 +27,7 @@
   </macro>
   <macro name="author-short">
     <names variable="author">
-      <name form="short" and="text" et-al-min="3" et-al-use-first="1" et-al-subsequent-min="3" et-al-subsequent-use-first="1" initialize-with=". "/>
+      <name delimiter=", " form="short" and="text" delimiter-precedes-et-al="contextual" delimiter-precedes-last="contextual" et-al-min="3" et-al-use-first="1" initialize-with=". "/>
       <substitute>
         <names variable="editor"/>
         <names variable="translator"/>
@@ -72,7 +72,7 @@
       </else-if>
     </choose>
   </macro>
-  <citation et-al-min="3" et-al-use-first="1" disambiguate-add-givenname="true" disambiguate-add-year-suffix="true" collapse="year" cite-group-delimiter=", ">
+  <citation disambiguate-add-givenname="true" disambiguate-add-year-suffix="true" collapse="year" cite-group-delimiter=", ">
     <sort>
       <key macro="author"/>
       <key macro="issued" sort="descending"/>
