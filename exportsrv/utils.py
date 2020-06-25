@@ -49,8 +49,7 @@ def get_solr_data(bibcodes, fields, sort, start=0):
                 url=current_app.config['EXPORT_SOLR_BIGQUERY_URL'],
                 params=params,
                 data='bibcode\n' + '\n'.join(bibcodes),
-                headers={'Authorization': authorization,
-                         'Content-Type': 'big-query/csv'}
+                headers={'Authorization': authorization, 'Content-Type': 'big-query/csv'}
             )
         
         response.raise_for_status()
