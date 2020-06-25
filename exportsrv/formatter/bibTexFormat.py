@@ -331,6 +331,15 @@ class BibTexFormat(Format):
         return page
 
 
+    def __add_abstract(self, a_doc):
+        """
+        
+        :param a_doc: 
+        :return: 
+        """
+        abstract = a_doc.get('abstract', '').replace('<P />', '\\\\').replace('<BR />', '\\')
+        return encode_laTex(abstract)
+        
     def __add_in(self, field, value, output_format):
         """
         add the value into the return structure, only if a value was defined in Solr
@@ -378,7 +387,7 @@ class BibTexFormat(Format):
         return ''
 
 
-    def __add_in_wrapped(self, field, value, output_format):
+    def __field_wrapped(self, field, value, output_format):
         """
         add the value into the return structure, only if a value was defined in Solr
         
@@ -456,11 +465,11 @@ class BibTexFormat(Format):
         fields = self.__get_fields(a_doc)
         for field in fields:
             if (field == 'author') or (field == 'editor'):
-                text += self.__add_in_wrapped(fields[field], self.__get_author_list(a_doc, field, maxauthor, authorcutoff), format_style_bracket)
+                text += self.__field_wrapped(fields[field], self.__get_author_list(a_doc, field, maxauthor, authorcutoff), format_style_bracket)
             elif (field == 'title'):
                 text += self.__add_in(fields[field], encode_laTex(''.join(a_doc.get(field, ''))), format_style_bracket_quotes)
             elif (field == 'aff'):
-                text += self.__add_in_wrapped(fields[field], self.__get_affiliation_list(a_doc, maxauthor, authorcutoff), format_style_bracket)
+                text += self.__field_wrapped(fields[field], self.__get_affiliation_list(a_doc, maxauthor, authorcutoff), format_style_bracket)
             elif (field == 'pub_raw'):
                 text += self.__add_in(fields[field], self.__add_clean_pub_raw(a_doc), format_style_bracket)
             elif (field == 'pub'):
@@ -476,7 +485,7 @@ class BibTexFormat(Format):
             elif (field == 'month'):
                 text += self.__add_in(fields[field], self.__format_date(a_doc.get('pubdate', '')), format_style)
             elif (field == 'abstract') and (include_abs):
-                text += self.__add_in_wrapped(fields[field], encode_laTex(a_doc.get(field, '')), format_style_bracket_quotes)
+                text += self.__field_wrapped(fields[field], self.__add_abstract(a_doc), format_style_bracket_quotes)
             elif (field == 'eid'):
                 text += self.__add_in(fields[field], a_doc.get(field, ''), format_style_bracket)
             elif (field == 'page_range'):

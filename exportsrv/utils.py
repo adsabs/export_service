@@ -3,9 +3,9 @@ from flask import current_app, request
 import requests
 import re
 
-from exportsrv.client import client
+from exportsrv.formatter.ads import adsFormatter
 
-def get_solr_data(bibcodes, fields, sort, start=0):
+def get_solr_data(bibcodes, fields, sort, start=0, encode_style=None):
     """
 
     :param bibcodes:
@@ -51,8 +51,11 @@ def get_solr_data(bibcodes, fields, sort, start=0):
                 data='bibcode\n' + '\n'.join(bibcodes),
                 headers={'Authorization': authorization, 'Content-Type': 'big-query/csv'}
             )
-        
-        response.raise_for_status()
+
+        # Roman added this, I have seen issues with it in another service
+        # comment out 5/13 to locate what the issue was from the other service
+        # and discuss further with Roman
+        # response.raise_for_status()
 
         if (response.status_code == 200):
             # make sure solr found the documents
@@ -66,6 +69,15 @@ def get_solr_data(bibcodes, fields, sort, start=0):
                         if citations is not None:
                             doc.update({u'num_references':citations['num_references']})
                             doc.update({u'num_citations':citations['num_citations']})
+                        # replace any html entities in both title and abstract
+                        for field in ['title', 'abstract']:
+                            if field in doc:
+                                field_str = doc.get(field)
+                                if isinstance(field_str, list):
+                                    field_str[0] = replace_html_entity(field_str[0], encode_style)
+                                elif isinstance(field_str, str):
+                                    field_str = replace_html_entity(field_str, encode_style)
+                                doc[field] = field_str
                     from_solr['response']['numFound'] = len(from_solr['response']['docs'])
                     # reorder the list based on the list of bibcodes provided
                     if sort == current_app.config['EXPORT_SERVICE_NO_SORT_SOLR']:
@@ -91,7 +103,7 @@ def get_solr_data(bibcodes, fields, sort, start=0):
 def get_eprint(solr_doc):
     """
 
-    :param a_doc:
+    :param solr_doc:
     :return:
     """
     if 'eid' in solr_doc:
@@ -109,5 +121,34 @@ def get_eprint(solr_doc):
                 return 'arXiv:' + i
     return ''
 
+re_html_entity = re.compile(r'(&lt;|&gt;|&amp;|\\lt|\\gt|\\&)')
+def replace_html_entity(text, encode_style):
+    """
 
+    :param text:
+    :param encode_style:
+    :return:
+    """
+    # note that some of these character apprently encoded in html, and some in latex
+    if encode_style == adsFormatter.unicode:
+        html_entity_to_encode = {'&lt;': '<', '\\lt': '<',
+                                 '&gt;': '>', '\\gt': '>',
+                                 '&amp;': '&', '\\&': '&'}
+    elif encode_style == adsFormatter.xml:
+        html_entity_to_encode = {'&lt;': '&#60;', '\\lt': '&#60;',
+                                 '&gt;': '&#62;', '\\gt': '&#62;',
+                                 '&amp;': '&#38;', '\\&': '&#38;'}
+    else:
+        # make sure all the entities are in html (ie, replace all that are latex)
+        html_entity_to_encode = {'\\lt': '&lt;',
+                                 '\\gt': '&gt;',
+                                 '\\&': '&amp;'}
 
+    decode = False
+    for entity in re_html_entity.findall(text):
+        text = re.sub(entity, html_entity_to_encode.get(entity, ''), text)
+        decode = True
+    # preserve it as unicode
+    if decode:
+        text = text.decode("utf-8")
+    return text

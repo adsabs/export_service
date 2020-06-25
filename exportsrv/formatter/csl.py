@@ -39,7 +39,7 @@ class CSL:
         self.citation_item = []
         self.bibcode_list = []
 
-        self.__update_title()
+        self.__update_data()
 
         # Process the JSON data to generate a citaproc-py BibliographySource.
         bib_source = CiteProcJSON(self.for_cls)
@@ -72,10 +72,11 @@ class CSL:
             self.bibcode_list.append(''.join(item.get('locator', '')))
 
 
-    def __update_title(self):
+    def __update_data(self):
         """
         Update the container-title if needed for the specific style
         also apply latex encoding if needed for both title and container-title
+        also for icarus if there is page range, assign it to PMCID
 
         :return:
         """
@@ -83,8 +84,7 @@ class CSL:
         # available from adsutils
         if (self.csl_style == 'mnras'):
             for data in self.for_cls:
-                data['container-title'] = Format(None).get_pub_abbrev(data['bibstem'])
-                data['title'] = encode_laTex(data['title'])
+                data['container-title-short'] = Format(None).get_pub_abbrev(data['bibstem'])
         elif (self.csl_style == 'aastex') or (self.csl_style == 'aasj') or (self.csl_style == 'aspc'):
             # use macro (default)
             if self.journal_format == adsJournalFormat.macro or self.journal_format == adsJournalFormat.default:
@@ -105,12 +105,15 @@ class CSL:
             journal_abbrevation = current_app.config['EXPORT_SERVICE_SOPH_JOURNAL_ABBREVIATION']
             for data in self.for_cls:
                 data['container-title'] = journal_abbrevation.get(Format(None).get_bibstem(data['bibstem']), encode_laTex(data['container-title']))
-                data['title'] = encode_laTex(data['title'])
         # for the rest just run title and container-title through latex encoding
         elif (self.csl_style == 'icarus') or (self.csl_style == 'apsj'):
             for data in self.for_cls:
                 data['container-title'] = encode_laTex(data['container-title'])
                 data['title'] = encode_laTex(data['title'])
+        if (self.csl_style == 'icarus'):
+            for data in self.for_cls:
+                if len(data['page']) > 0:
+                    data['PMCID'] = data['page']
 
 
     def __update_author_etal(self, author, the_rest, bibcode):
@@ -128,7 +131,7 @@ class CSL:
             if (' et al.' in author):
                 for data in self.for_cls:
                     if (data['locator'] == bibcode):
-                        author = author.replace(' et al.', ', and {} colleagues'.format(len(data['author']) - 1))
+                        author = author.replace('et al.', 'and {} colleagues'.format(len(data['author']) - 1))
                         the_rest = the_rest.lstrip('\\')
         elif (self.csl_style == 'soph'):
             if ('et al.' in author):
@@ -242,6 +245,6 @@ class CSL:
             return ''.join(result for result in results)
         if (export_organizer == adsOrganizer.bibliography):
             for item in self.bibliography.bibliography():
-                results.append(html_to_laTex(str(item)))
+                results.append(str(item).replace('&amp;', '&'))
             return results
         return None

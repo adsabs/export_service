@@ -39,15 +39,29 @@ class CSLJson(Format):
         :param solr_type: 
         :return: 
         """
-        fields = {'article': 'article-journal', 'book': 'book', 'inbook': 'chapter',
-                  'proceedings': 'paper-conference', 'inproceedings': 'paper-conference',
-                  'abstract': 'article', 'misc': 'article-journal', 'eprint': 'article',
-                  'talk':'paper-conference','software':'software','proposal':'paper-conference',
-                  'pressrelease':'paper-conference', 'circular':'article', 'newsletter':'article',
-                  'catalog':'article','phdthesis':'thesis','mastersthesis':'thesis',
+        fields = {'article':'article', 'book':'book', 'inbook':'chapter',
+                  'proceedings':'paper-conference', 'inproceedings':'paper-conference',
+                  'misc':'report', 'circular':'report' ,'newsletter':'report',
                   'techreport':'report', 'intechreport':'report',
-                  'bookreview': 'article-journal', 'erratum': 'article-journal', 'obituary': 'article-journal'}
+                  'abstract': 'article-journal', 'bookreview':'review-book',
+                  'talk':'speech', 'software':'software', 'eprint':'manuscript',
+                  'pressrelease':'entry', 'catalog':'entry',
+                  'phdthesis':'thesis','mastersthesis':'thesis',
+                  'proposal':'personal_communication', 'editorial':'personal_communication', 
+                  'erratum':'personal_communication', 'obituary':'personal_communication'}
         return fields.get(solr_type, '')
+
+
+    def __get_doc_pub(self, a_doc):
+        """
+        some formats require pub_raw some pub, all is assigned into one variable for csl
+
+        :param a_doc:
+        :return:
+        """
+        if a_doc.get('doctype', '') in ['techreport', 'misc', 'newsletter', 'book']:
+            return a_doc.get('pub_raw', '')
+        return a_doc.get('pub', '')
 
 
     def __get_doc_json_author(self, index):
@@ -79,7 +93,7 @@ class CSLJson(Format):
         data['issued'] = ({'date-parts': [[int(a_doc['year'])]]})
         data['title'] = ''.join(a_doc.get('title', ''))
         data['author'] = self.__get_cls_author_list(a_doc)
-        data['container-title'] = a_doc.get('pub', '')
+        data['container-title'] = self.__get_doc_pub(a_doc)
         data['container-title-short'] = ''
         data['volume'] = a_doc.get('volume', '')
         data['issue'] = a_doc.get('issue', '')
@@ -88,13 +102,15 @@ class CSLJson(Format):
         # since it parses it and tries to determine the first page and the last page
         # before and after the dash, hence accepts only one dash in the page field
         # renaming the page to eid produces tones of warning
-        # so instead of eid went with PMCID that is a known identifer
+        # so instead of eid went with PMCID that is a known identifier
         data['PMCID'] = ''.join(a_doc.get('page', ''))
-        # lets keep the data in the page as well, eventhough it is not being used
+        # lets keep the data in the page as well, even though it is not being used
         if data['PMCID'].count('-') > 1:
-            data['page'] = data['PMCID'].replace('-', ' ')
+            data['page-first'] = data['PMCID'].replace('-', ' ')
         else:
-            data['page'] = data['PMCID']
+            data['page-first'] = data['PMCID']
+        # if there is a page_range, assign it to page, only needed for icarus
+        data['page'] = a_doc.get('page_range', '')
         data['type'] = self.__get_doc_type(a_doc.get('doctype', ''))
         data['locator'] = a_doc.get('bibcode')
         data['genre'] = str(a_doc.get('bibcode')[4:13]).strip('.')
@@ -117,7 +133,7 @@ class CSLJson(Format):
                 data['keyword'] = a_doc.get('eid', '')
             else:
                 data['keyword'] = ''
-        data['bibstem'] = a_doc.get('bibstem', '')
+        data['bibstem'] = a_doc.get('bibstem', [''])
         return data
 
 
