@@ -291,8 +291,16 @@ class BibTexFormat(Format):
         :param journalformat
         :return:
         """
-        if a_doc.get('doctype', '') == 'software':
+        doctype = a_doc.get('doctype', '')
+
+        if doctype == 'software':
             return None
+
+        # apply user preference only if pub is assigned to journal field
+        # pub is displayed for booktitle and how_published, in which case it should appears in full
+        need_full_pub = ['inbook', 'proceedings', 'inproceedings', 'abstract', 'misc', 'proposal', 'pressrelease', 'talk']
+        if doctype in need_full_pub:
+            return encode_laTex(''.join(a_doc.get('pub', '')))
 
         # use macro (default)
         if journalformat == adsJournalFormat.macro or journalformat == adsJournalFormat.default:

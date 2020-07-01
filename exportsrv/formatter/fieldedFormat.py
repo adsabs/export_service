@@ -453,8 +453,8 @@ class FieldedFormat(Format):
         :param value:
         :return:
         """
-        if (((isinstance(value, unicode)) or (isinstance(value, str))) and (len(value) > 0)) or \
-           ((isinstance(value, int)) and (value is not None)):
+        if ((isinstance(value, unicode) or isinstance(value, str)) and (len(value) > 0)) or \
+           (isinstance(value, int) and (value is not None)):
             return field + ' ' + value + '\n'
         return ''
 
@@ -504,7 +504,7 @@ class FieldedFormat(Format):
             elif (field == 'url'):
                 result += self.__add_in(fields[field], current_app.config['EXPORT_SERVICE_FROM_BBB_URL'] + '/' + a_doc.get('bibcode', ''))
             elif (field == 'endRecord'):
-                result += self.__add_in(fields[field], ' ')
+                result += (fields[field] + '\n')
             elif (field == 'pub_raw'):
                 result += self.__add_in(fields[field], self.__add_clean_pub_raw(a_doc))
             elif (field == 'links'):
