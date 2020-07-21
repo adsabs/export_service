@@ -72,6 +72,7 @@ def get_solr_data(bibcodes, fields, sort, start=0, encode_style=None):
                         # replace any html entities in both title and abstract
                         for field in ['title', 'abstract']:
                             if field in doc:
+                                print 'field=', field, encode_style
                                 field_str = doc.get(field)
                                 if isinstance(field_str, list):
                                     field_str[0] = replace_html_entity(field_str[0], encode_style)
@@ -121,7 +122,6 @@ def get_eprint(solr_doc):
                 return 'arXiv:' + i
     return ''
 
-re_html_entity = re.compile(r'(&lt;|&gt;|&amp;|\\lt|\\gt|\\&)')
 def replace_html_entity(text, encode_style):
     """
 
@@ -131,18 +131,20 @@ def replace_html_entity(text, encode_style):
     """
     # note that some of these character apprently encoded in html, and some in latex
     if encode_style == adsFormatter.unicode:
-        html_entity_to_encode = {'&lt;': '<', '\\lt': '<',
-                                 '&gt;': '>', '\\gt': '>',
-                                 '&amp;': '&', '\\&': '&'}
+        html_entity_to_encode = {'&lt;': '<', '\\\\lt': '<',
+                                 '&gt;': '>', '\\\\gt': '>',
+                                 '&amp;': '&', '\\\\&': '&'}
     elif encode_style == adsFormatter.xml:
-        html_entity_to_encode = {'&lt;': '&#60;', '\\lt': '&#60;',
-                                 '&gt;': '&#62;', '\\gt': '&#62;',
-                                 '&amp;': '&#38;', '\\&': '&#38;'}
+        html_entity_to_encode = {'&lt;': '&#60;', '\\\\lt': '&#60;',
+                                 '&gt;': '&#62;', '\\\\gt': '&#62;',
+                                 '&amp;': '&#38;', '\\\\&': '&#38;'}
     else:
         # make sure all the entities are in html (ie, replace all that are latex)
-        html_entity_to_encode = {'\\lt': '&lt;',
-                                 '\\gt': '&gt;',
-                                 '\\&': '&amp;'}
+        html_entity_to_encode = {'\\\\lt': '&lt;',
+                                 '\\\\gt': '&gt;',
+                                 '\\\\&': '&amp;'}
+
+    re_html_entity = re.compile(r'(%s)'%(r'|'.join(html_entity_to_encode.keys())))
 
     decode = False
     for entity in re_html_entity.findall(text):
