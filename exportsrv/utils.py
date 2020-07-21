@@ -72,7 +72,6 @@ def get_solr_data(bibcodes, fields, sort, start=0, encode_style=None):
                         # replace any html entities in both title and abstract
                         for field in ['title', 'abstract']:
                             if field in doc:
-                                print 'field=', field, encode_style
                                 field_str = doc.get(field)
                                 if isinstance(field_str, list):
                                     field_str[0] = replace_html_entity(field_str[0], encode_style)
