@@ -57,7 +57,9 @@ def get_solr_data(bibcodes, fields, sort, start=0, encode_style=None):
         # and discuss further with Roman
         # response.raise_for_status()
 
-        if (response.status_code == 200):
+        # response 203 is also acceptable, it means response is coming from another solr instance then this
+        # service is running in
+        if (response.status_code == 200) or (response.status_code == 203):
             # make sure solr found the documents
             from_solr = response.json()
             if (from_solr.get('response')):
