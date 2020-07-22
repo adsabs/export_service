@@ -1,4 +1,9 @@
 
+# encoding=utf8
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 from flask import current_app, request
 import requests
 import re
@@ -147,11 +152,7 @@ def replace_html_entity(text, encode_style):
 
     re_html_entity = re.compile(r'(%s)'%(r'|'.join(html_entity_to_encode.keys())))
 
-    decode = False
     for entity in re_html_entity.findall(text):
         text = re.sub(entity, html_entity_to_encode.get(entity, ''), text)
-        decode = True
-    # preserve it as unicode
-    if decode:
-        text = text.decode("utf-8")
+
     return text
