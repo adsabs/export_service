@@ -2,6 +2,7 @@
 
 from flask_testing import TestCase
 import unittest
+from requests import exceptions
 
 import json
 import mock
@@ -20,8 +21,8 @@ class TestSolrData(TestCase):
         Tests query and bigquery requests from solr depending on the number of bibcodes
         """
         # the mock is for solr call query, with 10 bibcodes
-        with mock.patch.object(self.current_app.client, 'get') as post_mock:
-            post_mock.return_value = mock_response = mock.Mock()
+        with mock.patch.object(self.current_app.client, 'get') as get_mock:
+            get_mock.return_value = mock_response = mock.Mock()
             mock_response.json.return_value = solrdata.data_6
             mock_response.status_code = 200
             bibcodes = ["2020AAS...23528705A", "2019EPSC...13.1911A", "2019AAS...23338108A", "2019AAS...23320704A",
@@ -53,6 +54,45 @@ class TestSolrData(TestCase):
                 if doc['bibcode'] == bibcodes[i]:
                     matched += 1
             self.assertEqual(matched, len(bibcodes))
+
+    def test_get_solr_data_when_error(self):
+        """
+        Test when solr returns status_code 2xx vs when there is an error
+
+        :return:
+        """
+        bibcodes = ["2020AAS...23528705A", "2019EPSC...13.1911A", "2019AAS...23338108A", "2019AAS...23320704A",
+                    "2018EPJWC.18608001A", "2018AAS...23221409A", "2018AAS...23136217A", "2018AAS...23130709A",
+                    "2017ASPC..512...45A", "2015scop.confE...3A"]
+
+        with mock.patch.object(self.current_app.client, 'get') as get_mock:
+            get_mock.return_value = mock_response = mock.Mock()
+            mock_response.raise_for_status = mock.Mock()
+            mock_response.raise_for_status.side_effect = exceptions.RequestException("Malformed request")
+            mock_response.status_code = 400
+            solr_data = get_solr_data(bibcodes=bibcodes, fields='bibcode,author,year,pub,bibstem',
+                                      sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
+            self.assertEqual(solr_data, None)
+
+        # with status code 200
+        with mock.patch.object(self.current_app.client, 'get') as get_mock:
+            get_mock.return_value = mock_response = mock.Mock()
+            mock_response.json.return_value = solrdata.data_6
+            mock_response.status_code = 200
+            solr_data = get_solr_data(bibcodes=bibcodes, fields='bibcode,author,year,pub,bibstem',
+                                      sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
+            self.assertEqual(len(solr_data['response']['docs']), len(bibcodes))
+
+        # response 203 is also acceptable, it means response is coming from another solr instance then
+        # where the service is running in
+        with mock.patch.object(self.current_app.client, 'get') as get_mock:
+            get_mock.return_value = mock_response = mock.Mock()
+            mock_response.status_code = 203
+            mock_response.json.return_value = solrdata.data_6
+            solr_data = get_solr_data(bibcodes=bibcodes, fields='bibcode,author,year,pub,bibstem',
+                                      sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
+            self.assertEqual(len(solr_data['response']['docs']), len(bibcodes))
+
 
 
 if __name__ == "__main__":

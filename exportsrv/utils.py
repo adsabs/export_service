@@ -57,47 +57,41 @@ def get_solr_data(bibcodes, fields, sort, start=0, encode_style=None):
                 headers={'Authorization': authorization, 'Content-Type': 'big-query/csv'}
             )
 
-        # Roman added this, I have seen issues with it in another service
-        # comment out 5/13 to locate what the issue was from the other service
-        # and discuss further with Roman
-        # response.raise_for_status()
+        response.raise_for_status()
 
-        # response 203 is also acceptable, it means response is coming from another solr instance then this
-        # service is running in
-        if (response.status_code == 200) or (response.status_code == 203):
-            # make sure solr found the documents
-            from_solr = response.json()
-            if (from_solr.get('response')):
-                num_docs = from_solr['response'].get('numFound', 0)
-                if num_docs > 0:
-                    for doc in from_solr['response']['docs']:
-                        # before proceeding remove the compunded field and assign it to individual count variables
-                        citations = doc.pop('[citations]', None)
-                        if citations is not None:
-                            doc.update({u'num_references':citations['num_references']})
-                            doc.update({u'num_citations':citations['num_citations']})
-                        # replace any html entities in both title and abstract
-                        for field in ['title', 'abstract']:
-                            if field in doc:
-                                field_str = doc.get(field)
-                                if isinstance(field_str, list):
-                                    field_str[0] = replace_html_entity(field_str[0], encode_style)
-                                elif isinstance(field_str, str):
-                                    field_str = replace_html_entity(field_str, encode_style)
-                                doc[field] = field_str
-                    from_solr['response']['numFound'] = len(from_solr['response']['docs'])
-                    # reorder the list based on the list of bibcodes provided
-                    if sort == current_app.config['EXPORT_SERVICE_NO_SORT_SOLR']:
-                        new_docs = []
-                        for bibcode in bibcodes:
-                            for i, doc in enumerate(from_solr['response']['docs']):
-                                if bibcode in doc['identifier']:
-                                    new_docs.append(doc)
-                                    from_solr['response']['docs'].pop(i)
-                                    break
-                        from_solr['response']['docs'] = new_docs
-                        from_solr['response']['numFound'] = len(new_docs)
-                    return from_solr
+        # make sure solr found the documents
+        from_solr = response.json()
+        if (from_solr.get('response')):
+            num_docs = from_solr['response'].get('numFound', 0)
+            if num_docs > 0:
+                for doc in from_solr['response']['docs']:
+                    # before proceeding remove the compunded field and assign it to individual count variables
+                    citations = doc.pop('[citations]', None)
+                    if citations is not None:
+                        doc.update({u'num_references':citations['num_references']})
+                        doc.update({u'num_citations':citations['num_citations']})
+                    # replace any html entities in both title and abstract
+                    for field in ['title', 'abstract']:
+                        if field in doc:
+                            field_str = doc.get(field)
+                            if isinstance(field_str, list):
+                                field_str[0] = replace_html_entity(field_str[0], encode_style)
+                            elif isinstance(field_str, str):
+                                field_str = replace_html_entity(field_str, encode_style)
+                            doc[field] = field_str
+                from_solr['response']['numFound'] = len(from_solr['response']['docs'])
+                # reorder the list based on the list of bibcodes provided
+                if sort == current_app.config['EXPORT_SERVICE_NO_SORT_SOLR']:
+                    new_docs = []
+                    for bibcode in bibcodes:
+                        for i, doc in enumerate(from_solr['response']['docs']):
+                            if bibcode in doc['identifier']:
+                                new_docs.append(doc)
+                                from_solr['response']['docs'].pop(i)
+                                break
+                    from_solr['response']['docs'] = new_docs
+                    from_solr['response']['numFound'] = len(new_docs)
+                return from_solr
 
         current_app.logger.error('Solr returned {response}.'.format(response=response))
         return None
