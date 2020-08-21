@@ -189,7 +189,7 @@ class CSL:
         :return:
         """
         # apsj is a special case, display biblio as csl has format, just adjust translate characters for LaTex
-        if (self.csl_style == 'apsj'):
+        if (self.csl_style == 'apsj') or (self.csl_style == 'ieee'):
             cita_author, cita_year = '', ''
             biblio_author = cita
             biblio_rest = biblio.replace(cita,'')
@@ -204,11 +204,13 @@ class CSL:
             cita_author = encode_laTex_author(cita_author)
             biblio_author = encode_laTex_author(biblio_author)
 
-        # some adjustments to the what is returned from CSL that we can not do with CSL
-        cita_author = html_to_laTex(self.__update_author_etal_add_emph(cita_author))
-        biblio_author, biblio_rest = self.__update_author_etal(biblio_author, biblio_rest, bibcode)
-        biblio_author = html_to_laTex(biblio_author)
-        biblio_rest = html_to_laTex(biblio_rest)
+            # some adjustments to the what is returned from CSL that we can not do with CSL
+            cita_author = html_to_laTex(self.__update_author_etal_add_emph(cita_author))
+            biblio_author, biblio_rest = self.__update_author_etal(biblio_author, biblio_rest, bibcode)
+            biblio_author = html_to_laTex(biblio_author)
+            biblio_rest = html_to_laTex(biblio_rest)
+        else:
+            biblio_author, biblio_rest = self.__update_author_etal(biblio_author, biblio_rest, bibcode)
 
         format_style = {
             'mnras': u'\\bibitem[\\protect\\citeauthoryear{{{}}}{{{}}}]{{{}}} {}{}',
@@ -217,7 +219,8 @@ class CSL:
             'aastex': u'\\bibitem[{}({})]{{{}}} {}{}',
             'aspc': u'\\bibitem[{}({})]{{{}}} {}{}',
             'aasj': u'\\bibitem[{}({})]{{{}}} {}{}',
-            'apsj': u'{}{}{}{}{}'
+            'apsj': u'{}{}{}{}{}',
+            'ieee': u'{}{}{}{}{}'
         }
         return format_style[self.csl_style].format(cita_author, cita_year, bibcode, biblio_author, biblio_rest)
 

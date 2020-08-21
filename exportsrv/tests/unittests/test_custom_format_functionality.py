@@ -324,6 +324,13 @@ class TestExportsCustomFormat(TestCase):
         custom_format.set_json_from_solr(solrdata.data_6)
         assert (custom_format.get().get('export', ''), "2020AAS...23528705A--END2019EPSC...13.1911A--END2015scop.confE...3A--END2019AAS...23338108A--END2019AAS...23320704A--END2018EPJWC.18608001A--END2018AAS...23221409A--END2017ASPC..512...45A--END2018AAS...23136217A--END2018AAS...23130709A--END")
 
+    def test_page_count(self):
+        # verify %pc outputs page_count properly
+        formatted = [u'Yang, Huihui and Chen, Hongshan. (2017). 71, 191, 9 pp.\n',
+                     u'Knapp, Wilfried and Thuemen, Chris. (2017). 13, 25, 6 pp.\n']
+        custom_format = CustomFormat(custom_format=r'%A. (%Y). %q, %V, %p, %pc pp.')
+        custom_format.set_json_from_solr(solrdata.data_8)
+        assert (custom_format.get().get('export', '') == ''.join(formatted))
 
 if __name__ == '__main__':
     unittest.main()

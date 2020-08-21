@@ -29,7 +29,7 @@ def default_solr_fields():
     """
     return 'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,' \
            'read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,' \
-           'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem'
+           'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem,page_count'
 
 
 def return_response(results, status, request_type=''):
@@ -715,6 +715,7 @@ def csl_format_export():
         return return_response({'error': 'not all the needed information received'}, 400)
 
     if (not adsCSLStyle().verify(csl_style)):
+        print '......csl_style', csl_style
         return return_response({'error': 'unrecognizable style (supprted formats are: ' + adsCSLStyle().get() + ')'}, 400)
     if (not adsFormatter().verify(export_format)):
         return return_response({'error': 'unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)'}, 400)
@@ -864,4 +865,31 @@ def rss_format_export_get(bibcode, link):
     :return:
     """
     return return_rss_format_export(solr_data=export_get(bibcode, 'RSS'), link=link, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/ieee', methods=['POST'])
+def csl_ieee_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = export_post(request, 'ieee', 2)
+    if status == 200:
+        return return_csl_format_export(solr_data=results,
+                                        csl_style='ieee', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/ieee/<bibcode>', methods=['GET'])
+def csl_ieee_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'ieee', 2),
+                                    csl_style='ieee', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='GET')
+
 

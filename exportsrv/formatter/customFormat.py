@@ -180,6 +180,7 @@ class CustomFormat(Format):
             'p': 'page,page_range',
             'P': 'lastpage,page_range',  # Last Page
             'pp':'page_range,page',      # page_range is specified in the custom format, but if not available and page is then return that
+            'pc':'page_count',
             'Q': 'pub_raw',
             'q': 'pub',
             'R': 'bibcode',
@@ -298,6 +299,9 @@ class CustomFormat(Format):
         self.__parse_enumeration()
         for m in self.REGEX_CUSTOME_FORMAT.finditer(self.custom_format):
             self.parsed_spec.append(tuple((m.start(1), m.group(1), self.__get_solr_field(m.group(1)))))
+        # we have %p, %pp, and %pc, when doing replace, %p causes other two to be replaced
+        # re did not work, so pushing %p to the end to be the last item to get replaced
+        self.parsed_spec = sorted(self.parsed_spec, key=lambda tup: tup[1] == '%p')
         self.__escape()
         self.__for_csv()
 
@@ -459,7 +463,6 @@ class CustomFormat(Format):
             author_list_slice = []
             for i,j in zip([-len(', ')]+sep_index, sep_index+[len(author_list)]):
                 author_list_slice.append(author_list[i+len(', '):j])
-            print '.......----------', self.author_sep.join(author_list_slice)
             return self.author_sep.join(author_list_slice)
         return author_list
 
@@ -841,7 +844,7 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, a_doc.get(field[2], ''))
             elif (field[2] == 'pub') or (field[2] == 'pub_raw'):
                 result = self.__add_in(result, field, self.__get_publication(field[1], a_doc))
-            elif (field[2] == 'citation_count'):
+            elif (field[2] == 'citation_count') or (field[2] == 'page_count'):
                 result = self.__add_in(result, field, str(a_doc.get(field[2], '')))
             elif (field[2] == 'eid,identifier'):
                 result = self.__add_in(result, field, get_eprint(a_doc))

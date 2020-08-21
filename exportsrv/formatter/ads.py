@@ -63,7 +63,7 @@ class adsOrganizer:
     plain, citation_bibliography, bibliography = range(3)
 
 class adsCSLStyle:
-    ads_CLS = ['aastex', 'icarus', 'mnras', 'soph', 'aspc', 'apsj', 'aasj']
+    ads_CLS = ['aastex', 'icarus', 'mnras', 'soph', 'aspc', 'apsj', 'aasj', 'ieee']
 
     def verify(self, style):
         if (style in self.ads_CLS):

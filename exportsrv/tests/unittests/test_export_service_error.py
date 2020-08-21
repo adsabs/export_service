@@ -75,7 +75,7 @@ class TestExportsError(TestCase):
         Ensure that if payload contains the supported styles for each endpoints otherwise returns 400
         """
         payload = {'bibcode': '1989ApJ...342L..71R', 'style': 'nonExsistingStyle', 'format': 'nonEsistingFormat'}
-        end_point = {'/csl':'{"error": "unrecognizable style (supprted formats are: aastex, icarus, mnras, soph, aspc, apsj, aasj)"}'}
+        end_point = {'/csl':'{"error": "unrecognizable style (supprted formats are: aastex, icarus, mnras, soph, aspc, apsj, aasj, ieee)"}'}
         for key in end_point:
             r = self.client.post(key, data=json.dumps(payload))
             status = r.status_code
