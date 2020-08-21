@@ -138,6 +138,12 @@ class TestExports(TestCase):
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_AASJ)
 
+    def test_ieee(self):
+        # format the stubdata using the code
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'ieee', adsFormatter.unicode).get()
+        # now compare it with an already formatted data that we know is correct
+        assert (csl_export == cslTest.data_ieee)
+
     def test_custom(self):
         # format the stubdata using the code
         custom_format = CustomFormat(custom_format=r'%ZEncoding:latex\\bibitem[%2.1m\\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p ')
@@ -159,7 +165,7 @@ class TestExports(TestCase):
     def test_default_solr_fields(self):
         default_fields = 'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,' \
                          'read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,' \
-                         'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem'
+                         'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem,page_count'
         assert (views.default_solr_fields() == default_fields)
 
     def test_bibtex_success(self):
@@ -193,14 +199,14 @@ class TestExports(TestCase):
     def test_csl(self):
         export_format = 2
         journal_macro = 1
-        for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj']:
+        for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj', 'ieee']:
             response = views.return_csl_format_export(solrdata.data, csl_style, export_format, journal_macro)
             assert(response._status_code == 200)
 
     def test_csl_no_data(self):
         export_format = 2
         journal_macro = 1
-        for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj']:
+        for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj', 'ieee']:
             response = views.return_csl_format_export(None, csl_style, export_format, journal_macro)
             assert(response._status_code == 404)
 
@@ -395,7 +401,8 @@ class TestExports(TestCase):
 
     def test_all_posts(self):
         endpoints = ['/bibtex', '/bibtexabs', '/ads', '/endnote', '/procite', '/ris', '/refworks', '/medlars',
-                     '/dcxml', '/refxml', '/refabsxml', '/aastex', '/icarus', '/mnras', '/soph', 'votable', 'rss']
+                     '/dcxml', '/refxml', '/refabsxml', '/aastex', '/icarus', '/mnras', '/soph', 'votable',
+                     'rss', '/ieee']
         payload = {'bibcode': self.app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'],
                    'link': ''}
         for ep in endpoints:
@@ -534,9 +541,11 @@ class TestExports(TestCase):
             'aspc': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters, doi:10.1007/s00367-005-0006-y.\n',
             'apsj': u'P. Aharon, {\\bf doi:10.1007/s00367-005-0006-y}, (2005).\n',
             'aasj': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters, doi:10.1007/s00367-005-0006-y.\n',
+            'ieee': u'[1]Aharon, P., “Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico”, <i>Geo-Marine Letters</i>, vol. doi:10.1007/s00367-005-0006-y. 2005. doi: 10.1007/s00367-005-0006-y.\n'
         }
-        for style in adsCSLStyle.ads_CLS:
-            csl_export = CSL(CSLJson(solrdata.data_7).get(), style, adsFormatter.latex).get().get('export', '')
+        cls_default_formats = [adsFormatter.latex] * 6 + [adsFormatter.unicode] * 2
+        for style, format in zip(adsCSLStyle.ads_CLS, cls_default_formats):
+            csl_export = CSL(CSLJson(solrdata.data_7).get(), style, format).get().get('export', '')
             assert (csl_export == csl_export_output[style])
 
 

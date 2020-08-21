@@ -116,10 +116,15 @@ which can be passed as payload to `/rss` endpoint.
 
     {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"", "format":"", sort:"date desc, bibcode, desc"}
 
-    where style can be: aastex, icarus, mnras, soph, aspc, apsj, or aasj and format can be: 1, 2 or 3, for output formats Unicode, HTML or LaTeX respectively. There is an optional parameter journalformat applicable to the three formats: aastex, aspc, and aasj, which allows user to decide on the format of journal name, with values 1, 2, and 3 respectively to indicate uses AASTeX macros (default), use journal abbreviations, or use full journal name.
+    where style can be: aastex, icarus, mnras, soph, aspc, apsj, aasj or ieee, and format can be: 1, 2 or 3, for output formats Unicode, HTML or LaTeX respectively. There is an optional parameter journalformat applicable to the three formats: aastex, aspc, and aasj, which allows user to decide on the format of journal name, with values 1, 2, and 3 respectively to indicate uses AASTeX macros (default), use journal abbreviations, or use full journal name.
 
 
-###### 5. For endpoint /custom define payload as:
+###### 5. Using endpoint /ieee output is in ieee format, unicode encoded
+
+    note that IEEE format can be both accessed through its own endpoint /ieee, and /csl with style set to ieee.
+
+
+###### 6. For endpoint /custom define payload as:
 
     {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "format":"%ZEncoding:latex%ZLinelength:0\bibitem[%4m(%Y)]{%R} %5.3l\ %Y, %j, %V, %p.\n"}
 

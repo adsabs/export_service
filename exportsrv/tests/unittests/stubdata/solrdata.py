@@ -844,3 +844,41 @@ data_7 = \
         ]
     }
 }
+
+data_8 = \
+{
+    u'responseHeader':{
+        u'status':0,
+        u'QTime':41,
+        u'params':{
+            u'q':'bibcode:(2017EPJD...71..191Y or 2017JDSO...13...25K)',
+            u'indent':'on',
+            u'fl':'bibcode,author,year,pub,volume,page,page_count',
+            u'wt':'json'
+        }
+    },
+    u'response':{
+        u'numFound':2,
+        u'start':0,
+        u'docs':[
+            {
+                u'page_count':9,
+                u'year': '2017',
+                u'page':['191'],
+                u'bibcode':'2017EPJD...71..191Y',
+                u'author':[u'Yang, Huihui', u'Chen, Hongshan'],
+                u'pub':'European Physical Journal D',
+                u'volume':'71'
+            },
+            {
+                u'page_count':6,
+                u'year': '2017',
+                u'page':['25'],
+                u'bibcode':'2017JDSO...13...25K',
+                u'author':[u'Knapp, Wilfried', u'Thuemen, Chris'],
+                u'pub':'Journal of Double Star Observations',
+                u'volume':'13'
+            }
+        ]
+    }
+}
