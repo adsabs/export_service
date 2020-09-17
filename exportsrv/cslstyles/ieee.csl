@@ -7,6 +7,7 @@
     <category citation-format="numeric"/>
     <category field="engineering"/>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
+    <!-- original code from http://www.zotero.org/styles/ieee with some modifications here -->
   </info>
   <macro name="status">
     <choose>
