@@ -509,17 +509,17 @@ class TestExports(TestCase):
         # display full journal name
         csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.full).get().get('export', '')
         # now compare it with an already formatted data that we know is correct
-        aastex_full_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, Physical Review Letters, 120, 029901\n'
+        aastex_full_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, Physical Review Letters, 120, 029901. doi: 10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_full_journal_name)
         # display full journal name
         csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get().get('export', '')
         # now compare it with an already formatted data that we know is correct
-        aastex_abbrev_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, PhRvL, 120, 029901\n'
+        aastex_abbrev_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, PhRvL, 120, 029901. doi: 10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_abbrev_journal_name)
         # display full journal name
         csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.default).get().get('export', '')
         # now compare it with an already formatted data that we know is correct
-        aastex_default_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, \\prl, 120, 029901\n'
+        aastex_default_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, \\prl, 120, 029901. doi: 10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_default_journal_name)
 
 
@@ -534,7 +534,7 @@ class TestExports(TestCase):
     def test_tmp_bibcode_format(self):
         # test bibcodes that have no volume and page but doi for all CSL formats
         csl_export_output = {
-            'aastex': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters, doi:10.1007/s00367-005-0006-y\n',
+            'aastex': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters, doi:10.1007/s00367-005-0006-y. doi: 10.1007/s00367-005-0006-y\n',
             'icarus': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005.\\ Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico.\\ Geo-Marine Letters doi:10.1007/s00367-005-0006-y.\n',
             'mnras': u'\\bibitem[\\protect\\citeauthoryear{Aharon}{2005}]{2005GML...tmp....1A} Aharon P., 2005, GML...tmp, doi:10.1007/s00367-005-0006-y\n',
             'soph': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A}Aharon, P.: 2005, {\\it Geo-Marine Letters} {\\bf doi:10.1007/s00367-005-0006-y}.\n',
