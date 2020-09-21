@@ -82,7 +82,7 @@
           </group>
         </else-if>
         <else-if type="software">
-          <text variable="container-title" form="short" text-case="title"/>
+          <text variable="container-title" text-case="title"/>
         </else-if>
         <else>
           <group delimiter=" ">
@@ -97,6 +97,7 @@
           </group>
         </else>
       </choose>
+      <text variable="DOI" prefix=". "/>
     </layout>
   </bibliography>
 </style>

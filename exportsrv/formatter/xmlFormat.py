@@ -29,9 +29,9 @@ class XMLFormat(Format):
                                           ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
                                           ('xsi:schemaLocation', 'http://ads.harvard.edu/schema/abs/1.1/references http://ads.harvard.edu/schema/abs/1.1/references.xsd')]
 
-    EXPORT_SERVICE_RECORDS_SET_XML_REF_ABS = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/abstract'),
+    EXPORT_SERVICE_RECORDS_SET_XML_REF_ABS = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/abstracts'),
                                               ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
-                                              ('xsi:schemaLocation', 'http://ads.harvard.edu/schema/abs/1.1/abstract http://ads.harvard.edu/schema/abs/1.1/abstract.xsd')]
+                                              ('xsi:schemaLocation', 'http://ads.harvard.edu/schema/abs/1.1/abstracts http://ads.harvard.edu/schema/abs/1.1/abstracts.xsd')]
 
     EXPORT_SERVICE_RECORDS_SET_XML_DUBLIN = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/dc'),
                                              ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),

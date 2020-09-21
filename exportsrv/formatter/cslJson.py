@@ -117,22 +117,26 @@ class CSLJson(Format):
         data['publisher'] = a_doc.get('publisher', '')
         data['version'] = a_doc.get('version', '')
         data['DOI'] = ''.join(a_doc.get('doi', ''))
+        if len(data['DOI']) > 0:
+            # attach doi: here since, please see little further down, if doctype is software
+            # and there is no doi, if there is eid then eid is going to be displayed in the same location
+            # obviously, eid should not be prefixed with doi
+            data['DOI'] = 'doi:' + data['DOI']
+        # 18/9/20202 as per Alberto displaying doi, if available, for all doctypes and all cls formats
         # from edwin: if there is no volume and page,
         # and there is DOI, display DOI.
         # hence DOI is assigned to volume, to be displayed in the same location, only if this is not software
-        if len(data['volume']) == 0 and len(data['page']) == 0 and len(data['DOI']) > 0 and data['type'] != 'software':
-            data['volume'] = 'doi:' + data['DOI']
-        # if the record is software (applies to aastex format only, do not care what style it is at this point though),
+        # if len(data['volume']) == 0 and len(data['page']) == 0 and len(data['DOI']) > 0 and data['type'] != 'software':
+        #     data['volume'] = 'doi:' + data['DOI']
+        # if the record is software,
         # according to alberto we are either displaying DOI or eid
         # \bibitem[...]{bibcode}  {authors} {year}, {title}, {version}, {publisher}, (doi:{doi}|{eid})
         # there is no best variable to assign this either of these to, so go with 'keyword' for now
         if data['type'] == 'software':
-            if len(data['DOI']) > 0:
-                data['keyword'] = 'doi:' + data['DOI']
-            elif len(a_doc.get('eid', '')) > 0:
-                data['keyword'] = a_doc.get('eid', '')
+            if len(data['DOI']) == 0 and len(a_doc.get('eid', '')) > 0:
+                data['DOI'] = a_doc.get('eid', '')
             else:
-                data['keyword'] = ''
+                data['DOI'] = ''
         data['bibstem'] = a_doc.get('bibstem', [''])
         return data
 

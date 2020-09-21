@@ -445,6 +445,20 @@ class FieldedFormat(Format):
         return pub_raw
 
 
+    def __add_abstract(self, a_doc):
+        """
+
+        :param a_doc:
+        :return:
+        """
+        # 9/21/2020 from Alberto
+        # seeing how we have other markup in this output format (<SUB>, <SUP>, <A>, etc)
+        # I would keep this markup as well, rather than replace it. This will generate an abstract
+        # that fits in a single line and then can be post-processed by the end user as needed
+        # return a_doc.get('abstract', '').replace('<P />', '\n').replace('<BR />', '\n')
+        return a_doc.get('abstract', '')
+
+
     def __add_in(self, field, value):
         """
         add the value into the return structure, only if a value was defined in Solr
@@ -494,7 +508,8 @@ class FieldedFormat(Format):
             elif (field == 'pubdate'):
                 result += self.__add_in(fields[field], self.__format_date(a_doc.get(field, ''), export_format))
             elif (field == 'abstract'):
-                result += self.__add_in(fields[field], self.__format_line_wrapped(a_doc.get(field, '')))
+                # 9/18/2020 as per request of a user, no line wrapping abstract
+                result += self.__add_in(fields[field], self.__add_abstract(a_doc))
             elif (field == 'aff'):
                 result += self.__get_affiliation_list(a_doc, export_format, fields[field])
             elif (field == 'keyword'):

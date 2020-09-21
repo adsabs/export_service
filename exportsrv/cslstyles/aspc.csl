@@ -114,6 +114,7 @@
           <text macro="locators"/>
         </group>
       </group>
+      <text variable="DOI" prefix=" " suffix="."/>
     </layout>
   </bibliography>
 </style>

@@ -162,6 +162,18 @@ def return_rss_format_export(solr_data, link, request_type='POST'):
     return return_response({'error': 'no result from solr'}, 404)
 
 
+def read_value_list_or_not(payload, field):
+    """
+
+    :param payload:
+    :param field:
+    :return:
+    """
+    if type(payload[field]) is list:
+        return payload[field][0]
+    return payload[field]
+
+
 def export_post(request, style, format=-1):
     """
 
@@ -180,10 +192,7 @@ def export_post(request, style, format=-1):
     if 'bibcode' not in payload:
         return {'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400
     if 'sort' in payload:
-        if type(payload['sort']) is list:
-            sort = payload['sort'][0]
-        else:
-            sort = payload['sort']
+        sort = read_value_list_or_not(payload, 'sort')
     else:
         sort = 'date desc, bibcode desc'
 
@@ -220,10 +229,7 @@ def export_post_extras(request, style):
         :return:
         """
         if 'journalformat' in payload:
-            if type(payload['journalformat']) is list:
-                journalformat = payload['journalformat'][0]
-            else:
-                journalformat = payload['journalformat']
+            journalformat = read_value_list_or_not(payload, 'journalformat')
             if not adsJournalFormat().verify(journalformat):
                 journalformat = adsJournalFormat.default
         else:
@@ -239,10 +245,7 @@ def export_post_extras(request, style):
     if style in ['BibTex', 'BibTex Abs']:
         if payload:
             if 'maxauthor' in payload:
-                if type(payload['maxauthor']) is list:
-                    maxauthor = payload['maxauthor'][0]
-                else:
-                    maxauthor = payload['maxauthor']
+                maxauthor = read_value_list_or_not(payload, 'maxauthor')
                 if maxauthor < 0:
                     maxauthor = 0
             elif style == 'BibTex':
@@ -251,17 +254,11 @@ def export_post_extras(request, style):
                 # for BibTex Abs default is to display all authors and hence 0
                 maxauthor = 0
             if 'keyformat' in payload:
-                if type(payload['keyformat']) is list:
-                    keyformat = payload['keyformat'][0]
-                else:
-                    keyformat = payload['keyformat']
+                keyformat = read_value_list_or_not(payload, 'keyformat')
             else:
                 keyformat = '%R'
             if 'authorcutoff' in payload:
-                if type(payload['authorcutoff']) is list:
-                    authorcutoff = payload['authorcutoff'][0]
-                else:
-                    authorcutoff = payload['authorcutoff']
+                authorcutoff = read_value_list_or_not(payload, 'authorcutoff')
                 if authorcutoff <= 0:
                     authorcutoff = 200
             else:
@@ -700,10 +697,7 @@ def csl_format_export():
     if 'format' not in payload:
         return return_response({'error': 'no output format found in payload (parameter name is `format`)'}, 400)
     if 'sort' in payload:
-        if type(payload['sort']) is list:
-            sort = payload['sort'][0]
-        else:
-            sort = payload['sort']
+        sort = read_value_list_or_not(payload, 'sort')
     else:
         sort = 'date desc, bibcode desc'
 
@@ -715,7 +709,6 @@ def csl_format_export():
         return return_response({'error': 'not all the needed information received'}, 400)
 
     if (not adsCSLStyle().verify(csl_style)):
-        print '......csl_style', csl_style
         return return_response({'error': 'unrecognizable style (supprted formats are: ' + adsCSLStyle().get() + ')'}, 400)
     if (not adsFormatter().verify(export_format)):
         return return_response({'error': 'unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)'}, 400)
@@ -743,20 +736,13 @@ def custom_format_export():
     if 'format' not in payload:
         return return_response({'error': 'no custom format found in payload (parameter name is `format`)'}, 400)
     if 'sort' in payload:
-        if type(payload['sort']) is list:
-            sort = payload['sort'][0]
-        else:
-            sort = payload['sort']
+        sort = read_value_list_or_not(payload, 'sort')
     else:
         sort = 'date desc, bibcode desc'
 
-
     bibcodes = payload['bibcode']
     try:
-        if type(payload['format']) is list:
-            custom_format_str = payload['format'][0]
-        else:
-            custom_format_str = payload['format']
+        custom_format_str = read_value_list_or_not(payload, 'format')
     except Exception as e:
         return return_response({'error': 'unable to read custom format'}, 400)
 
@@ -783,7 +769,7 @@ def custom_format_export():
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/convert', methods=['POST'])
-def custom_format_convert():
+def custom_format_convert():                # pragma: no cover
     """
 
     :return: converted custom format to the new specification
@@ -841,10 +827,7 @@ def rss_format_export_post():
         payload = dict(request.form)  # post data in form encoding
 
     if 'link' in payload:
-        if type(payload['link']) is list:
-            link = payload['link'][0]
-        else:
-            link = payload['link']
+        link = read_value_list_or_not(payload, 'link')
     else:
         link = ''
 
@@ -891,5 +874,3 @@ def csl_ieee_format_export_get(bibcode):
     """
     return return_csl_format_export(solr_data=export_get(bibcode, 'ieee', 2),
                                     csl_style='ieee', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='GET')
-
-

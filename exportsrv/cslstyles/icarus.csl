@@ -103,6 +103,7 @@
           <text macro="locators"/>
         </group>
       </group>
+      <text variable="DOI" prefix=" "/>
     </layout>
   </bibliography>
 </style>

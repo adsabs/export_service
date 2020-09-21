@@ -101,7 +101,7 @@
           <text macro="locators"/>
         </group>
       </group>
-      <text variable="DOI" prefix=". doi: "/>
+      <text variable="DOI" prefix=". "/>
     </layout>
   </bibliography>
 </style>
