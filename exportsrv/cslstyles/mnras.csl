@@ -79,6 +79,7 @@
       </date>
       <text macro="container"/>
       <text macro="locators"/>
+      <text variable="DOI" prefix=". "/>
     </layout>
   </bibliography>
 </style>
