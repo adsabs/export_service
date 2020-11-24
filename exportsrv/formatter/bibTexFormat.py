@@ -473,7 +473,7 @@ class BibTexFormat(Format):
         fields = self.__get_fields(a_doc)
         for field in fields:
             if (field == 'author') or (field == 'editor'):
-                text += self.__field_wrapped(fields[field], self.__get_author_list(a_doc, field, maxauthor, authorcutoff), format_style_bracket)
+                text += self.__add_in(fields[field], self.__get_author_list(a_doc, field, maxauthor, authorcutoff), format_style_bracket)
             elif (field == 'title'):
                 text += self.__add_in(fields[field], encode_laTex(''.join(a_doc.get(field, ''))), format_style_bracket_quotes)
             elif (field == 'aff'):
