@@ -882,3 +882,103 @@ data_8 = \
         ]
     }
 }
+
+data_9 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 13,
+        u'params': {
+            u'sort': u'date desc, bibcode desc',
+            u'rows': u'1',
+            u'fq': u'{!bitset}',
+            u'q': u'*:*',
+            u'start': u'0',
+            u'wt': u'json',
+            u'fl': u'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem'
+        }
+    },
+    u'response': {
+        u'start': 0,
+        u'numFound': 1,
+        u'docs': [
+            {
+                u'identifier': [u'2021arXiv210101542A', u'2021A&A...645L..11A', u'10.1051/0004-6361/202039988', u'arXiv:2101.01542', u'2021arXiv210101542A', u'10.1051/0004-6361/202039988'],
+                u'pubdate': u'2021-01-00',
+                u'abstract': u"We present a new summary statistic for weak lensing observables, higher than second order, suitable for extracting non-Gaussian cosmological information and inferring cosmological parameters. We name this statistic the `starlet ℓ<SUB>1</SUB>-norm' as it is computed via the sum of the absolute values of the starlet (wavelet) decomposition coefficients of a weak lensing map. In comparison to the state-of-the-art higher-order statistics - weak lensing peak counts and minimum counts, or the combination of the two - the ℓ<SUB>1</SUB>-norm provides a fast multi-scale calculation of the full void and peak distribution, avoiding the problem of defining what a peak is and what a void is: the ℓ<SUB>1</SUB>-norm carries the information encoded in all pixels of the map, not just the ones in local maxima and minima. We show its potential by applying it to the weak lensing convergence maps provided by the MassiveNus simulations to get constraints on the sum of neutrino masses, the matter density parameter, and the amplitude of the primordial power spectrum. We find that, in an ideal setting without further systematics, the starlet ℓ<SUB>1</SUB>-norm remarkably outperforms commonly used summary statistics, such as the power spectrum or the combination of peak and void counts, in terms of constraining power, representing a promising new unified framework to simultaneously account for the information encoded in peak counts and voids. We find that the starlet ℓ<SUB>1</SUB>-norm outperforms the power spectrum by 72% on M<SUB>ν</SUB>, 60% on Ω<SUB>m</SUB>, and 75% on A<SUB>s</SUB> for the Euclid-like setting considered; it also improves upon the state-of-the-art combination of peaks and voids for a single smoothing scale by 24% on M<SUB>ν</SUB>, 50% on Ω<SUB>m</SUB>, and 24% on A<SUB>s</SUB>.",
+                u'year': u'2021',
+                u'property': [u'ARTICLE', u'EPRINT_OPENACCESS', u'ESOURCE', u'OPENACCESS', u'PUB_OPENACCESS', u'REFEREED'],
+                u'page': [u'L11'],
+                u'bibcode': u'2021A&A...645L..11A',
+                u'bibstem': [u'A&A', u'A&A...645'],
+                u'author': [u'Ajani, Virginia', u'Starck, Jean-Luc', u'Pettorino, Valeria'],
+                u'aff': [u'AIM, CEA, CNRS, Université Paris-Saclay, Université de Paris, Sorbonne Paris Cité, 91191, Gif-sur-Yvette, France',
+                         u'AIM, CEA, CNRS, Université Paris-Saclay, Université de Paris, Sorbonne Paris Cité, 91191, Gif-sur-Yvette, France',
+                         u'AIM, CEA, CNRS, Université Paris-Saclay, Université de Paris, Sorbonne Paris Cité, 91191, Gif-sur-Yvette, France'],
+                u'esources': [u'EPRINT_HTML', u'EPRINT_PDF', u'PUB_HTML', u'PUB_PDF'],
+                u'arxiv_class': [u'astro-ph.CO'],
+                u'pub': u'Astronomy and Astrophysics',
+                u'volume': u'645',
+                u'issn': [u'0004-6361'],
+                u'doi': [u'10.1051/0004-6361/202039988'],
+                u'keyword': [u'cosmological parameters', u'large-scale structure of Universe', u'methods: statistical',
+                             u'neutrinos', u'surveys', u'Astrophysics - Cosmology and Nongalactic Astrophysics'],
+                u'doctype': u'article',
+                u'read_count': 157,
+                u'pub_raw': u'Astronomy &amp; Astrophysics, Volume 645, id.L11, <NUMPAGES>8</NUMPAGES> pp.',
+                u'eid': u'L11',
+                u'title': [u'Starlet ℓ<SUB>1</SUB>-norm for weak lensing cosmology'],
+                u'num_references': 0,
+                u'num_citations': 0,
+            }
+        ]
+    }
+}
+
+data_10 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 13,
+        u'params': {
+            u'sort': u'date desc, bibcode desc',
+            u'rows': u'1',
+            u'fq': u'{!bitset}',
+            u'q': u'*:*',
+            u'start': u'0',
+            u'wt': u'json',
+            u'fl': u'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem'
+        }
+    },
+    u'response': {
+        u'start': 0,
+        u'numFound': 1,
+        u'docs': [
+            {
+                u'identifier': [u'2003iha..book..109G', u'2003ASSL..285..109G', u'10.1007/0-306-48080-8_7', u'2003iha..book..109G', u'10.1007/0-306-48080-8_7'],
+                u'pubdate': u'2003-03-00',
+                u'abstract': u'At this writing, the AIPS package has been in active development and use for over 23 years. It is still the software of choice for all phases of data reduction for the Very Large Array, the most productive groundbased telescope in the world. It is the primary reduction system for most Very Long Baseline Interferometry including the VLBA and has been used to reduce data from other radio interferometers and single-dish telescopes as well as data taken at other wavelengths. The history and general structure of this software package are reviewed and a number of the scientific achievements for which it has been used are summarized.',
+                u'year': u'2003',
+                u'property': [u'ARTICLE', u'ESOURCE', u'REFEREED', u'TOC'],
+                u'page': [u'109'],
+                u'bibcode': u'2003ASSL..285..109G',
+                u'copyright': u'(c) 2003: Kluwer Academic Publishers',
+                u'author': [u'Greisen, E. W.'],
+                u'aff': [u'National Radio Astronomy Observatory'],
+                u'esources': [u'PUB_HTML'],
+                u'editor': [u'Heck, André'],
+                u'pub': u'Information Handling in Astronomy - Historical Vistas',
+                u'volume': u'285',
+                u'page_range': u'109',
+                u'doi': [u'10.1007/0-306-48080-8_7'],
+                u'bibstem': [u'ASSL', u'ASSL..285'],
+                u'doctype': u'inbook',
+                u'read_count': 35,
+                u'pub_raw': u'Information Handling in Astronomy - Historical Vistas. Edited by André Heck, Strasbourg Astronomical Observatory, France. Astrophysics and Space Science Library, Vol. 285.  Dordrecht: Kluwer Academic Publishers, 2003., p.109',
+                u'title': [u'AIPS, the VLA, and the VLBA'],
+                u'num_references': 0,
+                u'num_citations': 0,
+            }
+        ]
+    }
+}

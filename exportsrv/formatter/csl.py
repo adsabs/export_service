@@ -11,7 +11,7 @@ import os
 
 from exportsrv.formatter.ads import adsFormatter, adsOrganizer, adsJournalFormat
 from exportsrv.formatter.format import Format
-from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author, html_to_laTex
+from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author, html_to_laTex, encode_latex_doi
 
 # This class accepts JSON and sends it to citeproc library to get reformated
 # We are supporting 7 complete cls (formatting all the fields) and 13 syles that
@@ -84,7 +84,9 @@ class CSL:
         # available from adsutils
         if (self.csl_style == 'mnras'):
             for data in self.for_cls:
-                data['container-title-short'] = Format(None).get_pub_abbrev(data['bibstem'])
+                data['container-title-short'] = encode_laTex(Format(None).get_pub_abbrev(data['bibstem']))
+                if data.get('DOI', None) is not None:
+                    data['DOI'] = encode_latex_doi(data['DOI'])
         elif (self.csl_style == 'aastex') or (self.csl_style == 'aasj') or (self.csl_style == 'aspc'):
             # use macro (default)
             if self.journal_format == adsJournalFormat.macro or self.journal_format == adsJournalFormat.default:
@@ -92,28 +94,41 @@ class CSL:
                 for data in self.for_cls:
                     data['container-title'] = journal_macros.get(Format(None).get_bibstem(data['bibstem']), encode_laTex(data['container-title']))
                     data['title'] = encode_laTex(data['title'])
+                    if data.get('DOI', None) is not None:
+                        data['DOI'] = encode_latex_doi(data['DOI'])
             elif self.journal_format == adsJournalFormat.abbreviated:
                 for data in self.for_cls:
-                    data['container-title'] = Format(None).get_pub_abbrev(data['bibstem'])
+                    data['container-title'] = encode_laTex(Format(None).get_pub_abbrev(data['bibstem']))
                     data['title'] = encode_laTex(data['title'])
+                    if data.get('DOI', None) is not None:
+                        data['DOI'] = encode_latex_doi(data['DOI'])
             elif self.journal_format == adsJournalFormat.full:
                 for data in self.for_cls:
                     data['container-title'] = encode_laTex(data['container-title'])
                     data['title'] = encode_laTex(data['title'])
+                    if data.get('DOI', None) is not None:
+                        data['DOI'] = encode_latex_doi(data['DOI'])
         # for SoPh we use journal abbreviation for some special journals only
         elif (self.csl_style == 'soph'):
             journal_abbrevation = current_app.config['EXPORT_SERVICE_SOPH_JOURNAL_ABBREVIATION']
             for data in self.for_cls:
                 data['container-title'] = journal_abbrevation.get(Format(None).get_bibstem(data['bibstem']), encode_laTex(data['container-title']))
-        # for the rest just run title and container-title through latex encoding
-        elif (self.csl_style == 'icarus') or (self.csl_style == 'apsj'):
+                if data.get('DOI', None) is not None:
+                    data['DOI'] = encode_latex_doi(data['DOI'])
+        # run title and container-title through latex encoding
+        elif (self.csl_style == 'icarus'):
             for data in self.for_cls:
                 data['container-title'] = encode_laTex(data['container-title'])
                 data['title'] = encode_laTex(data['title'])
-        if (self.csl_style == 'icarus'):
-            for data in self.for_cls:
-                if len(data['page']) > 0:
+                if data.get('page', None) is not None:
                     data['PMCID'] = data['page']
+                if data.get('DOI', None) is not None:
+                    data['DOI'] = encode_latex_doi(data['DOI'])
+        # run title and container-title through latex encoding
+        elif (self.csl_style == 'apsj'):
+            for data in self.for_cls:
+                data['container-title'] = encode_laTex(data['container-title'])
+                data['title'] = encode_laTex(data['title'])
 
 
     def __update_author_etal(self, author, the_rest, bibcode):
