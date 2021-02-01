@@ -73,6 +73,32 @@ def encode_laTex_author(text):
             text = key.sub(REGEX_LATEX_AUTHOR[key], text)
     return text
 
+
+def encode_latex_doi(text):
+    """
+    :param text: plain text
+    :return: escaped to appear correctly in LaTeX
+    """
+    conv = {
+        '&': r'\&',
+        '%': r'\%',
+        '$': r'\$',
+        '#': r'\#',
+        '_': r'\_',
+        '{': r'\{',
+        '}': r'\}',
+        '~': r'\textasciitilde{}',
+        '^': r'\^{}',
+        '\\': r'\textbackslash{}',
+        '<': r'\textless{}',
+        '>': r'\textgreater{}',
+    }
+    if (len(text) > 1):
+        regex = re.compile('|'.join(re.escape(str(key)) for key in sorted(conv.keys(), key = lambda item: - len(item))))
+        return regex.sub(lambda match: conv[match.group()], text)
+    return text
+
+
 def html_to_laTex(text):
     """
 

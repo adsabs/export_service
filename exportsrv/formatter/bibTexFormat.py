@@ -9,7 +9,7 @@ import json
 from unidecode import unidecode
 
 from exportsrv.formatter.ads import adsJournalFormat
-from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
+from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author, encode_latex_doi
 from exportsrv.formatter.format import Format
 from exportsrv.utils import get_eprint
 from exportsrv.formatter.strftime import strftime
@@ -307,7 +307,7 @@ class BibTexFormat(Format):
             journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
             return journal_macros.get(self.get_bibstem(a_doc.get('bibstem', '')), encode_laTex(''.join(a_doc.get('pub', ''))))
         elif journalformat == adsJournalFormat.abbreviated:
-            return Format(None).get_pub_abbrev(a_doc.get('bibstem', ''))
+            return encode_laTex(Format(None).get_pub_abbrev(a_doc.get('bibstem', '')))
         elif journalformat == adsJournalFormat.full:
             return encode_laTex(''.join(a_doc.get('pub', '')))
 
@@ -483,7 +483,7 @@ class BibTexFormat(Format):
             elif (field == 'pub'):
                 text += self.__add_in(fields[field], self.__get_journal(a_doc, journalformat), format_style_bracket)
             elif (field == 'doi'):
-                text += self.__add_in(fields[field], ''.join(a_doc.get(field, '')), format_style_bracket)
+                text += self.__add_in(fields[field], encode_latex_doi(''.join(a_doc.get(field, ''))), format_style_bracket)
             elif (field == 'keyword'):
                 text += self.__add_in(fields[field], self.__add_keywords(a_doc), format_style_bracket)
             elif (field == 'year'):

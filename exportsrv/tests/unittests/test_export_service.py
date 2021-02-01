@@ -510,16 +510,21 @@ class TestExports(TestCase):
         # now compare it with an already formatted data that we know is correct
         aastex_full_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, Physical Review Letters, 120, 029901. doi:10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_full_journal_name)
-        # display full journal name
+        # display abbreviated journal name
         csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get().get('export', '')
         # now compare it with an already formatted data that we know is correct
         aastex_abbrev_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, PhRvL, 120, 029901. doi:10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_abbrev_journal_name)
-        # display full journal name
+        # display default journal name, which is the macro option
         csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.default).get().get('export', '')
         # now compare it with an already formatted data that we know is correct
         aastex_default_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, \\prl, 120, 029901. doi:10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_default_journal_name)
+        # display abbreviated journal name that needs to be escaped
+        csl_export = CSL(CSLJson(solrdata.data_9).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get().get('export', '')
+        # now compare it with an already formatted data that we know is correct
+        aastex_abbrev_journal_name = u'\\bibitem[Ajani et al.(2021)]{2021A&A...645L..11A} Ajani, V., Starck, J.-L., \& Pettorino, V.\ 2021, A\&A, 645, L11. doi:10.1051/0004-6361/202039988\n'
+        assert (csl_export == aastex_abbrev_journal_name)
 
 
     def test_bibtex_enumeration(self):
@@ -545,6 +550,24 @@ class TestExports(TestCase):
         cls_default_formats = [adsFormatter.latex] * 6 + [adsFormatter.unicode] * 2
         for style, format in zip(adsCSLStyle.ads_CLS, cls_default_formats):
             csl_export = CSL(CSLJson(solrdata.data_7).get(), style, format).get().get('export', '')
+            assert (csl_export == csl_export_output[style])
+
+
+    def test_encode_doi(self):
+        # test doi that is encoded properly
+        csl_export_output = {
+            'aastex': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\_7\n',
+            'icarus': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\ 2003.\ AIPS, the VLA, and the VLBA.\ Information Handling in Astronomy - Historical Vistas 109. doi:10.1007/0-306-48080-8\_7\n',
+            'mnras': u'\\bibitem[\protect\citeauthoryear{Greisen}{2003}]{2003ASSL..285..109G} Greisen E.~W., 2003, ASSL, 109. doi:10.1007/0-306-48080-8\_7\n',
+            'soph': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G}Greisen, E.W.: 2003, {\it Information Handling in Astronomy - Historical Vistas}, 109. doi:10.1007/0-306-48080-8\_7.\n',
+            'aspc': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\_7.\n',
+            'apsj': u'E.~W. Greisen, in {\\bf 285}, 109. doi:10.1007/0-306-48080-8_7.\n',
+            'aasj': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E. W.\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\_7.\n',
+            'ieee': u'[1]Greisen, E. W., “AIPS, the VLA, and the VLBA”, in <i>Information Handling in Astronomy - Historical Vistas</i>, vol. 285, 2003, p. 109. doi:10.1007/0-306-48080-8_7.\n'
+        }
+        cls_default_formats = [adsFormatter.latex] * 6 + [adsFormatter.unicode] * 2
+        for style, format in zip(adsCSLStyle.ads_CLS, cls_default_formats):
+            csl_export = CSL(CSLJson(solrdata.data_10).get(), style, format).get().get('export', '')
             assert (csl_export == csl_export_output[style])
 
 
