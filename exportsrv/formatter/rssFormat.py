@@ -107,11 +107,11 @@ class RSSFormat(Format):
             for index in range(num_docs):
                 self.__get_doc(index, channel)
             format = ET.tostring(rss, encoding='utf8', method='xml')
-            format = ('>\n<'.join(format.split('><')))
-            format = format.replace('<item>', '\n<item>')
+            format = (b'>\n<'.join(format.split(b'><')))
+            format = format.replace(b'<item>', b'\n<item>')
         result_dict = {}
         result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
-        result_dict['export'] = format
+        result_dict['export'] = format.decode('utf8')
         return result_dict
 
 

@@ -357,7 +357,7 @@ class BibTexFormat(Format):
         :param output_format: 
         :return: 
         """
-        if (((isinstance(value, unicode)) or (isinstance(value, str))) and (len(value) > 0)) or \
+        if (((isinstance(value, str)) or (isinstance(value, bytes))) and (len(value) > 0)) or \
            ((isinstance(value, int)) and (value is not None)):
             return output_format.format(field, value) + ',\n'
         return ''
@@ -426,7 +426,7 @@ class BibTexFormat(Format):
                     maxauthor = 1
                 # need to make sure the key is returned in ascii format
                 authors = self.__get_author_lastname_list(a_doc, maxauthor)
-                if type(authors) != unicode:
+                if type(authors) != str:
                     authors = authors.decode('utf-8', 'ignore')
                 key = key.replace(field[1], unidecode(authors))
             elif (field[2] == 'year'):
@@ -537,7 +537,7 @@ class BibTexFormat(Format):
             # if more than one element is found
             # add this one to the end with the next character attached to i
             else:
-                self.enumerated_keys.append(new_key + str(unichr(ord('a') + count)))
+                self.enumerated_keys.append(new_key + str(chr(ord('a') + count)))
         return self.enumerated_keys
 
 

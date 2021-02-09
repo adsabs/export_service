@@ -7,7 +7,7 @@ from collections import OrderedDict
 
 import exportsrv.app as app
 
-from stubdata import solrdata
+from exportsrv.tests.unittests.stubdata import solrdata
 from exportsrv.formatter.csl import CSL, adsFormatter
 from exportsrv.formatter.customFormat import CustomFormat
 
@@ -178,7 +178,7 @@ class TestExportsCustomFormat(TestCase):
                             ('%^e', 'English, J.'),
                             ('%^f', 'English'),
         ])
-        for key, value in author_format.iteritems():
+        for key, value in author_format.items():
             assert (custom_format._CustomFormat__get_author_list(format=key, index=0) == value)
 
 
@@ -222,7 +222,7 @@ class TestExportsCustomFormat(TestCase):
                             '%%':'',
         }
         a_doc = solrdata.data_3['response'].get('docs')[0]
-        for key, value in publication_format.iteritems():
+        for key, value in publication_format.items():
             assert (custom_format._CustomFormat__get_publication(key, a_doc) == value)
 
     def test_encode(self):

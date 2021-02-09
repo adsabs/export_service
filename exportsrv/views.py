@@ -13,7 +13,6 @@ from exportsrv.formatter.xmlFormat import XMLFormat
 from exportsrv.formatter.bibTexFormat import BibTexFormat
 from exportsrv.formatter.fieldedFormat import FieldedFormat
 from exportsrv.formatter.customFormat import CustomFormat
-from exportsrv.formatter.convertCF import convert
 from exportsrv.formatter.voTableFormat import VOTableFormat
 from exportsrv.formatter.rssFormat import RSSFormat
 from exportsrv.tests.unittests.stubdata import solrdata
@@ -765,29 +764,6 @@ def custom_format_export():
         custom_export.set_json_from_solr(solr_data)
         return return_response(custom_export.get(), 200, 'POST')
     return return_response({'error': 'no result from solr'}, 404)
-
-
-@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/convert', methods=['POST'])
-def custom_format_convert():                # pragma: no cover
-    """
-
-    :return: converted custom format to the new specification
-    """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'format' not in payload:
-        return return_response({'error': 'no classic custom format found in payload (parameter name is `format`)'}, 400)
-
-    classic_custom_format = payload['format']
-
-    current_app.logger.info('received request to convert the classic custom format "' + classic_custom_format + '".')
-    return return_response(convert(classic_custom_format), 200, 'POST')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])

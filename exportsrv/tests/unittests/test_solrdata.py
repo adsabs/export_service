@@ -9,7 +9,7 @@ import mock
 
 import exportsrv.app as app
 from exportsrv.utils import get_solr_data
-from stubdata import solrdata
+from exportsrv.tests.unittests.stubdata import solrdata
 
 class TestSolrData(TestCase):
     def create_app(self):

@@ -537,11 +537,11 @@ class XMLFormat(Format):
                 for index in range(num_docs):
                     self.__get_doc_dublin_xml(index, records)
             format_xml = ET.tostring(records, encoding='utf8', method='xml')
-            format_xml = ('>\n<'.join(format_xml.split('><')))
-            format_xml = format_xml.replace('</record>', '</record>\n')
+            format_xml = (b'>\n<'.join(format_xml.split(b'><')))
+            format_xml = format_xml.replace(b'</record>', b'</record>\n')
         result_dict = {}
         result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
-        result_dict['export'] = format_xml
+        result_dict['export'] = format_xml.decode('utf8')
         return result_dict
 
 
