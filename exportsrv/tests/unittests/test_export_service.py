@@ -30,6 +30,17 @@ class TestExports(TestCase):
         app_ = app.create_app()
         return app_
 
+    def setUp(self):
+        """ executed before each test """
+        # prevent display of the following warning from citeproc
+        #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
+        #    warn('The following arguments for {} are '.format(cls_name) +
+        warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
+
+    def tearDown(self):
+        """ executed after each test """
+        pass
+
     def test_bibtex(self):
         # format the stubdata using the code
         bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=1)
@@ -97,100 +108,52 @@ class TestExports(TestCase):
         assert(xml_export == xmlTest.data_ref_with_abs)
 
     def test_aastex(self):
-        with warnings.catch_warnings():
-            # prevent display of the following warning from citeproc
-            #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
-            #    warn('The following arguments for {} are '.format(cls_name) +
-            warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
-
-            # format the stubdata using the code
-            csl_export = CSL(CSLJson(solrdata.data).get(), 'aastex', adsFormatter.latex).get()
-            # now compare it with an already formatted data that we know is correct
-            assert (csl_export == cslTest.data_AASTex)
+        # format the stubdata using the code
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'aastex', adsFormatter.latex).get()
+        # now compare it with an already formatted data that we know is correct
+        assert (csl_export == cslTest.data_AASTex)
 
     def test_icarus(self):
-        with warnings.catch_warnings():
-            # prevent display of the following warning from citeproc
-            #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
-            #    warn('The following arguments for {} are '.format(cls_name) +
-            warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
-
-            # format the stubdata using the code
-            csl_export = CSL(CSLJson(solrdata.data).get(), 'icarus', adsFormatter.latex).get()
-            # now compare it with an already formatted data that we know is correct
-            assert (csl_export == cslTest.data_Icarus)
+        # format the stubdata using the code
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'icarus', adsFormatter.latex).get()
+        # now compare it with an already formatted data that we know is correct
+        assert (csl_export == cslTest.data_Icarus)
 
     def test_mnras(self):
-        with warnings.catch_warnings():
-            # prevent display of the following warning from citeproc
-            #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
-            #    warn('The following arguments for {} are '.format(cls_name) +
-            warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
-
-            # format the stubdata using the code
-            csl_export = CSL(CSLJson(solrdata.data).get(), 'mnras', adsFormatter.latex).get()
-            # now compare it with an already formatted data that we know is correct
-            assert(csl_export == cslTest.data_MNRAS)
+        # format the stubdata using the code
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'mnras', adsFormatter.latex).get()
+        # now compare it with an already formatted data that we know is correct
+        assert(csl_export == cslTest.data_MNRAS)
 
     def test_soph(self):
-        with warnings.catch_warnings():
-            # prevent display of the following warning from citeproc
-            #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
-            #    warn('The following arguments for {} are '.format(cls_name) +
-            warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
-
-            # format the stubdata using the code
-            csl_export = CSL(CSLJson(solrdata.data).get(), 'soph', adsFormatter.latex).get()
-            # now compare it with an already formatted data that we know is correct
-            assert (csl_export == cslTest.data_SoPh)
+        # format the stubdata using the code
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'soph', adsFormatter.latex).get()
+        # now compare it with an already formatted data that we know is correct
+        assert (csl_export == cslTest.data_SoPh)
 
     def test_aspc(self):
-        with warnings.catch_warnings():
-            # prevent display of the following warning from citeproc
-            #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
-            #    warn('The following arguments for {} are '.format(cls_name) +
-            warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
-
-            # format the stubdata using the code
-            csl_export = CSL(CSLJson(solrdata.data).get(), 'aspc', adsFormatter.latex).get()
-            # now compare it with an already formatted data that we know is correct
-            assert (csl_export == cslTest.data_ASPC)
+        # format the stubdata using the code
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'aspc', adsFormatter.latex).get()
+        # now compare it with an already formatted data that we know is correct
+        assert (csl_export == cslTest.data_ASPC)
 
     def test_apsj(self):
-        with warnings.catch_warnings():
-            # prevent display of the following warning from citeproc
-            #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
-            #    warn('The following arguments for {} are '.format(cls_name) +
-            warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
-
-            # format the stubdata using the code
-            csl_export = CSL(CSLJson(solrdata.data).get(), 'apsj', adsFormatter.latex).get()
-            # now compare it with an already formatted data that we know is correct
-            assert (csl_export == cslTest.data_APSJ)
+        # format the stubdata using the code
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'apsj', adsFormatter.latex).get()
+        # now compare it with an already formatted data that we know is correct
+        assert (csl_export == cslTest.data_APSJ)
 
     def test_aasj(self):
-        with warnings.catch_warnings():
-            # prevent display of the following warning from citeproc
-            #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
-            #    warn('The following arguments for {} are '.format(cls_name) +
-            warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
-
-            # format the stubdata using the code
-            csl_export = CSL(CSLJson(solrdata.data).get(), 'aasj', adsFormatter.latex).get()
-            # now compare it with an already formatted data that we know is correct
-            assert (csl_export == cslTest.data_AASJ)
+        # format the stubdata using the code
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'aasj', adsFormatter.latex).get()
+        # now compare it with an already formatted data that we know is correct
+        assert (csl_export == cslTest.data_AASJ)
 
     def test_ieee(self):
-        with warnings.catch_warnings():
-            # prevent display of the following warning from citeproc
-            #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
-            #    warn('The following arguments for {} are '.format(cls_name) +
-            warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
-
-            # format the stubdata using the code
-            csl_export = CSL(CSLJson(solrdata.data).get(), 'ieee', adsFormatter.unicode).get()
-            # now compare it with an already formatted data that we know is correct
-            assert (csl_export == cslTest.data_ieee)
+        # format the stubdata using the code
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'ieee', adsFormatter.unicode).get()
+        # now compare it with an already formatted data that we know is correct
+        assert (csl_export == cslTest.data_ieee)
 
     def test_custom(self):
         # format the stubdata using the code
@@ -242,17 +205,11 @@ class TestExports(TestCase):
             assert(response._status_code == 404)
 
     def test_csl(self):
-        with warnings.catch_warnings():
-            # prevent display of the following warning from citeproc
-            #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
-            #    warn('The following arguments for {} are '.format(cls_name) +
-            warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
-
-            export_format = 2
-            journal_macro = 1
-            for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj', 'ieee']:
-                response = views.return_csl_format_export(solrdata.data, csl_style, export_format, journal_macro)
-                assert(response._status_code == 200)
+        export_format = 2
+        journal_macro = 1
+        for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj', 'ieee']:
+            response = views.return_csl_format_export(solrdata.data, csl_style, export_format, journal_macro)
+            assert(response._status_code == 200)
 
     def test_csl_no_data(self):
         export_format = 2
@@ -432,45 +389,33 @@ class TestExports(TestCase):
 
 
     def test_all_gets(self):
-        with warnings.catch_warnings():
-            # prevent display of the following warning from citeproc
-            #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
-            #    warn('The following arguments for {} are '.format(cls_name) +
-            warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
-
-            function_names = [views.bibTex_format_export_get, views.bibTex_abs_format_export_get,
-                              views.fielded_ads_format_export_get, views.fielded_endnote_format_export_get,
-                              views.fielded_procite_format_export_get, views.fielded_refman_format_export_get,
-                              views.fielded_refworks_format_export_get, views.fielded_medlars_format_export_get,
-                              views.xml_dublincore_format_export_get, views.xml_ref_format_export_get,
-                              views.xml_refabs_format_export_get, views.csl_aastex_format_export_get,
-                              views.csl_icarus_format_export_get, views.csl_mnras_format_export_get,
-                              views.csl_soph_format_export_get, views.votable_format_export_get,
-                              views.rss_format_export_get, views.csl_ieee_format_export_get]
-            bibcode = self.app.config['EXPORT_SERVICE_TEST_BIBCODE_GET']
-            for f in function_names:
-                if f == views.rss_format_export_get:
-                    response = f(bibcode, '')
-                else:
-                    response = f(bibcode)
-                assert (response._status_code == 200)
+        function_names = [views.bibTex_format_export_get, views.bibTex_abs_format_export_get,
+                          views.fielded_ads_format_export_get, views.fielded_endnote_format_export_get,
+                          views.fielded_procite_format_export_get, views.fielded_refman_format_export_get,
+                          views.fielded_refworks_format_export_get, views.fielded_medlars_format_export_get,
+                          views.xml_dublincore_format_export_get, views.xml_ref_format_export_get,
+                          views.xml_refabs_format_export_get, views.csl_aastex_format_export_get,
+                          views.csl_icarus_format_export_get, views.csl_mnras_format_export_get,
+                          views.csl_soph_format_export_get, views.votable_format_export_get,
+                          views.rss_format_export_get, views.csl_ieee_format_export_get]
+        bibcode = self.app.config['EXPORT_SERVICE_TEST_BIBCODE_GET']
+        for f in function_names:
+            if f == views.rss_format_export_get:
+                response = f(bibcode, '')
+            else:
+                response = f(bibcode)
+            assert (response._status_code == 200)
 
 
     def test_all_posts(self):
-        with warnings.catch_warnings():
-            # prevent display of the following warning from citeproc
-            #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
-            #    warn('The following arguments for {} are '.format(cls_name) +
-            warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
-
-            endpoints = ['/bibtex', '/bibtexabs', '/ads', '/endnote', '/procite', '/ris', '/refworks', '/medlars',
-                         '/dcxml', '/refxml', '/refabsxml', '/aastex', '/icarus', '/mnras', '/soph', 'votable',
-                         'rss', '/ieee']
-            payload = {'bibcode': self.app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'],
-                       'link': ''}
-            for ep in endpoints:
-                response = self.client.post(ep, data=json.dumps(payload))
-                assert (response._status_code == 200)
+        endpoints = ['/bibtex', '/bibtexabs', '/ads', '/endnote', '/procite', '/ris', '/refworks', '/medlars',
+                     '/dcxml', '/refxml', '/refabsxml', '/aastex', '/icarus', '/mnras', '/soph', 'votable',
+                     'rss', '/ieee']
+        payload = {'bibcode': self.app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'],
+                   'link': ''}
+        for ep in endpoints:
+            response = self.client.post(ep, data=json.dumps(payload))
+            assert (response._status_code == 200)
 
 
     def test_bibtex_keyformat_endpoint(self):
@@ -554,47 +499,41 @@ class TestExports(TestCase):
     def test_no_journal_macro(self):
         # test by passing replacing journal macros for journal names
 
-        with warnings.catch_warnings():
-            # prevent display of the following warning from citeproc
-            #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
-            #    warn('The following arguments for {} are '.format(cls_name) +
-            warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
+        # bibTex format
+        # display full journal name
+        bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=3).get('export', '')
+        bibtex_full_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {Physical Review Letters},\n         year = 2018,\n        month = jan,\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
+        assert (bibtex_export == bibtex_full_journal_name)
+        # display abbreviated journal name
+        bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=2).get('export', '')
+        bibtex_abbrev_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {PhRvL},\n         year = 2018,\n        month = jan,\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
+        assert (bibtex_export == bibtex_abbrev_journal_name)
+        # macro (default)
+        bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=0).get('export', '')
+        bibtex_default_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {\\prl},\n         year = 2018,\n        month = jan,\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
+        assert (bibtex_export == bibtex_default_journal_name)
 
-            # bibTex format
-            # display full journal name
-            bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=3).get('export', '')
-            bibtex_full_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {Physical Review Letters},\n         year = 2018,\n        month = jan,\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
-            assert (bibtex_export == bibtex_full_journal_name)
-            # display abbreviated journal name
-            bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=2).get('export', '')
-            bibtex_abbrev_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {PhRvL},\n         year = 2018,\n        month = jan,\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
-            assert (bibtex_export == bibtex_abbrev_journal_name)
-            # macro (default)
-            bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=0).get('export', '')
-            bibtex_default_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {\\prl},\n         year = 2018,\n        month = jan,\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
-            assert (bibtex_export == bibtex_default_journal_name)
-
-            # aastex format
-            # display full journal name
-            csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.full).get().get('export', '')
-            # now compare it with an already formatted data that we know is correct
-            aastex_full_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, Physical Review Letters, 120, 029901. doi:10.1103/PhysRevLett.120.029901\n'
-            assert (csl_export == aastex_full_journal_name)
-            # display abbreviated journal name
-            csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get().get('export', '')
-            # now compare it with an already formatted data that we know is correct
-            aastex_abbrev_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, PhRvL, 120, 029901. doi:10.1103/PhysRevLett.120.029901\n'
-            assert (csl_export == aastex_abbrev_journal_name)
-            # display default journal name, which is the macro option
-            csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.default).get().get('export', '')
-            # now compare it with an already formatted data that we know is correct
-            aastex_default_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, \\prl, 120, 029901. doi:10.1103/PhysRevLett.120.029901\n'
-            assert (csl_export == aastex_default_journal_name)
-            # display abbreviated journal name that needs to be escaped
-            csl_export = CSL(CSLJson(solrdata.data_9).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get().get('export', '')
-            # now compare it with an already formatted data that we know is correct
-            aastex_abbrev_journal_name = u'\\bibitem[Ajani et al.(2021)]{2021A&A...645L..11A} Ajani, V., Starck, J.-L., \\& Pettorino, V.\\ 2021, A\\&A, 645, L11. doi:10.1051/0004-6361/202039988\n'
-            assert (csl_export == aastex_abbrev_journal_name)
+        # aastex format
+        # display full journal name
+        csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.full).get().get('export', '')
+        # now compare it with an already formatted data that we know is correct
+        aastex_full_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, Physical Review Letters, 120, 029901. doi:10.1103/PhysRevLett.120.029901\n'
+        assert (csl_export == aastex_full_journal_name)
+        # display abbreviated journal name
+        csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get().get('export', '')
+        # now compare it with an already formatted data that we know is correct
+        aastex_abbrev_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, PhRvL, 120, 029901. doi:10.1103/PhysRevLett.120.029901\n'
+        assert (csl_export == aastex_abbrev_journal_name)
+        # display default journal name, which is the macro option
+        csl_export = CSL(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.default).get().get('export', '')
+        # now compare it with an already formatted data that we know is correct
+        aastex_default_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, \\prl, 120, 029901. doi:10.1103/PhysRevLett.120.029901\n'
+        assert (csl_export == aastex_default_journal_name)
+        # display abbreviated journal name that needs to be escaped
+        csl_export = CSL(CSLJson(solrdata.data_9).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get().get('export', '')
+        # now compare it with an already formatted data that we know is correct
+        aastex_abbrev_journal_name = u'\\bibitem[Ajani et al.(2021)]{2021A&A...645L..11A} Ajani, V., Starck, J.-L., \\& Pettorino, V.\\ 2021, A\\&A, 645, L11. doi:10.1051/0004-6361/202039988\n'
+        assert (csl_export == aastex_abbrev_journal_name)
 
 
     def test_bibtex_enumeration(self):
@@ -607,51 +546,39 @@ class TestExports(TestCase):
 
     def test_tmp_bibcode_format(self):
         # test bibcodes that have no volume and page but doi for all CSL formats
-        with warnings.catch_warnings():
-            # prevent display of the following warning from citeproc
-            #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
-            #    warn('The following arguments for {} are '.format(cls_name) +
-            warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
+        csl_export_output = {
+            'aastex': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters. doi:10.1007/s00367-005-0006-y\n',
+            'icarus': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005.\\ Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico.\\ Geo-Marine Letters. doi:10.1007/s00367-005-0006-y\n',
+            'mnras': u'\\bibitem[\\protect\\citeauthoryear{Aharon}{2005}]{2005GML...tmp....1A} Aharon P., 2005, GML...tmp. doi:10.1007/s00367-005-0006-y\n',
+            'soph': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A}Aharon, P.: 2005, {\\it Geo-Marine Letters}. doi:10.1007/s00367-005-0006-y.\n',
+            'aspc': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters. doi:10.1007/s00367-005-0006-y.\n',
+            'apsj': u'P. Aharon, (2005). doi:10.1007/s00367-005-0006-y.\n',
+            'aasj': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters. doi:10.1007/s00367-005-0006-y.\n',
+            'ieee': u'[1]Aharon, P., “Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico”, <i>Geo-Marine Letters</i>, 2005. doi:10.1007/s00367-005-0006-y.\n'
+        }
+        cls_default_formats = [adsFormatter.latex] * 6 + [adsFormatter.unicode] * 2
 
-            csl_export_output = {
-                'aastex': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters. doi:10.1007/s00367-005-0006-y\n',
-                'icarus': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005.\\ Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico.\\ Geo-Marine Letters. doi:10.1007/s00367-005-0006-y\n',
-                'mnras': u'\\bibitem[\\protect\\citeauthoryear{Aharon}{2005}]{2005GML...tmp....1A} Aharon P., 2005, GML...tmp. doi:10.1007/s00367-005-0006-y\n',
-                'soph': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A}Aharon, P.: 2005, {\\it Geo-Marine Letters}. doi:10.1007/s00367-005-0006-y.\n',
-                'aspc': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters. doi:10.1007/s00367-005-0006-y.\n',
-                'apsj': u'P. Aharon, (2005). doi:10.1007/s00367-005-0006-y.\n',
-                'aasj': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters. doi:10.1007/s00367-005-0006-y.\n',
-                'ieee': u'[1]Aharon, P., “Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico”, <i>Geo-Marine Letters</i>, 2005. doi:10.1007/s00367-005-0006-y.\n'
-            }
-            cls_default_formats = [adsFormatter.latex] * 6 + [adsFormatter.unicode] * 2
-
-            for style, format in zip(adsCSLStyle.ads_CLS, cls_default_formats):
-                csl_export = CSL(CSLJson(solrdata.data_7).get(), style, format).get().get('export', '')
-                assert (csl_export == csl_export_output[style])
+        for style, format in zip(adsCSLStyle.ads_CLS, cls_default_formats):
+            csl_export = CSL(CSLJson(solrdata.data_7).get(), style, format).get().get('export', '')
+            assert (csl_export == csl_export_output[style])
 
 
     def test_encode_doi(self):
         # test doi that is encoded properly
-        with warnings.catch_warnings():
-            # prevent display of the following warning from citeproc
-            #  /Users/gshapurian/code/export_service/python/lib/python3.8/site-packages/citeproc/source/__init__.py:31: UserWarning: The following arguments for Reference are unsupported: bibstem
-            #    warn('The following arguments for {} are '.format(cls_name) +
-            warnings.filterwarnings(action='ignore', category=UserWarning, module='citeproc')
-
-            csl_export_output = {
-                'aastex': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\\_7\n',
-                'icarus': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003.\\ AIPS, the VLA, and the VLBA.\\ Information Handling in Astronomy - Historical Vistas 109. doi:10.1007/0-306-48080-8\\_7\n',
-                'mnras': u'\\bibitem[\\protect\\citeauthoryear{Greisen}{2003}]{2003ASSL..285..109G} Greisen E.~W., 2003, ASSL, 109. doi:10.1007/0-306-48080-8\\_7\n',
-                'soph': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G}Greisen, E.W.: 2003, {\\it Information Handling in Astronomy - Historical Vistas}, 109. doi:10.1007/0-306-48080-8\\_7.\n',
-                'aspc': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\\_7.\n',
-                'apsj': u'E.~W. Greisen, in {\\bf 285}, 109. doi:10.1007/0-306-48080-8_7.\n',
-                'aasj': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E. W.\\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\\_7.\n',
-                'ieee': u'[1]Greisen, E. W., “AIPS, the VLA, and the VLBA”, in <i>Information Handling in Astronomy - Historical Vistas</i>, vol. 285, 2003, p. 109. doi:10.1007/0-306-48080-8_7.\n'
-            }
-            cls_default_formats = [adsFormatter.latex] * 6 + [adsFormatter.unicode] * 2
-            for style, format in zip(adsCSLStyle.ads_CLS, cls_default_formats):
-                csl_export = CSL(CSLJson(solrdata.data_10).get(), style, format).get().get('export', '')
-                assert (csl_export == csl_export_output[style])
+        csl_export_output = {
+            'aastex': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\\_7\n',
+            'icarus': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003.\\ AIPS, the VLA, and the VLBA.\\ Information Handling in Astronomy - Historical Vistas 109. doi:10.1007/0-306-48080-8\\_7\n',
+            'mnras': u'\\bibitem[\\protect\\citeauthoryear{Greisen}{2003}]{2003ASSL..285..109G} Greisen E.~W., 2003, ASSL, 109. doi:10.1007/0-306-48080-8\\_7\n',
+            'soph': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G}Greisen, E.W.: 2003, {\\it Information Handling in Astronomy - Historical Vistas}, 109. doi:10.1007/0-306-48080-8\\_7.\n',
+            'aspc': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\\_7.\n',
+            'apsj': u'E.~W. Greisen, in {\\bf 285}, 109. doi:10.1007/0-306-48080-8_7.\n',
+            'aasj': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E. W.\\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\\_7.\n',
+            'ieee': u'[1]Greisen, E. W., “AIPS, the VLA, and the VLBA”, in <i>Information Handling in Astronomy - Historical Vistas</i>, vol. 285, 2003, p. 109. doi:10.1007/0-306-48080-8_7.\n'
+        }
+        cls_default_formats = [adsFormatter.latex] * 6 + [adsFormatter.unicode] * 2
+        for style, format in zip(adsCSLStyle.ads_CLS, cls_default_formats):
+            csl_export = CSL(CSLJson(solrdata.data_10).get(), style, format).get().get('export', '')
+            assert (csl_export == csl_export_output[style])
 
 
 if __name__ == '__main__':
