@@ -467,7 +467,7 @@ class FieldedFormat(Format):
         :param value:
         :return:
         """
-        if ((isinstance(value, unicode) or isinstance(value, str)) and (len(value) > 0)) or \
+        if ((isinstance(value, str) or isinstance(value, byte)) and (len(value) > 0)) or \
            (isinstance(value, int) and (value is not None)):
             return field + ' ' + value + '\n'
         return ''

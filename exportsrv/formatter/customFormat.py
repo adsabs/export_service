@@ -4,7 +4,7 @@ from datetime import datetime
 from flask import current_app
 from textwrap import fill
 import re
-import cgi
+from html import escape
 
 from exportsrv.formatter.format import Format
 from exportsrv.formatter.ads import adsFormatter, adsOrganizer
@@ -249,15 +249,15 @@ class CustomFormat(Format):
                         elif (parts[0] == 'Linelength'):
                             self.line_length = int(parts[1])
                         elif (parts[0] == 'Header'):
-                            self.header = parts[1].replace('"', '').decode('string_escape')
+                            self.header = parts[1].replace('"', '').encode().decode('unicode_escape')
                         elif (parts[0] == 'Footer'):
-                            self.footer = parts[1].replace('"', '').decode('string_escape')
+                            self.footer = parts[1].replace('"', '').encode().decode('unicode_escape')
                         elif (parts[0] == 'AuthorSep'):
-                            self.author_sep = parts[1].replace('"', '').decode('string_escape')
+                            self.author_sep = parts[1].replace('"', '').encode().decode('unicode_escape')
                         elif (parts[0] == 'Markup'):
                             self.markup_strip = (parts[1].lower() == 'strip')
                         elif (parts[0] == 'EOL'):
-                            self.line_feed = parts[1].replace('"', '').decode('string_escape')
+                            self.line_feed = parts[1].replace('"', '').encode().decode('unicode_escape')
 
 
     def __escape(self):
@@ -483,7 +483,7 @@ class CustomFormat(Format):
         n	        lastname	    +
         a	        As in db	    As in db	    &	            first author,..., m authors et al.
         g	        lastname, f.i.	lastname, f.i.	and	            first author, and xx colleagues
-        h	        lastname	    lastname	    and	            first author \emph{et al.}
+        h	        lastname	    lastname	    and	            first author \\emph{et al.}
         i	        lastname, f. i.	f. i. lastname	&	            first author, et al.
 
         n.m: Maximum number of entries in field (optional).
@@ -500,7 +500,7 @@ class CustomFormat(Format):
         format_etal_no_comma = u'{} et al.'
         format_n_authors = u'{}'
         format_with_n_colleagues = u'{}, and {} colleagues'
-        format_escape_emph = u'{} \emph{{et al.}}'
+        format_escape_emph = u'{} \\emph{{et al.}}'
         format_plus = u'{},+'
 
         if (format == 'n'):
@@ -539,7 +539,7 @@ class CustomFormat(Format):
             return format_n_authors.format(' '.join(authors[:m]))
         if (format == 'a') or (format == 'l'):
             # return n author(s) et. al. - list is separated by a comma
-            return format_etal.format(self.__get_n_authors(author_list, u',', m*2, u' \&', format))
+            return format_etal.format(self.__get_n_authors(author_list, u',', m*2, u' \\&', format))
         if (format == 'h'):
             # return the asked number of authors - list is separated by space,
             # there is an and before the last author
@@ -712,7 +712,7 @@ class CustomFormat(Format):
             if '\\' in field_format:
                 return self.__encode_latex(value, field)
             if '>' in field_format:
-                return cgi.escape(value)
+                return escape(value)
             if '=' in field_format:
                 return value.encode('hex')
             if '/' in field_format:
@@ -730,7 +730,7 @@ class CustomFormat(Format):
                 value = replace_html_entity(value, adsFormatter.unicode)
             return value
         if (self.export_format == adsFormatter.html):
-            return cgi.escape(value)
+            return escape(value)
         if (self.export_format == adsFormatter.latex):
             # per alberto for bibtex translate <P /> to \\
             if field == 'abstract':
@@ -752,7 +752,7 @@ class CustomFormat(Format):
         pattern = []
         punctuation = {'(':')', '{':'}', '[':']', '"':'"'}
         for str in list_str:
-            for left, right in punctuation.iteritems():
+            for left, right in punctuation.items():
                 count = 0
                 for char in str:
                     if char == left:
@@ -772,7 +772,7 @@ class CustomFormat(Format):
                 # if found remove the one from the beginning
                 if str.startswith(',') and str.endswith(','):
                     str = str[1:]
-                elif str.startswith('\,') and str.endswith('\,'):
+                elif str.startswith('\\,') and str.endswith('\\,'):
                     str = str[2:]
             # another special case is when last page is eliminated, so keep the comma
             if str.startswith('-') and str.endswith(','):
@@ -799,7 +799,7 @@ class CustomFormat(Format):
                 insert_value = '"' + self.__encode(value, field[2], field[1]) + '",'
             else:
                 insert_value = '"",'
-            pattern = self.__match_punctuation([elem[0] for elem in re.findall(precede + field[1].encode('utf8').encode('string-escape') + succeed, result.replace('\\n ', ''))])
+            pattern = self.__match_punctuation([elem[0] for elem in re.findall((precede.encode() + field[1].encode('unicode-escape') + succeed.encode()).decode('utf8'), result.replace('\\n ', ''))])
             for p in pattern:
                 result = result.replace(p, insert_value)
             return result
@@ -807,7 +807,7 @@ class CustomFormat(Format):
         if (len(value) > 0):
             return result.replace(field[1], self.__encode(value, field[2], field[1]))
         else:
-            pattern = self.__match_punctuation([elem[0] for elem in re.findall(precede + field[1].encode('utf8').encode('string-escape') + succeed, result.replace('\\n ', ''))])
+            pattern = self.__match_punctuation([elem[0] for elem in re.findall((precede.encode() + field[1].encode('unicode-escape') + succeed.encode()).decode('utf8'), result.replace('\\n ', ''))])
             for p in pattern:
                 # check for the spearator, if it is the same on both side, eliminate the one at the end
                 if p[0] == p[-1] and len(p) > 1:

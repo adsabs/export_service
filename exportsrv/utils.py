@@ -1,8 +1,8 @@
 
 # encoding=utf8
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+PYTHONIOENCODING="UTF-8"
+
+from builtins import str
 
 from flask import current_app, request
 import requests
@@ -130,7 +130,7 @@ def replace_html_entity(text, encode_style):
     :return:
     """
     # note that some of these character apprently encoded in html, and some in latex
-    if encode_style == adsFormatter.unicode:
+    if encode_style in [adsFormatter.default, adsFormatter.unicode]:
         html_entity_to_encode = {'&lt;': '<', '\\\\lt': '<',
                                  '&gt;': '>', '\\\\gt': '>',
                                  '&amp;': '&', '\\\\&': '&'}
@@ -144,7 +144,7 @@ def replace_html_entity(text, encode_style):
                                  '\\\\gt': '&gt;',
                                  '\\\\&': '&amp;'}
 
-    re_html_entity = re.compile(r'(%s)'%(r'|'.join(html_entity_to_encode.keys())))
+    re_html_entity = re.compile(r'(%s)'%(r'|'.join(list(html_entity_to_encode.keys()))))
 
     for entity in re_html_entity.findall(text):
         text = re.sub(entity, html_entity_to_encode.get(entity, ''), text)
