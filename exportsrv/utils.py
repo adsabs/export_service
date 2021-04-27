@@ -147,6 +147,8 @@ def replace_html_entity(text, encode_style):
     re_html_entity = re.compile(r'(%s)'%(r'|'.join(list(html_entity_to_encode.keys()))))
 
     for entity in re_html_entity.findall(text):
-        text = re.sub(entity, html_entity_to_encode.get(entity, ''), text)
+        # make sure text from solr was properly escaped
+        entity_encode = r'\{}'.format(entity) if entity.count('\\') == 1 else entity
+        text = re.sub(entity_encode, html_entity_to_encode.get(entity_encode, ''), text)
 
     return text
