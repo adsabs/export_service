@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" and="text" initialize="false">
+  <info>
+    <title>ADS Author Custom Format o</title>
+    <title-short>ADS Author Custom Format o</title-short>
+    <id>https://ui.adsabs.harvard.edu</id>
+    <category citation-format="author"/>
+    <category field="generic-base"/>
+    <summary>Format o: Author has the format: f. i. lastname, with and symbol before the last author</summary>
+    <updated>2017-06-23T15:43:04+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
+  </info>
+  <locale xml:lang="en"/>
+  <macro name="author"/>
+  <citation>
+    <layout/>
+  </citation>
+  <bibliography and="text" initialize="true" entry-spacing="0" hanging-indent="true">
+    <layout>
+      <text macro="author"/>
+      <names variable="author">
+        <name and="symbol" delimiter-precedes-last="contextual" initialize="false" initialize-with=". " delimiter=", "/>
+        <label prefix=", "/>
+      </names>
+    </layout>
+  </bibliography>
+</style>

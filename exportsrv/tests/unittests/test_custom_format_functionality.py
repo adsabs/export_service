@@ -120,9 +120,12 @@ class TestExportsCustomFormat(TestCase):
     def test_get_author_list(self):
         # Optional parameters for author field: n.m
         # If the number of authors in the list is larger than n, the list will be truncated and m authors are returned
-        custom_format = CustomFormat(custom_format=r'%A,%3.2A,%a,%3.2a,%G,%3.2G,%g,%3.2g,%H,%3.2H,%2.1H,%h,%3.2h,%I,%3.2I,%i,%3.2i,'
-                                                   r'%L,%3.2L,%l,%3.2l,%M,%3.2M,%m,%3.2m,%N,%3.2N,%n,%3.2n,%i,%3.2i,%e,%3.2e,%f,%3.2f'
-                                                   r'%^A,%^a,%^G,%^g,%^H,%^h,%^I,%^i,%^L,%^l,%^M,%^m,%^N,%^n,%^e,%^f'
+        custom_format = CustomFormat(custom_format=r'%A,%3.2A,%a,%3.2a,%G,%3.2G,%g,%3.2g,'
+                                                   r'%H,%3.2H,%2.1H,%h,%3.2h,%I,%3.2I,%i,%3.2i,'
+                                                   r'%L,%3.2L,%l,%3.2l,%M,%3.2M,%m,%3.2m,'
+                                                   r'%N,%3.2N,%n,%3.2n,%e,%3.2e,%f,%3.2f,'
+                                                   r'%O,%3.2O,%o,%3.2o'
+                                                   r'%^A,%^a,%^G,%^g,%^H,%^h,%^I,%^i,%^L,%^l,%^M,%^m,%^N,%^n,%^e,%^f,%^O,%^o'
         )
         custom_format.set_json_from_solr(solrdata.data_3)
 
@@ -160,7 +163,11 @@ class TestExportsCustomFormat(TestCase):
                             ('%e', 'English, J., Taylor, A.R., Mashchenko, S.Y., Irwin, J.A., Basu, S., and Johnstone, D.'),
                             ('%3.2e', 'English, J., Taylor, A.R., and 4 colleagues'),
                             ('%f', 'English, Taylor, Mashchenko, Irwin, Basu, and Johnstone'),
-                            ('%3.2f', 'English, Taylor \emph{et al.}'),
+                            ('%3.2f', 'English, Taylor \\emph{et al.}'),
+                            ('%O', 'J. English, A. R. Taylor, S. Y. Mashchenko, J. A. Irwin, S. Basu, and D. Johnstone'),
+                            ('%3.2O', 'J. English, A. R. Taylor, and 4 colleagues'),
+                            ('%o', 'J. English, A. R. Taylor, S. Y. Mashchenko, J. A. Irwin, S. Basu, & D. Johnstone'),
+                            ('%3.2o', 'J. English, A. R. Taylor, et al.'),
                             ('%^A', 'English, Jayanne'),
                             ('%^a', 'English, Jayanne'),
                             ('%^G', 'English, J.'),
@@ -177,6 +184,9 @@ class TestExportsCustomFormat(TestCase):
                             ('%^n', 'English'),
                             ('%^e', 'English, J.'),
                             ('%^f', 'English'),
+                            ('%^O', 'J. English'),
+                            ('%^o', 'J. English'),
+
         ])
         for key, value in author_format.items():
             assert (custom_format._CustomFormat__get_author_list(format=key, index=0) == value)
@@ -314,15 +324,15 @@ class TestExportsCustomFormat(TestCase):
         # no EOL string
         custom_format = CustomFormat(custom_format=r'%ZEOL:"" %R')
         custom_format.set_json_from_solr(solrdata.data_6)
-        assert (custom_format.get().get('export', ''), "2020AAS...23528705A2019EPSC...13.1911A2015scop.confE...3A2019AAS...23338108A2019AAS...23320704A2018EPJWC.18608001A2018AAS...23221409A2017ASPC..512...45A2018AAS...23136217A2018AAS...23130709A")
+        assert (custom_format.get().get('export', '') == "2020AAS...23528705A2019EPSC...13.1911A2015scop.confE...3A2019AAS...23338108A2019AAS...23320704A2018EPJWC.18608001A2018AAS...23221409A2017ASPC..512...45A2018AAS...23136217A2018AAS...23130709A")
         # do not specify EOL string, and default linefeed is added in
         custom_format = CustomFormat(custom_format=r'%R')
         custom_format.set_json_from_solr(solrdata.data_6)
-        assert (custom_format.get().get('export', ''), "2020AAS...23528705A\n2019EPSC...13.1911A\n2015scop.confE...3A\n2019AAS...23338108A\n2019AAS...23320704A\n2018EPJWC.18608001A\n2018AAS...23221409A\n2017ASPC..512...45A\n2018AAS...23136217A\n2018AAS...23130709A\n")
+        assert (custom_format.get().get('export', '') == "2020AAS...23528705A\n2019EPSC...13.1911A\n2015scop.confE...3A\n2019AAS...23338108A\n2019AAS...23320704A\n2018EPJWC.18608001A\n2018AAS...23221409A\n2017ASPC..512...45A\n2018AAS...23136217A\n2018AAS...23130709A\n")
         # specify EOL string
         custom_format = CustomFormat(custom_format=r'%ZEOL:"--END" %R')
         custom_format.set_json_from_solr(solrdata.data_6)
-        assert (custom_format.get().get('export', ''), "2020AAS...23528705A--END2019EPSC...13.1911A--END2015scop.confE...3A--END2019AAS...23338108A--END2019AAS...23320704A--END2018EPJWC.18608001A--END2018AAS...23221409A--END2017ASPC..512...45A--END2018AAS...23136217A--END2018AAS...23130709A--END")
+        assert (custom_format.get().get('export', '') == "2020AAS...23528705A--END2019EPSC...13.1911A--END2015scop.confE...3A--END2019AAS...23338108A--END2019AAS...23320704A--END2018EPJWC.18608001A--END2018AAS...23221409A--END2017ASPC..512...45A--END2018AAS...23136217A--END2018AAS...23130709A--END")
 
     def test_page_count(self):
         # verify %pc outputs page_count properly
