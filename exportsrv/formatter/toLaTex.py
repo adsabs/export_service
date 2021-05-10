@@ -7,11 +7,11 @@ from exportsrv.formatter.latexencode import utf8tolatex
 # this module contains methods to encode for latex output
 
 REGEX_LATEX = OrderedDict([
-            (re.compile(r"(\d+)<SUP>(\d+)</SUP>"),  r"{}\1$^{\2}$"),              # convert something like '10<SUP>5</SUP>' to '{}10$^{5}$' and
-            (re.compile(r"(\d+)<SUB>(\d+)</SUB>"),  r"{}\1$_{\2}$"),
-            (re.compile(r"<SUP>(.+?)</SUP>"),       r"$^{\1}$"),                  # translate <SUP>foo</SUP> and <SUB>bar</SUB> sequences into
-            (re.compile(r"<SUB>(.+?)</SUB>"),       r"$_{\1}$"),                  # the proper latex equivalent of $^{foo}$ and $_{bar}$
-            (re.compile(r"''(.*?)''"),              r"``\1''"),                   # straight double quotes to curly quotes
+            (re.compile(r"(\d+)<SUP>(\d+)</SUP>"),          r"{}\1$^{\2}$"),                        # convert something like '10<SUP>5</SUP>' to '{}10$^{5}$' and
+            (re.compile(r"(\d+)<SUB>(\d+)</SUB>"),          r"{}\1$_{\2}$"),
+            (re.compile(r"<SUP>(.+?)</SUP>"),               r"$^{\1}$"),                            # translate <SUP>foo</SUP> and <SUB>bar</SUB> sequences into
+            (re.compile(r"<SUB>(.+?)</SUB>"),               r"$_{\1}$"),                            # the proper latex equivalent of $^{foo}$ and $_{bar}$
+            (re.compile(r"''(.*?)''"),                      r"``\1''"),                             # straight double quotes to curly quotes
 ])
 REGEX_LATEX_AUTHOR = dict([
         (re.compile(r"([A-Z]\.)\s(?=([A-Z]\.))"), r"\1~")   # replace something like 'Tendulkar, S. P.' with 'Tendulkar, S.~P.'
@@ -25,7 +25,8 @@ REGEX_HTML_TAG = OrderedDict([
     (re.compile(r"(\\&gt;)"), r"$\\gt$"),                   # html entity greater-than
     (re.compile(r"(,?\s*\{\\&\}amp;)"), r" \&"),
 ])
-
+GREEK_ALPHABET = "Alpha|Beta|Gamma|Delta|Epsilon|Zeta|Eta|Theta|Iota|Kappa|Lambda|Mu|Nu|Xi|Omicron|Pi|Rho|Sigma|Tau|Upsilon|Phi|Chi|Psi|Omega"
+REGEX_LATEX_GREEK_LETTER = re.compile(r"\\(%s)+\\"%GREEK_ALPHABET, re.IGNORECASE    )
 def encode_laTex(text):
     """
 
@@ -33,13 +34,18 @@ def encode_laTex(text):
     :return:
     """
     if (len(text) > 1):
+        # if any greek letter macro map it here
+        # convert something like \\Sigma\\ to \textbackslash{}Sigma\textbackslash{}
+        # however needs to go through utf8tolatex so add placeholder to be replaced afterward
+        text = REGEX_LATEX_GREEK_LETTER.sub(r'PLACEHOLDER\1PLACEHOLDER', text)
+
         # make sure we want to break on $...$ (In-line math) where we are not applying latex substitution
         # however, it could be dollar sign representation as in the following record's title
         # "bibcode":"1979AstQ....3..143M",
         # "title":["The Gemini Syndrome: Star Wars of the Oldest Kind. Roger Culver and Philip Ianna The Astronomy
         # Quarterly Library Volume 1 Pachart Publishing House $11.95"],
         if text.count('$') % 2 == 0:
-            chunks = re.split('(\$)', text)
+            chunks = re.split(r'(\$)', text)
         else:
             chunks = [text]
         latex = []
@@ -52,7 +58,7 @@ def encode_laTex(text):
                 i = i + 3
             else:
                 # character substitution
-                chunks[i] = utf8tolatex(chunks[i], ascii_no_brackets=True)
+                chunks[i] = utf8tolatex(chunks[i], ascii_no_brackets=True).replace('PLACEHOLDER', r'\textbackslash{}')
                 for key in REGEX_LATEX:
                     chunks[i] = key.sub(REGEX_LATEX[key], chunks[i])
                 latex.append(html_to_laTex(chunks[i]))

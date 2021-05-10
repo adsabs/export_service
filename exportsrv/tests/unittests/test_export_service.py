@@ -23,6 +23,7 @@ from exportsrv.formatter.csl import CSL, adsFormatter
 from exportsrv.formatter.customFormat import CustomFormat
 from exportsrv.formatter.voTableFormat import VOTableFormat
 from exportsrv.formatter.rssFormat import RSSFormat
+from exportsrv.formatter.toLaTex import encode_laTex
 from exportsrv.utils import get_eprint, replace_html_entity
 
 class TestExports(TestCase):
@@ -580,6 +581,12 @@ class TestExports(TestCase):
             csl_export = CSL(CSLJson(solrdata.data_10).get(), style, format).get().get('export', '')
             assert (csl_export == csl_export_output[style])
 
+
+    def test_encode_latex_greek_alphabet(self):
+        # test mapping of greek letter macros
+        title = 'Measurement of the \\Sigma\\ beam asymmetry for the \\omega\\ photo-production off the proton and the neutron at GRAAL'
+        title_encoded = r'Measurement of the \textbackslash{}Sigma\textbackslash{} beam asymmetry for the \textbackslash{}omega\textbackslash{} photo-production off the proton and the neutron at GRAAL'
+        assert(encode_laTex(title) == title_encoded)
 
 if __name__ == '__main__':
   unittest.main()

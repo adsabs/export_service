@@ -45,7 +45,7 @@ class CustomFormat(Format):
             (?:\d+|\*)?                                         # width
             (?:\.(?:\d+|\*))?                                   # precision
             (?:\^)?
-            p{0,2}[AaBcCdDeEfFGgHhiIJjKLlMmNnOpPQqRSTUuVWXxY]   # type
+            p{0,2}[AaBcCdDeEfFGgHhiIJjKLlMmNnOopPQqRSTUuVWXxY]  # type
             )
         )''', flags=re.X
     )
@@ -176,7 +176,8 @@ class CustomFormat(Format):
             'm': 'author',
             'N': 'author',
             'n': 'author',
-            'O': '',  # Object Names
+            'O': 'author',
+            'o': 'author',
             'p': 'page,page_range',
             'P': 'lastpage,page_range',  # Last Page
             'pp':'page_range,page',      # page_range is specified in the custom format, but if not available and page is then return that
@@ -194,7 +195,7 @@ class CustomFormat(Format):
             'x': 'comment',
             'Y': 'year'
         }
-        specifier = ''.join(re.findall(r'([AaBcCdDeEfFGgHhiIJjKLlMmNnOpPQqRSTUuVWXxY]{1,2})', specifier))
+        specifier = ''.join(re.findall(r'([AaBcCdDeEfFGgHhiIJjKLlMmNnOopPQqRSTUuVWXxY]{1,2})', specifier))
         return fieldDict.get(specifier, '')
 
 
@@ -418,14 +419,13 @@ class CustomFormat(Format):
         # formats that have no comma between last name and first/middle names
         # or only display last name, hence once split each is an element
         # return one element
-        if format in ['f','g','M','m','n']:
+        if format in ['f','g','M','m','n','O','o']:
             split_parts = author_list.split(', ')
             return split_parts[0]
         # seprator is space here, and only last name so a one-element needs to be returned
         if format in ['H','h']:
             split_parts = author_list.split(' ')
             return split_parts[0]
-
         return author_list
 
 
@@ -439,7 +439,7 @@ class CustomFormat(Format):
             return author_list
         # formats that have no comma between last name and first/middle names
         # or only display last name, hence once split each is an one element
-        if format in ['f','g', 'H', 'h', 'M', 'm', 'n']:
+        if format in ['f','g', 'H', 'h', 'M', 'm', 'n', 'O', 'o']:
             split_parts = author_list.split(', ')
             return self.author_sep.join(split_parts)
         # seprator here is space and since only last names are displayed
@@ -477,6 +477,7 @@ class CustomFormat(Format):
         I	        lastname, f. i.	f. i. lastname	and	            first author, and xx colleagues
         L	        lastname, f. i.	lastname, f. i.	and	            first author, and xx colleagues
         N	        lastname, f. i.	lastname, f. i.		            first author, and xx colleagues
+        O           f. i lastname   f. i lastname   and             first author, and xx colleagures
         l	        lastname, f. i.	lastname, f. i.	&	            first author, et al.
         M	        lastname	    lastname	and	                first author, et al.
         m	        lastname	    lastname	&	                first author, et al.
@@ -485,6 +486,7 @@ class CustomFormat(Format):
         g	        lastname, f.i.	lastname, f.i.	and	            first author, and xx colleagues
         h	        lastname	    lastname	    and	            first author \\emph{et al.}
         i	        lastname, f. i.	f. i. lastname	&	            first author, et al.
+        o           f. i lastname   f. i lastname   &               first author, et al.
 
         n.m: Maximum number of entries in field (optional).
         If the number of authors in the list is larger than n, the list will be truncated and returned as
@@ -506,7 +508,7 @@ class CustomFormat(Format):
         if (format == 'n'):
             authors = author_list.split(',')
             return format_plus.format(authors[0])
-        if (format == 'A') or (format == 'I') or (format == 'L') or (format == 'N') or (format == 'e') :
+        if format in ['A', 'I', 'L', 'N', 'e', 'O']:
             authors = author_list.replace(' and', '').split(', ')
             if (format == 'A') or (format == 'L') or (format == 'N') or (format == 'e') :
                 return format_with_n_colleagues.format(', '.join(authors[:m*2]), num_authors-m)
@@ -515,6 +517,8 @@ class CustomFormat(Format):
                 # the rest are first and middle initials, no comma, lastname
                 # hence first author needs two parts concatenated, the rest only 1
                 return format_with_n_colleagues.format(', '.join(authors[:1+m]), num_authors-m)
+            elif (format == 'O'):
+                return format_with_n_colleagues.format(', '.join(authors[:m]), num_authors-m)
         if (format == 'G'):
             # return n authors (LastName, first and middle initials) et. al. - list is seprated by comma
             return format_etal.format(self.__get_n_authors(author_list, u',', m*2, u'', format))
@@ -523,6 +527,8 @@ class CustomFormat(Format):
             # the rest are first and middle initials, no comma, lastname
             # hence first author needs two parts concatenated, the rest only 1
             return format_etal.format(self.__get_n_authors(author_list, u',', 1+m, u'', format))
+        if (format == 'o'):
+            return format_etal.format(self.__get_n_authors(author_list, u',', m, u'', format))
         if (format == 'M') or (format == 'm'):
             # return n authors (LastName) et. al. - list is separated by a comma
             # no comma before et al
