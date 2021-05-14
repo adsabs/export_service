@@ -165,7 +165,7 @@ class CSL:
         # but note that it only applies if the output format is in latex format
         if (self.csl_style == 'soph'):
             if ('et al.' in author) and (self.export_format == adsFormatter.latex):
-                return author.replace('et al.', '\emph{et al.}')
+                return author.replace('et al.', '\\emph{et al.}')
         return author
 
 

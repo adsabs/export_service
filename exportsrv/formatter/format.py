@@ -10,7 +10,7 @@ class Format:
     status = -1
     from_solr = {}
 
-    REGEX_REMOVE_TAGS_PUB_RAW = re.compile("(\<.*?\>)")
+    REGEX_REMOVE_TAGS_PUB_RAW = re.compile(r"(\<.*?\>)")
     REGEX_PUB_RAW = dict([
         (re.compile(r"(\;?\s*\<ALTJOURNAL\>.*\</ALTJOURNAL\>\s*)"), r""),  # remove these
         (re.compile(r"(\;?\s*\<CONF_METADATA\>.*\<CONF_METADATA\>\s*)"), r""),

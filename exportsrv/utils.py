@@ -131,22 +131,24 @@ def replace_html_entity(text, encode_style):
     """
     # note that some of these character apprently encoded in html, and some in latex
     if encode_style in [adsFormatter.default, adsFormatter.unicode]:
-        html_entity_to_encode = {'&lt;': '<', ' \\lt': '<',
-                                 '&gt;': '>', ' \\gt': '>',
-                                 '&amp;': '&', ' \\&': '&'}
+        html_entity_to_encode = {'&lt;': '<', '\\lt': '<',
+                                 '&gt;': '>', '\\gt': '>',
+                                 '&amp;': '&', '\\&': '&'}
     elif encode_style == adsFormatter.xml:
-        html_entity_to_encode = {'&lt;': '&#60;', ' \\lt': '&#60;',
-                                 '&gt;': '&#62;', ' \\gt': '&#62;',
-                                 '&amp;': '&#38;', ' \\&': '&#38;'}
+        html_entity_to_encode = {'&lt;': '&#60;', '\\lt': '&#60;',
+                                 '&gt;': '&#62;', '\\gt': '&#62;',
+                                 '&amp;': '&#38;', '\\&': '&#38;'}
     else:
         # make sure all the entities are in html (ie, replace all that are latex)
-        html_entity_to_encode = {' \\lt': '&lt;',
-                                 ' \\gt': '&gt;',
-                                 ' \\&': '&amp;'}
+        html_entity_to_encode = {'\\lt': '&lt;',
+                                 '\\gt': '&gt;',
+                                 '\\&': '&amp;'}
 
     re_html_entity = re.compile(r'(%s)'%(r'|'.join([key.encode('unicode_escape').decode() for key in html_entity_to_encode.keys()])))
 
     for entity in re_html_entity.findall(text):
+        # make sure text from solr was properly escaped
+        entity = entity.encode('unicode_escape').decode()
         text = re.sub(entity, html_entity_to_encode.get(entity, ''), text)
 
     return text
