@@ -84,6 +84,11 @@ EXPORT_SERVICE_AASTEX_JOURNAL_MACRO = [
     ['PhyS', r'\physscr'],
     ['P&SS', r'\planss'],
     ['SPIE', r'\procspie'],
+    ['JAVSO', r'\jaavso'],
+    ['PSJ', r'\psj'],
+    ['M&PS', r'\maps'],
+    ['AAS', r'\aas'],
+    ['DPS', r'\dps'],
 ]
 
 # For SoPh format:
