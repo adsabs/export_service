@@ -249,8 +249,8 @@ class XMLFormat(Format):
         link_dict =  OrderedDict([
                         #(link type:[include if, name, has count])
                         ('abstract', [len(a_doc.get('abstract', '')), 'abstract', False]),
-                        ('citations', [a_doc.get('citation_count', 0), 'Citations to the Article', 'citations', True]),
-                        ('reference', [a_doc.get('reference', 0), 'References in the Article', 'references', True]),
+                        ('citations', [a_doc.get('num_citations', 0), 'Citations to the Article', 'citations', True]),
+                        ('reference', [a_doc.get('num_references', 0), 'References in the Article', 'references', True]),
                         ('coreads', [a_doc.get('read_count', 0), 'Co-Reads', False]),
         ])
         for link in link_dict:
