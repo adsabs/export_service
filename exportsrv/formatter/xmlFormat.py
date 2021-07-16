@@ -335,7 +335,7 @@ class XMLFormat(Format):
         if (export_format == self.EXPORT_FORMAT_REF_XML):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
                       ('pub_raw', 'journal'), ('pubdate', 'pubdate'), ('link', 'link'),
-                      ('url', 'url'), ('', 'score'), ('citation_count', 'citations'),
+                      ('url', 'url'), ('', 'score'), ('num_citations', 'citations'),
                       ('doi', 'DOI'), ('eprintid', 'eprintid')]
         elif (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
@@ -343,12 +343,12 @@ class XMLFormat(Format):
                       ('pubdate', 'pubdate'), ('page', 'page'), ('page_range', 'lastpage'),
                       ('keyword', 'keywords'), ('', 'origin'), ('copyright', 'copyright'),
                       ('link', 'link'), ('url', 'url'), ('comment', 'comment'),
-                      ('', 'score'), ('citation_count', 'citations'), ('abstract', 'abstract'),
+                      ('', 'score'), ('num_citations', 'citations'), ('abstract', 'abstract'),
                       ('doi', 'DOI'), ('eprintid', 'eprintid')]
         elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
             fields = [('bibcode', 'dc:identifier'), ('title', 'dc:title'), ('author', 'dc:creator'),
                       ('pub_raw', 'dc:source'), ('pubdate', 'dc:date'), ('keyword', 'dc:subject'),
-                      ('copyright', 'dc:rights'), ('url', 'dc:relation'), ('citation_count', 'dc:relation'),
+                      ('copyright', 'dc:rights'), ('url', 'dc:relation'), ('num_citations', 'dc:relation'),
                       ('abstract', 'dc:description'), ('doi', 'dc:identifier')]
         else:
             fields = []
@@ -366,17 +366,17 @@ class XMLFormat(Format):
         return ''
 
 
-    def __get_citation(self, citation_count, export_format):
+    def __get_citation(self, num_citations, export_format):
         """
 
-        :param citation_count:
+        :param num_citations:
         :return:
         """
-        if citation_count != 0:
+        if num_citations != 0:
             if (export_format == self.EXPORT_FORMAT_REF_XML) or (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
-                return str(citation_count)
+                return str(num_citations)
             if (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
-                return 'citations:' + str(citation_count)
+                return 'citations:' + str(num_citations)
         return ''
 
 
@@ -459,7 +459,7 @@ class XMLFormat(Format):
                 self.__add_in(record, fields[field], self.__format_line_wrapped(a_doc.get(field, '')))
             elif (field == 'doi'):
                 self.__add_in(record, fields[field], self.__get_doi(''.join(a_doc.get(field, ''))))
-            elif (field == 'citation_count'):
+            elif (field == 'num_citations'):
                 self.__add_in(record, fields[field], self.__get_citation(int(a_doc.get(field, 0)), self.EXPORT_FORMAT_DUBLIN_XML))
 
 
@@ -502,7 +502,7 @@ class XMLFormat(Format):
                 self.__add_keywords(a_doc, record, export_format)
             elif (field == 'url'):
                 self.__add_in(record, fields[field], current_app.config.get('EXPORT_SERVICE_FROM_BBB_URL') + '/' + a_doc.get('bibcode', ''))
-            elif (field == 'citation_count'):
+            elif (field == 'num_citations'):
                 self.__add_in(record, fields[field], self.__get_citation(int(a_doc.get(field, 0)), export_format))
             elif (field == 'abstract'):
                 self.__add_in(record, fields[field], self.__format_line_wrapped(a_doc.get(field, '')))

@@ -360,8 +360,8 @@ class FieldedFormat(Format):
         link_dict = OrderedDict([
             # (link type:[include if, name, has count])
             ('abstract', [len(a_doc.get('abstract', '')), 'ABSTRACT', 'Abstract']),
-            ('citations', [a_doc.get('citation_count', 0), 'CITATIONS', 'Citations to the Article']),
-            ('reference', [a_doc.get('reference_count', 0), 'REFERENCES', 'References in the Article']),
+            ('citations', [a_doc.get('num_citations', 0), 'CITATIONS', 'Citations to the Article']),
+            ('reference', [a_doc.get('num_references', 0), 'REFERENCES', 'References in the Article']),
             ('coreads', [a_doc.get('read_count', 0), 'Co-Reads', 'Co-Reads']),
         ])
         link_list = ''
