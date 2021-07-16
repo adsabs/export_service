@@ -154,7 +154,7 @@ class CustomFormat(Format):
             'A': 'author',
             'a': 'author',
             'B': 'abstract',
-            'c': 'citation_count',
+            'c': 'num_citations',
             'C': 'copyright',
             'd': 'doi',
             'D': 'pubdate',
@@ -850,7 +850,7 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, a_doc.get(field[2], ''))
             elif (field[2] == 'pub') or (field[2] == 'pub_raw'):
                 result = self.__add_in(result, field, self.__get_publication(field[1], a_doc))
-            elif (field[2] == 'citation_count') or (field[2] == 'page_count'):
+            elif (field[2] == 'num_citations') or (field[2] == 'page_count'):
                 result = self.__add_in(result, field, str(a_doc.get(field[2], '')))
             elif (field[2] == 'eid,identifier'):
                 result = self.__add_in(result, field, get_eprint(a_doc))

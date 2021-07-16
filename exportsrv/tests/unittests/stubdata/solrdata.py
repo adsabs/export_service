@@ -532,7 +532,7 @@ data_2 = \
         u'params': {
             u'q':'bibcode:2018AAS...23221409A',
             u'indent':'on',
-            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
+            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,num_citations,read_count,bibcode,identifier,copyright,keyword,doctype,num_references,comment,property,esources,data,isbn,pubnote,eid',
             'wt':'json',
             '_':'1529341837285'
         }
@@ -544,8 +544,8 @@ data_2 = \
             {
                 u'read_count':0,
                 u'abstract': u'The NASA Astrophysics Data System (ADS) is used daily by researchers and curators as a discovery platform for the Astronomy literature. Over the past several years, the ADS has been adding to the breadth and depth of its contents. Scholarly astronomy articles are now indexed as full-text documents, allowing for complete and accurate literature searches. High-level data products, data links, and software used in refereed astronomy papers are now also being ingested and indexed in our database. All the search functionality exposed in the new ADS interface is also available via its API, which we are continuing to develop and enhance. In this talk I will describe the current system, our current roadmap, and solicit input from the community regarding what additional data, services, and discovery capabilities the ADS should support.',
-                u'citation_count':0,
-                u'reference_count':0,
+                u'num_citations':0,
+                u'num_references':0,
                 u'pubdate': u'2018-06-00',
                 u'year': u'2018',
                 u'page': [u'214.09'],
@@ -575,7 +575,7 @@ data_3 = \
         u'params': {
             u'q':'bibcode:2000ApJ...533L..25E',
             u'indent':'on',
-            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
+            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,num_citations,read_count,bibcode,identifier,copyright,keyword,doctype,num_references,comment,property,esources,data,isbn,pubnote,eid',
             'wt':'json',
             '_':'1529341837285'
         }
@@ -604,8 +604,8 @@ data_3 = \
                 u'doi': [u'10.1086/312592'],
                 u'keyword': [u'GALAXY: HALO', u'GALAXY: STRUCTURE', u'ISM: BUBBLES', u'ISM: INDIVIDUAL: ALPHANUMERIC: GW 123.4-1.5', u'ISM: STRUCTURE', u'Astrophysics'],
                 u'title': [u'The Galactic Worm GW 123.4-1.5: A Mushroom-shaped H I Cloud'],
-                u'citation_count': 16,
-                u'reference_count': 12,
+                u'num_citations': 16,
+                u'num_references': 12,
                 u'property': [u'OPENACCESS', u'REFEREED', u'EPRINT_OPENACCESS', u'PUB_OPENACCESS', u'ARTICLE'],
                 u'page': [u'L25']
             }
@@ -621,7 +621,7 @@ data_4 = \
         u'params': {
             u'q':'bibcode:2017wfc..rept...16R',
             u'indent':'on',
-            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identifier,copyright,keyword,doctype,reference_count,comment,property,esources,data,isbn,pubnote,eid',
+            u'fl':'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,num_citations,read_count,bibcode,identifier,copyright,keyword,doctype,num_references,comment,property,esources,data,isbn,pubnote,eid',
             'wt':'json',
             '_':'1529341837285'
         }
@@ -640,8 +640,8 @@ data_4 = \
                 u'author': [u'Ryan, R. E.', u'McCullough, P. R.'],
                 u'doctype': u'techreport',
                 u'pub': u'Space Telescope WFC Instrument Science Report',
-                u'citation_count': 0,
-                u'reference_count': 0,
+                u'num_citations': 0,
+                u'num_references': 0,
                 u'esources': [u'PUB_PDF'],
                 u'pub_raw': u'Instrument Science Report WFC3 2017-16, 6 pages',
                 u'year': u'2017',

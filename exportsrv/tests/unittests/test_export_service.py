@@ -294,7 +294,7 @@ class TestExports(TestCase):
                      "q":"*:*",
                      "start":"0",
                      "wt":"json",
-                     "fl":"author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identification,copyright,keyword,doctype,reference,comment,property,esources,data"
+                     "fl":"author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,num_citations,read_count,bibcode,identification,copyright,keyword,doctype,num_references,comment,property,esources,data"
                   }
                }
             }
@@ -342,7 +342,7 @@ class TestExports(TestCase):
                         "q": "*:*",
                         "start": "0",
                         "wt": "json",
-                        "fl": "author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,citation_count,read_count,bibcode,identification,copyright,keyword,doctype,reference,comment,property,esources,data"
+                        "fl": "author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,num_citations,read_count,bibcode,identification,copyright,keyword,doctype,num_references,comment,property,esources,data"
                     }
                 },
                 "response": {
