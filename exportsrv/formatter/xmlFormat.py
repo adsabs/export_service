@@ -429,6 +429,17 @@ class XMLFormat(Format):
         return OrderedDict([])
 
 
+    def __get_num_citations(self):
+        """
+
+        :return:
+        """
+        num_citations = 0
+        for a_doc in self.from_solr['response'].get('docs'):
+            num_citations += int(a_doc.get('num_citations', '0'))
+        return num_citations
+
+
     def __get_doc_dublin_xml(self, index, parent):
         """
         for each document from Solr, get the fields, and format them accordingly for Dublin format
@@ -530,6 +541,9 @@ class XMLFormat(Format):
             records.set('retrieved', str(num_docs))
             records.set('start', str(1))
             records.set('selected', str(num_docs))
+            num_citations = self.__get_num_citations()
+            if num_citations > 0:
+                records.set('citations', str(num_citations))
             if (export_format == self.EXPORT_FORMAT_REF_XML) or (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
                 for index in range(num_docs):
                     self.__get_doc_reference_xml(index, records, export_format)
