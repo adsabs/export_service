@@ -2,6 +2,7 @@
 
 from flask_testing import TestCase
 import unittest
+import mock
 
 from collections import OrderedDict
 
@@ -10,12 +11,12 @@ import exportsrv.app as app
 from exportsrv.tests.unittests.stubdata import solrdata
 from exportsrv.formatter.csl import CSL, adsFormatter
 from exportsrv.formatter.customFormat import CustomFormat
-
+from exportsrv.utils import get_solr_data
 
 class TestExportsCustomFormat(TestCase):
     def create_app(self):
-        app_ = app.create_app()
-        return app_
+        self.current_app = app.create_app()
+        return self.current_app
 
     def test_export_format(self):
         custom_format = CustomFormat(custom_format=r'')
@@ -341,6 +342,21 @@ class TestExportsCustomFormat(TestCase):
         custom_format = CustomFormat(custom_format=r'%A. (%Y). %q, %V, %p, %pc pp.')
         custom_format.set_json_from_solr(solrdata.data_8)
         assert (custom_format.get().get('export', '') == ''.join(formatted))
+
+    def test_num_citiations(self):
+        # verify %c outputs num_citations
+        with mock.patch.object(self.current_app.client, 'get') as get_mock:
+            get_mock.return_value = mock_response = mock.Mock()
+            mock_response.json.return_value = solrdata.data_11
+            mock_response.status_code = 200
+            solr_data = get_solr_data(bibcodes=["2016ApJ...818L..26F"], fields='read_count,bibcode,doctype,[citations],bibstem',
+                                      sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
+            self.assertEqual(solr_data['response']['docs'][0]['num_citations'], 29)
+        formatted = "2016ApJ...818L..26F: 29\n"
+        custom_format = CustomFormat(custom_format=r'%R: %c')
+        custom_format.set_json_from_solr(solrdata.data_11)
+        assert (custom_format.get().get('export', '') == ''.join(formatted))
+
 
 if __name__ == '__main__':
     unittest.main()

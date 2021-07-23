@@ -89,6 +89,9 @@ class CustomFormat(Format):
         # the same as bibstem
         if 'bibstem' not in solr_fields:
             solr_fields += 'bibstem,'
+        # num_citations is not available by itself in solr, it is part of `[citations]`
+        if 'num_citations' in solr_fields:
+            solr_fields = solr_fields.replace('num_citations', '[citations]')
         # don't need the last comma
         return solr_fields[:-len(',')]
 
