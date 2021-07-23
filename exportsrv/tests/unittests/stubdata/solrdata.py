@@ -982,3 +982,35 @@ data_10 = \
         ]
     }
 }
+
+
+data_11 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 2,
+        u'params': {
+              u'q': u'bibcode:2016ApJ...818L..26F',
+              u'fl': u'read_count,bibcode,doctype,[citations],bibstem',
+              u'_':' u1626894650747'}},
+    'response': {
+        u'numFound': 1,
+        u'start': 0,
+        u'docs': [
+            {
+                u'bibcode': u'2016ApJ...818L..26F',
+                u'bibstem': [u'ApJL', u'ApJL..818'],
+                u'doctype': u'article',
+                u'read_count': 2,
+                u'[citations]': {u'num_references': 40, u'num_citations': 29},
+                u'identifier': [u'2016ApJ...818L..26F',
+                                u'2016arXiv160201096F',
+                                u'10.3847/2041-8205/818/2/L26',
+                                u'2016arXiv160201096F',
+                                u'10.3847/2041-8205/818/2/L26',
+                                u'arXiv:1602.01096'],
+
+            }
+        ]
+    }
+}
