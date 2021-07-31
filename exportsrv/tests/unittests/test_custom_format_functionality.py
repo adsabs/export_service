@@ -14,6 +14,9 @@ from exportsrv.formatter.customFormat import CustomFormat
 from exportsrv.utils import get_solr_data
 
 class TestExportsCustomFormat(TestCase):
+
+    maxDiff = None
+
     def create_app(self):
         self.current_app = app.create_app()
         return self.current_app
@@ -352,10 +355,17 @@ class TestExportsCustomFormat(TestCase):
             solr_data = get_solr_data(bibcodes=["2016ApJ...818L..26F"], fields='read_count,bibcode,doctype,[citations],bibstem',
                                       sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
             self.assertEqual(solr_data['response']['docs'][0]['num_citations'], 29)
-        formatted = "2016ApJ...818L..26F: 29\n"
         custom_format = CustomFormat(custom_format=r'%R: %c')
         custom_format.set_json_from_solr(solrdata.data_11)
-        assert (custom_format.get().get('export', '') == ''.join(formatted))
+        assert (custom_format.get().get('export', '') == "2016ApJ...818L..26F: 29\n")
+
+    def test_escaping_literal(self):
+        # verify for example %%R is translated to %R and not recognized as field ID bibcode
+        formatted = [u'%R 2017EPJD...71..191Y\n%D 2017\n',
+                     u'%R 2017JDSO...13...25K\n%D 2017\n']
+        custom_format = CustomFormat(custom_format=u'%%R %R\n%%D %Y')
+        custom_format.set_json_from_solr(solrdata.data_8)
+        assert (custom_format.get().get('export', '') == r''.join(formatted))
 
 
 if __name__ == '__main__':

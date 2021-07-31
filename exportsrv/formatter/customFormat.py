@@ -50,6 +50,9 @@ class CustomFormat(Format):
         )''', flags=re.X
     )
 
+    # replace %% with the place holder text, and after formatting, replace place holder with %
+    ESCAPED_LITERAL_PLACE_HOLDER = r'escaped_literal_place_holder'
+
     def __init__(self, custom_format):
         """
 
@@ -59,7 +62,7 @@ class CustomFormat(Format):
         self.parsed_spec = []
         self.from_cls = {}
         self.author_count = {}
-        self.custom_format = custom_format
+        self.custom_format = r'{}'.format(custom_format.replace('%%', self.ESCAPED_LITERAL_PLACE_HOLDER))
         self.export_format = adsFormatter.unicode
         self.line_length = 0
         self.header = ''
@@ -859,6 +862,7 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, get_eprint(a_doc))
             elif (field[2] == 'page,page_range') or (field[2] == 'lastpage,page_range') or (field[2] == 'page_range,page'):
                 result = self.__add_in(result, field, self.__get_page(field[2], a_doc))
+        result = result.replace(self.ESCAPED_LITERAL_PLACE_HOLDER, '%')
         result += self.line_feed
 
         return self.__format_line_wrapped(result, index)
