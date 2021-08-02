@@ -50,8 +50,9 @@ class CustomFormat(Format):
         )''', flags=re.X
     )
 
-    # replace %% with the place holder text, and after formatting, replace place holder with %
-    ESCAPED_LITERAL_PLACE_HOLDER = r'escaped_literal_place_holder'
+    # replace %% with the place holder text, and after formatting, replace it back with %
+    ESCAPED_LITERAL_PLACE_HOLDER = '!!2percentsigns!!'
+    REGEX_LITERAL_PLACE_HOLDER = re.compile(ESCAPED_LITERAL_PLACE_HOLDER)
 
     def __init__(self, custom_format):
         """
@@ -62,7 +63,7 @@ class CustomFormat(Format):
         self.parsed_spec = []
         self.from_cls = {}
         self.author_count = {}
-        self.custom_format = r'{}'.format(custom_format.replace('%%', self.ESCAPED_LITERAL_PLACE_HOLDER))
+        self.custom_format = custom_format.replace('%%', self.ESCAPED_LITERAL_PLACE_HOLDER)
         self.export_format = adsFormatter.unicode
         self.line_length = 0
         self.header = ''
@@ -862,7 +863,6 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, get_eprint(a_doc))
             elif (field[2] == 'page,page_range') or (field[2] == 'lastpage,page_range') or (field[2] == 'page_range,page'):
                 result = self.__add_in(result, field, self.__get_page(field[2], a_doc))
-        result = result.replace(self.ESCAPED_LITERAL_PLACE_HOLDER, '%')
         result += self.line_feed
 
         return self.__format_line_wrapped(result, index)
@@ -885,5 +885,6 @@ class CustomFormat(Format):
                 results.append(self.__get_linefeed() + self.footer)
         result_dict = {}
         result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
-        result_dict['export'] = ''.join(result for result in results)
+        # if there was any %% that was replaced by the placeholder change it at once here before returning
+        result_dict['export'] = self.REGEX_LITERAL_PLACE_HOLDER.sub('%', ''.join(result for result in results))
         return result_dict
