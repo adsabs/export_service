@@ -128,8 +128,9 @@ class TestExportsCustomFormat(TestCase):
                                                    r'%H,%3.2H,%2.1H,%h,%3.2h,%I,%3.2I,%i,%3.2i,'
                                                    r'%L,%3.2L,%l,%3.2l,%M,%3.2M,%m,%3.2m,'
                                                    r'%N,%3.2N,%n,%3.2n,%e,%3.2e,%f,%3.2f,'
-                                                   r'%O,%3.2O,%o,%3.2o'
-                                                   r'%^A,%^a,%^G,%^g,%^H,%^h,%^I,%^i,%^L,%^l,%^M,%^m,%^N,%^n,%^e,%^f,%^O,%^o'
+                                                   r'%O,%3.2O,%o,%3.2o,%k,%3.2k,'
+                                                   r'%^A,%^a,%^G,%^g,%^H,%^h,%^I,%^i,%^L,%^l,%^M,%^m,%^N,%^n,%^e,%^f,'
+                                                   r'%^O,%^o,%^k'
         )
         custom_format.set_json_from_solr(solrdata.data_3)
 
@@ -172,6 +173,8 @@ class TestExportsCustomFormat(TestCase):
                             ('%3.2O', 'J. English, A. R. Taylor, and 4 colleagues'),
                             ('%o', 'J. English, A. R. Taylor, S. Y. Mashchenko, J. A. Irwin, S. Basu, & D. Johnstone'),
                             ('%3.2o', 'J. English, A. R. Taylor, et al.'),
+                            ('%k', 'Jayanne English, A. R. Taylor, S. Y. Mashchenko, Judith A. Irwin, Shantanu Basu, and Doug Johnstone'),
+                            ('%3.2k', 'Jayanne English, A. R. Taylor, et al.'),
                             ('%^A', 'English, Jayanne'),
                             ('%^a', 'English, Jayanne'),
                             ('%^G', 'English, J.'),
@@ -190,7 +193,7 @@ class TestExportsCustomFormat(TestCase):
                             ('%^f', 'English'),
                             ('%^O', 'J. English'),
                             ('%^o', 'J. English'),
-
+                            ('%^k', 'Jayanne English'),
         ])
         for key, value in author_format.items():
             assert (custom_format._CustomFormat__get_author_list(format=key, index=0) == value)
