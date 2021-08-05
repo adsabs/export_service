@@ -45,7 +45,7 @@ class CustomFormat(Format):
             (?:\d+|\*)?                                         # width
             (?:\.(?:\d+|\*))?                                   # precision
             (?:\^)?
-            p{0,2}[AaBcCdDeEfFGgHhiIJjKLlMmNnOopPQqRSTUuVWXxY]  # type
+            p{0,2}[AaBcCdDeEfFGgHhiIJjKkLlMmNnOopPQqRSTUuVWXxY] # type
             )
         )''', flags=re.X
     )
@@ -61,7 +61,7 @@ class CustomFormat(Format):
         """
         Format.__init__(self, None)
         self.parsed_spec = []
-        self.from_cls = {}
+        self.from_csl = {}
         self.author_count = {}
         self.custom_format = custom_format.replace('%%', self.ESCAPED_LITERAL_PLACE_HOLDER)
         self.export_format = adsFormatter.unicode
@@ -146,7 +146,7 @@ class CustomFormat(Format):
                 else:
                     csl_file_name = 'ads-author-' + element[1][-1] + element[1][-1]
                 key = element[1]
-                self.from_cls[key] = CSL(json_for_csl, csl_file_name).get(adsOrganizer.bibliography)
+                self.from_csl[key] = CSL(json_for_csl, csl_file_name).get(adsOrganizer.bibliography)
                 self.author_count[key] = self.__get_num_authors()
 
 
@@ -177,6 +177,7 @@ class CustomFormat(Format):
             'J': 'pub',
             'j': 'pub',
             'K': 'keyword',
+            'k': 'author',
             'L': 'author',
             'l': 'author',
             'M': 'author',
@@ -202,7 +203,7 @@ class CustomFormat(Format):
             'x': 'comment',
             'Y': 'year'
         }
-        specifier = ''.join(re.findall(r'([AaBcCdDeEfFGgHhiIJjKLlMmNnOopPQqRSTUuVWXxY]{1,2})', specifier))
+        specifier = ''.join(re.findall(r'([AaBcCdDeEfFGgHhiIJjKkLlMmNnOopPQqRSTUuVWXxY]{1,2})', specifier))
         return fieldDict.get(specifier, '')
 
 
@@ -426,7 +427,7 @@ class CustomFormat(Format):
         # formats that have no comma between last name and first/middle names
         # or only display last name, hence once split each is an element
         # return one element
-        if format in ['f','g','M','m','n','O','o']:
+        if format in ['f','g','M','m','n','O','o','k']:
             split_parts = author_list.split(', ')
             return split_parts[0]
         # seprator is space here, and only last name so a one-element needs to be returned
@@ -446,7 +447,7 @@ class CustomFormat(Format):
             return author_list
         # formats that have no comma between last name and first/middle names
         # or only display last name, hence once split each is an one element
-        if format in ['f','g', 'H', 'h', 'M', 'm', 'n', 'O', 'o']:
+        if format in ['f','g', 'H', 'h', 'M', 'm', 'n', 'O', 'o','k']:
             split_parts = author_list.split(', ')
             return self.author_sep.join(split_parts)
         # seprator here is space and since only last names are displayed
@@ -477,23 +478,24 @@ class CustomFormat(Format):
 
     def __get_author_list_abbreviated(self, author_list, num_authors, format, m):
         """
-        Formats	First Author	Second Author..	Before Last	    abbreviated
-        A	        As in db	    As in db	    and	            first author,..., m authors and xx colleagues
-        G	        lastname f. i.	lastname f. i.	                first author, et al.
-        H	        lastname	    lastname	    and	            display requested number of authors
-        I	        lastname, f. i.	f. i. lastname	and	            first author, and xx colleagues
-        L	        lastname, f. i.	lastname, f. i.	and	            first author, and xx colleagues
-        N	        lastname, f. i.	lastname, f. i.		            first author, and xx colleagues
-        O           f. i lastname   f. i lastname   and             first author, and xx colleagures
-        l	        lastname, f. i.	lastname, f. i.	&	            first author, et al.
-        M	        lastname	    lastname	and	                first author, et al.
-        m	        lastname	    lastname	&	                first author, et al.
-        n	        lastname	    +
-        a	        As in db	    As in db	    &	            first author,..., m authors et al.
-        g	        lastname, f.i.	lastname, f.i.	and	            first author, and xx colleagues
-        h	        lastname	    lastname	    and	            first author \\emph{et al.}
-        i	        lastname, f. i.	f. i. lastname	&	            first author, et al.
-        o           f. i lastname   f. i lastname   &               first author, et al.
+        Formats	    First Author	        Second Author..	Before Last	    abbreviated
+        A	        As in db	            As in db	    and	            first author,..., m authors and xx colleagues
+        G	        lastname f. i.	        lastname f. i.	                first author, et al.
+        H	        lastname	            lastname	    and	            display requested number of authors
+        I	        lastname, f. i.	        f. i. lastname	and	            first author, and xx colleagues
+        L	        lastname, f. i.	        lastname, f. i.	and	            first author, and xx colleagues
+        N	        lastname, f. i.	        lastname, f. i.		            first author, and xx colleagues
+        O           f. i lastname           f. i lastname   and             first author, and xx colleagures
+        l	        lastname, f. i.	        lastname, f. i.	&	            first author, et al.
+        M	        lastname	            lastname	and	                first author, et al.
+        m	        lastname	            lastname	&	                first author, et al.
+        n	        lastname	            +
+        a	        As in db	            As in db	    &	            first author,..., m authors et al.
+        g	        lastname, f.i.	        lastname, f.i.	and	            first author, and xx colleagues
+        h	        lastname	            lastname	    and	            first author \\emph{et al.}
+        i	        lastname, f. i.	        f. i. lastname	&	            first author, et al.
+        k           firstname i lastname    firstname i lastname   &        first author, et al.
+        o           f. i lastname           f. i lastname   &               first author, et al.
 
         n.m: Maximum number of entries in field (optional).
         If the number of authors in the list is larger than n, the list will be truncated and returned as
@@ -534,7 +536,7 @@ class CustomFormat(Format):
             # the rest are first and middle initials, no comma, lastname
             # hence first author needs two parts concatenated, the rest only 1
             return format_etal.format(self.__get_n_authors(author_list, u',', 1+m, u'', format))
-        if (format == 'o'):
+        if (format == 'o') or (format == 'k'):
             return format_etal.format(self.__get_n_authors(author_list, u',', m, u'', format))
         if (format == 'M') or (format == 'm'):
             # return n authors (LastName) et. al. - list is separated by a comma
@@ -568,7 +570,7 @@ class CustomFormat(Format):
         :param index:
         :return:
         """
-        authors = self.from_cls.get(format)[index]
+        authors = self.from_csl.get(format)[index]
         count = self.author_count.get(format)[index]
         # see if author list needs to get abbreviated
         # n.m: Maximum number of entries in author field (optional).
