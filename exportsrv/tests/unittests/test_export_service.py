@@ -496,6 +496,34 @@ class TestExports(TestCase):
         # verify that key is ascii
         assert(bibtex_export._BibTexFormat__format_key(solr_data['response'].get('docs')[2]) == 'Garzon:2019:hsax')
 
+        # if keyformat is eprintid and there is no eid in the record
+        bibtex_export = BibTexFormat(solr_data, "%X")
+        # must return the default bibcode
+        assert(bibtex_export._BibTexFormat__format_key(solr_data['response'].get('docs')[0]) == '2019AAS...23338108A')
+
+        solr_data = \
+            {
+                "responseHeader": {
+                    "status": 0,
+                    "QTime": 29,
+                    "params": {
+                        "q": "author:\"accomazzi\" AND doctype:eprint AND year:2021",
+                        "fl": "bibcode,eid,eprint",
+                        "sort": "bibcode desc",
+                        "rows": "300",
+                        "_": "1642527401469"}},
+                "response": {"numFound": 2, "start": 0, "docs": [
+                    {
+                        "bibcode": "2021arXiv211200590G",
+                        "eid": "arXiv:2112.00590"},
+                    {
+                        "bibcode": "2021arXiv210601477C",
+                        "eid": "arXiv:2106.01477"}]
+                }
+            }
+        # keyformat is eprintid
+        bibtex_export = BibTexFormat(solrdata.data, "%X")
+        assert(bibtex_export._BibTexFormat__format_key(solr_data['response'].get('docs')[0]) == 'arXiv:2112.00590')
 
     def test_no_journal_macro(self):
         # test by passing replacing journal macros for journal names

@@ -349,6 +349,19 @@ class TestExportsCustomFormat(TestCase):
         custom_format.set_json_from_solr(solrdata.data_8)
         assert (custom_format.get().get('export', '') == ''.join(formatted))
 
+    def test_page_range(self):
+        # verify %p, %P, and %PP outputs page, lastpage, and page range, respectively, properly
+        custom_formats = [r'%A. (%Y). %q, %V, %p-%P pp.',
+                          r'%A. (%Y). %q, %V, %p',
+                          r'%A. (%Y). %q, %V, %pp pp.']
+        formatted_records = [u'English, Jayanne, Taylor, A. R., Mashchenko, S. Y., Irwin, Judith A., Basu, Shantanu, and Johnstone, Doug. (2000). ApJL, 533, L25-L28 pp.\n',
+                             u'English, Jayanne, Taylor, A. R., Mashchenko, S. Y., Irwin, Judith A., Basu, Shantanu, and Johnstone, Doug. (2000). ApJL, 533, L25\n',
+                             u'English, Jayanne, Taylor, A. R., Mashchenko, S. Y., Irwin, Judith A., Basu, Shantanu, and Johnstone, Doug. (2000). ApJL, 533, L25-L28 pp.\n']
+        for custom_format, formatted_record in zip(custom_formats, formatted_records):
+            custom_format = CustomFormat(custom_format=custom_format)
+            custom_format.set_json_from_solr(solrdata.data_3)
+            assert (custom_format.get().get('export', '') == formatted_record)
+
     def test_num_citiations(self):
         # verify %c outputs num_citations
         with mock.patch.object(self.current_app.client, 'get') as get_mock:

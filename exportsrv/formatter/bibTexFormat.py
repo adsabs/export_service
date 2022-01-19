@@ -35,7 +35,7 @@ class BibTexFormat(Format):
             %                   # literal "%"
             (?:                 # first option
             (?:\d+|\*)?         # width
-            [HqRY]              # type
+            [HqRXY]             # type
             )
         )''', flags=re.X
     )
@@ -70,9 +70,10 @@ class BibTexFormat(Format):
             'H': 'author',
             'q': 'pub',
             'R': 'bibcode',
+            'X': 'eprintid',
             'Y': 'year'
         }
-        specifier = ''.join(re.findall(r'([HqRY])', specifier))
+        specifier = ''.join(re.findall(r'([HqRXY])', specifier))
         return fieldDict.get(specifier, '')
 
 
@@ -87,7 +88,7 @@ class BibTexFormat(Format):
                   'bookreview':'@ARTICLE', 'erratum':'@ARTICLE', 'obituary':'@ARTICLE',
                   'eprint':'@ARTICLE', 'catalog':'@ARTICLE', 'editorial':'@ARTICLE',
                   'book':'@BOOK', 
-                  'inbook':'@INBOOK',
+                  'inbook':'@INCOLLECTION',
                   'proceedings':'@PROCEEDINGS', 
                   'inproceedings':'@INPROCEEDINGS', 'abstract':'@INPROCEEDINGS',
                   'misc':'@MISC', 'software':'@MISC','proposal':'@MISC', 'pressrelease':'@MISC',
@@ -144,7 +145,7 @@ class BibTexFormat(Format):
             fields = [('author', 'author'), ('title', 'title'),
                       ('year', 'year'), ('volume', 'volume'), ('doi', 'doi'),
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
-        elif (doc_type_bibtex == '@INBOOK'):
+        elif (doc_type_bibtex == '@INCOLLECTION'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
                       ('volume', 'volume'), ('series', 'series'), ('eid', 'eid'),
@@ -435,7 +436,13 @@ class BibTexFormat(Format):
                 key = key.replace(field[1], a_doc.get('bibcode', ''))
             elif (field[2] == 'pub'):
                 key = key.replace(field[1], self.get_bibstem(a_doc.get('bibstem', '')))
-        return key.replace(' ','')
+            elif (field[2] == 'eprintid'):
+                key = key.replace(field[1], get_eprint(a_doc))
+        key = key.replace(' ', '')
+        # if no values in the key, return the default, bibcode
+        if len(key) == 0:
+            key = a_doc.get('bibcode', '')
+        return key
 
 
     def __get_key(self, index):

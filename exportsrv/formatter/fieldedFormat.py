@@ -53,7 +53,7 @@ class FieldedFormat(Format):
         fields = {}
         if (export_format == self.EXPORT_FORMAT_ENDNOTE):
             fields = {'article': 'Journal Article', 'book': 'Book', 'inbook': 'Book Section',
-                      'proceedings': 'Journal Article', 'inproceedings': 'Conference Proceedings',
+                      'proceedings': 'Conference Proceedings', 'inproceedings': 'Conference Proceedings',
                       'abstract': 'Conference Paper', 'misc': 'Journal Article', 'eprint': 'Electronic Article',
                       'talk': 'Conference Paper', 'software':'Miscellaneous', 'proposal':'Miscellaneous',
                       'pressrelease':'Journal Article', 'circular':'Journal Article', 'newsletter':'Journal Article',
@@ -142,11 +142,11 @@ class FieldedFormat(Format):
                                  ('eprintid', '%Y eprintid:')]))
         if (export_format == self.EXPORT_FORMAT_ENDNOTE):
             return (OrderedDict([('doctype', '%0'), ('title', '%T'), ('author', '%A'),
-                                 ('aff', '%+'), ('pub', '%J'), ('volume', '%V'),
-                                 ('year', '%D'), ('pubdate', '%8'), ('page', '%P'),
-                                 ('keyword', '%K'), ('url', '%U'), ('comment', '%Z'),
-                                 ('abstract', '%X'), ('doi', '%R'), ('eprintid', '%= eprint:'),
-                                 ('issn', '%@')]))
+                                 ('editor', '%E'), ('aff', '%+'), ('pub', '%J or %B'),
+                                 ('volume', '%V'), ('year', '%D'), ('pubdate', '%8'),
+                                 ('page', '%P'), ('keyword', '%K'), ('url', '%U'),
+                                 ('comment', '%Z'), ('abstract', '%X'), ('doi', '%R'),
+                                 ('eprintid', '%= eprint:'), ('issn', '%@')]))
         if (export_format == self.EXPORT_FORMAT_PROCITE):
             return (OrderedDict([('doctype', 'TY  -'), ('title', 'TI  -'), ('author', 'AU  -'),
                                  ('aff', 'AD  -'), ('pub', 'JO  -'), ('volume', 'VL  -'),
@@ -163,11 +163,12 @@ class FieldedFormat(Format):
                                  ('endRecord', 'ER  -')]))
         if (export_format == self.EXPORT_FORMAT_REFWORKS):
             return (OrderedDict([('doctype', 'RT'), ('title', 'T1'), ('author', 'A1'),
-                                 ('aff', 'AD'), ('pub', 'JF'), ('volume', 'VO'),
-                                 ('year', 'YR'), ('pubdate', 'FD'), ('page', 'SP'),
-                                 ('lastpage', 'OP'), ('keyword', 'K1'), ('url', 'LK'),
-                                 ('comment', 'NO'), ('abstract', 'AB'), ('doi', 'DO DOI:'),
-                                 ('eprintid', 'DO eprintid:'), ('issn', 'SN')]))
+                                 ('editor', 'A2'), ('aff', 'AD'), ('pub', 'JF'),
+                                 ('volume', 'VO'), ('year', 'YR'), ('pubdate', 'FD'),
+                                 ('page', 'SP'), ('lastpage', 'OP'), ('keyword', 'K1'),
+                                 ('url', 'LK'), ('comment', 'NO'), ('abstract', 'AB'),
+                                 ('doi', 'DO DOI:'), ('eprintid', 'DO eprintid:'),
+                                 ('issn', 'SN')]))
         if (export_format == self.EXPORT_FORMAT_MEDLARS):
             return (OrderedDict([('doctype', 'PT  -'), ('title', 'TI  -'), ('author', 'AU  -'),
                                  ('aff', 'AD  -'), ('bibstem', 'TA  -'), ('pub_raw', 'SO  -'),
@@ -179,10 +180,10 @@ class FieldedFormat(Format):
         """
         format authors
 
-        :param a_doc: 
-        :param export_format: 
-        :param tag: 
-        :return: 
+        :param a_doc:
+        :param export_format:
+        :param tag:
+        :return:
         """
         if 'author' not in a_doc:
             return ''
@@ -204,6 +205,32 @@ class FieldedFormat(Format):
             result = ''
             for author in a_doc['author']:
                 result += tag + ' ' + author + separator
+            # do not need the last separator
+            if (len(result) > len(separator)):
+                result = result[:-len(separator)]
+            return result + '\n'
+
+        return ''
+
+
+    def __add_editor_list(self, a_doc, export_format, tag):
+        """
+        format editors
+
+        :param a_doc:
+        :param export_format:
+        :param tag:
+        :return:
+        """
+        if 'editor' not in a_doc:
+            return ''
+
+        # only endnote and refworks output editor
+        if (export_format == self.EXPORT_FORMAT_ENDNOTE) or (export_format == self.EXPORT_FORMAT_REFWORKS):
+            separator = '\n'
+            result = ''
+            for editor in a_doc['editor']:
+                result += tag + ' ' + editor + separator
             # do not need the last separator
             if (len(result) > len(separator)):
                 result = result[:-len(separator)]
@@ -252,9 +279,9 @@ class FieldedFormat(Format):
     def __add_doc_links_property(self, a_doc, tag):
         """
         format links that are defined in the property field
-        :param a_doc: 
+        :param a_doc:
         :param tag:
-        :return: 
+        :return:
         """
         link_dict = OrderedDict([
             ('TOC', ['TOC', 'Table of Contents']),
@@ -459,6 +486,58 @@ class FieldedFormat(Format):
         return a_doc.get('abstract', '')
 
 
+    def __add_pub(self, a_doc, export_format, tag):
+        """
+
+        :param a_doc:
+        :param export_format:
+        :param tag:
+        :return:
+        """
+        if export_format == self.EXPORT_FORMAT_ENDNOTE:
+            # there is an exception for endnote
+            # if doctype is any of the three book related records
+            # display the tags %B Secondary Title (of a Book or Conference Name)
+            # otherwise display the tag %J Secondary Title (Journal Name)
+            doctype = a_doc.get('doctype', '')
+            if doctype in ['inbook', 'proceedings', 'inproceedings']:
+                tag = "%B"
+            else:
+                tag = "%J"
+        return self.__add_in(tag, ''.join(a_doc.get('pub', '')))
+
+
+    def __get_page(self, a_doc, export_format):
+        """
+
+        :param a_doc:
+        :param export_format:
+        :return:
+        """
+        # these formats display page range if available
+        if (export_format == self.EXPORT_FORMAT_ENDNOTE) or (export_format == self.EXPORT_FORMAT_MEDLARS):
+            page_range = a_doc.get('page_range', None)
+            if page_range:
+                return page_range
+        # return first page
+        return ''.join(a_doc.get('page', ''))
+
+
+    def __get_last_page(self, page_range, export_format):
+        """
+
+        :param page_range:
+        :param export_format:
+        :return:
+        """
+        if not ((export_format == self.EXPORT_FORMAT_ENDNOTE) or (export_format == self.EXPORT_FORMAT_MEDLARS)):
+            if (len(page_range) > 0) and ('-' in page_range):
+                parts = page_range.split('-')
+                if (len(parts[1]) > 0):
+                    return parts[1]
+        return ''
+
+
     def __add_in(self, field, value):
         """
         add the value into the return structure, only if a value was defined in Solr
@@ -467,23 +546,11 @@ class FieldedFormat(Format):
         :param value:
         :return:
         """
-        if ((isinstance(value, str) or isinstance(value, byte)) and (len(value) > 0)) or \
+        if ((isinstance(value, str) or isinstance(value, bytes)) and (len(value) > 0)) or \
            (isinstance(value, int) and (value is not None)):
             return field + ' ' + value + '\n'
         return ''
 
-
-    def ___get_last_page(self, page_range):
-        """
-
-        :param page_range:
-        :return:
-        """
-        if (len(page_range) > 0) and ('-' in page_range):
-            parts = page_range.split('-')
-            if (len(parts[1]) > 0):
-                return parts[1]
-        return ''
 
     def __get_doc(self, index, fields, export_format):
         """
@@ -496,13 +563,19 @@ class FieldedFormat(Format):
         result = ''
         a_doc = self.from_solr['response'].get('docs')[index]
         for field in fields:
-            if (field == 'title') or (field == 'page') or (field == 'doi') or (field == 'isbn') or \
-                    (field == 'pubnote') or (field == 'issn') or (field == 'pub'):
+            if (field == 'title') or (field == 'doi') or (field == 'isbn') or \
+                    (field == 'pubnote') or (field == 'issn'):
                 result += self.__add_in(fields[field], ''.join(a_doc.get(field, '')))
+            elif (field == 'pub'):
+                result += self.__add_pub(a_doc, export_format, fields[field])
+            elif (field == 'page'):
+                result += self.__add_in(fields[field], self.__get_page(a_doc, export_format))
             elif (field == 'lastpage'):
-                result += self.__add_in(fields[field], self.___get_last_page(a_doc.get('page_range', '')))
+                result += self.__add_in(fields[field], self.__get_last_page(a_doc.get('page_range', ''), export_format))
             elif (field == 'author'):
                 result += self.__add_author_list(a_doc, export_format, fields[field])
+            elif (field == 'editor'):
+                result += self.__add_editor_list(a_doc, export_format, fields[field])
             elif (field == 'doctype'):
                 result += self.__add_in(fields[field], self.__get_doc_type(a_doc.get(field, ''), export_format))
             elif (field == 'pubdate'):
@@ -538,8 +611,8 @@ class FieldedFormat(Format):
         """
         for each document from Solr, get the fields, and format them accordingly
 
-        :param export_format: 
-        :return: 
+        :param export_format:
+        :return:
         """
         num_docs = 0
         results = []

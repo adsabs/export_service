@@ -187,7 +187,7 @@ class CustomFormat(Format):
             'O': 'author',
             'o': 'author',
             'p': 'page,page_range',
-            'P': 'lastpage,page_range',  # Last Page
+            'P': 'lastpage',
             'pp':'page_range,page',      # page_range is specified in the custom format, but if not available and page is then return that
             'pc':'page_count',
             'Q': 'pub_raw',
@@ -673,7 +673,7 @@ class CustomFormat(Format):
                 return page_range[0]
             if 'page' in a_doc:
                 return ''.join(a_doc.get('page'))
-        if field == 'lastpage,page_range':
+        if field == 'lastpage':
             if 'page_range' in a_doc:
                 page_range = a_doc.get('page_range').split('-')
                 if len(page_range) > 1:
@@ -863,7 +863,7 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, str(a_doc.get(field[2], '')))
             elif (field[2] == 'eid,identifier'):
                 result = self.__add_in(result, field, get_eprint(a_doc))
-            elif (field[2] == 'page,page_range') or (field[2] == 'lastpage,page_range') or (field[2] == 'page_range,page'):
+            elif (field[2] == 'page,page_range') or (field[2] == 'lastpage') or (field[2] == 'page_range,page'):
                 result = self.__add_in(result, field, self.__get_page(field[2], a_doc))
         result += self.line_feed
 
