@@ -1,5 +1,5 @@
 git+https://github.com/adsabs/ADSMicroserviceUtils.git@v1.1.9
 citeproc-py==0.5.1
 future==0.18.2
-lxml==4.6.2
+lxml==4.6.5
 unidecode===1.2.0
