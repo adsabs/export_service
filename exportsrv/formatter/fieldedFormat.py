@@ -486,27 +486,6 @@ class FieldedFormat(Format):
         return a_doc.get('abstract', '')
 
 
-    def __add_pub(self, a_doc, export_format, tag):
-        """
-
-        :param a_doc:
-        :param export_format:
-        :param tag:
-        :return:
-        """
-        if export_format == self.EXPORT_FORMAT_ENDNOTE:
-            # there is an exception for endnote
-            # if doctype is any of the three book related records
-            # display the tags %B Secondary Title (of a Book or Conference Name)
-            # otherwise display the tag %J Secondary Title (Journal Name)
-            doctype = a_doc.get('doctype', '')
-            if doctype in ['inbook', 'proceedings', 'inproceedings']:
-                tag = "%B"
-            else:
-                tag = "%J"
-        return self.__add_in(tag, ''.join(a_doc.get('pub', '')))
-
-
     def __get_page(self, a_doc, export_format):
         """
 
@@ -551,6 +530,26 @@ class FieldedFormat(Format):
             return field + ' ' + value + '\n'
         return ''
 
+
+    def __add_pub(self, a_doc, export_format, tag):
+        """
+
+        :param a_doc:
+        :param export_format:
+        :param tag:
+        :return:
+        """
+        if export_format == self.EXPORT_FORMAT_ENDNOTE:
+            # there is an exception for endnote
+            # depending on doctype different tags for Secondary Title is displayed
+            doctype = a_doc.get('doctype', '')
+            if doctype in ['inbook', 'proceedings', 'inproceedings']:
+                # Book or Conference Name
+                tag = "%B"
+            else:
+                # Journal Name
+                tag = "%J"
+        return self.__add_in(tag, ''.join(a_doc.get('pub', '')))
 
     def __get_doc(self, index, fields, export_format):
         """
