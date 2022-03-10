@@ -65,7 +65,7 @@ def get_solr_data(bibcodes, fields, sort, start=0, encode_style=None):
             num_docs = from_solr['response'].get('numFound', 0)
             if num_docs > 0:
                 for doc in from_solr['response']['docs']:
-                    # before proceeding remove the compunded field and assign it to individual count variables
+                    # before proceeding remove the compounded field and assign it to individual count variables
                     citations = doc.pop('[citations]', None)
                     if citations is not None:
                         doc.update({u'num_references':citations['num_references']})
@@ -79,6 +79,10 @@ def get_solr_data(bibcodes, fields, sort, start=0, encode_style=None):
                             elif isinstance(field_str, str):
                                 field_str = replace_html_entity(field_str, encode_style)
                             doc[field] = field_str
+                    # if canonical affiliation is available use that, otherwise use aff
+                    aff_canonical = doc.pop('aff_canonical', None)
+                    if aff_canonical:
+                        doc.update({u'aff': aff_canonical})
                 from_solr['response']['numFound'] = len(from_solr['response']['docs'])
                 # reorder the list based on the list of bibcodes provided
                 if sort == current_app.config['EXPORT_SERVICE_NO_SORT_SOLR']:
