@@ -135,7 +135,7 @@ class TestSolrData(TestCase):
             }, {
                 'bibcode': '2019AAS...23320704A',
                 'identifier': ['2019AAS...23320704A'],
-                'aff': ['Harvard Smithsonian Center for Astrophysicsu']
+                'aff': ['Harvard Smithsonian Center for Astrophysics']
             }
         ]
         with mock.patch.object(self.current_app.client, 'get') as get_mock:
