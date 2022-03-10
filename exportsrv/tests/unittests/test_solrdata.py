@@ -116,7 +116,7 @@ class TestSolrData(TestCase):
                 'identifier': ['2019EPSC...13.1911A'],
                 'aff': ['NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States',
                         'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States',
-                        'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United Statesu']
+                        'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States']
             }, {
                 'bibcode': '2019AAS...23338108A',
                 'identifier': ['2019AAS...23338108A'],
@@ -135,7 +135,7 @@ class TestSolrData(TestCase):
             }, {
                 'bibcode': '2019AAS...23320704A',
                 'identifier': ['2019AAS...23320704A'],
-                'aff': ['Harvard Smithsonian Center for Astrophysicsu']
+                'aff': ['Harvard Smithsonian Center for Astrophysics']
             }
         ]
         with mock.patch.object(self.current_app.client, 'get') as get_mock:
@@ -144,7 +144,6 @@ class TestSolrData(TestCase):
             mock_response.status_code = 200
             solr_data = get_solr_data(bibcodes=bibcodes, fields='bibcode,aff,aff_canonical',
                                       sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
-            print(solr_data['response']['docs'])
             self.assertEqual(solr_data['response']['docs'], response)
 
 if __name__ == "__main__":
