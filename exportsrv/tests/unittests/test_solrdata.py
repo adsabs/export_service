@@ -13,6 +13,7 @@ from exportsrv.tests.unittests.stubdata import solrdata
 
 class TestSolrData(TestCase):
     def create_app(self):
+        # set the number of bibcodes to switch between query and bigquery
         self.current_app = app.create_app(**{'EXPORT_SERVICE_MAX_RECORDS_SOLR_QUERY': 10})
         return self.current_app
 
@@ -94,6 +95,57 @@ class TestSolrData(TestCase):
             self.assertEqual(len(solr_data['response']['docs']), len(bibcodes))
 
 
+    def test_switch_to_canonical_affilation(self):
+        """
+        Tests to use canonical affilation if available, otherwise go with affilation
+        """
+        bibcodes = ["2020AAS...23528705A", "2019EPSC...13.1911A", "2019AAS...23338108A", "2019AAS...23320704A"]
+        # the first two had no canonical affilations, so affilation is used, the last two had canonical affilations,
+        # so affilation was overwritten with canonical version
+        response = [
+            {
+                'bibcode': '2020AAS...23528705A',
+                'identifier': ['2020AAS...23528705A'],
+                'aff': ['ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA', '-', '-', '-', '-', '-',
+                        'ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA', '-',
+                        'ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA',
+                        'ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA', '-', '-',
+                        'ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA']
+            },{
+                'bibcode': '2019EPSC...13.1911A',
+                'identifier': ['2019EPSC...13.1911A'],
+                'aff': ['NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States',
+                        'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States',
+                        'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United Statesu']
+            }, {
+                'bibcode': '2019AAS...23338108A',
+                'identifier': ['2019AAS...23338108A'],
+                'aff': ['Harvard Smithsonian Center for Astrophysics',
+                        'Harvard Smithsonian Center for Astrophysics',
+                        'Harvard Smithsonian Center for Astrophysics',
+                        'Harvard Smithsonian Center for Astrophysics',
+                        'Harvard Smithsonian Center for Astrophysics',
+                        'Harvard Smithsonian Center for Astrophysics',
+                        'Harvard Smithsonian Center for Astrophysics',
+                        'Harvard Smithsonian Center for Astrophysics',
+                        'Harvard Smithsonian Center for Astrophysics',
+                        'Harvard Smithsonian Center for Astrophysics',
+                        'Harvard Smithsonian Center for Astrophysics',
+                        'Harvard Smithsonian Center for Astrophysics']
+            }, {
+                'bibcode': '2019AAS...23320704A',
+                'identifier': ['2019AAS...23320704A'],
+                'aff': ['Harvard Smithsonian Center for Astrophysicsu']
+            }
+        ]
+        with mock.patch.object(self.current_app.client, 'get') as get_mock:
+            get_mock.return_value = mock_response = mock.Mock()
+            mock_response.json.return_value = solrdata.data_12
+            mock_response.status_code = 200
+            solr_data = get_solr_data(bibcodes=bibcodes, fields='bibcode,aff,aff_canonical',
+                                      sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
+            print(solr_data['response']['docs'])
+            self.assertEqual(solr_data['response']['docs'], response)
 
 if __name__ == "__main__":
     unittest.main()

@@ -1014,3 +1014,81 @@ data_11 = \
         ]
     }
 }
+
+data_12 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 79,
+        u'params': {
+            u'q': u'bibcode:("2020AAS...23528705A" OR "2019EPSC...13.1911A" OR "2019AAS...23338108A" OR "2019AAS...23320704A")',
+            u'fl': u'bibcode,aff,aff_canonical',
+            u'_': '1646837683191'}},
+    u'response': {
+        u'numFound': 4,
+        u'start': 0,
+        u'docs': [
+            {
+                u'bibcode': u'2019AAS...23320704A',
+                u'identifier':[u'2019AAS...23320704A'],
+                u'aff': [u'Harvard-Smithsonian Center for Astrophysics, Cambridge, MA, United Statesu'],
+                u'aff_canonical': [u'Harvard Smithsonian Center for Astrophysicsu']},
+            {
+                u'bibcode': u'2020AAS...23528705A',
+                u'identifier': [u'2020AAS...23528705A'],
+                u'aff': [
+                    u'ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA',
+                    u'-',
+                    u'-',
+                    u'-',
+                    u'-',
+                    u'-',
+                    u'ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA',
+                    u'-',
+                    u'ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA',
+                    u'ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA',
+                    u'-',
+                    u'-',
+                    u'ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA'],
+            },
+            {
+                u'bibcode': u'2019EPSC...13.1911A',
+                u'identifier': [u'2019EPSC...13.1911A'],
+                u'aff': [
+                    u'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States',
+                    u'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States',
+                    u'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United Statesu'],
+            },
+            {
+                u'bibcode': u'2019AAS...23338108A',
+                u'identifier': [u'2019AAS...23338108A'],
+                u'aff': [
+                    u'Harvard-Smithsonian Center for Astrophysics, Cambridge, MA, United States',
+                        u'Harvard-Smithsonian Center for Astrophysics, Cambridge, MA, United States',
+                        u'Harvard-Smithsonian Center for Astrophysics, Cambridge, MA, United States',
+                        u'Harvard-Smithsonian Center for Astrophysics, Cambridge, MA, United States',
+                        u'Harvard-Smithsonian Center for Astrophysics, Cambridge, MA, United States',
+                        u'Harvard-Smithsonian Center for Astrophysics, Cambridge, MA, United States',
+                        u'Harvard-Smithsonian Center for Astrophysics, Cambridge, MA, United States',
+                        u'Harvard-Smithsonian Center for Astrophysics, Cambridge, MA, United States',
+                        u'Harvard-Smithsonian Center for Astrophysics, Cambridge, MA, United States',
+                        u'Harvard-Smithsonian Center for Astrophysics, Cambridge, MA, United States',
+                        u'Harvard-Smithsonian Center for Astrophysics, Cambridge, MA, United States',
+                        u'Harvard-Smithsonian Center for Astrophysics, Cambridge, MA, United Statesu'],
+                u'aff_canonical': [
+                        u'Harvard Smithsonian Center for Astrophysics',
+                        u'Harvard Smithsonian Center for Astrophysics',
+                        u'Harvard Smithsonian Center for Astrophysics',
+                        u'Harvard Smithsonian Center for Astrophysics',
+                        u'Harvard Smithsonian Center for Astrophysics',
+                        u'Harvard Smithsonian Center for Astrophysics',
+                        u'Harvard Smithsonian Center for Astrophysics',
+                        u'Harvard Smithsonian Center for Astrophysics',
+                        u'Harvard Smithsonian Center for Astrophysics',
+                        u'Harvard Smithsonian Center for Astrophysics',
+                        u'Harvard Smithsonian Center for Astrophysics',
+                        u'Harvard Smithsonian Center for Astrophysics']
+            }
+        ]
+    }
+}

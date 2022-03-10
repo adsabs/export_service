@@ -172,7 +172,7 @@ class TestExports(TestCase):
         assert(adsFormatter().verify(10) == False)
 
     def test_default_solr_fields(self):
-        default_fields = 'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,' \
+        default_fields = 'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,aff_canonical,doi,abstract,' \
                          'read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,' \
                          'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem,page_count'
         assert (views.default_solr_fields() == default_fields)
