@@ -116,7 +116,7 @@ class TestSolrData(TestCase):
                 'identifier': ['2019EPSC...13.1911A'],
                 'aff': ['NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States',
                         'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States',
-                        'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United Statesu']
+                        'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States']
             }, {
                 'bibcode': '2019AAS...23338108A',
                 'identifier': ['2019AAS...23338108A'],
