@@ -144,7 +144,6 @@ class TestSolrData(TestCase):
             mock_response.status_code = 200
             solr_data = get_solr_data(bibcodes=bibcodes, fields='bibcode,aff,aff_canonical',
                                       sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
-            print(solr_data['response']['docs'])
             self.assertEqual(solr_data['response']['docs'], response)
 
 if __name__ == "__main__":
