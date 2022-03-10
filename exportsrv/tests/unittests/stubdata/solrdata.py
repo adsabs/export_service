@@ -1032,7 +1032,7 @@ data_12 = \
                 u'bibcode': u'2019AAS...23320704A',
                 u'identifier':[u'2019AAS...23320704A'],
                 u'aff': [u'Harvard-Smithsonian Center for Astrophysics, Cambridge, MA, United States'],
-                u'aff_canonical': [u'Harvard Smithsonian Center for Astrophysicsu']},
+                u'aff_canonical': [u'Harvard Smithsonian Center for Astrophysics']},
             {
                 u'bibcode': u'2020AAS...23528705A',
                 u'identifier': [u'2020AAS...23528705A'],
