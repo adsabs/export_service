@@ -10,6 +10,7 @@ import re
 
 from exportsrv.formatter.ads import adsFormatter
 
+re_valid_affiliation = re.compile(r'[A-Za-z]{3,}')
 def get_solr_data(bibcodes, fields, sort, start=0, encode_style=None):
     """
 
@@ -79,10 +80,11 @@ def get_solr_data(bibcodes, fields, sort, start=0, encode_style=None):
                             elif isinstance(field_str, str):
                                 field_str = replace_html_entity(field_str, encode_style)
                             doc[field] = field_str
-                    # if canonical affiliation is available use that, otherwise use aff
+                    # if canonical affiliation is a valid affiliation, isn't just dashes use that, otherwise use aff
                     aff_canonical = doc.pop('aff_canonical', None)
                     if aff_canonical:
-                        doc.update({u'aff': aff_canonical})
+                        aff = [canonical if len(re_valid_affiliation.findall(canonical)) > 0 else regular for regular, canonical in zip(doc.get('aff'), aff_canonical)]
+                        doc.update({u'aff': aff})
                 from_solr['response']['numFound'] = len(from_solr['response']['docs'])
                 # reorder the list based on the list of bibcodes provided
                 if sort == current_app.config['EXPORT_SERVICE_NO_SORT_SOLR']:

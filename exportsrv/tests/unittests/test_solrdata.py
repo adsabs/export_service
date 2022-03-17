@@ -102,15 +102,15 @@ class TestSolrData(TestCase):
         bibcodes = ["2020AAS...23528705A", "2019EPSC...13.1911A", "2019AAS...23338108A", "2019AAS...23320704A"]
         # the first two had no canonical affilations, so affilation is used, the last two had canonical affilations,
         # so affilation was overwritten with canonical version
-        response = [
+        expected_response = [
             {
                 'bibcode': '2020AAS...23528705A',
                 'identifier': ['2020AAS...23528705A'],
-                'aff': ['ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA', '-', '-', '-', '-', '-',
-                        'ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA', '-',
-                        'ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA',
-                        'ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA', '-', '-',
-                        'ADS, Center for Astrophysics | Harvard & Smithsonian, Cambridge, MA']
+                'aff': ['NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States', '-', '-', '-', '-', '-',
+                        'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States', '-',
+                        'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States',
+                        'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States', '-', '-',
+                        'NASA Astrophysics Data System, Center for Astrophysics | Harvard & Smithsonian, Cambridge MA, United States']
             },{
                 'bibcode': '2019EPSC...13.1911A',
                 'identifier': ['2019EPSC...13.1911A'],
@@ -144,7 +144,7 @@ class TestSolrData(TestCase):
             mock_response.status_code = 200
             solr_data = get_solr_data(bibcodes=bibcodes, fields='bibcode,aff,aff_canonical',
                                       sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
-            self.assertEqual(solr_data['response']['docs'], response)
+            self.assertEqual(solr_data['response']['docs'], expected_response)
 
 if __name__ == "__main__":
     unittest.main()
