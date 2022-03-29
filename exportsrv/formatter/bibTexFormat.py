@@ -166,7 +166,7 @@ class BibTexFormat(Format):
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@MISC'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
-                      ('pub', 'howpublished'), ('year', 'year'), ('month', 'month'),
+                      ('pub_raw', 'howpublished'), ('year', 'year'), ('month', 'month'),
                       ('eid', 'eid'), ('page_range', 'pages'), ('doi', 'doi'),
                       ('eprintid', 'archivePrefix|eprint'), ('arxiv_class', 'primaryClass'),
                       ('version', 'version'), ('publisher', 'publisher'),
