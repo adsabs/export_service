@@ -5,6 +5,7 @@ from flask import current_app
 from textwrap import fill
 import re
 from html import escape
+from unidecode import unidecode
 
 from exportsrv.formatter.format import Format
 from exportsrv.formatter.ads import adsFormatter, adsOrganizer
@@ -26,7 +27,7 @@ from exportsrv.utils import get_eprint, replace_html_entity
 
 class CustomFormat(Format):
 
-    REGEX_AUTHOR = re.compile(r'%[\\>/=]?(\d*\.?\d*)(\w)')
+    REGEX_AUTHOR = re.compile(r'%[\\></=]?(\d*\.?\d*)(\w)')
     REGEX_PUB_MACRO = re.compile(r'(^\\[a-z]*$)')
     REGEX_FIRST_AUTHOR = re.compile(r'%(\^)(\w)')
     REGEX_AFF = re.compile(r'%(\d*)F')
@@ -40,7 +41,7 @@ class CustomFormat(Format):
     REGEX_CUSTOME_FORMAT = re.compile(
         r'''(                                                   # start of capture group 1
             %                                                   # literal "%"
-            (?:[\\>/=])?                                        # field encoding
+            (?:[\\></=])?                                       # field encoding
             (?:                                                 # first option
             (?:\d+|\*)?                                         # width
             (?:\.(?:\d+|\*))?                                   # precision
@@ -728,6 +729,9 @@ class CustomFormat(Format):
                 return self.__encode_latex(value, field)
             if '>' in field_format:
                 return escape(value)
+            # ascii encoding
+            if '<' in field_format:
+                return unidecode(value)
             if '=' in field_format:
                 return value.encode('hex')
             if '/' in field_format:

@@ -326,6 +326,13 @@ class TestExportsCustomFormat(TestCase):
         url_encoded = '<a+href=%22http://adsabs.harvard.edu/abs/1997AAS...190.1403E%22>1997AAS...190.1403E</a>'
         assert (custom_format._CustomFormat__encode(value=url, field='url', field_format='%/U') == url_encoded)
 
+        # ascii field encoding
+        custom_format = CustomFormat(custom_format=r'%<1H')
+        custom_format.set_json_from_solr(solrdata.data_13)
+        author_ascii_encoded = u'Leger'
+        assert (custom_format._CustomFormat__encode(value=custom_format._CustomFormat__get_author_list(format=r'%<1H', index=0),
+                                                    field='author', field_format=r'%<1H') == author_ascii_encoded)
+
     def test_end_record_insert(self):
         # verify string specified with %ZEOL gets inserted after each record
         # no EOL string
