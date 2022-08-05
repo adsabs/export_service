@@ -490,7 +490,10 @@ class BibTexFormat(Format):
             elif (field == 'pub'):
                 text += self.__add_in(fields[field], self.__get_journal(a_doc, journalformat), format_style_bracket)
             elif (field == 'doi'):
-                text += self.__add_in(fields[field], encode_latex_doi(''.join(a_doc.get(field, ''))), format_style_bracket)
+                # 8/5/22 checked couple of sites including https://citation.crosscite.org/ that do not escape doi
+                # so remove escaping doi, and let the underscore be dealt with on the latex side
+                # text += self.__add_in(fields[field], encode_latex_doi(''.join(a_doc.get(field, ''))), format_style_bracket)
+                text += self.__add_in(fields[field], ''.join(a_doc.get(field, '')), format_style_bracket)
             elif (field == 'keyword'):
                 text += self.__add_in(fields[field], self.__add_keywords(a_doc), format_style_bracket)
             elif (field == 'year'):

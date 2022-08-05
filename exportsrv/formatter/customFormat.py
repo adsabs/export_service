@@ -688,17 +688,19 @@ class CustomFormat(Format):
         return ''
 
 
-    def __encode_latex(self, value, field):
+    def __encode_latex(self, value, field, forced=False):
         """
 
         :param value:
         :param field:
+        :param forced: is set to True from fielded encoding only
         :return:
         """
         if (field == 'author'):
             return encode_laTex_author(value)
         # do not encode publication when the format is a macro or if it is bibcode
-        if ((field == 'pub') and (self.REGEX_PUB_MACRO.match(value))) or (field == 'bibcode'):
+        # 8/5/22 when user specifically requests fielded encoding for bibcode, allow it
+        if ((field == 'pub') and (self.REGEX_PUB_MACRO.match(value))) or ((field == 'bibcode') and not forced):
             return value
         return encode_laTex(value)
 
@@ -726,7 +728,7 @@ class CustomFormat(Format):
         # first check for field encoding
         if field_format is not None:
             if '\\' in field_format:
-                return self.__encode_latex(value, field)
+                return self.__encode_latex(value, field, True)
             if '>' in field_format:
                 return escape(value)
             # ascii encoding
