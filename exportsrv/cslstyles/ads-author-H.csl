@@ -19,7 +19,7 @@
     <layout>
       <text macro="author"/>
       <names variable="author">
-        <name form="short" delimiter=" " and="text" delimiter-precedes-last="always" et-al-use-last="true" initialize="false" name-as-sort-order="all"/>
+        <name form="short" delimiter="; " and="text" delimiter-precedes-last="always" et-al-use-last="true" initialize="false" name-as-sort-order="all"/>
         <label form="short" prefix=", "/>
       </names>
     </layout>
