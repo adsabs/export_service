@@ -280,7 +280,7 @@ class TestExportsCustomFormat(TestCase):
         custom_format._CustomFormat__parse_command()
         assert (len(custom_format.author_sep) == 0)
 
-        # verify when the parameter is defined, comma is replaced by the defined seprator
+        # verify when the parameter is defined, comma is replaced by the defined separator
         custom_format = CustomFormat(custom_format=r'%ZAuthorSep:"; " %A')
         custom_format.set_json_from_solr(solrdata.data_3)
         author_list_with_new_sep = u'English, Jayanne; Taylor, A. R.; Mashchenko, S. Y.; Irwin, Judith A.; Basu, Shantanu; and Johnstone, Doug'
@@ -388,6 +388,15 @@ class TestExportsCustomFormat(TestCase):
                      u'%R 2017JDSO...13...25K\n%D 2017\n']
         custom_format = CustomFormat(custom_format=u'%%R %R\n%%D %Y')
         custom_format.set_json_from_solr(solrdata.data_8)
+        assert (custom_format.get().get('export', '') == r''.join(formatted))
+
+
+    def test_author_without_firstname(self):
+        # verify author with only lastname is formatted properly
+        formatted = [u"\\bibitem[Sameer, Kaur et al.\(2015)]{Sameer2015}\ Sameer, Kaur, N., Ganesh, S., Kumar, V., & Baliyan, K. S.\ 2015\,The Astronomer's Telegram\,7495\,1\n",
+                     u"\\bibitem[Sameer, Ganesh et al.\(2015)]{Sameer2015}\ Sameer, Ganesh, S., Kaur, N., Kumar, V., & Baliyan, K. S.\ 2015\,The Astronomer's Telegram\,7494\,1\n"]
+        custom_format = CustomFormat(custom_format=r'\\bibitem[%3.2m\\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p')
+        custom_format.set_json_from_solr(solrdata.data_14)
         assert (custom_format.get().get('export', '') == r''.join(formatted))
 
 

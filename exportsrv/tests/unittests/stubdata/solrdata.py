@@ -983,7 +983,6 @@ data_10 = \
     }
 }
 
-
 data_11 = \
 {
     u'responseHeader': {
@@ -1310,5 +1309,75 @@ data_13 = \
                 u'data': [u'ESO:1', u'IRSA:1', u'NExScI:1', u'SIMBAD:8'],
                 u'esources': [u'EPRINT_HTML', u'EPRINT_PDF', u'PUB_HTML', u'PUB_PDF'],
                 u'property': [u'ARTICLE', u'ASSOCIATED', u'DATA', u'EPRINT_OPENACCESS', u'ESOURCE', u'OPENACCESS', u'PUB_OPENACCESS', u'REFEREED']}]
+    }
+}
+
+data_14 = \
+{
+    u'responseHeader': {
+        u'status':0,
+        u'QTime':8,
+        u'params': {
+            u'q': u'author:(\'Sameer,\' \'Baliyan, K\' \'Kaur, N\') year:2015',
+            u'fl': u'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem',
+            u'sort': u'bibcode desc',
+            u'rows': u'2',
+            u'_': u'1671468058045'}
+    },
+    u'response': {
+        'numFound':2,
+        'start':0,
+        'docs':[
+            {
+                u'bibcode': u'2015ATel.7495....1S',
+                u'abstract': u'FSRQ PKS1510-089 (quasar BZQJ1512-0905, cross identified with the gamma-ray source 2FGLJ1512.8-0906) was detected as VHE source (E &gt; 100MeV) at 5-sigma level by AGILE (Bulgarelli et al Atel # 6366) during the observations integrated over July 13-Aug 2, 2014. ...',
+                u'aff':[u'-', u'-', u'-', u'-', u'-'],
+                u'author':[u'Sameer', u'Kaur, Navpreet', u'Ganesh, S.', u'Kumar, V.', u'Baliyan, K. S.'],
+                u'bibstem':['ATel', u'ATel.7495'],
+                u'doctype': u'circular',
+                u'identifier':['2015ATel.7495....1S'],
+                u'page':[u'1'],
+                u'pub': u"The Astronomer's Telegram",
+                u'pub_raw': u"The Astronomer's Telegram, No.7495",
+                u'pubdate': u'2015-05-00',
+                u'title':[u'ATel 7495: Near Infrared flaring of the blazar FSRQ PKS 1510-089: MIRO Observations'],
+                u'volume': u'7495',
+                u'year': u'2015',
+                u'page_range': u'1',
+                u'read_count':0,
+                u'data':[u'SIMBAD:1'],
+                u'esources':[u'PUB_HTML'],
+                u'property':[u'DATA', u'ESOURCE', u'NONARTICLE', u'NOT REFEREED', u'OPENACCESS', u'PUB_OPENACCESS'],
+                u'[citations]': {
+                    u'num_references':0,
+                    u'num_citations':1
+                }
+            },
+            {
+                u'bibcode': u'2015ATel.7494....1S',
+                u'abstract': u'Larionov et al (Atel # 7474) reported violent optical activity in the source FSRQ B2 1156+29(= 4C +29.45 = Ton 599) during April 11 to May 2, 2015, with source brightening from R=16.7 to R=15.1 levels. ...',
+                u'aff':[u'-', u'-', u'-', u'-', u'-'],
+                u'author':[u'Sameer', u'Ganesh, S.', u'Kaur, Navpreet', u'Kumar, V.', u'Baliyan, K. S.'],
+                u'bibstem':[u'ATel', u'ATel.7494'],
+                u'doctype': u'circular',
+                u'identifier':['2015ATel.7494....1S'],
+                u'page':[u'1'],
+                u'pub': u"The Astronomer's Telegram",
+                u'pub_raw': u"The Astronomer's Telegram, No.7494",
+                u'pubdate': u'2015-05-00',
+                u'title':[u'ATel 7494: FSRQ B2 1156+29: NIR follow up observations from MIRO'],
+                u'volume': u'7494',
+                u'year': u'2015',
+                u'page_range': u'1',
+                u'read_count':0,
+                u'data':[u'SIMBAD:1'],
+                u'esources':[u'PUB_HTML'],
+                u'property':[u'DATA', u'ESOURCE', u'NONARTICLE', u'NOT REFEREED', u'OPENACCESS', u'PUB_OPENACCESS'],
+                u'[citations]': {
+                    u'num_references':0,
+                    u'num_citations':0
+                }
+            }
+        ]
     }
 }

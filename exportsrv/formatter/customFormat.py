@@ -400,18 +400,17 @@ class CustomFormat(Format):
         return ''
 
 
-    def __get_n_authors(self, author_list, separator, n_parts_author, before_last, format):
+    def __get_n_authors(self, author_list, n_parts_author, before_last, format):
         """
 
         :param author_list:
-        :param separator:
         :param n_parts_author:
         :param before_last:
         :param format:
         :return:
         """
-        split_parts = author_list.replace(before_last, '').split(separator)
-        return self.__replace_author_separator(separator.join(split_parts[:n_parts_author]), format)
+        split_parts = author_list.replace(before_last, '').split('; ')
+        return self.__replace_author_separator(', '.join(split_parts[:n_parts_author]), format)
 
     def __get_first_author(self, author_list, format):
         """
@@ -420,22 +419,12 @@ class CustomFormat(Format):
         :param format:
         :return:
         """
-        # formats that have a comma between last name and first/middle names
-        # so that each are author is two elements hence return two elements
-        if format in ['A','a','e','G','I','i','L','l','N']:
-            split_parts = author_list.split(', ')
-            return ', '.join(split_parts[0:2])
-        # formats that have no comma between last name and first/middle names
-        # or only display last name, hence once split each is an element
-        # return one element
-        if format in ['f','g','M','m','n','O','o','k']:
-            split_parts = author_list.split(', ')
-            return split_parts[0]
-        # seprator is space here, and only last name so a one-element needs to be returned
-        if format in ['H','h']:
-            split_parts = author_list.split(' ')
-            return split_parts[0]
-        return author_list
+        # 12/19 letting cls format the authors with semicolon between them and hence
+        split_parts = author_list.split('; ')
+        # this special case, only last name is returned
+        if format == 'n':
+            return split_parts[0].split(', ')[0]
+        return split_parts[0]
 
 
     def __replace_author_separator(self, author_list, format):
@@ -445,34 +434,27 @@ class CustomFormat(Format):
         :return:
         """
         if len(self.author_sep) == 0:
-            return author_list
+            if format in ['H', 'h']:
+                # remove the last separator before and for these formats, then split and rejoin
+                split_parts = author_list.replace('; and', ' and').split('; ')
+            else:
+                split_parts = author_list.split('; ')
+            return ', '.join(split_parts)
         # formats that have no comma between last name and first/middle names
         # or only display last name, hence once split each is an one element
         if format in ['f','g', 'H', 'h', 'M', 'm', 'n', 'O', 'o','k']:
-            split_parts = author_list.split(', ')
+            split_parts = author_list.split('; ')
             return self.author_sep.join(split_parts)
-        # seprator here is space and since only last names are displayed
-        # one part is one author
+        # only last names are displayed here
         if format in ['H', 'h']:
-            split_parts = author_list.split(' ')
+            split_parts = author_list.split('; ')
             return self.author_sep.join(split_parts)
         # formats that have a comma between last name and first/middle names
         # so that each are author is two elements
+        # 12/19 changed the author separator in cls to semicolon, and now can split and join
         if format in ['A','a','e','G','I','i','L','l','N']:
-            # need to replace commas only up to and or & if any
-            if ' and ' in author_list:
-                end_index = author_list.find(' and ') + 1
-            elif ' & ' in author_list:
-                end_index = author_list.find(' & ') + 1
-            else:
-                end_index = len(author_list)
-            # find indices of everyother comma
-            sep_index = [m.start() for m in re.finditer(', ', author_list[:end_index])][1::2]
-            # replace them
-            author_list_slice = []
-            for i,j in zip([-len(', ')]+sep_index, sep_index+[len(author_list)]):
-                author_list_slice.append(author_list[i+len(', '):j])
-            return self.author_sep.join(author_list_slice)
+            split_parts = author_list.split('; ')
+            return self.author_sep.join(split_parts)
         return author_list
 
 
@@ -516,50 +498,51 @@ class CustomFormat(Format):
         format_plus = u'{},+'
 
         if (format == 'n'):
-            authors = author_list.split(',')
+            # only last name of first author
+            authors = author_list.split('; ')[0].split(', ')
             return format_plus.format(authors[0])
         if format in ['A', 'I', 'L', 'N', 'e', 'O']:
-            authors = author_list.replace(' and', '').split(', ')
-            if (format == 'A') or (format == 'L') or (format == 'N') or (format == 'e') :
-                return format_with_n_colleagues.format(', '.join(authors[:m*2]), num_authors-m)
+            authors = author_list.replace(' and', '').split('; ')
+            if (format == 'A') or (format == 'L') or (format == 'N') or (format == 'e'):
+                return format_with_n_colleagues.format(', '.join(authors[:m]), num_authors-m)
             elif (format == 'I'):
                 # here the first author is lastname comma first and middle initials
                 # the rest are first and middle initials, no comma, lastname
                 # hence first author needs two parts concatenated, the rest only 1
-                return format_with_n_colleagues.format(', '.join(authors[:1+m]), num_authors-m)
+                return format_with_n_colleagues.format(', '.join(authors[:m]), num_authors-m)
             elif (format == 'O'):
                 return format_with_n_colleagues.format(', '.join(authors[:m]), num_authors-m)
         if (format == 'G'):
             # return n authors (LastName, first and middle initials) et. al. - list is seprated by comma
-            return format_etal.format(self.__get_n_authors(author_list, u',', m*2, u'', format))
+            return format_etal.format(self.__get_n_authors(author_list, m, u'', format))
         if (format == 'i'):
             # here the first author is lastname comma first and middle initials
             # the rest are first and middle initials, no comma, lastname
             # hence first author needs two parts concatenated, the rest only 1
-            return format_etal.format(self.__get_n_authors(author_list, u',', 1+m, u'', format))
+            return format_etal.format(self.__get_n_authors(author_list, m, u'', format))
         if (format == 'o') or (format == 'k'):
-            return format_etal.format(self.__get_n_authors(author_list, u',', m, u'', format))
+            return format_etal.format(self.__get_n_authors(author_list, m, u'', format))
         if (format == 'M') or (format == 'm'):
             # return n authors (LastName) et. al. - list is separated by a comma
             # no comma before et al
-            return format_etal_no_comma.format(self.__get_n_authors(author_list, u',', m, u', and', format))
+            return format_etal_no_comma.format(self.__get_n_authors(author_list, m, u', and', format))
         if (format == 'f') :
-            return format_escape_emph.format(self.__get_n_authors(author_list, u',', m, u', and', format))
+            return format_escape_emph.format(self.__get_n_authors(author_list, m, u', and', format))
         if (format == 'g'):
             # return n authors (LastName) et. al. - list is separated by a comma
-            return format_etal.format(self.__get_n_authors(author_list, u',', m, u', and', format))
+            return format_etal.format(self.__get_n_authors(author_list, m, u', and', format))
         if (format == 'H'):
-            # return the asked number of authors - list is separated by space,
+            # return the asked number of authors
             # there is an and before the last author
-            authors = author_list.replace(' and', '').split(' ')
+            authors = author_list.replace(' and', '').split('; ')
             return format_n_authors.format(' '.join(authors[:m]))
         if (format == 'a') or (format == 'l'):
             # return n author(s) et. al. - list is separated by a comma
-            return format_etal.format(self.__get_n_authors(author_list, u',', m*2, u' \\&', format))
+            return format_etal.format(self.__get_n_authors(author_list, m, u' \\&', format))
         if (format == 'h'):
             # return the asked number of authors - list is separated by space,
             # there is an and before the last author
-            authors = author_list.replace(' &', '').split(' ')
+            authors = author_list.replace(' &', '').split('; ')
             return format_n_authors.format(' '.join(authors[:m]))
         return author_list
 
