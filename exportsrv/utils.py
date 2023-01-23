@@ -85,6 +85,10 @@ def get_solr_data(bibcodes, fields, sort, start=0, encode_style=None):
                     if aff_canonical:
                         aff = [canonical if re_valid_affiliation.match(canonical) else regular for regular, canonical in zip(doc.get('aff'), aff_canonical)]
                         doc.update({u'aff': aff})
+                    # if there are multiple doi, most likely it is the published and arXiv dois, remove the arXiv
+                    if doc.get('doi') and len(doc.get('doi')) > 1:
+                        doi = [d for d in doc['doi'] if 'arXiv' not in d]
+                        doc['doi'] = doi
                 from_solr['response']['numFound'] = len(from_solr['response']['docs'])
                 # reorder the list based on the list of bibcodes provided
                 if sort == current_app.config['EXPORT_SERVICE_NO_SORT_SOLR']:
