@@ -146,5 +146,69 @@ class TestSolrData(TestCase):
                                       sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
             self.assertEqual(solr_data['response']['docs'], expected_response)
 
+    def test_non_eprint_doi(self):
+        # test when there are both arXiv and published doi, arXiv doi should be removed
+        solr_data = \
+            {
+              "responseHeader":{
+                "status":0,
+                "QTime":2,
+                "params":{
+                  "q":"identifier:2009ApJ...706L.155H",
+                  "fl":"bibcode,doi,doctype,identifier",
+                  "_":"1672772461790"}},
+              "response":{"numFound":1,"start":0,"docs":[
+                  {
+                    "bibcode":"2009ApJ...706L.155H",
+                    "doctype":"article",
+                    "doi":["10.1088/0004-637X/706/1/L155",
+                      "10.48550/arXiv.0907.4891"],
+                    "identifier":["10.48550/arXiv.0907.4891",
+                      "2009arXiv0907.4891H",
+                      "10.1088/0004-637X/706/1/L155",
+                      "2009ApJ...706L.155H",
+                      "arXiv:0907.4891"]
+                  }]
+              }
+            }
+        with mock.patch.object(self.current_app.client, 'get') as get_mock:
+            get_mock.return_value = mock_response = mock.Mock()
+            mock_response.json.return_value = solr_data
+            mock_response.status_code = 200
+            solr_data = get_solr_data(bibcodes=["2009ApJ...706L.155H"], fields='bibcode,doi,doctype,identifier',
+                                      sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
+            self.assertEqual(solr_data['response']['docs'][0]['doi'], ["10.1088/0004-637X/706/1/L155"])
+
+    def test_eprint_doi(self):
+        # test when doctype is eprint, make sure doi is retained
+        solr_data = \
+        {
+          "responseHeader":{
+            "status":0,
+            "QTime":194,
+            "params":{
+              "q":"identifier:2023arXiv230104191L",
+              "fl":"bibcode,doi,doctype,identifier",
+              "rows":"1",
+              "_":"1672772461790"}
+          },
+          "response":{"numFound":1,"start":0,"docs":[
+              {
+                "bibcode":"2023arXiv230104191L",
+                "doctype":"eprint",
+                "doi":["10.48550/arXiv.2301.04191"],
+                "identifier":["2023arXiv230104191L",
+                  "10.48550/arXiv.2301.04191",
+                  "arXiv:2301.04191"]}]
+          }
+        }
+        with mock.patch.object(self.current_app.client, 'get') as get_mock:
+            get_mock.return_value = mock_response = mock.Mock()
+            mock_response.json.return_value = solr_data
+            mock_response.status_code = 200
+            solr_data = get_solr_data(bibcodes=["2023arXiv230104191L"], fields='bibcode,doi,doctype,identifier',
+                                      sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
+            self.assertEqual(solr_data['response']['docs'][0]['doi'], ["10.48550/arXiv.2301.04191"])
+
 if __name__ == "__main__":
     unittest.main()
