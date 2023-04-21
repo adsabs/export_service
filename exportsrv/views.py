@@ -115,6 +115,9 @@ def return_xml_format_export(solr_data, xml_style, request_type='POST'):
             return return_response(xml_export.get_reference_xml(include_abs=False), 200, request_type)
         if xml_style == 'ReferenceAbs':
             return return_response(xml_export.get_reference_xml(include_abs=True), 200, request_type)
+        if xml_style == 'JATS':
+            return return_response(xml_export.get_jats_xml(), 200, request_type)
+
 
     return return_response({'error': 'no result from solr'}, 404)
 
@@ -571,6 +574,30 @@ def xml_refabs_format_export_get(bibcode):
     :return:
     """
     return return_xml_format_export(solr_data=export_get(bibcode, 'ReferenceAbs'), xml_style='ReferenceAbs', request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/jatsxml', methods=['POST'])
+def xml_jats_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = export_post(request, 'JATS')
+    if status == 200:
+        return return_xml_format_export(solr_data=results, xml_style='JATS')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/jatsxml/<bibcode>', methods=['GET'])
+def xml_jats_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_xml_format_export(solr_data=export_get(bibcode, 'JATS'), xml_style='JATS', request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
