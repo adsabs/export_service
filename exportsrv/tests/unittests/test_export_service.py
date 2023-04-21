@@ -108,6 +108,12 @@ class TestExports(TestCase):
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_ref_with_abs)
 
+    def test_jatsxml(self):
+        # format the stubdata using the code
+        xml_export = XMLFormat(solrdata.data).get_jats_xml()
+        # now compare it with an already formatted data that we know is correct
+        assert(xml_export == xmlTest.data_jats)
+
     def test_aastex(self):
         # format the stubdata using the code
         csl_export = CSL(CSLJson(solrdata.data).get(), 'aastex', adsFormatter.latex).get()
