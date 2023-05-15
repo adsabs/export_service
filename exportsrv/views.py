@@ -28,7 +28,7 @@ def default_solr_fields():
     """
     return 'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,aff_canonical,doi,abstract,' \
            'read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,' \
-           'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem,page_count'
+           'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem,page_count,orcid_pub'
 
 
 def return_response(results, status, request_type=''):

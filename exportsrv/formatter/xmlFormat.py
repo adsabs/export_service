@@ -6,8 +6,6 @@ from datetime import datetime
 from flask import current_app
 from textwrap import fill
 import re
-from geotext import GeoText
-from csv import reader
 
 from exportsrv.formatter.format import Format
 from exportsrv.utils import get_eprint
@@ -44,9 +42,8 @@ class XMLFormat(Format):
                                              ('xmlns:dc', 'http://purl.org/dc/elements/1.1/'),
                                              ('xsi:schemaLocation', 'http://ads.harvard.edu/schema/abs/1.1/dc http://ads.harvard.edu/schema/abs/1.1/dc.xsd')]
 
-    EXPORT_SERVICE_RECORDS_SET_XML_JATS = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/dc'),
+    EXPORT_SERVICE_RECORDS_SET_XML_JATS = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/jats'),
                                            ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
-                                           ('xmlns:dc', 'http://purl.org/dc/elements/1.1/'),
                                            ('xsi:schemaLocation', 'http://ads.harvard.edu/schema/abs/1.0/jats http://ads.harvard.edu/schema/abs/1.0/jats.xsd')]
 
     re_year = re.compile(r'([12]+[09]\d\d)')
@@ -369,9 +366,16 @@ class XMLFormat(Format):
                       ('copyright', 'dc:rights'), ('url', 'dc:relation'), ('num_citations', 'dc:relation'),
                       ('abstract', 'dc:description'), ('doi', 'dc:identifier')]
         elif (export_format == self.EXPORT_FORMAT_JATS_XML):
-            fields = [('doctype', ''), ('author', ''), ('year', ''), ('title', ''),
-                      ('pub', ''), ('pub_raw', ''), ('volume', 'volume'), ('issue', 'issue'),
-                      ('editor', ''), ('publisher', ''), ('page', ''), ('page_range', ''), ('doi', '')]
+            # note that order matters here
+            fields = [('front_tag', 'front'), # first top level tag, with two middle level tags (level 1)
+                      ('journal-meta_tag', 'journal-meta'), # first sub element of `front` (level 1_i)
+                      ('bibstem', 'journal-id'), ('issn', 'issn'), ('pub_raw', 'publisher'), # sub elements of `journal-meta` (level 1_i_, order of these do not matter)
+                      ('article-meta_tag', 'article-meta'), # second sub element of `front` (level 1_ii)
+                      ('doi', 'article-id'), ('title', 'title-group'), # the rest are sub elements of `article_meta` (level 1_ii_, order of these do not matter)
+                      ('author', 'contrib-group'), ('date', 'date'), ('volume', 'volume'), ('issue', 'issue'),
+                      ('abstract', 'abstract'), ('page', 'fpage'), ('page_range', 'lpage'),
+                      ('body_tag', 'body'),  # second top level tag (level 2), optional -> ignore
+                      ('back_tag', 'back')] # third top level tag (level 3), optional -> ignore
         else:
             fields = []
         return OrderedDict(fields)
@@ -418,10 +422,11 @@ class XMLFormat(Format):
         else:
             page = ''.join(a_doc.get('page', ''))
             lastpage = ''
-        if (field == 'page'):
+        if (field == 'page') or (field == 'fpage'):
             self.__add_in(parent, field, page)
-        elif (field == 'lastpage'):
+        elif (field == 'lastpage') or (field == 'lpage'):
             self.__add_in(parent, field, lastpage)
+
 
     def __add_in(self, parent, field, value):
         """
@@ -448,6 +453,8 @@ class XMLFormat(Format):
             return OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML_REF_ABS)
         if (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
             return OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML_DUBLIN)
+        if (export_format == self.EXPORT_FORMAT_JATS_XML):
+            return OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML_JATS)
         return OrderedDict([])
 
 
@@ -491,7 +498,7 @@ class XMLFormat(Format):
             elif (field == 'abstract'):
                 self.__add_in(record, fields[field], self.__format_line_wrapped(a_doc.get(field, '')))
             elif (field == 'doi'):
-                self.__add_in(record, fields[field], self.__get_doi(''.join(a_doc.get(field, ''))))
+                self.__add_in(record, fields[field], self.__get_doi('; '.join(a_doc.get(field, ''))))
             elif (field == 'num_citations'):
                 self.__add_in(record, fields[field], self.__get_citation(int(a_doc.get(field, 0)), self.EXPORT_FORMAT_DUBLIN_XML))
 
@@ -545,224 +552,129 @@ class XMLFormat(Format):
                 self.__add_in(record, fields[field], get_eprint(a_doc))
 
 
-    def __add_person_group_jats_xml(self, person_list, record, person_group_type):
+    def __get_publisher_name(self, pub_raw):
         """
-        add author or editors for JATS xml format
-
-        :param record:
-        :param person_group_type:
-        :return:
-        """
-        if person_list:
-            # add outter tag
-            person_group_record = ET.SubElement(record, 'person-group')
-            person_group_record.set('person-group-type', person_group_type)
-            # now add inner tag
-            for person in person_list:
-                separate = person.split(',')
-                # author might not have first name
-                if len(separate) >= 1:
-                    person_record = ET.SubElement(person_group_record, 'string-name')
-                    ET.SubElement(person_record, 'surname').text = separate[0].strip()
-                if len(separate) == 2:
-                    ET.SubElement(person_record, 'given-names').text = '%s.'%separate[1].strip()[0]
-            # add role tag if this is editor type
-            if (person_group_type == 'editor'):
-                ET.SubElement(record, 'role').text = 'Eds.'
-
-
-    def __add_title_jats_xml(self, title, record, publication_type, lookahead):
-        """
-        format title basded on JATS publication type
-
-        :param title:
-        :param record:
-        :param publication_type:
-        :param lookahead:
-        :return:
-        """
-        title = ';'.join(title)
-
-        # <article-title>title</article-title>.
-        if publication_type in ['journal', 'report']:
-            title_record = ET.SubElement(record, 'article-title')
-            title_record.text = title
-            title_record.tail = '.\n'
-        # <article-title>title</article-title>,
-        elif publication_type == 'confproc':
-            title_record = ET.SubElement(record, 'article-title')
-            title_record.text = title
-            title_record.tail = ',\n'
-        # book: <source><italic>title</italic></source>
-        # book with editor: <source><italic>title</italic></source>;
-        elif publication_type == 'book':
-            title_record = ET.SubElement(record, 'title')
-            ET.SubElement(title_record, 'italic').text = title
-            # is set to true if the record has editor and needs to have semicolon at the end
-            if lookahead:
-                title_record.tail = ';\n'
-        # <source>Ph.D. thesis</source>
-        elif publication_type == 'thesis':
-            ET.SubElement(record, 'source').text = 'Ph.D. thesis'
-        # <source>title</source>.
-        elif publication_type in ['software', 'review', 'other']:
-            ET.SubElement(record, 'source').text = title
-
-
-    def __add_conf_proc_info_jats_xml(self, pub_raw, record):
-        """
-        for confproc publication type, jats format the following four tags are needed to be filled
-        <conf-name>usually the first or second substring</conf-name>,
-        <conf-loc>city/country usually appears following conference name</conf-loc>,
-        <month>most records do not have the month of conference so for now ignore</month>
-        <year>year of the conference usually appears in pub_raw</year>.
 
         :param pub_raw:
-        :param record:
         :return:
         """
-        # see if the year appears in pub_raw
-        year = None
-        match = self.re_year.search(pub_raw)
-        if match:
-            year = match.group(1)
-
-        # see if the location is in pub_raw
-        location = ''
-        places = GeoText(pub_raw)
-        if places.cities:
-            location = places.cities
-        if places.countries:
-            if location:
-                location += ', '
-            location += places.countries
-
-        # now split the pub_raw and try to see if conference name can be inferred
-        conference = [s for s in list(reader([pub_raw]))[0] if 'conference' in s.lower()]
-        if conference:
-            ET.SubElement(record, 'conf-name').text = conference[0]
-            if location:
-                ET.SubElement(record, 'conf-loc').text = location
-            if year:
-                ET.SubElement(record, 'year').text = location
-
-
-    def __add_book_publisher_info_jats_xml(self, pub_raw, record):
-        """
-        for book publication type, jats format the following four tags are needed to be filled
-        <publisher-loc>in pub_raw</publisher-loc>:
-        <publisher-name>in pub_raw</publisher-name>.
-
-        :param pub_raw:
-        :param record:
-        :return:
-        """
-        # see if the location is in pub_raw
-        location = ''
-        places = GeoText(pub_raw)
-        if places.cities:
-            location = places.cities
-        if places.countries:
-            if location:
-                location += ', '
-            location += places.countries
-
         publisher = ''
         match = self.re_publisher_names.search(pub_raw, re.IGNORECASE)
         if match:
             publisher = match.group(1)
+        return publisher
 
-        if publisher:
-            if location:
-                location_record = ET.SubElement(record, 'publisher-loc')
-                location_record.text = location
-                location_record.tail = ': '
-            ET.SubElement(record, 'publisher-name').text = publisher
+
+    def __add_author_list_jats_xml(self, doc, parent):
+        """
+        add authors for JATS xml format
+
+        :param doc:
+        :param parent:
+        :return:
+        """
+        try:
+            for author, affiliation, orcid in zip(doc.get('author', []), doc.get('aff', []), doc.get('orcid_pub', [])):
+                # add contrib tag, parent to name, aff, and orcid
+                contrib = ET.SubElement(parent, 'contrib', {"contrib-type": "author"})
+                # add name tag, parent to surname and given-names
+                name = ET.SubElement(contrib, 'name')
+                surname, given_names = author.split(', ')
+                ET.SubElement(name, 'surname').text = surname
+                ET.SubElement(name, 'given-names').text = given_names
+                if affiliation != '-':
+                    ET.SubElement(contrib, 'aff').text = affiliation
+                if orcid != '-':
+                    ET.SubElement(contrib, 'contrib-id', {"contrib-id-type": "orcid"}).text = orcid
+        except:
+            pass
+
+
+    def __add_date_jats_xml(self, doc, parent):
+        """
+
+        :param doc:
+        :param parent:
+        :return:
+        """
+        try:
+            # electronic version or print version
+            format = "electronic" if doc.get('eid', None) else "print"
+            iso_date = doc.get('pubdate', '')
+            pub_date_attributes = {"publication-format": "%s"%format,
+                                  "date-type": "pub",
+                                  "iso-8601-date": "%s"%iso_date}
+            pub_date = ET.SubElement(parent, attrib=pub_date_attributes)
+
+            year, month, day = iso_date.split('-')
+            ET.SubElement(pub_date, "day", day)
+            ET.SubElement(pub_date, "month", month)
+            ET.SubElement(pub_date, "year", year)
+        except:
+            pass
+
 
     def __get_doc_jats_xml(self, index, parent):
         """
-        for each document from Solr, get the fields, and format them accordingly for JATS format
+        for each document from Solr, get the fields, and format them accordingly for JATS `Journal Publishing` format
 
         :param index:
         :param parent:
         :return:
         """
+        # source: https://jats.nlm.nih.gov/publishing/tag-library/1.3/attribute/article-type.html
         ads_to_jats_doctype_mapping = {
-            'book': 'book', 'inproceedings': 'book', 'inbook': 'book',
-            'proceedings':'confproc',
-            'article': 'journal', 'abstract': 'journal', 'eprint': 'journal',
-            'phdthesis': 'thesis', 'mastersthesis': 'thesis',
-            'software': 'software',
-            'techreport': 'report',
-            'bookreview': 'review',
-            'circular': 'other', 'editorial': 'other', 'erratum': 'other', 'misc': 'other', 'catalog': 'other',
-            'newsletter': 'other', 'obituary': 'other', 'pressrelease': 'other', 'proposal': 'other', 'talk': 'other',
+            'article': 'research-article', 'eprint': 'research-article', 'inbook': 'research-article',
+            'inproceedings': 'research-article', 'proceedings': 'research-article',
+            'abstract': 'abstract', 'pressrelease': 'announcement', 'bookreview': 'book-review',
+            'erratum': 'correction', 'mastersthesis': 'dissertation', 'phdthesis': 'dissertation',
+            'editorial': 'editorial', 'newsletter': 'news', 'obituary': 'obituary',
+            'book': 'other', 'catalog': 'other', 'circular': 'other', 'misc': 'other',
+            'proposal': 'other', 'software': 'other', 'talk': 'other', 'techreport': 'other',
         }
         a_doc = self.from_solr['response'].get('docs')[index]
         fields = self.__get_fields(self.EXPORT_FORMAT_JATS_XML)
 
-        # add outter tag and label for this reference
-        ref = ET.SubElement(parent, 'ref', id='CIT%03d'%(index+1))
-        ET.SubElement(ref, 'label').text = '%d.'%(index+1)
+        # add outter tag for this reference
+        article_type = ads_to_jats_doctype_mapping[a_doc.get('doctype', '')]
+        article_attributes = {"xmlns:xlink": "http://www.w3.org/1999/xlink",
+                              "xmlns:mml": "http://www.w3.org/1998/Math/MathML",
+                              "article-type": "%s"%article_type}
+        article = ET.SubElement(parent, "article", article_attributes)
 
-        publication_type = ''
+        front_section = journal_meta_section = article_meta_section = None
         for field in fields:
-            if not a_doc.get(field, None):
-                continue
-
-            if (field == 'doctype'):
-                publication_type = ads_to_jats_doctype_mapping[a_doc.get(field, '')]
-                record = ET.SubElement(ref, 'mixed-citation')
-                record.set('publication-type', publication_type)
-            elif (field == 'author') or (field == 'editor'):
-                self.__add_person_group_jats_xml(a_doc.get(field, []), record, field)
-            elif (field == 'year'):
-                # year appears in parenthesis, so need to find the last element and add open parenthesis
-                if record:
-                    record[-1].tail = '\n('
-                else:
-                    record.text = '\n('
-                year = ET.SubElement(record, 'year')
-                year.text = a_doc.get(field, '')
-                # now add the close parenthesis
-                year.tail = ')\n'
-            elif (field == 'title'):
-                self.__add_title_jats_xml(a_doc.get(field, ''), record, publication_type, a_doc.get('editor', None))
-            elif (field == 'pub'):
-                if (publication_type == 'journal'):
-                    source_record = ET.SubElement(record, 'source')
-                    ET.SubElement(source_record, 'italic').text = a_doc.get(field, '')
+            if (field == 'front_tag'):
+                front_section = ET.SubElement(article, fields[field])
+            elif (field == 'journal-meta_tag'):
+                journal_meta_section = ET.SubElement(front_section, fields[field])
+            elif (field == 'bibstem'):
+                ET.SubElement(journal_meta_section, fields[field], {"journal-id-type":"publisher"}).text = a_doc.get(field, '')[0]
+            elif (field == 'issn'):
+                self.__add_in(journal_meta_section, fields[field], '; '.join(a_doc.get(field, '')))
             elif (field == 'pub_raw'):
-                if (publication_type == 'confproc'):
-                    self.__add_conf_proc_info_jats_xml(a_doc.get(field, ''), record)
-                # TODO: once solr contains publisher info need to remove extracting publisher from pub_raw
-                elif (publication_type == 'book') or (publication_type == 'report'):
-                    self.__add_book_publisher_info_jats_xml(a_doc.get(field, ''), record)
-            elif (field == 'volume'):
-                ET.SubElement(record, 'volume').text = a_doc.get(field, '')
-            elif (field == 'issue'):
-                # issue appears in parenthesis, so need to find the last element and add open parenthesis
-                record[-1].tail = '(\n'
-                issue = ET.SubElement(record, 'issue')
-                issue.text = a_doc.get(field, '')
-                # now add the close parenthesis followed by colon
-                issue.tail = '):'
-            elif (field == 'page'):
-                ET.SubElement(record, 'fpage').text = ''.join(a_doc.get(field, ''))
-            elif (field == 'page_range'):
-                pages = ''.join(a_doc.get('page_range', '')).split('-')
-                if len(pages) == 2:
-                    # need to insert a dash before lastpage
-                    record[-1].tail = ' #x2013;'
-                    ET.SubElement(record, 'lpage').text = pages[1]
-                # insert a dot after page info
-                record[-1].tail = '.\n'
+                publisher_name = self.__get_publisher_name(a_doc.get(field, ''))
+                if publisher_name:
+                    publisher = ET.SubElement(journal_meta_section, fields[field])
+                    ET.SubElement(publisher, 'publisher-name').text = publisher_name
+            elif (field == 'article-meta_tag'):
+                article_meta_section = ET.SubElement(front_section, fields[field])
             elif (field == 'doi'):
-                # need to add `doi:` before tag
-                record[-1].tail = ' doi:'
-                doi = ET.SubElement(record, 'pub-id')
-                doi.set('pub-id-type', 'doi')
-                doi.text = ''.join(a_doc.get(field, ''))
+                if a_doc.get(field, ''):
+                    ET.SubElement(article_meta_section, fields[field], {"pub-id-type": "doi"}).text = '; '.join(a_doc.get(field, ''))
+            elif (field == 'title'):
+                title = ET.SubElement(article_meta_section, fields[field])
+                ET.SubElement(title, 'article-title').text = '; '.join(a_doc.get(field, ''))
+            elif (field == 'author'):
+                # add `contrib-group` tag and call the function to add list of authors to this tag
+                self.__add_author_list_jats_xml(a_doc, ET.SubElement(article_meta_section, fields[field]))
+            elif (field == 'date'):
+                self.__add_date_jats_xml(a_doc, article_meta_section)
+                # year appears in parenthesis, so need to find the last element and add open parenthesis
+            elif (field == 'volume') or (field == 'issue') or (field == 'abstract'):
+                self.__add_in(article_meta_section, fields[field], a_doc.get(field, ''))
+            elif (field == 'page') or (field == 'page_range'):
+                self.__add_page(a_doc, article_meta_section, fields[field])
 
 
     def __get_xml(self, export_format):
@@ -784,7 +696,7 @@ class XMLFormat(Format):
             records.set('start', str(1))
             records.set('selected', str(num_docs))
             num_citations = self.__get_num_citations()
-            if num_citations > 0:
+            if num_citations > 0 and export_format != self.EXPORT_FORMAT_JATS_XML:
                 records.set('citations', str(num_citations))
             if (export_format == self.EXPORT_FORMAT_REF_XML) or (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
                 for index in range(num_docs):

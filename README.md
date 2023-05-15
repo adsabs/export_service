@@ -77,6 +77,7 @@ Note that for the endpoints `/aastex` there is an optional parameter `journalfor
 * **/refabsxml** *XML with abstracts*
 * **/votable** *VOTables*
 * **/rss** *RSS*
+* **/jatsxml** *JATS Journal Publishing format*
 
 Note that for endpoints `/bibtex` and `/bibtexabs` optional parameters `maxauthor`, `authorcutoff`, `keyformat` and `journalformat` can be passed in. 
 * `maxauthor` is maxinum number of authors displayed. The default values for `maxauthor` for `/bibtex` and `/bibtexabs` respectivley are 10 and 0, where 0 means all.
