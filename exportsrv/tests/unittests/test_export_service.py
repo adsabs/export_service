@@ -114,6 +114,12 @@ class TestExports(TestCase):
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_jats)
 
+    def test_jatsxml_one_record(self):
+        # format the stubdata using the code
+        xml_export = XMLFormat(solrdata.data_2).get_jats_xml()
+        # now compare it with an already formatted data that we know is correct
+        assert(xml_export == xmlTest.data_jats_one_record)
+
     def test_aastex(self):
         # format the stubdata using the code
         csl_export = CSL(CSLJson(solrdata.data).get(), 'aastex', adsFormatter.latex).get()
@@ -621,6 +627,7 @@ class TestExports(TestCase):
         title = 'Measurement of the \\Sigma\\ beam asymmetry for the \\omega\\ photo-production off the proton and the neutron at GRAAL'
         title_encoded = r'Measurement of the \textbackslash{}Sigma\textbackslash{} beam asymmetry for the \textbackslash{}omega\textbackslash{} photo-production off the proton and the neutron at GRAAL'
         assert(encode_laTex(title) == title_encoded)
+
 
 if __name__ == '__main__':
   unittest.main()
