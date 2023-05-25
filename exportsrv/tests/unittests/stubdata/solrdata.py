@@ -561,7 +561,8 @@ data_2 = \
                 u'doctype': u'abstract',
                 u'pub_raw': u'American Astronomical Society, AAS Meeting #232, id.#214.09',
                 u'eid': u'214.09',
-                u'title': [u'The NASA Astrophysics Data System: Capabilities and Roadmap for the 2020s']
+                u'title': [u'The NASA Astrophysics Data System: Capabilities and Roadmap for the 2020s'],
+                u'orcid_pub': ['-', '-']
             }
         ]
     }
