@@ -39,14 +39,14 @@ class CustomFormat(Format):
         re.compile(r'(%Z(?:EOL):\".*\"\s?)'),
     ]
     REGEX_CUSTOME_FORMAT = re.compile(
-        r'''(                                                   # start of capture group 1
-            %                                                   # literal "%"
-            (?:[\\></=])?                                       # field encoding
-            (?:                                                 # first option
-            (?:\d+|\*)?                                         # width
-            (?:\.(?:\d+|\*))?                                   # precision
+        r'''(                                                       # start of capture group 1
+            %                                                       # literal "%"
+            (?:[\\></=])?                                           # field encoding
+            (?:                                                     # first option
+            (?:\d+|\*)?                                             # width
+            (?:\.(?:\d+|\*))?                                       # precision
             (?:\^)?
-            p{0,2}[AaBcCdDeEfFGgHhiIJjKkLlMmNnOopPQqRSTUuVWXxY] # type
+            [px]{0,2}[AaBcCdDeEfFGgHhiIJjKkLlMmNnOopPQqRSTUuVWXxY]  # type
             )
         )''', flags=re.X
     )
@@ -202,6 +202,7 @@ class CustomFormat(Format):
             'W': 'doctype',
             'X': 'eid,identifier',
             'x': 'comment',
+            'xe': 'pubnote',
             'Y': 'year'
         }
         specifier = ''.join(re.findall(r'([AaBcCdDeEfFGgHhiIJjKkLlMmNnOopPQqRSTUuVWXxY]{1,2})', specifier))
@@ -310,8 +311,9 @@ class CustomFormat(Format):
         for m in self.REGEX_CUSTOME_FORMAT.finditer(self.custom_format):
             self.parsed_spec.append(tuple((m.start(1), m.group(1), self.__get_solr_field(m.group(1)))))
         # we have %p, %pp, and %pc, when doing replace, %p causes other two to be replaced
-        # re did not work, so pushing %p to the end to be the last item to get replaced
-        self.parsed_spec = sorted(self.parsed_spec, key=lambda tup: tup[1] == '%p')
+        # similarly %x and %xe
+        # so pushing %p and %x to the end to be the last item to get replaced
+        self.parsed_spec = sorted(self.parsed_spec, key=lambda tup: tup[1] in ['%p', '%x'])
         self.__escape()
         self.__for_csv()
 
@@ -829,7 +831,7 @@ class CustomFormat(Format):
         result = self.custom_format
         a_doc = self.from_solr['response'].get('docs')[index]
         for field in self.parsed_spec:
-            if (field[2] == 'title') or (field[2] == 'doi') or (field[2] == 'comment'):
+            if (field[2] == 'title') or (field[2] == 'doi') or (field[2] == 'comment') or (field[2] == 'pubnote'):
                 result = self.__add_in(result, field, ''.join(a_doc.get(field[2], '')))
             elif (field[2] == 'author'):
                 result = self.__add_in(result, field, self.__get_author_list(field[1], index))

@@ -27,7 +27,7 @@ def default_solr_fields():
     :return: list of fields needed from solr
     """
     return 'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,aff_canonical,doi,abstract,' \
-           'read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,' \
+           'read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,pubnote,version,' \
            'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem,page_count,orcid_pub'
 
 

@@ -400,5 +400,15 @@ class TestExportsCustomFormat(TestCase):
         assert (custom_format.get().get('export', '') == r''.join(formatted))
 
 
+    def test_comment_and_pubnote(self):
+        # verify the new specifier xe which should output putnote
+        formatted = [u'2019Sci...365..565B\n comment:Galaxies B and C from figures 2 are not in SIMBAD.\n eprint_comment: Published online in Science 27 June 2019; doi:10.1126/science.aaw5903\n',
+                     u'2023JSMTE2023b3301M\n comment:\n eprint_comment: doi:10.1088/1742-5468/acaf82\n',
+                     u'2023yCat..19220186H\n comment:fig1.dat 6946x39 Keck/NIRES near-IR spectrum of peculiar type Ia; SN2020qxp/ASASSN-20jq taken at +191d past the epoch ; of rest-frame B-band maximum (MJD=59277.50)\n eprint_comment:\n']
+        custom_format = CustomFormat(custom_format=r'%R\n comment:%x\n eprint_comment: %xe')
+        custom_format.set_json_from_solr(solrdata.data_15)
+        assert (custom_format.get().get('export', '') == r''.join(formatted))
+
+
 if __name__ == '__main__':
     unittest.main()
