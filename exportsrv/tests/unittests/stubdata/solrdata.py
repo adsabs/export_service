@@ -1382,3 +1382,33 @@ data_14 = \
         ]
     }
 }
+
+data_15 = \
+{
+    u'responseHeader': {
+         u'status': 0,
+         u'QTime': 8,
+         u'params': {
+             u'q': u'bibcode:(2023JSMTE2023b3301M OR 2023yCat..19220186H OR 2019Sci...365..565B)',
+             u'fl': u'bibcode,comment,pubnote',
+             u'_': u'1686158703270'
+         }
+    },
+    u'response': {
+        'numFound': 3,
+        'start': 0,
+        'docs': [
+            {
+                u'bibcode': u'2019Sci...365..565B',
+                u'comment': [u'Galaxies B and C from figures 2 are not in SIMBAD.'],
+                u'pubnote': [u'Published online in Science 27 June 2019; doi:10.1126/science.aaw5903']},
+            {
+                u'bibcode': u'2023JSMTE2023b3301M',
+                u'pubnote': [u'doi:10.1088/1742-5468/acaf82']},
+            {
+                u'bibcode': u'2023yCat..19220186H',
+                u'comment': [u'fig1.dat 6946x39 Keck/NIRES near-IR spectrum of peculiar type Ia; SN2020qxp/ASASSN-20jq taken at +191d past the epoch ; of rest-frame B-band maximum (MJD=59277.50)']
+            }
+        ]
+    }
+}
