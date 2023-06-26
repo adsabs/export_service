@@ -370,7 +370,7 @@ class TestExportsCustomFormat(TestCase):
             assert (custom_format.get().get('export', '') == formatted_record)
 
     def test_num_citiations(self):
-        # verify %c outputs num_citations
+        # verify %c and %r outputs respectively for num_citations and num_references
         with mock.patch.object(self.current_app.client, 'get') as get_mock:
             get_mock.return_value = mock_response = mock.Mock()
             mock_response.json.return_value = solrdata.data_11
@@ -378,9 +378,10 @@ class TestExportsCustomFormat(TestCase):
             solr_data = get_solr_data(bibcodes=["2016ApJ...818L..26F"], fields='read_count,bibcode,doctype,[citations],bibstem',
                                       sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
             self.assertEqual(solr_data['response']['docs'][0]['num_citations'], 29)
-        custom_format = CustomFormat(custom_format=r'%R: %c')
+            self.assertEqual(solr_data['response']['docs'][0]['num_references'], 40)
+        custom_format = CustomFormat(custom_format=r'%R: %c|%r')
         custom_format.set_json_from_solr(solrdata.data_11)
-        assert (custom_format.get().get('export', '') == "2016ApJ...818L..26F: 29\n")
+        assert (custom_format.get().get('export', '') == "2016ApJ...818L..26F: 29|40\n")
 
     def test_escaping_literal(self):
         # verify for example %%R is translated to %R and not recognized as field ID bibcode
