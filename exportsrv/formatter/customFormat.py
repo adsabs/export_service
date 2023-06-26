@@ -46,7 +46,7 @@ class CustomFormat(Format):
             (?:\d+|\*)?                                             # width
             (?:\.(?:\d+|\*))?                                       # precision
             (?:\^)?
-            [px]{0,2}[AaBcCdDeEfFGgHhiIJjKkLlMmNnOopPQqRSTUuVWXxY]  # type
+            [px]{0,2}[AaBcCdDeEfFGgHhiIJjKkLlMmNnOopPQqrRSTUuVWXxY] # type
             )
         )''', flags=re.X
     )
@@ -193,6 +193,7 @@ class CustomFormat(Format):
             'pc':'page_count',
             'Q': 'pub_raw',
             'q': 'pub',
+            'r': 'num_references',
             'R': 'bibcode',
             'S': 'issue',
             'T': 'title',
@@ -205,7 +206,7 @@ class CustomFormat(Format):
             'xe': 'pubnote',
             'Y': 'year'
         }
-        specifier = ''.join(re.findall(r'([AaBcCdDeEfFGgHhiIJjKkLlMmNnOopPQqRSTUuVWXxY]{1,2})', specifier))
+        specifier = ''.join(re.findall(r'([AaBcCdDeEfFGgHhiIJjKkLlMmNnOopPQqrRSTUuVWXxY]{1,2})', specifier))
         return fieldDict.get(specifier, '')
 
 
@@ -850,7 +851,7 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, a_doc.get(field[2], ''))
             elif (field[2] == 'pub') or (field[2] == 'pub_raw'):
                 result = self.__add_in(result, field, self.__get_publication(field[1], a_doc))
-            elif (field[2] == 'num_citations') or (field[2] == 'page_count'):
+            elif (field[2] == 'num_citations') or (field[2] == 'num_references') or (field[2] == 'page_count'):
                 result = self.__add_in(result, field, str(a_doc.get(field[2], '')))
             elif (field[2] == 'eid,identifier'):
                 result = self.__add_in(result, field, get_eprint(a_doc))
