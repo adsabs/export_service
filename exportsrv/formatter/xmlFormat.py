@@ -375,7 +375,7 @@ class XMLFormat(Format):
                       ('article-meta_tag', 'article-meta'), # second sub element of `front` (level 1_ii)
                       ('bibcode', 'article-id'), ('doi', 'article-id'), ('title', 'title-group'), # the rest are sub elements of `article_meta` (level 1_ii_, order of these do not matter)
                       ('author', 'contrib-group'), ('date', 'date'), ('volume', 'volume'), ('issue', 'issue'),
-                      ('abstract', 'abstract'), ('page', 'fpage'), ('page_range', 'lpage'),
+                      ('page', 'fpage'), ('page_range', 'lpage'), ('abstract', 'abstract'),
                       ('body_tag', 'body'),  # second top level tag (level 2), optional -> ignore
                       ('back_tag', 'back')] # third top level tag (level 3), optional -> ignore
         else:
@@ -579,6 +579,9 @@ class XMLFormat(Format):
             for author, affiliation, orcid in zip(doc.get('author', []), doc.get('aff', []), doc.get('orcid_pub', [])):
                 # add contrib tag, parent to name, aff, and orcid
                 contrib = ET.SubElement(parent, 'contrib', {"contrib-type": "author"})
+                # add orcid id first, if available
+                if orcid != '-':
+                    ET.SubElement(contrib, 'contrib-id', {"contrib-id-type": "orcid"}).text = orcid
                 # add name tag, parent to surname and given-names
                 name = ET.SubElement(contrib, 'name')
                 try:
@@ -589,8 +592,6 @@ class XMLFormat(Format):
                     ET.SubElement(name, 'surname').text = author
                 if affiliation != '-':
                     ET.SubElement(contrib, 'aff').text = affiliation
-                if orcid != '-':
-                    ET.SubElement(contrib, 'contrib-id', {"contrib-id-type": "orcid"}).text = orcid
         except:
             pass
 
@@ -669,7 +670,11 @@ class XMLFormat(Format):
             elif (field == 'article-meta_tag'):
                 article_meta_section = ET.SubElement(front_section, fields[field])
             elif (field == 'bibcode'):
-                ET.SubElement(article_meta_section, fields[field], {"pub-id-type": "bibcode"}).text = a_doc.get(field, '')
+                ET.SubElement(article_meta_section, fields[field], {"pub-id-type": "archive"}).text = a_doc.get(field, '')
+            elif (field == 'identifier'):
+                arXiv_id = [id for id in a_doc.get(field, []) if 'arXiv:' in id]
+                if arXiv_id:
+                    ET.SubElement(article_meta_section, fields[field], {"pub-id-type": "arxiv"}).text = arXiv_id[0]
             elif (field == 'doi'):
                 if a_doc.get(field, ''):
                     ET.SubElement(article_meta_section, fields[field], {"pub-id-type": "doi"}).text = '; '.join(a_doc.get(field, ''))
@@ -681,9 +686,15 @@ class XMLFormat(Format):
                 self.__add_author_list_jats_xml(a_doc, ET.SubElement(article_meta_section, fields[field]))
             elif (field == 'date'):
                 self.__add_date_jats_xml(a_doc, article_meta_section)
-                # year appears in parenthesis, so need to find the last element and add open parenthesis
-            elif (field == 'volume') or (field == 'issue') or (field == 'abstract'):
+            elif (field == 'volume') or (field == 'issue'):
                 self.__add_in(article_meta_section, fields[field], a_doc.get(field, ''))
+            elif (field == 'abstract'):
+                # permissions tag is required and must appear before the abstract,
+                # no copyright information is available in solr right now, so add an empty permission tag for now
+                ET.SubElement(article_meta_section, "permissions").text = ""
+                # add abstract tag, then paragraph tag around the abstract (required)
+                abstract = ET.SubElement(article_meta_section, fields[field])
+                self.__add_in(abstract, "p", a_doc.get(field, ''))
             elif (field == 'page') or (field == 'page_range'):
                 self.__add_page(a_doc, article_meta_section, fields[field])
 
