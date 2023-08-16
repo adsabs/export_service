@@ -167,6 +167,7 @@ class CustomFormat(Format):
             'd': 'doi',
             'D': 'pubdate',
             'e': 'author',
+            'E': 'author',
             'F': 'aff',
             'f': 'author',
             'G': 'author',
@@ -403,17 +404,18 @@ class CustomFormat(Format):
         return ''
 
 
-    def __get_n_authors(self, author_list, n_parts_author, before_last, format):
+    def __get_n_authors(self, author_list, n_parts_author, before_last, format, separator=', '):
         """
 
         :param author_list:
         :param n_parts_author:
         :param before_last:
         :param format:
+        :param separator:
         :return:
         """
         split_parts = author_list.replace(before_last, '').split('; ')
-        return self.__replace_author_separator(', '.join(split_parts[:n_parts_author]), format)
+        return self.__replace_author_separator(separator.join(split_parts[:n_parts_author]), format)
 
     def __get_first_author(self, author_list, format):
         """
@@ -427,6 +429,9 @@ class CustomFormat(Format):
         # this special case, only last name is returned
         if format == 'n':
             return split_parts[0].split(', ')[0]
+        # another special case, there is no comma between last name and first/middle initials
+        if format == 'E':
+            return split_parts[0].replace(',', '')
         return split_parts[0]
 
 
@@ -440,12 +445,15 @@ class CustomFormat(Format):
             if format in ['H', 'h']:
                 # remove the last separator before and for these formats, then split and rejoin
                 split_parts = author_list.replace('; and', ' and').split('; ')
+            elif format == 'E':
+                # remove commas between lastname and firstname
+                split_parts = author_list.replace(',', '').split('; ')
             else:
                 split_parts = author_list.split('; ')
             return ', '.join(split_parts)
         # formats that have no comma between last name and first/middle names
         # or only display last name, hence once split each is an one element
-        if format in ['f','g', 'H', 'h', 'M', 'm', 'n', 'O', 'o','k']:
+        if format in ['f','g', 'H', 'h', 'M', 'm', 'n', 'O', 'o']:
             split_parts = author_list.split('; ')
             return self.author_sep.join(split_parts)
         # only last names are displayed here
@@ -453,9 +461,9 @@ class CustomFormat(Format):
             split_parts = author_list.split('; ')
             return self.author_sep.join(split_parts)
         # formats that have a comma between last name and first/middle names
-        # so that each are author is two elements
+        # so that each author is two elements
         # 12/19 changed the author separator in cls to semicolon, and now can split and join
-        if format in ['A','a','e','G','I','i','L','l','N']:
+        if format in ['A','a','G','I','i','L','l','N']:
             split_parts = author_list.split('; ')
             return self.author_sep.join(split_parts)
         return author_list
@@ -466,21 +474,24 @@ class CustomFormat(Format):
         """
         Formats	    First Author	        Second Author..	Before Last	    abbreviated
         A	        As in db	            As in db	    and	            first author,..., m authors and xx colleagues
-        G	        lastname f. i.	        lastname f. i.	                first author, et al.
-        H	        lastname	            lastname	    and	            display requested number of authors
-        I	        lastname, f. i.	        f. i. lastname	and	            first author, and xx colleagues
-        L	        lastname, f. i.	        lastname, f. i.	and	            first author, and xx colleagues
-        N	        lastname, f. i.	        lastname, f. i.		            first author, and xx colleagues
-        O           f. i lastname           f. i lastname   and             first author, and xx colleagures
-        l	        lastname, f. i.	        lastname, f. i.	&	            first author, et al.
-        M	        lastname	            lastname	and	                first author, et al.
-        m	        lastname	            lastname	&	                first author, et al.
-        n	        lastname	            +
         a	        As in db	            As in db	    &	            first author,..., m authors et al.
+        E           lastname fi             lastname fi                     first author,..., m authors et al
+        e           lastname f.m.           lastname f.m.   and             first author, and xx colleagues
+        f           lastname                lastname        and             first author \\emph{et al.}
+        G	        lastname f. i.	        lastname f. i.	                first author, et al.
         g	        lastname, f.i.	        lastname, f.i.	and	            first author, and xx colleagues
-        h	        lastname	            lastname	    and	            first author \\emph{et al.}
+        H	        lastname	            lastname	    and	            display requested number of authors
+        h	        lastname	            lastname	    &
+        I	        lastname, f. i.	        f. i. lastname	and	            first author, and xx colleagues
         i	        lastname, f. i.	        f. i. lastname	&	            first author, et al.
         k           firstname i lastname    firstname i lastname   &        first author, et al.
+        L	        lastname, f. i.	        lastname, f. i.	and	            first author, and xx colleagures
+        l	        lastname, f. i.	        lastname, f. i.	&	            first author, et al. colleagues
+        M	        lastname	            lastname	and	                first author, et al.
+        m	        lastname	            lastname	&	                first author, et al.
+        N	        lastname, f. i.	        lastname, f. i.		            first author, and xx colleagues
+        n	        lastname	            +
+        O           f. i lastname           f. i lastname   and             first author, and xx
         o           f. i lastname           f. i lastname   &               first author, et al.
 
         n.m: Maximum number of entries in field (optional).
@@ -495,6 +506,7 @@ class CustomFormat(Format):
         """
         format_etal = u'{}, et al.'
         format_etal_no_comma = u'{} et al.'
+        format_etal_no_dot = u'{} et al'
         format_n_authors = u'{}'
         format_with_n_colleagues = u'{}, and {} colleagues'
         format_escape_emph = u'{} \\emph{{et al.}}'
@@ -515,8 +527,13 @@ class CustomFormat(Format):
                 return format_with_n_colleagues.format(', '.join(authors[:m]), num_authors-m)
             elif (format == 'O'):
                 return format_with_n_colleagues.format(', '.join(authors[:m]), num_authors-m)
+        if (format == 'E'):
+            # there are no commas between last and first/middle intitials, so to remove those
+            # send a separator different than comma, so that it can be used to separate authors after
+            # commas are removed
+            return format_etal_no_dot.format(self.__get_n_authors(author_list, m, u'', format, '; '))
         if (format == 'G'):
-            # return n authors (LastName, first and middle initials) et. al. - list is seprated by comma
+            # return n authors (LastName, first and middle initials) et. al. - list is separated by comma
             return format_etal.format(self.__get_n_authors(author_list, m, u'', format))
         if (format == 'i'):
             # here the first author is lastname comma first and middle initials

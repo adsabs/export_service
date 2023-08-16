@@ -124,13 +124,13 @@ class TestExportsCustomFormat(TestCase):
     def test_get_author_list(self):
         # Optional parameters for author field: n.m
         # If the number of authors in the list is larger than n, the list will be truncated and m authors are returned
-        custom_format = CustomFormat(custom_format=r'%A,%3.2A,%a,%3.2a,%G,%3.2G,%g,%3.2g,'
-                                                   r'%H,%3.2H,%2.1H,%h,%3.2h,%I,%3.2I,%i,%3.2i,'
-                                                   r'%L,%3.2L,%l,%3.2l,%M,%3.2M,%m,%3.2m,'
-                                                   r'%N,%3.2N,%n,%3.2n,%e,%3.2e,%f,%3.2f,'
-                                                   r'%O,%3.2O,%o,%3.2o,%k,%3.2k,'
-                                                   r'%^A,%^a,%^G,%^g,%^H,%^h,%^I,%^i,%^L,%^l,%^M,%^m,%^N,%^n,%^e,%^f,'
-                                                   r'%^O,%^o,%^k'
+        custom_format = CustomFormat(custom_format=r'%A,%3.2A,%a,%3.2a,%E,%3.2E,%e,%3.2e,'
+                                                   r'%G,%3.2G,%g,%3.2g,%H,%3.2H,%2.1H,%h,%3.2h,'
+                                                   r'%I,%3.2I,%i,%3.2i,%L,%3.2L,%l,%3.2l,'
+                                                   r'%M,%3.2M,%m,%3.2m,%N,%3.2N,%n,%3.2n,'
+                                                   r'%f,%3.2f,%O,%3.2O,%o,%3.2o,%k,%3.2k,'
+                                                   r'%^A,%^a,%^E,%^e,%^G,%^g,%^H,%^h,%^I,%^i,%^L,%^l,%^M,%^m,%^N,%^n,'
+                                                   r'%^f,%^O,%^o,%^k'
         )
         custom_format.set_json_from_solr(solrdata.data_3)
 
@@ -141,6 +141,10 @@ class TestExportsCustomFormat(TestCase):
                             ('%a', 'English, Jayanne, Taylor, A. R., Mashchenko, S. Y., Irwin, Judith A., Basu, Shantanu, & Johnstone, Doug'),
                             ('%3.2a', 'English, Jayanne, Taylor, A. R., et al.'),
                             ('%G', 'English, J., Taylor, A. R., Mashchenko, S. Y., Irwin, J. A., Basu, S., Johnstone, D.'),
+                            ('%E', 'English J, Taylor AR, Mashchenko SY, Irwin JA, Basu S, Johnstone D'),
+                            ('%3.2E', 'English J, Taylor AR et al'),
+                            ('%e', 'English, J., Taylor, A.R., Mashchenko, S.Y., Irwin, J.A., Basu, S., and Johnstone, D.'),
+                            ('%3.2e', 'English, J., Taylor, A.R., and 4 colleagues'),
                             ('%3.2G', 'English, J., Taylor, A. R., et al.'),
                             ('%g', 'English J., Taylor A. R., Mashchenko S. Y., Irwin J. A., Basu S., Johnstone D.'),
                             ('%3.2g', 'English J., Taylor A. R., et al.'),
@@ -165,8 +169,6 @@ class TestExportsCustomFormat(TestCase):
                             ('%3.2N',  'English, J., Taylor, A. R., and 4 colleagues'),
                             ('%n',  'English,+'),
                             ('%3.2n',  'English,+'),
-                            ('%e', 'English, J., Taylor, A.R., Mashchenko, S.Y., Irwin, J.A., Basu, S., and Johnstone, D.'),
-                            ('%3.2e', 'English, J., Taylor, A.R., and 4 colleagues'),
                             ('%f', 'English, Taylor, Mashchenko, Irwin, Basu, and Johnstone'),
                             ('%3.2f', 'English, Taylor \\emph{et al.}'),
                             ('%O', 'J. English, A. R. Taylor, S. Y. Mashchenko, J. A. Irwin, S. Basu, and D. Johnstone'),
@@ -177,6 +179,8 @@ class TestExportsCustomFormat(TestCase):
                             ('%3.2k', 'Jayanne English, A. R. Taylor, et al.'),
                             ('%^A', 'English, Jayanne'),
                             ('%^a', 'English, Jayanne'),
+                            ('%^E', 'English J'),
+                            ('%^e', 'English, J.'),
                             ('%^G', 'English, J.'),
                             ('%^g', 'English J.'),
                             ('%^H', 'English'),
@@ -189,7 +193,6 @@ class TestExportsCustomFormat(TestCase):
                             ('%^m', 'English'),
                             ('%^N', 'English, J.'),
                             ('%^n', 'English'),
-                            ('%^e', 'English, J.'),
                             ('%^f', 'English'),
                             ('%^O', 'J. English'),
                             ('%^o', 'J. English'),
