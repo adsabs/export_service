@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" and="text" initialize="false">
   <info>
-    <title>ADS Author Custom Format M</title>
-    <title-short>ADS Author Custom Format M</title-short>
+    <title>ADS Author Custom Format f</title>
+    <title-short>ADS Author Custom Format f</title-short>
     <id>https://ui.adsabs.harvard.edu</id>
     <category citation-format="author"/>
     <category field="generic-base"/>
-    <summary>Format M: First Author has the format: lastname, Second Author on has the format: lastname, Before Last Author there is and text, and when shorten has the format: n author(s), et al.</summary>
+    <summary>Format f: lastname only</summary>
     <updated>2017-07-12T17:59:57+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
