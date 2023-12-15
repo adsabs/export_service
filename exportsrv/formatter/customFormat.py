@@ -404,7 +404,7 @@ class CustomFormat(Format):
         return ''
 
 
-    def __get_n_authors(self, author_list, n_parts_author, before_last, format, separator=', '):
+    def __get_n_authors(self, author_list, n_parts_author, before_last, format, separator='; '):
         """
 
         :param author_list:
@@ -441,33 +441,17 @@ class CustomFormat(Format):
         :param format:
         :return:
         """
-        if len(self.author_sep) == 0:
-            if format in ['H', 'h']:
-                # remove the last separator before and for these formats, then split and rejoin
-                split_parts = author_list.replace('; and', ' and').split('; ')
-            elif format == 'E':
-                # remove commas between lastname and firstname
-                split_parts = author_list.replace(',', '').split('; ')
-            else:
-                split_parts = author_list.split('; ')
-            return ', '.join(split_parts)
-        # formats that have no comma between last name and first/middle names
-        # or only display last name, hence once split each is an one element
-        if format in ['f','g', 'H', 'h', 'M', 'm', 'n', 'O', 'o']:
-            split_parts = author_list.split('; ')
-            return self.author_sep.join(split_parts)
-        # only last names are displayed here
         if format in ['H', 'h']:
+            # remove the last separator before and for these formats, then split and rejoin
+            split_parts = author_list.replace('; and', ' and').split('; ')
+        elif format == 'E':
+            # remove commas between lastname and firstname
+            split_parts = author_list.replace(',', '').split('; ')
+        else:
             split_parts = author_list.split('; ')
-            return self.author_sep.join(split_parts)
-        # formats that have a comma between last name and first/middle names
-        # so that each author is two elements
-        # 12/19 changed the author separator in cls to semicolon, and now can split and join
-        if format in ['A','a','G','I','i','L','l','N']:
-            split_parts = author_list.split('; ')
-            return self.author_sep.join(split_parts)
-        return author_list
-
+        if len(self.author_sep) == 0:
+            return ', '.join(split_parts)
+        return self.author_sep.join(split_parts)
 
 
     def __get_author_list_abbreviated(self, author_list, num_authors, format, m):
@@ -512,6 +496,8 @@ class CustomFormat(Format):
         format_escape_emph = u'{} \\emph{{et al.}}'
         format_plus = u'{},+'
 
+        author_sep = ' ' if format in ['H', 'h'] else (', ' if len(self.author_sep) == 0 else self.author_sep)
+
         if (format == 'n'):
             # only last name of first author
             authors = author_list.split('; ')[0].split(', ')
@@ -519,14 +505,14 @@ class CustomFormat(Format):
         if format in ['A', 'I', 'L', 'N', 'e', 'O']:
             authors = author_list.replace(' and', '').split('; ')
             if (format == 'A') or (format == 'L') or (format == 'N') or (format == 'e'):
-                return format_with_n_colleagues.format(', '.join(authors[:m]), num_authors-m)
+                return format_with_n_colleagues.format(author_sep.join(authors[:m]), num_authors-m)
             elif (format == 'I'):
                 # here the first author is lastname comma first and middle initials
                 # the rest are first and middle initials, no comma, lastname
                 # hence first author needs two parts concatenated, the rest only 1
-                return format_with_n_colleagues.format(', '.join(authors[:m]), num_authors-m)
+                return format_with_n_colleagues.format(author_sep.join(authors[:m]), num_authors-m)
             elif (format == 'O'):
-                return format_with_n_colleagues.format(', '.join(authors[:m]), num_authors-m)
+                return format_with_n_colleagues.format(author_sep.join(authors[:m]), num_authors-m)
         if (format == 'E'):
             # there are no commas between last and first/middle intitials, so to remove those
             # send a separator different than comma, so that it can be used to separate authors after
@@ -555,7 +541,7 @@ class CustomFormat(Format):
             # return the asked number of authors
             # there is an and before the last author
             authors = author_list.replace(' and', '').split('; ')
-            return format_n_authors.format(' '.join(authors[:m]))
+            return format_n_authors.format(author_sep.join(authors[:m]))
         if (format == 'a') or (format == 'l'):
             # return n author(s) et. al. - list is separated by a comma
             return format_etal.format(self.__get_n_authors(author_list, m, u' \\&', format))
@@ -563,7 +549,7 @@ class CustomFormat(Format):
             # return the asked number of authors - list is separated by space,
             # there is an and before the last author
             authors = author_list.replace(' &', '').split('; ')
-            return format_n_authors.format(' '.join(authors[:m]))
+            return format_n_authors.format(author_sep.join(authors[:m]))
         return author_list
 
 
@@ -579,17 +565,18 @@ class CustomFormat(Format):
         # see if author list needs to get abbreviated
         # n.m: Maximum number of entries in author field (optional).
         # If the number of authors in the list is larger than n, the list will be truncated to m entries.
-        # If.m is not specified, n.1 is assumed.
-        matches = self.REGEX_AUTHOR.findall(format)
-        if (len(matches) >= 1):
-            # format n is a special case
-            if (matches[0][1] == 'n'):
-                return self.__get_author_list_abbreviated(authors, count, matches[0][1], 0)
+        # If m is not specified, n.1 is assumed.
+        match = self.REGEX_AUTHOR.search(format)
+        if (match):
+            matched = match.groups()
+            # format n is a special case, only lastname
+            if (matched[1] == 'n'):
+                return self.__get_author_list_abbreviated(authors, count, matched[1], 0)
             # so is the format for H and h if not abbreviated
-            elif ((matches[0][1] == 'H') or (matches[0][1] == 'h')) and len(matches[0][0]) == 0:
-                return self.__get_author_list_abbreviated(authors, count, matches[0][1], 1)
-            elif (len(matches[0][0]) > 0):
-                abbreviated = matches[0][0].split('.')
+            elif ((matched[1] == 'H') or (matched[1] == 'h')) and len(matched[0]) == 0:
+                return self.__get_author_list_abbreviated(authors, count, matched[1], 1)
+            elif (len(matched[0]) > 0):
+                abbreviated = matched[0].split('.')
                 n = int(str(abbreviated[0]))
                 if (len(abbreviated) > 1):
                     m = int(str(abbreviated[1]))
@@ -598,7 +585,7 @@ class CustomFormat(Format):
                 if (count <= n) or (count <= m):
                     return self.__replace_author_separator(authors, format[-1])
                 else:
-                    return self.__get_author_list_abbreviated(authors, count, matches[0][1], m)
+                    return self.__get_author_list_abbreviated(authors, count, matched[1], m)
         # see if it is a first author format
         matches = self.REGEX_FIRST_AUTHOR.findall(format)
         if len(matches) >= 1:
