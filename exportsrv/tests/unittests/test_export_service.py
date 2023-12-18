@@ -628,6 +628,12 @@ class TestExports(TestCase):
         title_encoded = r'Measurement of the \textbackslash{}Sigma\textbackslash{} beam asymmetry for the \textbackslash{}omega\textbackslash{} photo-production off the proton and the neutron at GRAAL'
         assert(encode_laTex(title) == title_encoded)
 
+    def test_misc_with_and_without_publiser(self):
+        # test misc for BibTex with and without publisher
+        # if publisher, display it, if not, format pub_raw in howpublished
+        expected_bibtex_export = u'@MISC{2023zndo...8083529K,\n       author = {{Karras}, Oliver},\n        title = "{Analysis of the State and Evolution of Empirical Research in Requirements Engineering}",\n     keywords = {Python, Jupyter notebook, Analysis, Empirical research, Requirements engineering},\n         year = 2023,\n        month = jun,\n          eid = {10.5281/zenodo.8083529},\n          doi = {10.5281/zenodo.8083529},\n      version = {v1.0},\n    publisher = {Zenodo},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2023zndo...8083529K},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n@MISC{2023BoSAB..34......,\n        title = "{Proceedings da XLV Reuni{\~a}o Anual da SAB}",\n howpublished = {Boletim da Sociedade Astr{\^o}nomica Brasileira. Proceedings da XLV Reuni{\~a}o Anual da SAB},\n         year = 2023,\n        month = jan,\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2023BoSAB..34......},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
+        bibtex_export = BibTexFormat(solrdata.data_16, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=3).get('export', '')
+        assert(bibtex_export == expected_bibtex_export)
 
 if __name__ == '__main__':
   unittest.main()
