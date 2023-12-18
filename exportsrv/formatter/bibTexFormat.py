@@ -486,6 +486,11 @@ class BibTexFormat(Format):
             elif (field == 'aff'):
                 text += self.__field_wrapped(fields[field], self.__get_affiliation_list(a_doc, maxauthor, authorcutoff), format_style_bracket)
             elif (field == 'pub_raw'):
+                # pub_raw goes to howpublished when doc_type is @misc
+                # we want to display pub_raw in howpublished only if publisher data is not available
+                doc_type_bibtex = self.__get_doc_type(a_doc.get('doctype', ''))
+                if doc_type_bibtex == '@MISC' and a_doc.get('publisher', ''):
+                    continue
                 text += self.__add_in(fields[field], self.__add_clean_pub_raw(a_doc), format_style_bracket)
             elif (field == 'pub'):
                 text += self.__add_in(fields[field], self.__get_journal(a_doc, journalformat), format_style_bracket)

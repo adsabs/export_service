@@ -1412,3 +1412,61 @@ data_15 = \
         ]
     }
 }
+
+
+data_16 = \
+{
+  u'responseHeader':{
+        u'status':0,
+        u'QTime':6,
+        u'params': {
+            u'q': u'bibcode:(2023zndo...8083529K OR 2023BoSAB..34......)',
+            u'fl': u'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem',
+            u'_': u'1702925108780'
+        }
+  },
+  u'response': {
+      'numFound':2,
+      'start':0,
+      'docs':[
+        {
+            u'bibcode': u'2023zndo...8083529K',
+            u'abstract': u'[Background.] Empirical research in requirements engineering (RE) is a constantly evolving topic, with a growing number of publications. Several papers address this topic using literature reviews to provide a snapshot of its \'current\' state and evolution. However, these papers have never built on or updated earlier ones, resulting in overlap and redundancy. The underlying problem is the unavailability of data from earlier works. Researchers need technical infrastructures to conduct sustainable literature reviews. [Aims.] We examine the use of the Open Research Knowledge Graph (ORKG) as such an infrastructure to build and publish an initial Knowledge Graph of Empirical research in RE (KG-EmpiRE) whose data is openly available. Our long-term goal is to continuously maintain KG-EmpiRE with the research community to synthesize a comprehensive, up-to-date, and long-term available overview of the state and evolution of empirical research in RE. [Method.] We conduct a literature review using the ORKG to build and publish KG-EmpiRE which we evaluate against competency questions derived from a published vision of empirical research in software (requirements) engineering for 2020 -- 2025. [Results.] From 570 papers of the IEEE International Requirements Engineering Conference (2000 -- 2022), we extract and analyze data on the reported empirical research and answer 16 out of 77 competency questions. These answers show a positive development towards the vision, but also the need for future improvements. [Conclusions.] The ORKG is a ready-to-use and advanced infrastructure to organize data from literature reviews as knowledge graphs. The resulting knowledge graphs make the data openly available and maintainable by research communities, enabling sustainable literature reviews.',
+            u'aff': [u'TIB - Leibniz Information Centre for Science and Technology <ORCID>0000-0001-5336-6899</ORCID>'],
+            u'author': [u'Karras, Oliver'],
+            u'bibstem': [u'zndo'],
+            u'doctype': u'software',
+            u'doi': ['10.5281/zenodo.8083529'],
+            u'eid': '10.5281/zenodo.8083529',
+            u'identifier': [u'2023zndo...8083529K', u'10.5281/zenodo.8083529'],
+            u'keyword': [u'Python', u'Jupyter notebook', u'Analysis', u'Empirical research', u'Requirements engineering'],
+            u'property': [u'ESOURCE', u'NONARTICLE', u'NOT REFEREED', u'PUB_OPENACCESS', u'OPENACCESS', u'RELEASE'],
+            u'pub': u'Zenodo',
+            u'pub_raw': u'Zenodo',
+            u'pubdate': u'2023-06-26',
+            u'title': [u'Analysis of the State and Evolution of Empirical Research in Requirements Engineering'],
+            u'year': '2023',
+            u'esources': [u'PUB_HTML'],
+            u'publisher': u'Zenodo',
+            u'version': u'v1.0',
+            u'read_count': 0,
+            u'[citations]': {u'num_references': 0, u'num_citations': 1}
+        },
+        {
+            u'bibcode': u'2023BoSAB..34......',
+            u'bibstem': [u'BoSAB', u'BoSAB..34'],
+            u'doctype': u'misc',
+            u'identifier': [u'2023BoSAB..34......'],
+            u'pub': u'Boletim da Sociedade Astrônomica Brasileira. Proceedings da XLV Reunião Anual da SAB',
+            u'pub_raw': u'Boletim da Sociedade Astrônomica Brasileira. Proceedings da XLV Reunião Anual da SAB',
+            u'pubdate': u'2023-00-00',
+            u'title': [u'Proceedings da XLV Reunião Anual da SAB'],
+            u'volume': u'34',
+            u'year': u'2023',
+            u'read_count': 0,
+            u'property':[u'ARTICLE', u'NOT REFEREED'],
+            u'[citations]':{u'num_references':0, u'num_citations':0}
+        }
+      ]
+  }
+}
