@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# We have 22 different doctype in Solr, these are bibcode used to extract the data below
+# We have 23 different doctype in Solr, these are bibcode used to extract the data below
 # bibcodes = ['2017yCat.113380453S', '2018SAAS...38.....D', '1995ans..agar..390M', '1983aiaa.meetY....K', '2007RJPh....1...35.', '2007AAS...210.2104M',
 #             '2009bcet.book...65L', '2018PhRvL.120b9901P', '2018TDM.....5a0201F', '2018Spin....877001P', '2017nova.pres.2388K', '2016iac..talk..872V',
 #             '2017PhDT........14C', '2017MsT..........2A', '2018Wthr...73Q..35.', '2017ascl.soft06009C', '2017CBET.4403....2G', '2016emo6.rept.....R',
-#             '1995anda.book.....N', '2017sptz.prop13168Y', '2017AAVSN.429....1W', '1991hep.th....8028G']
+#             '1995anda.book.....N', '2017sptz.prop13168Y', '2017AAVSN.429....1W', '1991hep.th....8028G', '2012ddsw.rept.....T]
 
 
 
@@ -16,7 +16,7 @@ data = \
         u'params': {
             u'sort': u'date desc, bibcode desc',
             u'x-amzn-trace-id': u'Root=1-5dd330a9-5dda490348b6637c4f990929;-',
-            u'rows': u'22',
+            u'rows': u'23',
             u'fq': u'{!bitset}',
             u'q': u'*:*',
             u'start': u'0',
@@ -26,7 +26,7 @@ data = \
     },
     u'response': {
         u'start': 0,
-        u'numFound': 22,
+        u'numFound': 23,
         u'docs': [
             {
                 u'read_count': 0,
@@ -519,7 +519,29 @@ data = \
                 u'identifier': [u'1983aiaa.meetY....K'],
                 u'aff': [u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA', u'California Institute of Technology, Jet Propulsion Laboratory, Pasadena, CA'],
                 u'num_references': 0
-            }
+            },
+            {
+                u'read_count': 1,
+                u'bibcode':'2012ddsw.rept.....T',
+                u'copyright': u'Oak Ridge National Laboratory',
+                u'keyword': [u'Daymet'],
+                u'pubdate':u'2012-04-00',
+                u'bibstem':[u'ddsw', u'ddsw.rept'],
+                u'abstract':u'Archived and distributed through the ORNL DAAC, the Daymet data set provides gridded estimates of daily weather parameters for North America, including daily continuous surfaces of minimum and maximum temperature, precipitation occurrence and amount, humidity, shortwave radiation, snow water equivalent, and day length. The daily time step, 1 km x 1 km spatial resolution, and North American spatial extent of the data set makes it a unique and valuable contribution to scientific, research, and educational communities. The literature shows that Daymet data have been broadly applied to fields including hydrology, terrestrial vegetation growth models, carbon cycle science, and regional to large scale climate change analysis.',
+                u'doi': [u'10.3334/ORNLDAAC/1219'],
+                u'author':[u'Thornton, P. E.', u'Thornton, M. M.', u'Mayer, B. W.', u'Wilhelmi, N.', u'Wei, Y.', u'Devarakonda, R.', u'Cook, R.'],
+                u'doctype':u'dataset',
+                u'pub':u'Oak Ridge National Laboratory (ORNL) Distributed Active Archive Center for Biogeochemical Dynamics (DAAC',
+                u'pub_raw':u'Oak Ridge National Laboratory (ORNL) Distributed Active Archive Center for Biogeochemical Dynamics (DAAC)',
+                u'property':[u'ESOURCE', u'NONARTICLE', u'NOT REFEREED'],
+                u'num_citations': 51,
+                u'year': u'2012',
+                u'esources': [u'PUB_HTML'],
+                u'title': [u'Daymet: Daily surface weather on a 1 km grid for North America, 1980-2008'],
+                u'identifier': [u'2012ddsw.rept.....T', u'10.3334/ORNLDAAC/1219'],
+                u'aff': [u'-', u'-', u'-', u'-', u'-', u'-', u'-'],
+                u'num_references': 0
+            },
         ]
     }
 }
@@ -1426,7 +1448,7 @@ data_16 = \
         }
   },
   u'response': {
-      'numFound':2,
+      'numFound':3,
       'start':0,
       'docs':[
         {
@@ -1466,7 +1488,30 @@ data_16 = \
             u'read_count': 0,
             u'property':[u'ARTICLE', u'NOT REFEREED'],
             u'[citations]':{u'num_references':0, u'num_citations':0}
-        }
+        },
+        {
+            u'read_count': 1,
+            u'bibcode': '2012ddsw.rept.....T',
+            u'copyright': u'Oak Ridge National Laboratory',
+            u'keyword': [u'Daymet'],
+            u'pubdate': u'2012-04-00',
+            u'bibstem': [u'ddsw', u'ddsw.rept'],
+            u'abstract': u'Archived and distributed through the ORNL DAAC, the Daymet data set provides gridded estimates of daily weather parameters for North America, including daily continuous surfaces of minimum and maximum temperature, precipitation occurrence and amount, humidity, shortwave radiation, snow water equivalent, and day length. The daily time step, 1 km x 1 km spatial resolution, and North American spatial extent of the data set makes it a unique and valuable contribution to scientific, research, and educational communities. The literature shows that Daymet data have been broadly applied to fields including hydrology, terrestrial vegetation growth models, carbon cycle science, and regional to large scale climate change analysis.',
+            u'doi': [u'10.3334/ORNLDAAC/1219'],
+            u'author': [u'Thornton, P. E.', u'Thornton, M. M.', u'Mayer, B. W.', u'Wilhelmi, N.', u'Wei, Y.', u'Devarakonda, R.', u'Cook, R.'],
+            u'doctype': u'dataset',
+            u'pub': u'Oak Ridge National Laboratory (ORNL) Distributed Active Archive Center for Biogeochemical Dynamics (DAAC',
+            u'pub_raw': u'Oak Ridge National Laboratory (ORNL) Distributed Active Archive Center for Biogeochemical Dynamics (DAAC)',
+            u'property': [u'ESOURCE', u'NONARTICLE', u'NOT REFEREED'],
+            u'num_citations': 51,
+            u'year': u'2012',
+            u'esources': [u'PUB_HTML'],
+            u'title': [u'Daymet: Daily surface weather on a 1 km grid for North America, 1980-2008'],
+            u'identifier': [u'2012ddsw.rept.....T', u'10.3334/ORNLDAAC/1219'],
+            u'aff': [u'-', u'-', u'-', u'-', u'-', u'-', u'-'],
+            u'num_references': 0
+        },
+
       ]
   }
 }

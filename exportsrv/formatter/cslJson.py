@@ -48,7 +48,8 @@ class CSLJson(Format):
                   'pressrelease':'entry', 'catalog':'entry',
                   'phdthesis':'thesis','mastersthesis':'thesis',
                   'proposal':'personal_communication', 'editorial':'personal_communication', 
-                  'erratum':'personal_communication', 'obituary':'personal_communication'}
+                  'erratum':'personal_communication', 'obituary':'personal_communication',
+                  'dataset':'software'}
         return fields.get(solr_type, '')
 
 
@@ -132,7 +133,8 @@ class CSLJson(Format):
         # according to alberto we are either displaying DOI or eid
         # \bibitem[...]{bibcode}  {authors} {year}, {title}, {version}, {publisher}, (doi:{doi}|{eid})
         # there is no best variable to assign this either of these to, so go with 'keyword' for now
-        if data['type'] == 'software':
+        # 1/31/2024 adding dataset doctype as per Edwin
+        if data['type'] in ['software', 'dataset']:
             if len(data['DOI']) == 0 and len(a_doc.get('eid', '')) > 0:
                 data['DOI'] = a_doc.get('eid', '')
             else:
