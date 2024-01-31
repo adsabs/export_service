@@ -91,8 +91,8 @@ class BibTexFormat(Format):
                   'inbook':'@INCOLLECTION',
                   'proceedings':'@PROCEEDINGS', 
                   'inproceedings':'@INPROCEEDINGS', 'abstract':'@INPROCEEDINGS',
-                  'misc':'@MISC', 'software':'@MISC','proposal':'@MISC', 'pressrelease':'@MISC',
-                  'talk':'@MISC',
+                  'misc':'@MISC', 'proposal':'@MISC', 'pressrelease':'@MISC',
+                  'talk':'@MISC', 'software':'@software', 'dataset':'@dataset',
                   'phdthesis':'@PHDTHESIS','mastersthesis':'@MASTERSTHESIS',
                   'techreport':'@MISC', 'intechreport':'@MISC'}
         return fields.get(solr_type, '')
@@ -182,6 +182,14 @@ class BibTexFormat(Format):
         #               ('editor', 'editor'), ('series', 'series'), ('month', 'month'),
         #               ('eid', 'eid'), ('page_range', 'pages'), ('volume', 'volume'),
         #               ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
+        # 1/31/2024 as per Edwin adding software and dataset export format
+        elif doc_type_bibtex in ['@software', '@dataset']:
+            fields = [('author', 'author'), ('title', 'title'),
+                      ('pub_raw', 'howpublished'), ('year', 'year'), ('month', 'month'),
+                      ('eid', 'eid'), ('doi', 'doi'),
+                      ('version', 'version'), ('publisher', 'publisher'),
+                      ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
+
         else:
             fields = []
         return OrderedDict(fields)
@@ -294,7 +302,7 @@ class BibTexFormat(Format):
         """
         doctype = a_doc.get('doctype', '')
 
-        if doctype == 'software':
+        if doctype in ['software', 'dataset']:
             return None
 
         # apply user preference only if pub is assigned to journal field
@@ -489,7 +497,7 @@ class BibTexFormat(Format):
                 # pub_raw goes to howpublished when doc_type is @misc
                 # we want to display pub_raw in howpublished only if publisher data is not available
                 doc_type_bibtex = self.__get_doc_type(a_doc.get('doctype', ''))
-                if doc_type_bibtex == '@MISC' and a_doc.get('publisher', ''):
+                if doc_type_bibtex in ['@MISC', '@software', 'dataset'] and a_doc.get('publisher', ''):
                     continue
                 text += self.__add_in(fields[field], self.__add_clean_pub_raw(a_doc), format_style_bracket)
             elif (field == 'pub'):
