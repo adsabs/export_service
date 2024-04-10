@@ -31,7 +31,7 @@ class BibTexFormat(Format):
         (re.compile(r"(?:\<NUMPAGES\>)(.*)(?:</NUMPAGES>)"), r"\1"),
     ])
     REGEX_KEY = re.compile(
-        r'''(                   # start of capture group 1
+        r'''(            # start of capture group 1
             %                   # literal "%"
             (?:                 # first option
             (?:\d+|\*)?         # width
@@ -143,27 +143,28 @@ class BibTexFormat(Format):
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@BOOK'):
             fields = [('author', 'author'), ('title', 'title'),
-                      ('year', 'year'), ('volume', 'volume'), ('doi', 'doi'),
+                      ('year', 'year'), ('volume', 'volume'),
+                      ('publisher', 'publisher'), ('doi', 'doi'),
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@INCOLLECTION'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
-                      ('volume', 'volume'), ('series', 'series'), ('eid', 'eid'),
-                      ('page_range', 'pages'), ('abstract', 'abstract'), ('doi', 'doi'),
-                      ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
+                      ('volume', 'volume'), ('series', 'series'), ('publisher', 'publisher'),
+                      ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
+                      ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@PROCEEDINGS'):
             fields = [('title', 'title'), ('keyword', 'keywords'), ('pub', 'booktitle'),
                       ('year', 'year'), ('editor', 'editor'), ('series', 'series'),
-                      ('volume', 'volume'), ('month', 'month'), ('doi', 'doi'),
-                      ('eprintid', 'archivePrefix|eprint'), ('arxiv_class', 'primaryClass'),
+                      ('volume', 'volume'), ('month', 'month'), ('publisher', 'publisher'),
+                      ('doi', 'doi'), ('eprintid', 'archivePrefix|eprint'), ('arxiv_class', 'primaryClass'),
                       ('abstract', 'abstract'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@INPROCEEDINGS'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub', 'booktitle'), ('year', 'year'), ('editor', 'editor'),
                       ('series', 'series'), ('volume', 'volume'), ('month', 'month'),
-                      ('eid', 'eid'), ('page_range', 'pages'), ('abstract', 'abstract'),
-                      ('doi', 'doi'), ('eprintid', 'archivePrefix|eprint'), ('arxiv_class', 'primaryClass'),
-                      ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
+                      ('publisher', 'publisher'), ('eid', 'eid'), ('page_range', 'pages'),
+                      ('abstract', 'abstract'), ('doi', 'doi'), ('eprintid', 'archivePrefix|eprint'),
+                      ('arxiv_class', 'primaryClass'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         elif (doc_type_bibtex == '@MISC'):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('pub_raw', 'howpublished'), ('year', 'year'), ('month', 'month'),

@@ -40,13 +40,13 @@ class CustomFormat(Format):
     ]
     REGEX_CUSTOME_FORMAT = re.compile(
         r'''(                                                       # start of capture group 1
-            %                                                       # literal "%"
-            (?:[\\></=])?                                           # field encoding
-            (?:                                                     # first option
-            (?:\d+|\*)?                                             # width
-            (?:\.(?:\d+|\*))?                                       # precision
+            %                                                        # literal "%"
+            (?:[\\></=])?                                            # field encoding
+            (?:                                                      # first option
+            (?:\d+|\*)?                                              # width
+            (?:\.(?:\d+|\*))?                                        # precision
             (?:\^)?
-            [px]{0,2}[AaBcCdDeEfFGgHhiIJjKkLlMmNnOopPQqrRSTUuVWXxY] # type
+            [px]{0,2}[AaBbCcDdEeFfGgHhiIJjKkLlMmNnOopPQqrRSTUuVWXxY] # type
             )
         )''', flags=re.X
     )
@@ -192,6 +192,7 @@ class CustomFormat(Format):
             'P': 'lastpage',
             'pp':'page_range,page',      # page_range is specified in the custom format, but if not available and page is then return that
             'pc':'page_count',
+            'pb':'publisher',
             'Q': 'pub_raw',
             'q': 'pub',
             'r': 'num_references',
@@ -207,7 +208,7 @@ class CustomFormat(Format):
             'xe': 'pubnote',
             'Y': 'year'
         }
-        specifier = ''.join(re.findall(r'([AaBcCdDeEfFGgHhiIJjKkLlMmNnOopPQqrRSTUuVWXxY]{1,2})', specifier))
+        specifier = ''.join(re.findall(r'([AaBbCcDdEeFfGgHhiIJjKkLlMmNnOopPQqrRSTUuVWXxY]{1,2})', specifier))
         return fieldDict.get(specifier, '')
 
 
@@ -836,7 +837,7 @@ class CustomFormat(Format):
         result = self.custom_format
         a_doc = self.from_solr['response'].get('docs')[index]
         for field in self.parsed_spec:
-            if (field[2] == 'title') or (field[2] == 'doi') or (field[2] == 'comment') or (field[2] == 'pubnote'):
+            if field[2] in ['title', 'doi', 'comment', 'pubnote']:
                 result = self.__add_in(result, field, ''.join(a_doc.get(field[2], '')))
             elif (field[2] == 'author'):
                 result = self.__add_in(result, field, self.__get_author_list(field[1], index))
@@ -850,16 +851,15 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, self.__get_keywords(a_doc))
             elif (field[2] == 'url'):
                 result = self.__add_in(result, field, self.__format_url(a_doc.get('bibcode', ''), field[1][-1]))
-            elif (field[2] == 'abstract') or (field[2] == 'copyright') or (field[2] == 'bibcode') or \
-                 (field[2] == 'volume') or (field[2] == 'year') or (field[2] == 'issue'):
+            elif field[2] in ['abstract', 'copyright', 'bibcode', 'volume', 'year', 'issue', 'publisher']:
                 result = self.__add_in(result, field, a_doc.get(field[2], ''))
-            elif (field[2] == 'pub') or (field[2] == 'pub_raw'):
+            elif field[2] in ['pub', 'pub_raw']:
                 result = self.__add_in(result, field, self.__get_publication(field[1], a_doc))
-            elif (field[2] == 'num_citations') or (field[2] == 'num_references') or (field[2] == 'page_count'):
+            elif field[2] in ['num_citations', 'num_references', 'page_count']:
                 result = self.__add_in(result, field, str(a_doc.get(field[2], '')))
             elif (field[2] == 'eid,identifier'):
                 result = self.__add_in(result, field, get_eprint(a_doc))
-            elif (field[2] == 'page,page_range') or (field[2] == 'lastpage') or (field[2] == 'page_range,page'):
+            elif field[2] in ['page,page_range', 'lastpage', 'page_range,page']:
                 result = self.__add_in(result, field, self.__get_page(field[2], a_doc))
         result += self.line_feed
 
