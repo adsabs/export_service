@@ -99,7 +99,6 @@ class TestExports(TestCase):
     def test_refxml(self):
         # format the stubdata using the code
         xml_export = XMLFormat(solrdata.data).get_reference_xml(include_abs=False)
-        print(xml_export)
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_ref)
 

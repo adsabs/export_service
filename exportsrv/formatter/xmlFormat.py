@@ -353,10 +353,10 @@ class XMLFormat(Format):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
                       ('aff', 'affiliation'), ('pub_raw', 'journal'), ('volume', 'volume'),
                       ('pubdate', 'pubdate'), ('page', 'page'), ('page_range', 'lastpage'),
-                      ('keyword', 'keywords'), ('', 'origin'), ('copyright', 'copyright'),
-                      ('link', 'link'), ('url', 'url'), ('comment', 'comment'),
-                      ('', 'score'), ('num_citations', 'citations'), ('abstract', 'abstract'),
-                      ('doi', 'DOI'), ('eprintid', 'eprintid'), ('publisher', 'publisher')]
+                      ('keyword', 'keywords'), ('', 'origin'), ('publisher', 'publisher'),
+                      ('copyright', 'copyright'), ('link', 'link'), ('url', 'url'),
+                      ('comment', 'comment'), ('', 'score'), ('num_citations', 'citations'),
+                      ('abstract', 'abstract'), ('doi', 'DOI'), ('eprintid', 'eprintid')]
         elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
             fields = [('bibcode', 'dc:identifier'), ('title', 'dc:title'), ('author', 'dc:creator'),
                       ('pub_raw', 'dc:source'), ('pubdate', 'dc:date'), ('keyword', 'dc:subject'),
