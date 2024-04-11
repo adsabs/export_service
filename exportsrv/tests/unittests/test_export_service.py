@@ -99,6 +99,7 @@ class TestExports(TestCase):
     def test_refxml(self):
         # format the stubdata using the code
         xml_export = XMLFormat(solrdata.data).get_reference_xml(include_abs=False)
+        print(xml_export)
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_ref)
 
@@ -683,12 +684,6 @@ class TestExports(TestCase):
         xml_export = XMLFormat(solrdata.data_17).get_dublincore_xml()
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_dublin_core_publisher)
-
-    def test_refxml_publisher(self):
-        # format the publisher stubdata using the code
-        xml_export = XMLFormat(solrdata.data_17).get_reference_xml(include_abs=False)
-        # now compare it with an already formatted data that we know is correct
-        assert (xml_export == xmlTest.data_ref_publisher)
 
     def test_refxml_with_abs_publisher(self):
         # format the publisher stubdata using the code

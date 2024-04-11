@@ -29,22 +29,22 @@ class XMLFormat(Format):
     EXPORT_FORMAT_DUBLIN_XML = 'DublinXML'
     EXPORT_FORMAT_JATS_XML = 'JATSXML'
 
-    EXPORT_SERVICE_RECORDS_SET_XML_REF = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/references'),
+    EXPORT_SERVICE_RECORDS_SET_XML_REF = [('xmlns', 'https://ads.harvard.edu/schema/abs/1.1/references'),
                                           ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
-                                          ('xsi:schemaLocation', 'http://ads.harvard.edu/schema/abs/1.1/references http://ads.harvard.edu/schema/abs/1.1/references.xsd')]
+                                          ('xsi:schemaLocation', 'https://ads.harvard.edu/schema/abs/1.1/references https://ads.harvard.edu/schema/abs/1.1/references.xsd')]
 
-    EXPORT_SERVICE_RECORDS_SET_XML_REF_ABS = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/abstracts'),
+    EXPORT_SERVICE_RECORDS_SET_XML_REF_ABS = [('xmlns', 'https://ads.harvard.edu/schema/abs/1.1/abstracts'),
                                               ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
-                                              ('xsi:schemaLocation', 'http://ads.harvard.edu/schema/abs/1.1/abstracts http://ads.harvard.edu/schema/abs/1.1/abstracts.xsd')]
+                                              ('xsi:schemaLocation', 'https://ads.harvard.edu/schema/abs/1.1/abstracts https://ads.harvard.edu/schema/abs/1.1/abstracts.xsd')]
 
-    EXPORT_SERVICE_RECORDS_SET_XML_DUBLIN = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/dc'),
+    EXPORT_SERVICE_RECORDS_SET_XML_DUBLIN = [('xmlns', 'https://ads.harvard.edu/schema/abs/1.1/dc'),
                                              ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
                                              ('xmlns:dc', 'http://purl.org/dc/elements/1.1/'),
-                                             ('xsi:schemaLocation', 'http://ads.harvard.edu/schema/abs/1.1/dc http://ads.harvard.edu/schema/abs/1.1/dc.xsd')]
+                                             ('xsi:schemaLocation', 'https://ads.harvard.edu/schema/abs/1.1/dc https://ads.harvard.edu/schema/abs/1.1/dc.xsd')]
 
-    EXPORT_SERVICE_RECORDS_SET_XML_JATS = [('xmlns', 'http://ads.harvard.edu/schema/abs/1.1/jats'),
+    EXPORT_SERVICE_RECORDS_SET_XML_JATS = [('xmlns', 'https://ads.harvard.edu/schema/abs/1.1/jats'),
                                            ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
-                                           ('xsi:schemaLocation', 'http://ads.harvard.edu/schema/abs/1.0/jats http://ads.harvard.edu/schema/abs/1.0/jats.xsd')]
+                                           ('xsi:schemaLocation', 'https://ads.harvard.edu/schema/abs/1.0/jats https://ads.harvard.edu/schema/abs/1.0/jats.xsd')]
 
     re_year = re.compile(r'([12]+[09]\d\d)')
 
@@ -347,8 +347,8 @@ class XMLFormat(Format):
         if (export_format == self.EXPORT_FORMAT_REF_XML):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
                       ('pub_raw', 'journal'), ('pubdate', 'pubdate'), ('link', 'link'),
-                      ('url', 'url'), ('', 'score'), ('num_citations', 'citations'),
-                      ('doi', 'DOI'), ('eprintid', 'eprintid'), ('publisher', 'publisher')]
+                      ('', 'score'), ('num_citations', 'citations'), ('doi', 'DOI'),
+                      ('eprintid', 'eprintid')]
         elif (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
                       ('aff', 'affiliation'), ('pub_raw', 'journal'), ('volume', 'volume'),
