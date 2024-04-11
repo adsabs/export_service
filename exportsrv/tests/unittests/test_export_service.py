@@ -400,7 +400,6 @@ class TestExports(TestCase):
         # neither author nor title exists
         assert(rss_export._RSSFormat__get_author_title(solr_data['response'].get('docs')[3]) == '')
 
-
     def test_all_gets(self):
         function_names = [views.bibTex_format_export_get, views.bibTex_abs_format_export_get,
                           views.fielded_ads_format_export_get, views.fielded_endnote_format_export_get,
@@ -419,7 +418,6 @@ class TestExports(TestCase):
                 response = f(bibcode)
             assert (response._status_code == 200)
 
-
     def test_all_posts(self):
         endpoints = ['/bibtex', '/bibtexabs', '/ads', '/endnote', '/procite', '/ris', '/refworks', '/medlars',
                      '/dcxml', '/refxml', '/refabsxml', '/aastex', '/icarus', '/mnras', '/soph', 'votable',
@@ -430,7 +428,6 @@ class TestExports(TestCase):
             response = self.client.post(ep, data=json.dumps(payload))
             assert (response._status_code == 200)
 
-
     def test_bibtex_keyformat_endpoint(self):
         payload = {'bibcode': self.app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'],
                    'link': '',
@@ -438,7 +435,6 @@ class TestExports(TestCase):
                    'maxauthor': 2}
         response = self.client.post('/bibtex', data=json.dumps(payload))
         assert (response._status_code == 200)
-
 
     def test_bibtex_keyformat(self):
         solr_data = \
@@ -576,14 +572,12 @@ class TestExports(TestCase):
         aastex_abbrev_journal_name = u'\\bibitem[Ajani et al.(2021)]{2021A&A...645L..11A} Ajani, V., Starck, J.-L., \\& Pettorino, V.\\ 2021, A\\&A, 645, L11. doi:10.1051/0004-6361/202039988\n'
         assert (csl_export == aastex_abbrev_journal_name)
 
-
     def test_bibtex_enumeration(self):
         # test bibtex key_format enumeration
         bibtex_export = BibTexFormat(solrdata.data_6, "%1H%Y%zm")
         key_formats_enumerated = ['Accomazzi2020', 'Accomazzi2019a', 'Accomazzi2015', 'Accomazzi2019b', 'Accomazzi2019c',
                                   'Accomazzi2018a', 'Accomazzi2018b', 'Accomazzi2017', 'Accomazzi2018c', 'Accomazzi2018d']
         assert (bibtex_export._BibTexFormat__enumerate_keys() == key_formats_enumerated)
-
 
     def test_tmp_bibcode_format(self):
         # test bibcodes that have no volume and page but doi for all CSL formats
@@ -603,7 +597,6 @@ class TestExports(TestCase):
             csl_export = CSL(CSLJson(solrdata.data_7).get(), style, format).get().get('export', '')
             assert (csl_export == csl_export_output[style])
 
-
     def test_encode_doi(self):
         # test doi that is encoded properly
         csl_export_output = {
@@ -621,7 +614,6 @@ class TestExports(TestCase):
             csl_export = CSL(CSLJson(solrdata.data_10).get(), style, format).get().get('export', '')
             assert (csl_export == csl_export_output[style])
 
-
     def test_encode_latex_greek_alphabet(self):
         # test mapping of greek letter macros
         title = 'Measurement of the \\Sigma\\ beam asymmetry for the \\omega\\ photo-production off the proton and the neutron at GRAAL'
@@ -631,9 +623,109 @@ class TestExports(TestCase):
     def test_misc_with_and_without_publiser(self):
         # test misc for BibTex with and without publisher
         # if publisher, display it, if not, format pub_raw in howpublished
-        expected_bibtex_export = u'@software{2023zndo...8083529K,\n       author = {{Karras}, Oliver},\n        title = "{Analysis of the State and Evolution of Empirical Research in Requirements Engineering}",\n         year = 2023,\n        month = jun,\n          eid = {10.5281/zenodo.8083529},\n          doi = {10.5281/zenodo.8083529},\n      version = {v1.0},\n    publisher = {Zenodo},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2023zndo...8083529K},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n@MISC{2023BoSAB..34......,\n        title = "{Proceedings da XLV Reuni{\~a}o Anual da SAB}",\n howpublished = {Boletim da Sociedade Astr{\^o}nomica Brasileira. Proceedings da XLV Reuni{\~a}o Anual da SAB},\n         year = 2023,\n        month = jan,\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2023BoSAB..34......},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n@dataset{2012ddsw.rept.....T,\n       author = {{Thornton}, P.~E. and {Thornton}, M.~M. and {Mayer}, B.~W. and {Wilhelmi}, N. and {Wei}, Y. and {Devarakonda}, R. and {Cook}, R.},\n        title = "{Daymet: Daily surface weather on a 1 km grid for North America, 1980-2008}",\n howpublished = {Oak Ridge National Laboratory (ORNL) Distributed Active Archive Center for Biogeochemical Dynamics (DAAC)},\n         year = 2012,\n        month = apr,\n          doi = {10.3334/ORNLDAAC/1219},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2012ddsw.rept.....T},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
+        expected_bibtex_export = u'@software{2023zndo...8083529K,\n       author = {{Karras}, Oliver},\n        title = "{Analysis of the State and Evolution of Empirical Research in Requirements Engineering}",\n         year = 2023,\n        month = jun,\n          eid = {10.5281/zenodo.8083529},\n          doi = {10.5281/zenodo.8083529},\n      version = {v1.0},\n    publisher = {Zenodo},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2023zndo...8083529K},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n@MISC{2023BoSAB..34......,\n        title = "{Proceedings da XLV Reuni{\\~a}o Anual da SAB}",\n howpublished = {Boletim da Sociedade Astr{\\^o}nomica Brasileira. Proceedings da XLV Reuni{\\~a}o Anual da SAB},\n         year = 2023,\n        month = jan,\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2023BoSAB..34......},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n@dataset{2012ddsw.rept.....T,\n       author = {{Thornton}, P.~E. and {Thornton}, M.~M. and {Mayer}, B.~W. and {Wilhelmi}, N. and {Wei}, Y. and {Devarakonda}, R. and {Cook}, R.},\n        title = "{Daymet: Daily surface weather on a 1 km grid for North America, 1980-2008}",\n howpublished = {Oak Ridge National Laboratory (ORNL) Distributed Active Archive Center for Biogeochemical Dynamics (DAAC)},\n         year = 2012,\n        month = apr,\n          doi = {10.3334/ORNLDAAC/1219},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2012ddsw.rept.....T},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
         bibtex_export = BibTexFormat(solrdata.data_16, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=3).get('export', '')
         assert(bibtex_export == expected_bibtex_export)
+
+    def test_bibtex_publisher(self):
+        # format the publisher stubdata using the code
+        bibtex_export = BibTexFormat(solrdata.data_17, "%R").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=1)
+        # now compare it with an already formatted data that we know is correct
+        assert (bibtex_export == bibTexTest.data_publisher)
+
+    def test_bibtex_with_abs_publisher(self):
+        # format the publisher stubdata using the code
+        bibtex_export = BibTexFormat(solrdata.data_17, "%R").get(include_abs=True, maxauthor=0, authorcutoff=200, journalformat=1)
+        # now compare it with an already formatted data that we know is correct
+        assert (bibtex_export == bibTexTest.data_with_abs_publisher)
+
+    def test_custom_publisher(self):
+        # format the publisher stubdata using the code
+        custom_format = CustomFormat(custom_format=r'%ZEncoding:latex\\bibitem[%2.1m\\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p\,Publisher:%pb ')
+        custom_format.set_json_from_solr(solrdata.data_17)
+        # now compare it with an already formatted data that we know is correct
+        assert (custom_format.get() == customTest.data_publisher)
+        # verify correct solr fields are fetched
+        assert (custom_format.get_solr_fields() == 'author,year,pub,volume,publisher,page,page_range,bibcode,bibstem')
+
+    def test_ads_publisher(self):
+        # format the publisher stubdata using the code
+        fielded_export = FieldedFormat(solrdata.data_17).get_ads_fielded()
+        # now compare it with an already formatted data that we know is correct
+        assert (fielded_export == fieldedTest.data_ads_publisher)
+
+    def test_endnote_publisher(self):
+        # format the publisher stubdata using the code
+        fielded_export = FieldedFormat(solrdata.data_17).get_endnote_fielded()
+        # now compare it with an already formatted data that we know is correct
+        assert (fielded_export == fieldedTest.data_endnote_publisher)
+
+    def test_procite_publisher(self):
+        # format the publisher stubdata using the code
+        fielded_export = FieldedFormat(solrdata.data_17).get_procite_fielded()
+        # now compare it with an already formatted data that we know is correct
+        assert (fielded_export == fieldedTest.data_procite_publisher)
+
+    def test_refman_publisher(self):
+        # format the publisher stubdata using the code
+        fielded_export = FieldedFormat(solrdata.data_17).get_refman_fielded()
+        # now compare it with an already formatted data that we know is correct
+        assert (fielded_export == fieldedTest.data_refman_publisher)
+
+    def test_refworks_publisher(self):
+        # format the publisher stubdata using the code
+        fielded_export = FieldedFormat(solrdata.data_17).get_refworks_fielded()
+        # now compare it with an already formatted data that we know is correct
+        assert (fielded_export == fieldedTest.data_refworks_publisher)
+
+    def test_dublinxml_publisher(self):
+        # format the publisher stubdata using the code
+        xml_export = XMLFormat(solrdata.data_17).get_dublincore_xml()
+        # now compare it with an already formatted data that we know is correct
+        assert(xml_export == xmlTest.data_dublin_core_publisher)
+
+    def test_refxml_publisher(self):
+        # format the publisher stubdata using the code
+        xml_export = XMLFormat(solrdata.data_17).get_reference_xml(include_abs=False)
+        # now compare it with an already formatted data that we know is correct
+        assert (xml_export == xmlTest.data_ref_publisher)
+
+    def test_refxml_with_abs_publisher(self):
+        # format the publisher stubdata using the code
+        xml_export = XMLFormat(solrdata.data_17).get_reference_xml(include_abs=True)
+        # now compare it with an already formatted data that we know is correct
+        assert (xml_export == xmlTest.data_ref_with_abs_publisher)
+
+    def test_jatsxml_publisher(self):
+        # format the publisher stubdata using the code
+        xml_export = XMLFormat(solrdata.data_17).get_jats_xml()
+        # now compare it with an already formatted data that we know is correct
+        assert(xml_export == xmlTest.data_jats_publisher)
+
+    def test_endnote_conf_loc(self):
+        # test extracting conference location from pub_raw
+        fielded_export = FieldedFormat({})
+        fielded_export._FieldedFormat__setup_conf_loc()
+
+        pub_raws = [
+            "Solar Wind 4, Proceedings of the Conferene held in August 18-September 1, 1978 in Burghausen, FDR. Edited by H. Rosenbauer. MPAE-W-100-81-31. Garching, FDR: Max-Planck-Institute f√ºr Aeronomie",
+            "AIAA, Aerospace Sciences Meeting, 28th, Reno, NV, Jan. 8-11, 1990. 16 p",
+            "The Sun.  Part 1 of Solar-Terrestrial Physics/1970. Comprising the Proceedings fo the International Symposium on Solar-Terrestrial Physics Held in Leningrad, USSR, 12-19 May 1970.  Edited by C. de Jager and E. R. Dyer.  Dordrecht-Holland: D. Reidel Publishing Company.  Astrophysics and Space Science Library, Vol. 29",
+            "Evolutionary Phenomena in Galaxies. Contributed papers, contributed at the Summer School, held July 4-15, 1988 in Puerto de la Cruz, Tenerife. Editors, J.E. Beckman, B.E.J. Pagel; Publisher, Cambridge University Press, Cambridge, England, New York, NY, 1989. LC # QB857.5.E96 E86 1989. ISBN: 0-521-37193-7. P. 1, 1989",
+            "Presented at the Wind Workshop 6, Minneapolis, 1-3 Jun. 1983; sponsored by American Solar Energy Society",
+            "Presented at the Symp. on Fluid Mech. of Combustion Systems, Boulder, Colo., 22 Jun. 1981",
+        ]
+        conference_locations = [
+            "Burghausen",
+            "Reno, NV",
+            "Leningrad, USSR",
+            "Puerto de la Cruz",
+            "Minneapolis",
+            "Boulder, Colo.",
+        ]
+        for pub_raw, conference_location in zip(pub_raws, conference_locations):
+            assert(fielded_export._FieldedFormat__get_conf_loc(pub_raw) == conference_location)
+
 
 if __name__ == '__main__':
   unittest.main()

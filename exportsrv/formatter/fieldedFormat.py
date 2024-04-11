@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 from collections import OrderedDict
 from datetime import datetime
 from flask import current_app
@@ -41,6 +42,8 @@ class FieldedFormat(Format):
         (re.compile(r"(?:\<ISBN\>)(.*)(?:\</ISBN\>)"), r"\1"),  # get value inside the tag for these
         (re.compile(r"(?:\<NUMPAGES\>)(.*)(?:</NUMPAGES>)"), r"\1"),
     ])
+
+    re_conference_locations = None
 
     def __get_doc_type(self, solr_type, export_format):
         """
@@ -143,36 +146,37 @@ class FieldedFormat(Format):
                                  ('pubdate', '%D'), ('page', '%P'), ('lastpage', '%L'),
                                  ('keyword', '%K'), ('', '%G'), ('copyright', '%C'),
                                  ('links', '%I'), ('url', '%U'), ('comment', '%X'),
-                                 ('', '%S'), ('abstract', '%B'), ('doi', '%Y DOI:'),
-                                 ('eprintid', '%Y eprintid:')]))
+                                 ('', '%S'), ('abstract', '%B'), ('publisher', '%H'),
+                                 ('doi', '%Y DOI:'), ('eprintid', '%Y eprintid:')]))
         if (export_format == self.EXPORT_FORMAT_ENDNOTE):
             return (OrderedDict([('doctype', '%0'), ('title', '%T'), ('author', '%A'),
                                  ('editor', '%E'), ('aff', '%+'), ('pub', '%J or %B'),
-                                 ('volume', '%V'), ('year', '%D'), ('pubdate', '%8'),
-                                 ('page', '%P'), ('keyword', '%K'), ('url', '%U'),
-                                 ('comment', '%Z'), ('abstract', '%X'), ('doi', '%R'),
-                                 ('eprintid', '%= eprint:'), ('issn', '%@')]))
+                                 ('pub_raw', '%C'), ('volume', '%V'), ('year', '%D'),
+                                 ('pubdate', '%8'), ('page', '%P'), ('keyword', '%K'),
+                                 ('url', '%U'), ('comment', '%Z'), ('abstract', '%X'),
+                                 ('publisher', '%I'), ('doi', '%R'), ('eprintid', '%= eprint:'),
+                                 ('issn', '%@')]))
         if (export_format == self.EXPORT_FORMAT_PROCITE):
             return (OrderedDict([('doctype', 'TY  -'), ('title', 'TI  -'), ('author', 'AU  -'),
                                  ('aff', 'AD  -'), ('pub', 'JO  -'), ('volume', 'VL  -'),
                                  ('pubdate', 'Y1  -'), ('page', 'SP  -'), ('lastpage', 'EP  -'),
                                  ('keyword', 'KW  -'), ('url', 'UR  -'), ('abstract', 'N2  -'),
-                                 ('doi', 'DO  -'),('eprintid', 'C1  - eprint:'), ('issn', 'SN  -'),
-                                 ('endRecord', 'ER  -')]))
+                                 ('publisher', 'PB  -'), ('doi', 'DO  -'),('eprintid', 'C1  - eprint:'),
+                                 ('issn', 'SN  -'), ('endRecord', 'ER  -')]))
         if (export_format == self.EXPORT_FORMAT_REFMAN):
             return (OrderedDict([('doctype', 'TY  -'), ('title', 'TI  -'), ('author', 'AU  -'),
                                  ('aff', 'AD  -'), ('pub', 'JO  -'), ('volume', 'VL  -'),
                                  ('pubdate', 'Y1  -'), ('page', 'SP  -'), ('lastpage', 'EP  -'),
                                  ('keyword', 'KW  -'), ('url', 'UR  -'), ('abstract', 'N2  -'),
-                                 ('doi', 'DO  -'), ('eprintid', 'C1  - eprint:'), ('issn', 'SN  -'),
-                                 ('endRecord', 'ER  -')]))
+                                 ('publisher', 'PB  -'), ('doi', 'DO  -'), ('eprintid', 'C1  - eprint:'),
+                                 ('issn', 'SN  -'), ('endRecord', 'ER  -')]))
         if (export_format == self.EXPORT_FORMAT_REFWORKS):
             return (OrderedDict([('doctype', 'RT'), ('title', 'T1'), ('author', 'A1'),
                                  ('editor', 'A2'), ('aff', 'AD'), ('pub', 'JF'),
                                  ('volume', 'VO'), ('year', 'YR'), ('pubdate', 'FD'),
                                  ('page', 'SP'), ('lastpage', 'OP'), ('keyword', 'K1'),
                                  ('url', 'LK'), ('comment', 'NO'), ('abstract', 'AB'),
-                                 ('doi', 'DO DOI:'), ('eprintid', 'DO eprintid:'),
+                                 ('publisher', 'PB'),  ('doi', 'DO DOI:'), ('eprintid', 'DO eprintid:'),
                                  ('issn', 'SN')]))
         if (export_format == self.EXPORT_FORMAT_MEDLARS):
             return (OrderedDict([('doctype', 'PT  -'), ('title', 'TI  -'), ('author', 'AU  -'),
@@ -547,14 +551,29 @@ class FieldedFormat(Format):
         if export_format == self.EXPORT_FORMAT_ENDNOTE:
             # there is an exception for endnote
             # depending on doctype different tags for Secondary Title is displayed
+            # per Alberto, abstract is similar to proceedings 4/10/2024
             doctype = a_doc.get('doctype', '')
-            if doctype in ['inbook', 'proceedings', 'inproceedings']:
+            if doctype in ['inbook', 'proceedings', 'inproceedings', 'abstract']:
                 # Book or Conference Name
                 tag = "%B"
             else:
                 # Journal Name
                 tag = "%J"
         return self.__add_in(tag, ''.join(a_doc.get('pub', '')))
+
+
+    def __get_conf_loc(self, pub_raw):
+        """
+        return conference location
+
+        :param pub_raw:
+        :return:
+        """
+        match = self.re_conference_locations.search(pub_raw)
+        if match:
+            return match.group(1)
+        return None
+
 
     def __get_doc(self, index, fields, export_format):
         """
@@ -567,8 +586,7 @@ class FieldedFormat(Format):
         result = ''
         a_doc = self.from_solr['response'].get('docs')[index]
         for field in fields:
-            if (field == 'title') or (field == 'doi') or (field == 'isbn') or \
-                    (field == 'pubnote') or (field == 'issn'):
+            if field in ['title', 'doi', 'isbn', 'pubnote', 'issn']:
                 result += self.__add_in(fields[field], ''.join(a_doc.get(field, '')))
             elif (field == 'pub'):
                 result += self.__add_pub(a_doc, export_format, fields[field])
@@ -598,13 +616,19 @@ class FieldedFormat(Format):
             elif (field == 'endRecord'):
                 result += (fields[field] + '\n')
             elif (field == 'pub_raw'):
-                result += self.__add_in(fields[field], self.__add_clean_pub_raw(a_doc))
+                if export_format == self.EXPORT_FORMAT_ENDNOTE:
+                    if a_doc.get('doctype', '') in ['proceedings', 'inproceedings', 'abstract']:
+                        result += self.__add_in(fields[field], self.__get_conf_loc(a_doc.get(field, '')))
+                else:
+                    result += self.__add_in(fields[field], self.__add_clean_pub_raw(a_doc))
             elif (field == 'links'):
                 result += self.__add_doc_links(a_doc, fields[field])
             elif (field == 'eprintid'):
                 result += self.__add_in(fields[field], get_eprint(a_doc))
             elif (field == 'bibstem'):
                 result += self.__add_in(fields[field], a_doc.get(field, ['', ''])[0])
+            elif (field == 'publisher'):
+                result += self.__add_in(fields[field], a_doc.get(field, ''))
             else:
                 result += self.__add_in(fields[field], a_doc.get(field, ''))
         # line feed once the doc is complete
@@ -631,6 +655,21 @@ class FieldedFormat(Format):
         return result_dict
 
 
+    def __setup_conf_loc(self):
+        """
+        4/10/2024 for now read the conference locations from the text file
+        for EndNote format, soon it should be in solr
+        """
+        try:
+            with open(os.path.dirname(__file__) + '/data/conf_loc.dat', 'r') as file:
+                conference_locations = [line.strip() for line in file.readlines()]
+                conference_locations.sort(key=lambda x: (-len(x), x))
+                # replacing commas with \W to allow any punctuation (ie, Vienna, Austria and Vienna. Austria)
+                self.re_conference_locations = re.compile(r'(%s)[\s,\.]+' % '|'.join(conference_locations).replace(',','\W'))
+        except:
+            current_app.logger.error('Error: unable to read conference location data file.')
+            self.re_conference_locations = None
+
     def get_ads_fielded(self):
         """
         :return: ads formatted export
@@ -642,6 +681,7 @@ class FieldedFormat(Format):
         """
         :return: endnote formatted export
         """
+        self.__setup_conf_loc()
         return self.__get_fielded(self.EXPORT_FORMAT_ENDNOTE)
 
 

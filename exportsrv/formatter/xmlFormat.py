@@ -48,11 +48,6 @@ class XMLFormat(Format):
 
     re_year = re.compile(r'([12]+[09]\d\d)')
 
-    # partial list of known publishers,
-    # once this field is populated in solr, rely on solr,
-    # for now this is only used for JATS format
-    re_publisher_names = re.compile(r"([A-Z]+[A-Za-z\s\-:]+ University Press|[A-Z]+[A-Za-z\s\-:,']+ Press|Springer- .*|Elsevier|University of [A-Z]+[A-Za-z\s-]+ Press|University of [A-Z]+[A-Za-z\s-]+|[\w-]+,\s*\w+\s*:[\s\w]+|Springer\s+([A-Z]+[A-Za-z\s-]+)+|Springer Nature|Springer, Cham|Springer Fachmedien Wiesbaden GmbH, DE|Springer-Verlag GmbH Deutschland|Springer-Verlag Berlin Heidelberg|Springer-Verlag|Springer|Cambridge, J. Wilson and son, University press|Cambridge, The University press|Oxford university press|Loyola university press|Cambridge, University press|Harvard university press|Cambridge, Eng., The University press|Louisiana state university press|Des Moines, Iowa, University press|Cambridge [Eng.] The University press|Edinburgh University Press|Cambridge University Press|Yale University Press|Brigham Young University Press|University Press of Virginia|Erevan University Press|Artemis Press|Laval University Press|Columbia University Press|Rutgers University Press|University Press of America|Johns Hopkins University Press|Sydney University Press|Yerevan University press|McGill-Queen's University Press|Innsbruck University Press|University of Arizona Press|Atlantis Press|Ilia State University Press|Ziti press|The University of Chicago Press|Princeton University Press|eXamen.press|T rculo Press|Duke University Press|Kyoto University Press|Imperial College Press|Heron Press Ltd|Kyiv University Press|Sole Logistics Press|BrownWalker Press|Joseph Henry Press|National Radio Astronomy Press|SPIE Press|Kyriakidis Press|St. Martin's Press|Huntington Library and University of Washington Press|Microcosm Press|Free Press \(Simon and Schuster\)|Cambridge Univ. Press|Templeton Foundation Press|IEEE Press|Heron Press|AIP Press|Pergamon Press|Boydell Press|Baltic Astronomy 6 and L. Davis Press|West Virginia University Press|ACM Press Books|State University of New York \(SUNY\) Press|Clarendon Press|Universal Academic Press Inc|SPIE Optical Engineering Press|Presses universitaires de France|Ginn Press|ABELexpress|SPC Press|CRC Press|Plenum Press|Pedagogical Univ. Press|The MIT \(Massachusetts Institute of Technology\) Press|Yourdon Press Computing Series|L. Davis Press|Ivy Press Books|Moscow Univ. Press|Cambridge Univ.  Press|Presses du CNRS|Presses de l'Ecole nationale des ponts et chaussees|Academic Press Inc|Cambridge UniversityPress|Vantage Press Inc|Massachusettes Institute of Technology \(MIT\) Press|IAP Press|Academic Press and OHM|IEEE Comput. Soc. Press|The Weizmann Science Press of Israel|MIT Press|Process Press|Blandford Press|Science Press|University of Tasmania Press|Vantage Press|Arno Press|Academic Press|University of Massachusetts Press|Delacorte Press/E. Friede|The Macmillan Press Ltd|Peebles Press|Anchor Press/Doubleday|Smithsonian Institution Press|Anchor Press / Doubleday|FAN Press|Univ. Calif. Press|Presses de la Cite|Ballena Press|Pica Press|University of Texas Press|Optosonic Press|University of Missouri Press|University of Alabama Press|Nauka Press|Exposition Press|Presses universitaire de France|Viking Press|Priory Press|Chemical Rubber Co. Press|Books for Libraries Press|Pragopress|Fundamental Research Press|University of California Press|University of Michigan Press|University of New Mexico Press|University of London Press|Natural History Press|Lenin Belorussian State University Press|Crowell-Collier Press|Greenwood Press|NEO Press|M.I.T. Press|Univ. Wisconsin Press|University of Chicago Press|University of Colorado Press|Brockhampton Press|Golden Press|Lutterworth Press|Trident Press Book|Beacon Press|St Martin's Press|Pageant Press|M. I. T. Press|Orion Press|The Univesrity of Chicago Press|Museum Press|Citadel Press|Pegasus Press|Childrens Press|Ronald Press Co|Majestic Press|Westernlore Press|The Science press printing company|The Technical press ltd|The Florida Bible institute press|The Sheldon press|Pacific Science Press|The Theosophical press|The Clarendon press|The Pilgrim press|The Hispanic Society of America and The De Vinne Press|Press of E. W. Stephen|The Nichols press|Press of T. P. Nichols|Press of J. Wilson and son|Roy. Acad. press)")
-
     re_xml_header = re.compile(u"\<\?xml .+?>")
 
     def __format_date(self, solr_date, export_format):
@@ -353,7 +348,7 @@ class XMLFormat(Format):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
                       ('pub_raw', 'journal'), ('pubdate', 'pubdate'), ('link', 'link'),
                       ('url', 'url'), ('', 'score'), ('num_citations', 'citations'),
-                      ('doi', 'DOI'), ('eprintid', 'eprintid')]
+                      ('doi', 'DOI'), ('eprintid', 'eprintid'), ('publisher', 'publisher')]
         elif (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
                       ('aff', 'affiliation'), ('pub_raw', 'journal'), ('volume', 'volume'),
@@ -361,17 +356,17 @@ class XMLFormat(Format):
                       ('keyword', 'keywords'), ('', 'origin'), ('copyright', 'copyright'),
                       ('link', 'link'), ('url', 'url'), ('comment', 'comment'),
                       ('', 'score'), ('num_citations', 'citations'), ('abstract', 'abstract'),
-                      ('doi', 'DOI'), ('eprintid', 'eprintid')]
+                      ('doi', 'DOI'), ('eprintid', 'eprintid'), ('publisher', 'publisher')]
         elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
             fields = [('bibcode', 'dc:identifier'), ('title', 'dc:title'), ('author', 'dc:creator'),
                       ('pub_raw', 'dc:source'), ('pubdate', 'dc:date'), ('keyword', 'dc:subject'),
                       ('copyright', 'dc:rights'), ('url', 'dc:relation'), ('num_citations', 'dc:relation'),
-                      ('abstract', 'dc:description'), ('doi', 'dc:identifier')]
+                      ('abstract', 'dc:description'), ('doi', 'dc:identifier'), ('publisher', 'dc:publisher')]
         elif (export_format == self.EXPORT_FORMAT_JATS_XML):
             # note that order matters here
             fields = [('front_tag', 'front'), # first top level tag, with two middle level tags (level 1)
                       ('journal-meta_tag', 'journal-meta'), # first sub element of `front` (level 1_i)
-                      ('bibstem', 'journal-id'), ('issn', 'issn'), ('pub_raw', 'publisher'), # sub elements of `journal-meta` (level 1_i_, order of these do not matter)
+                      ('bibstem', 'journal-id'), ('issn', 'issn'), ('publisher', 'publisher'), # sub elements of `journal-meta` (level 1_i_, order of these do not matter)
                       ('article-meta_tag', 'article-meta'), # second sub element of `front` (level 1_ii)
                       ('bibcode', 'article-id'), ('doi', 'article-id'), ('title', 'title-group'), # the rest are sub elements of `article_meta` (level 1_ii_, order of these do not matter)
                       ('author', 'contrib-group'), ('date', 'date'), ('volume', 'volume'), ('issue', 'issue'),
@@ -483,7 +478,7 @@ class XMLFormat(Format):
         fields = self.__get_fields(self.EXPORT_FORMAT_DUBLIN_XML)
         record = ET.SubElement(parent, "record")
         for field in fields:
-            if (field == 'bibcode') or (field == 'copyright'):
+            if field in ['bibcode', 'copyright']:
                 self.__add_in(record, fields[field], a_doc.get(field, ''))
             elif (field == 'title'):
                 self.__add_in(record, fields[field], ''.join(a_doc.get(field, '')))
@@ -503,7 +498,8 @@ class XMLFormat(Format):
                 self.__add_in(record, fields[field], self.__get_doi('; '.join(a_doc.get(field, ''))))
             elif (field == 'num_citations'):
                 self.__add_in(record, fields[field], self.__get_citation(int(a_doc.get(field, 0)), self.EXPORT_FORMAT_DUBLIN_XML))
-
+            elif (field == 'publisher'):
+                self.__add_in(record, fields[field], a_doc.get(field, ''))
 
     def __get_doc_reference_xml(self, index, parent, export_format):
         """
@@ -525,10 +521,9 @@ class XMLFormat(Format):
                 record.set('article', 'true')
             record.set('type', a_doc.get('doctype', ''))
         for field in fields:
-            if (field == 'bibcode') or (field == 'pub') or (field == 'volume') or \
-               (field == 'copyright'):
+            if field in ['bibcode', 'pub', 'volume', 'copyright']:
                 self.__add_in(record, fields[field], a_doc.get(field, ''))
-            elif (field == 'title') or (field == 'doi'):
+            elif field in ['title', 'doi']:
                 self.__add_in(record, fields[field], ''.join(a_doc.get(field, '')))
             elif (field == 'author'):
                 self.__add_author_list(a_doc, record, fields[field])
@@ -538,7 +533,7 @@ class XMLFormat(Format):
                 self.__add_in(record, fields[field], self.__format_date(a_doc.get(field, ''), export_format))
             elif (field == 'pub_raw'):
                 self.__add_pub_raw(a_doc, record, fields[field], export_format)
-            elif (field == 'page') or (field == 'page_range'):
+            elif field in ['page', 'page_range']:
                 self.__add_page(a_doc, record, fields[field])
             elif (field == 'keyword'):
                 self.__add_keywords(a_doc, record, export_format)
@@ -552,20 +547,8 @@ class XMLFormat(Format):
                 self.__add_doc_links(a_doc, record)
             elif (field == 'eprintid'):
                 self.__add_in(record, fields[field], get_eprint(a_doc))
-
-
-    def __get_publisher_name(self, pub_raw):
-        """
-
-        :param pub_raw:
-        :return:
-        """
-        publisher = ''
-        match = self.re_publisher_names.search(pub_raw, re.IGNORECASE)
-        if match:
-            publisher = match.group(1)
-        return publisher
-
+            elif (field == 'publisher'):
+                self.__add_in(record, fields[field], a_doc.get(field, ''))
 
     def __add_author_list_jats_xml(self, doc, parent):
         """
@@ -662,11 +645,10 @@ class XMLFormat(Format):
                 ET.SubElement(journal_meta_section, fields[field], {"journal-id-type":"publisher"}).text = a_doc.get(field, '')[0]
             elif (field == 'issn'):
                 self.__add_in(journal_meta_section, fields[field], '; '.join(a_doc.get(field, '')))
-            elif (field == 'pub_raw'):
-                publisher_name = self.__get_publisher_name(a_doc.get(field, ''))
+            elif (field == 'publisher'):
+                publisher_name = a_doc.get(field, '')
                 if publisher_name:
-                    publisher = ET.SubElement(journal_meta_section, fields[field])
-                    ET.SubElement(publisher, 'publisher-name').text = publisher_name
+                    ET.SubElement(ET.SubElement(journal_meta_section, fields[field]), 'publisher-name').text = publisher_name
             elif (field == 'article-meta_tag'):
                 article_meta_section = ET.SubElement(front_section, fields[field])
             elif (field == 'bibcode'):
@@ -686,7 +668,7 @@ class XMLFormat(Format):
                 self.__add_author_list_jats_xml(a_doc, ET.SubElement(article_meta_section, fields[field]))
             elif (field == 'date'):
                 self.__add_date_jats_xml(a_doc, article_meta_section)
-            elif (field == 'volume') or (field == 'issue'):
+            elif field in ['volume', 'issue']:
                 self.__add_in(article_meta_section, fields[field], a_doc.get(field, ''))
             elif (field == 'abstract'):
                 # permissions tag is required and must appear before the abstract,
@@ -695,7 +677,7 @@ class XMLFormat(Format):
                 # add abstract tag, then paragraph tag around the abstract (required)
                 abstract = ET.SubElement(article_meta_section, fields[field])
                 self.__add_in(abstract, "p", a_doc.get(field, ''))
-            elif (field == 'page') or (field == 'page_range'):
+            elif field in ['page', 'page_range']:
                 self.__add_page(a_doc, article_meta_section, fields[field])
 
         return parent
