@@ -665,7 +665,8 @@ class FieldedFormat(Format):
                 conference_locations = [line.strip() for line in file.readlines()]
                 conference_locations.sort(key=lambda x: (-len(x), x))
                 # replacing commas with \W to allow any punctuation (ie, Vienna, Austria and Vienna. Austria)
-                self.re_conference_locations = re.compile(r'(%s)[\s,\.]+' % '|'.join(conference_locations).replace(',','\W'))
+                # recognize locations except when followed by colon, which is usually used for publisher place
+                self.re_conference_locations = re.compile(r'(%s)[^\w:]+' % '|'.join(conference_locations).replace(',','\W'))
         except:
             current_app.logger.error('Error: unable to read conference location data file.')
             self.re_conference_locations = None
