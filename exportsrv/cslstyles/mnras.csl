@@ -37,7 +37,7 @@
   </macro>
   <macro name="locators">
     <choose>
-      <if type="article paper-conference personal_communication review-book thesis" match="any">
+      <if type="article paper-conference personal_communication review-book thesis article-journal" match="any">
         <group prefix="">
           <group>
             <text variable="volume" prefix=", "/>

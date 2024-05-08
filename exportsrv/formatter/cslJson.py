@@ -32,11 +32,11 @@ class CSLJson(Format):
         return author_list
 
 
-    def __get_doc_type(self, solr_type):
+    def __get_doc_type(self, doc_type):
         """
         convert document type from solr to csl
         
-        :param solr_type: 
+        :param doc_type: 
         :return: 
         """
         fields = {'article':'article', 'book':'book', 'inbook':'chapter',
@@ -50,7 +50,7 @@ class CSLJson(Format):
                   'proposal':'personal_communication', 'editorial':'personal_communication', 
                   'erratum':'personal_communication', 'obituary':'personal_communication',
                   'dataset':'software'}
-        return fields.get(solr_type, '')
+        return fields.get(doc_type, '')
 
 
     def __get_doc_pub(self, a_doc):
