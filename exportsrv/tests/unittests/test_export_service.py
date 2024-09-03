@@ -602,7 +602,7 @@ class TestExports(TestCase):
         csl_export_output = {
             'aastex': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\\_7\n',
             'icarus': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003.\\ AIPS, the VLA, and the VLBA.\\ Information Handling in Astronomy - Historical Vistas 109. doi:10.1007/0-306-48080-8\\_7\n',
-            'mnras': u'\\bibitem[\\protect\\citeauthoryear{Greisen}{2003}]{2003ASSL..285..109G} Greisen E.~W., 2003, ASSL, 109. doi:10.1007/0-306-48080-8\\_7\n',
+            'mnras': u'\\bibitem[\\protect\\citeauthoryear{Greisen}{2003}]{2003ASSL..285..109G} Greisen E.~W., 2003, ASSL, 285, 109. doi:10.1007/0-306-48080-8\\_7\n',
             'soph': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G}Greisen, E.W.: 2003, {\\it Information Handling in Astronomy - Historical Vistas}, 109. doi:10.1007/0-306-48080-8\\_7.\n',
             'aspc': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\\_7.\n',
             'apsj': u'E.~W. Greisen, in {\\bf 285}, 109. doi:10.1007/0-306-48080-8_7.\n',

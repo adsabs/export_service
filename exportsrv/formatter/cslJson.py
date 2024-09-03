@@ -99,19 +99,17 @@ class CSLJson(Format):
         data['volume'] = a_doc.get('volume', '')
         data['issue'] = a_doc.get('issue', '')
         # both eid and page go into the page field in solr
-        # eid can be of the form E1.7-23-18 which crashes csl having two dashes
-        # since it parses it and tries to determine the first page and the last page
-        # before and after the dash, hence accepts only one dash in the page field
-        # renaming the page to eid produces tones of warning
-        # so instead of eid went with PMCID that is a known identifier
-        data['PMCID'] = ''.join(a_doc.get('page', ''))
-        # lets keep the data in the page as well, even though it is not being used
-        if data['PMCID'].count('-') > 1:
-            data['page-first'] = data['PMCID'].replace('-', ' ')
-        else:
-            data['page-first'] = data['PMCID']
-        # if there is a page_range, assign it to page, only needed for icarus
-        data['page'] = a_doc.get('page_range', '')
+        page = ''.join(a_doc.get('page', ''))
+        eid = a_doc.get('eid', '')
+        # if there is a page_range, assign it to page, only needed for icarus and ieee
+        # if no page range, assign page here, but not eid
+        data['page'] = a_doc.get('page_range', page if page != eid else '')
+        # assign page to page-first, again not eid
+        # all formats except icarus and ieee only display first page
+        data['page-first'] = page if page != eid else ''
+        # now save eid in number, so this page, page-first contain page only, not eid
+        # and number contains eid
+        data['number'] = eid
         data['type'] = self.__get_doc_type(a_doc.get('doctype', ''))
         data['locator'] = a_doc.get('bibcode')
         data['genre'] = str(a_doc.get('bibcode')[4:13]).strip('.')

@@ -70,14 +70,17 @@
           <group>
             <text variable="volume" prefix=", "/>
           </group>
-          <text variable="PMCID" prefix=", "/>
+          <text variable="page-first" prefix=", "/>
+          <text variable="number" prefix=", "/>
         </group>
       </if>
       <else-if type="book chapter entry" match="any">
-        <text variable="PMCID" prefix=", "/>
+        <text variable="page-first" prefix=", "/>
+        <text variable="number" prefix=", "/>
       </else-if>
       <else-if type="manuscript" match="any">
-        <text variable="PMCID" prefix=""/>
+        <text variable="page-first" prefix=""/>
+        <text variable="number" prefix=""/>
       </else-if>
       <else-if type="report software" match="any">
         <text variable="volume" prefix=", "/>
