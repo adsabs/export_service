@@ -4,7 +4,6 @@ from flask import current_app
 from citeproc import Citation, CitationItem
 from citeproc import CitationStylesStyle, CitationStylesBibliography
 from citeproc import formatter
-from citeproc.py2compat import *
 from citeproc.source.json import CiteProcJSON
 import re
 import os
@@ -76,7 +75,6 @@ class CSL:
         """
         Update the container-title if needed for the specific style
         also apply latex encoding if needed for both title and container-title
-        also for icarus if there is page range, assign it to PMCID
 
         :return:
         """
@@ -120,9 +118,7 @@ class CSL:
             for data in self.for_cls:
                 data['container-title'] = encode_laTex(data['container-title'])
                 data['title'] = encode_laTex(data['title'])
-                if data.get('page', None) is not None:
-                    data['PMCID'] = data['page']
-                if data.get('DOI', None) is not None:
+                if len(data.get('DOI', '')) > 0:
                     data['DOI'] = encode_latex_doi(data['DOI'])
         # run title and container-title through latex encoding
         elif (self.csl_style == 'apsj'):

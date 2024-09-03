@@ -593,12 +593,12 @@ class XMLFormat(Format):
             pub_date_attributes = {"publication-format": "%s"%format,
                                   "date-type": "pub",
                                   "iso-8601-date": "%s"%iso_date}
-            pub_date = ET.SubElement(parent, attrib=pub_date_attributes)
+            pub_date = ET.SubElement(parent, "pub_date", attrib=pub_date_attributes)
 
             year, month, day = iso_date.split('-')
-            ET.SubElement(pub_date, "day", day)
-            ET.SubElement(pub_date, "month", month)
-            ET.SubElement(pub_date, "year", year)
+            ET.SubElement(pub_date, "day").text = day
+            ET.SubElement(pub_date, "month").text = month
+            ET.SubElement(pub_date, "year").text = year
         except:
             pass
 

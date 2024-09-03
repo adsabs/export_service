@@ -37,20 +37,14 @@
   </macro>
   <macro name="locators">
     <choose>
-      <if type="article paper-conference personal_communication review-book thesis article-journal" match="any">
-        <group prefix="">
-          <group>
-            <text variable="volume" prefix=", "/>
-          </group>
-          <text variable="PMCID" prefix=", "/>
-        </group>
-      </if>
-      <else-if type="book chapter entry manuscript" match="any">
-        <text variable="PMCID" prefix=", "/>
-      </else-if>
-      <else-if type="report software" match="any">
+      <if type="software" match="any">
         <text variable="volume" prefix=", "/>
-      </else-if>
+      </if>
+      <else>
+        <text variable="volume" prefix=", "/>
+        <text variable="page-first" prefix=", "/>
+        <text variable="number" prefix=", "/>
+      </else>
     </choose>
   </macro>
   <citation disambiguate-add-givenname="true" disambiguate-add-year-suffix="true" collapse="year" cite-group-delimiter=", ">

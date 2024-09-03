@@ -87,6 +87,10 @@
         <text term="issue" form="short"/>
         <number variable="issue" form="numeric"/>
       </group>
+      <group delimiter=" ">
+        <text variable="number" prefix="Art. no. "/>
+      </group>
+
     </group>
   </macro>
   <macro name="title">
