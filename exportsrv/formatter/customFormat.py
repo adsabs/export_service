@@ -373,8 +373,9 @@ class CustomFormat(Format):
             result = fill(text+'<END>', width=self.line_length, replace_whitespace=False, subsequent_indent=' ' * 12)
             result = result[:-len('<END>')]
         # in csv format there is a comma at the very end, remove that before adding the linefeed
+        # also remove any linefeed and space at the end
         if (self.export_format == adsFormatter.csv):
-            result = result[:-1]
+            result = result.rstrip(", \n\r") + "\n"
 
         return result
 
