@@ -214,10 +214,14 @@ class BibTexFormat(Format):
         # only if maxauthor is none zero, zero is indication of return all available authors
         cut_authors = (len(a_doc[field]) > authorcutoff) and not maxauthor == 0
         for author, i in zip(a_doc[field], range(len(a_doc[field]))):
-            author_parts = encode_laTex_author(author).split(',', 1)
+            # there should be up to only two commas, just in case there is not
+            author_parts = encode_laTex_author(author).split(',', 2)
             author_list += '{' + author_parts[0] + '}'
             if (len(author_parts) == 2):
                 author_list += ',' +  author_parts[1]
+            # there is suffix, insert it first
+            elif (len(author_parts) == 3):
+                author_list += ',' + author_parts[2] + ',' + author_parts[1]
             if cut_authors and i + 1 == maxauthor:
                 # if reached number of required authors return
                 return author_list + " and et al."
@@ -257,10 +261,9 @@ class BibTexFormat(Format):
         """
         if 'aff' not in a_doc:
             return ''
-        counter = self.generate_counter_id(maxauthor if maxauthor != 0 else len(a_doc['aff']))
+        counter = self.generate_counter_id(len(a_doc['aff']))
         separator = ', '
         affiliation_list = ''
-        affiliation_count = 0
         # if number of affiliations exceed the maximum that we display, cut to shorter list
         # only if maxauthor is none zero (note number of authors and number of affiliations displayed should match),
         # zero is indication of return all available affiliations
@@ -382,12 +385,12 @@ class BibTexFormat(Format):
         :param output_format:
         :return:
         """
-        field = fields.split('|')
-        value = values.split(':')
-        if len(field) != 2 and len(value) != 2:
+        field_parts = fields.split('|')
+        value_parts = values.split(':')
+        if len(field_parts) != 2 and len(value_parts) != 2:
             return ''
         result = ''
-        for f, v in zip(field, value):
+        for f, v in zip(field_parts, value_parts):
             result += self.__add_in(f, v, output_format)
         return result
 
@@ -434,10 +437,8 @@ class BibTexFormat(Format):
                     maxauthor = int(match.group(1))
                 else:
                     maxauthor = 1
-                # need to make sure the key is returned in ascii format
                 authors = self.__get_author_lastname_list(a_doc, maxauthor)
-                if type(authors) != str:
-                    authors = authors.decode('utf-8', 'ignore')
+                # need to make sure the key is returned in ascii format
                 key = key.replace(field[1], unidecode(authors))
             elif (field[2] == 'year'):
                 key = key.replace(field[1], a_doc.get('year', ''))

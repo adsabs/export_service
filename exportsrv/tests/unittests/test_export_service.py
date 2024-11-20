@@ -13,7 +13,7 @@ import exportsrv.app as app
 import exportsrv.views as views
 
 from exportsrv.tests.unittests.stubdata import solrdata, bibTexTest, fieldedTest, xmlTest, cslTest, customTest, voTableTest, rssTest
-from exportsrv.formatter.ads import adsCSLStyle, adsJournalFormat
+from exportsrv.formatter.ads import adsCSLStyle, adsJournalFormat, adsOrganizer
 from exportsrv.formatter.format import Format
 from exportsrv.formatter.bibTexFormat import BibTexFormat
 from exportsrv.formatter.fieldedFormat import FieldedFormat
@@ -24,6 +24,7 @@ from exportsrv.formatter.customFormat import CustomFormat
 from exportsrv.formatter.voTableFormat import VOTableFormat
 from exportsrv.formatter.rssFormat import RSSFormat
 from exportsrv.formatter.toLaTex import encode_laTex
+from exportsrv.formatter.latexencode import utf8tolatex
 from exportsrv.utils import get_eprint, replace_html_entity
 
 class TestExports(TestCase):
@@ -168,6 +169,24 @@ class TestExports(TestCase):
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_ieee)
 
+    def test_agu(self):
+        # format the stubdata using the code
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'agu', adsFormatter.unicode).get()
+        # now compare it with an already formatted data that we know is correct
+        assert (csl_export == cslTest.data_agu)
+
+    def test_gsa(self):
+        # format the stubdata using the code
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'gsa', adsFormatter.unicode).get()
+        # now compare it with an already formatted data that we know is correct
+        assert (csl_export == cslTest.data_gsa)
+
+    def test_ams(self):
+        # format the stubdata using the code
+        csl_export = CSL(CSLJson(solrdata.data).get(), 'ams', adsFormatter.unicode).get()
+        # now compare it with an already formatted data that we know is correct
+        assert (csl_export == cslTest.data_ams)
+
     def test_custom(self):
         # format the stubdata using the code
         custom_format = CustomFormat(custom_format=r'%ZEncoding:latex\\bibitem[%2.1m\\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p ')
@@ -220,14 +239,14 @@ class TestExports(TestCase):
     def test_csl(self):
         export_format = 2
         journal_macro = 1
-        for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj', 'ieee']:
+        for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj', 'ieee', 'agu', 'gsa', 'ams']:
             response = views.return_csl_format_export(solrdata.data, csl_style, export_format, journal_macro)
             assert(response._status_code == 200)
 
     def test_csl_no_data(self):
         export_format = 2
         journal_macro = 1
-        for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj', 'ieee']:
+        for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj', 'ieee', 'agu', 'gsa', 'ams']:
             response = views.return_csl_format_export(None, csl_style, export_format, journal_macro)
             assert(response._status_code == 404)
 
@@ -409,7 +428,8 @@ class TestExports(TestCase):
                           views.xml_refabs_format_export_get, views.csl_aastex_format_export_get,
                           views.csl_icarus_format_export_get, views.csl_mnras_format_export_get,
                           views.csl_soph_format_export_get, views.votable_format_export_get,
-                          views.rss_format_export_get, views.csl_ieee_format_export_get]
+                          views.rss_format_export_get, views.csl_ieee_format_export_get,
+                          views.csl_agu_format_export_get, views.csl_gsa_format_export_get, views.csl_ams_format_export_get]
         bibcode = self.app.config['EXPORT_SERVICE_TEST_BIBCODE_GET']
         for f in function_names:
             if f == views.rss_format_export_get:
@@ -420,8 +440,8 @@ class TestExports(TestCase):
 
     def test_all_posts(self):
         endpoints = ['/bibtex', '/bibtexabs', '/ads', '/endnote', '/procite', '/ris', '/refworks', '/medlars',
-                     '/dcxml', '/refxml', '/refabsxml', '/aastex', '/icarus', '/mnras', '/soph', 'votable',
-                     'rss', '/ieee']
+                     '/dcxml', '/refxml', '/refabsxml', '/aastex', '/icarus', '/mnras', '/soph', '/votable', '/rss',
+                     '/aspc', '/apsj', '/aasj', '/ieee', '/agu', '/gsa', '/ams']
         payload = {'bibcode': self.app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'],
                    'link': ''}
         for ep in endpoints:
@@ -589,9 +609,12 @@ class TestExports(TestCase):
             'aspc': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters. doi:10.1007/s00367-005-0006-y.\n',
             'apsj': u'P. Aharon, (2005). doi:10.1007/s00367-005-0006-y.\n',
             'aasj': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters. doi:10.1007/s00367-005-0006-y.\n',
-            'ieee': u'[1]Aharon, P., “Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico”, <i>Geo-Marine Letters</i>, 2005. doi:10.1007/s00367-005-0006-y.\n'
+            'ieee': u'[1]Aharon, P., “Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico”, <i>Geo-Marine Letters</i>, 2005. doi:10.1007/s00367-005-0006-y.\n',
+            'agu': u'Aharon, P. (2005) Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico <i>Geo-marine Letters</i>. https://doi.org/10.1007/s00367-005-0006-y\n',
+            'gsa': u'Aharon, P., 2005, Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico: Geo-Marine Letters,, doi:10.1007/s00367-005-0006-y.\n',
+            'ams': u'Aharon, P., 2005: Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico https://doi.org/10.1007/s00367-005-0006-y.\n',
         }
-        cls_default_formats = [adsFormatter.latex] * 6 + [adsFormatter.unicode] * 2
+        cls_default_formats = [adsFormatter.latex] * 6 + [adsFormatter.unicode] * 5
 
         for style, format in zip(adsCSLStyle.ads_CLS, cls_default_formats):
             csl_export = CSL(CSLJson(solrdata.data_7).get(), style, format).get().get('export', '')
@@ -607,9 +630,12 @@ class TestExports(TestCase):
             'aspc': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\\_7.\n',
             'apsj': u'E.~W. Greisen, in {\\bf 285}, 109. doi:10.1007/0-306-48080-8_7.\n',
             'aasj': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E. W.\\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\\_7.\n',
-            'ieee': u'[1]Greisen, E. W., “AIPS, the VLA, and the VLBA”, in <i>Information Handling in Astronomy - Historical Vistas</i>, vol. 285, 2003, p. 109. doi:10.1007/0-306-48080-8_7.\n'
+            'ieee': u'[1]Greisen, E. W., “AIPS, the VLA, and the VLBA”, in <i>Information Handling in Astronomy - Historical Vistas</i>, vol. 285, 2003, p. 109. doi:10.1007/0-306-48080-8_7.\n',
+            'agu': u'Greisen, E. W. (2003) AIPS, the VLA, and the VLBA In <i>Information Handling in Astronomy - Historical Vistas</i> (Vol. 285, p. 109). https://doi.org/10.1007/0-306-48080-8_7\n',
+            'gsa': u'Greisen, E.W., 2003, AIPS, the VLA, and the VLBA, <i>in</i> Information Handling in Astronomy - Historical Vistas, doi:10.1007/0-306-48080-8_7.\n',
+            'ams': u'Greisen, E. W., 2003: AIPS, the VLA, and the VLBA. <i>Information Handling in Astronomy - Historical Vistas</i>, Vol. 285 of, p. 109, https://doi.org/10.1007/0-306-48080-8_7.\n',
         }
-        cls_default_formats = [adsFormatter.latex] * 6 + [adsFormatter.unicode] * 2
+        cls_default_formats = [adsFormatter.latex] * 6 + [adsFormatter.unicode] * 5
         for style, format in zip(adsCSLStyle.ads_CLS, cls_default_formats):
             csl_export = CSL(CSLJson(solrdata.data_10).get(), style, format).get().get('export', '')
             assert (csl_export == csl_export_output[style])
@@ -719,6 +745,241 @@ class TestExports(TestCase):
         ]
         for pub_raw, conference_location in zip(pub_raws, conference_locations):
             assert(fielded_export._FieldedFormat__get_conf_loc(pub_raw) == conference_location)
+
+    def test_encode_laTex(self):
+        """
+        test for various scenarios in the encode_laTex function
+        """
+        # text with one $ sign, escape it
+        text1 = "This is a test with one $ sign."
+        expected1 = "This is a test with one \$ sign."
+        self.assertEqual(encode_laTex(text1), expected1)
+
+        # text with math mode chunks (even count of $), no substitution in the math mode
+        text2 = "This is a $ math mode $ example."
+        expected2 = "This is a $ math mode $ example."
+        self.assertEqual(encode_laTex(text2), expected2)
+
+    def test_utf8tolatex(self):
+        """
+        test the main loop of utf8tolatex function to ensure correct processing of ASCII and non-ASCII characters.
+        """
+        text = "Consider these characters: #, &, α, Θ, ☃, ♞."
+
+        expected1 = r"Consider these characters: {\#}, {\&}, {\ensuremath{\alpha}}, {\ensuremath{\Theta}}, ☃, ♞."
+        self.assertEqual(utf8tolatex(text, non_ascii_only=False, brackets=True, substitute_bad_chars=False, ascii_no_brackets=False), expected1)
+
+        expected2 = r"Consider these characters: #, &, \ensuremath{\alpha}, \ensuremath{\Theta}, {\bfseries ?}, {\bfseries ?}."
+        self.assertEqual(utf8tolatex(text, non_ascii_only=True, brackets=False, substitute_bad_chars=True, ascii_no_brackets=False), expected2)
+
+    def test_generate_counter_id(self):
+        """
+        test when the generated id string is longer that needs to be three characters long
+        """
+        length = (26**2) + 2
+        counter_ids = Format(from_solr={}).generate_counter_id(length)
+        self.assertEqual(len(counter_ids), 678)
+        self.assertEqual(counter_ids[0], 'AA')
+        self.assertEqual(counter_ids[-1], 'AAB')
+
+    def test_adsOrganizer_citation_bibliography(self):
+        """
+        test adsOrganizer's citation_bibliography option
+        """
+        csl_export = CSL(CSLJson(solrdata.data_16).get(), 'ieee', adsFormatter.latex).get(adsOrganizer.citation_bibliography)
+        expected_results = [
+            '2023zndo...8083529K', '', '[1]Karras, O., “Analysis of the State and Evolution of Empirical Research in Requirements Engineering”, <i>Zenodo</i>, Art. no. 10.5281/zenodo.8083529, Zenodo, 2023.',
+            '2023BoSAB..34......', '', '[2]No author, “Proceedings da XLV Reunião Anual da SAB”, BoSAB..34, 2023.',
+            '2012ddsw.rept.....T', '', '[3]Thornton, P. E., “Daymet: Daily surface weather on a 1 km grid for North America, 1980-2008”, <i>Oak Ridge National Laboratory (ORNL) Distributed Active Archive Center for Biogeochemical Dynamics (DAAC</i>, 2012.',
+            ''
+        ]
+        self.assertEqual(csl_export.split('\n'), expected_results)
+
+        # send it an unrecognizable export_organizer id
+        self.assertEqual(CSL(CSLJson(solrdata.data_16).get(), 'ieee', adsFormatter.latex).get(export_organizer=10), None)
+
+    def test_is_number(self):
+        """
+        Test adsFormatter's __is_number function
+        """
+        # U+2162 Roman numeral three
+        self.assertTrue(adsFormatter()._adsFormatter__is_number("Ⅲ"))
+        # not a number
+        self.assertFalse(adsFormatter()._adsFormatter__is_number("ABC"))
+
+    def test_native_encoding(self):
+        """
+        Test adsFormatter's native_encoding function to ensure the correct encoding is determined.
+        """
+        instance = adsFormatter()
+
+        # where native_format is in native_latex
+        self.assertEqual(instance.native_encoding('BibTex'), adsFormatter.latex)
+
+        # where native_format is in native_xml
+        self.assertEqual(instance.native_encoding('DublinCore'), adsFormatter.xml)
+
+        # where native_format is not in either list
+        self.assertEqual(instance.native_encoding('UnknownFormat'), adsFormatter.unicode)
+
+    def test_verify(self):
+        """
+        Test adsJournalFormat's verify function
+        """
+        self.assertTrue(adsJournalFormat().verify(style=adsJournalFormat.full))
+        # give it an undefined style
+        self.assertFalse(adsJournalFormat().verify(style=10))
+
+    def test_bibtex_authors_w_suffix(self):
+        """
+        Test bibtex format, formatting authors with suffix
+        """
+        bibtex_export = BibTexFormat(solrdata.data_18, "%R")
+        expected_results = [
+            '{Smith}, Jr, Frank D.',
+            '{Thompson}, A. Richard and {Moran}, James M. and {Swenson}, Jr., George W.',
+            '{Wang}, Y. -M. and {Sheeley}, Jr., N.~R.',
+            '{Spilker}, Jr., J.~J.',
+            '{Anderson}, D.~G. and {Goodyear}, A.~C. and {Stafford}, Jr., T.~W. and {Kennett}, J. and {West}, A.',
+            '{Wang}, Y. -M. and {Sheeley}, Jr., N.~R.',
+            '{Spitzer}, Jr., Lyman and {Hart}, Michael H.',
+            '{Merow}, Cory and {Smith}, Matthew J. and {Silander}, Jr., John A.',
+        ]
+
+        for a_doc, expected_result in zip(bibtex_export.from_solr['response'].get('docs'), expected_results):
+            self.assertEqual(bibtex_export._BibTexFormat__get_author_list(a_doc, 'author', maxauthor=0, authorcutoff=25), expected_result)
+
+    def test_bibtex_authors_w_suffix_et_al(self):
+        """
+        Test bibtex format, formatting authors with suffix, shorten the list
+        """
+        bibtex_export = BibTexFormat(solrdata.data_18, "%R")
+        expected_results = [
+            '{Smith}, Jr, Frank D.',
+            '{Thompson}, A. Richard and et al.',
+            '{Wang}, Y. -M. and {Sheeley}, Jr., N.~R.',
+            '{Spilker}, Jr., J.~J.',
+            '{Anderson}, D.~G. and et al.',
+            '{Wang}, Y. -M. and {Sheeley}, Jr., N.~R.',
+            '{Spitzer}, Jr., Lyman and {Hart}, Michael H.',
+            '{Merow}, Cory and et al.',
+        ]
+
+        for a_doc, expected_result in zip(bibtex_export.from_solr['response'].get('docs'), expected_results):
+            # show one author is more than 2
+            self.assertEqual(bibtex_export._BibTexFormat__get_author_list(a_doc, 'author', maxauthor=1, authorcutoff=2), expected_result)
+
+    def test_get_author_lastname_list(self):
+        """
+        Test Bibtex format's get_author_lastname_list method
+        """
+        bibtex_export = BibTexFormat(solrdata.data_18, "%R")
+
+        expected_results = [
+            'Smith',
+            'ThompsonMoranSwenson',
+            'WangSheeley',
+            'Spilker',
+            'AndersonGoodyearStaffordKennettWest',
+            'WangSheeley',
+            'SpitzerHart',
+            'MerowSmithSilander',
+        ]
+
+        for a_doc, expected_result in zip(bibtex_export.from_solr['response'].get('docs'), expected_results):
+            self.assertEqual(bibtex_export._BibTexFormat__get_author_lastname_list(a_doc, maxauthor=10), expected_result)
+
+    def test_get_affiliation_list(self):
+        """
+        Test Bibtex format's get_affiliation_list method
+        """
+        # when there is no aff in a doc
+        bibtex_export = BibTexFormat(solrdata.data_8, "%R")
+
+        for a_doc in bibtex_export.from_solr['response'].get('docs'):
+            self.assertEqual(bibtex_export._BibTexFormat__get_affiliation_list(a_doc, maxauthor=0, authorcutoff=25), '')
+
+        bibtex_export = BibTexFormat(solrdata.data_9, "%R")
+
+        # when there are aff and doctype is not thesis
+        expected_results = [
+            r'AA(AIM, CEA, CNRS, Universit{\'e} Paris-Saclay, Universit{\'e} de Paris, Sorbonne Paris Cit{\'e}, 91191, Gif-sur-Yvette, France), AB(AIM, CEA, CNRS, Universit{\'e} Paris-Saclay, Universit{\'e} de Paris, Sorbonne Paris Cit{\'e}, 91191, Gif-sur-Yvette, France), AC(AIM, CEA, CNRS, Universit{\'e} Paris-Saclay, Universit{\'e} de Paris, Sorbonne Paris Cit{\'e}, 91191, Gif-sur-Yvette, France)'
+        ]
+
+        for a_doc, expected_result in zip(bibtex_export.from_solr['response'].get('docs'), expected_results):
+            self.assertEqual(bibtex_export._BibTexFormat__get_affiliation_list(a_doc, maxauthor=0, authorcutoff=25), expected_result)
+
+        # now returned just one author
+        expected_results = [
+            r'AA(AIM, CEA, CNRS, Universit{\'e} Paris-Saclay, Universit{\'e} de Paris, Sorbonne Paris Cit{\'e}, 91191, Gif-sur-Yvette, France)'
+        ]
+
+        for a_doc, expected_result in zip(bibtex_export.from_solr['response'].get('docs'), expected_results):
+            print(bibtex_export._BibTexFormat__get_affiliation_list(a_doc, maxauthor=1, authorcutoff=2))
+            self.assertEqual(bibtex_export._BibTexFormat__get_affiliation_list(a_doc, maxauthor=1, authorcutoff=2), expected_result)
+
+    def test_bibtex_add_clean_pub_raw(self):
+        """
+        test bibtex format's add_clean_pub_raw method
+        """
+        bibtex_export = BibTexFormat(solrdata.data_9, "%R")
+
+        expected_result = 'Astronomy \& Astrophysics, Volume 645, id.L11, 8 pp.'
+
+        result = bibtex_export._BibTexFormat__add_clean_pub_raw(bibtex_export.from_solr['response'].get('docs')[0])
+
+        self.assertEqual(result, expected_result)
+
+    def test_bibtex_add_in_eprint(self):
+        """
+        Test Bibtex format's add_in_eprint method
+        """
+        bibtex_export = BibTexFormat(solrdata.data_9, "%R")
+
+        a_doc = bibtex_export.from_solr['response'].get('docs')[0]
+
+        self.assertEqual(bibtex_export._BibTexFormat__add_in_eprint('archivePrefix|eprint', get_eprint(a_doc), u'{0:>13} = {{{1}}}'), 'archivePrefix = {arXiv},\n       eprint = {2101.01542},\n')
+
+        # now send input that are not correct
+        self.assertEqual(bibtex_export._BibTexFormat__add_in_eprint('eprint', 'can be empty too', u'{0:>13} = {{{1}}}'), '')
+
+
+    def test_bibtex_keyformat_enumeration(self):
+        """
+        Text Bibtex format's get method check for keyformat enumeration
+        """
+        bibtex_export = BibTexFormat(solrdata.data_19, "%zm%H").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=1)
+
+        assert (bibtex_export == {'msg': 'Retrieved 3 abstracts, starting with number 1.', 'export': '{Shapuriana\n}\n\n{Shapurianb\n}\n\n{Koch\n}\n\n'})
+
+    def test_bibtex_keyformat_ascii(self):
+        """
+        Text Bibtex format's get method check for keyformat being ascii
+        """
+        bibtex_export = BibTexFormat(solrdata.data_20, "%H").get(include_abs=False, maxauthor=10, authorcutoff=200, journalformat=1)
+
+        assert (bibtex_export == {'msg': 'Retrieved 1 abstracts, starting with number 1.', 'export': '{Andre\n}\n\n'})
+
+    def test_bibtex_field_wrapped(self):
+        """
+        Text Bibtex format's field_wrapped method when no value is passed in to return empty string
+        """
+        assert (BibTexFormat(solrdata.data_20, "%H")._BibTexFormat__field_wrapped('', '', ''), '')
+
+    def test_bibtex_get_journal(self):
+        """
+        Text Bibtex format's get_journal method when doctype is software to return empty string
+        """
+        bibtex_export = BibTexFormat(solrdata.data_16, "%R")
+        a_doc = bibtex_export.from_solr['response'].get('docs')[0]
+
+        assert (BibTexFormat(solrdata.data_10, "%R")._BibTexFormat__get_journal(a_doc, ''), None)
+
+    def test_bibtex_format_line_wrapped(self):
+        """
+        Text Bibtex format's format_line_wrapped
+        """
+        assert (BibTexFormat(solrdata.data_20, "%H")._BibTexFormat__format_line_wrapped('author', 'Di Francesco, J.', u'{0:>13} = {{{1}}}'), 'author = {Di Francesco, J.}')
 
 
 if __name__ == '__main__':

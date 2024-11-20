@@ -1417,9 +1417,9 @@ data_15 = \
          }
     },
     u'response': {
-        'numFound': 3,
-        'start': 0,
-        'docs': [
+        u'numFound': 3,
+        u'start': 0,
+        u'docs': [
             {
                 u'bibcode': u'2019Sci...365..565B',
                 u'comment': [u'Galaxies B and C from figures 2 are not in SIMBAD.'],
@@ -1434,7 +1434,6 @@ data_15 = \
         ]
     }
 }
-
 
 data_16 = \
 {
@@ -1658,4 +1657,105 @@ data_17 = \
       }
     ]
   }
+}
+
+data_18 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 141,
+        u'params': {
+            u'q': u'bibcode:(2001physics...2042S OR 2017isra.book.....T OR 1990ApJ...355..726W OR 1978Navig..25..121S OR 2013Ecogr..36.1058M OR 2009AGUFMPP31D1382A OR 1992ApJ...392..310W OR 1971ApJ...164..399S)',
+            u'fl': u'bibcode,author',
+            u'_': u'1731959426353'
+        }
+    },
+    u'response':{
+        u'numFound':8,
+        u'start':0,
+        u'docs':[
+          {
+            u'bibcode': u'2001physics...2042S',
+            u'author':[u'Smith, Frank D., Jr']},
+          {
+            u'bibcode': u'2017isra.book.....T',
+            u'author':[u'Thompson, A. Richard', u'Moran, James M.', u'Swenson, George W., Jr.']},
+          {
+            u'bibcode': u'1990ApJ...355..726W',
+            u'author':[u'Wang, Y. -M.', u'Sheeley, N. R., Jr.']},
+          {
+            u'bibcode': u'1978Navig..25..121S',
+            u'author':[u'Spilker, J. J., Jr.']},
+          {
+            u'bibcode': u'2009AGUFMPP31D1382A',
+            u'author':[u'Anderson, D. G.', u'Goodyear, A. C.', u'Stafford, T. W., Jr.', u'Kennett, J.', u'West, A.']},
+          {
+            u'bibcode': u'1992ApJ...392..310W',
+            u'author':[u'Wang, Y. -M.', u'Sheeley, N. R., Jr.']},
+          {
+            u'bibcode': u'1971ApJ...164..399S',
+            u'author':[u'Spitzer, Lyman, Jr.', u'Hart, Michael H.']},
+          {
+            u'bibcode': u'2013Ecogr..36.1058M',
+            u'author':[u'Merow, Cory', u'Smith, Matthew J.', u'Silander, John A., Jr.']}
+        ]
+    }
+}
+
+data_19 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 42,
+        u'params': {
+            'q':'author:\'shapurian,g\'',
+            u'fl': u'bibcode,author,pub_raw,year',
+            u'_': u'1732120045561'
+        }
+    },
+    u'response':{
+        u'numFound':3,
+        u'start':0,
+        u'docs':[
+          {
+            u'bibcode': u'2023arXiv231208579S',
+            u'author':[u'Shapurian, Golnaz', u'Kurtz, Michael J', u'Accomazzi, Alberto'],
+            u'pub_raw': u'eprint arXiv:2312.08579',
+            u'year': u'2023'},
+          {
+            u'bibcode': u'2024arXiv240611400S',
+            u'author':[u'Shapurian, Golnaz'],
+            u'pub_raw': u'eprint arXiv:2406.11400',
+            u'year': u'2024'},
+          {
+            u'bibcode': u'2023AAS...24117714K',
+            u'author':[u'Koch, Jennifer', u'Shapurian, Golnaz', u'Grant, Carolyn', u'Thompson, Donna', u'ADS Team'],
+            u'pub_raw': u'American Astronomical Society Meeting #241, id. 177.14. <ALTJOURNAL>Bulletin of the American Astronomical Society, Vol. 55, No. 2 e-id 2023n2i177p14</ALTJOURNAL>',
+            u'year': u'2023'}
+        ]
+    }
+}
+
+data_20 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 163,
+        u'params': {
+            'q':'author:\'^André\'',
+            u'fl': u'bibcode,author,pub_raw,year',
+            u'_': u'1732120045561'
+        }
+    },
+    u'response':{
+        u'numFound':1,
+        u'start':0,
+        u'docs':[
+            {
+                u'bibcode': u'2014prpl.conf...27A',
+                u'author': [u'André, P.', u'Di Francesco, J.', u'Ward-Thompson, D.', u'Inutsuka, S. -I.', u'Pudritz, R. E.', u'Pineda, J. E.'],
+                u'pub_raw': u'Protostars and Planets VI, Henrik Beuther, Ralf S. Klessen, Cornelis P. Dullemond, and Thomas Henning (eds.), University of Arizona Press, Tucson, p.27-51',
+                u'year': u'2014'}
+        ]
+    }
 }
