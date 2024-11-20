@@ -967,7 +967,7 @@ def utf8tolatex(s, non_ascii_only=False, brackets=True, substitute_bad_chars=Fal
 
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':      # pragma: no cover
 
     try:
 

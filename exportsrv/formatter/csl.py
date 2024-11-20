@@ -125,6 +125,11 @@ class CSL:
             for data in self.for_cls:
                 data['container-title'] = encode_laTex(data['container-title'])
                 data['title'] = encode_laTex(data['title'])
+        # remove doi indicator for these styles
+        elif self.csl_style in ['agu', 'gsa', 'ams']:
+            for data in self.for_cls:
+                if len(data.get('DOI', '')) > 0:
+                    data['DOI'] = data['DOI'].lstrip('doi:')
 
 
     def __update_author_etal(self, author, the_rest, bibcode):
@@ -199,12 +204,12 @@ class CSL:
         :param index:
         :return:
         """
-        # apsj is a special case, display biblio as csl has format, just adjust translate characters for LaTex
-        if (self.csl_style == 'apsj') or (self.csl_style == 'ieee'):
+        # these are text formats and do not need citation specified specifically like the latex formats
+        if self.csl_style in ['apsj', 'ieee', 'agu', 'gsa', 'ams']:
             cita_author, cita_year = '', ''
-            biblio_author = cita
+            biblio_author = cita if self.csl_style == 'apsj' else ''
             biblio_rest = biblio.replace(cita,'')
-            # do not need this, but since we are sending the format all the fields, empty bibcode
+            # do not need this, but since we are sending the formats all the fields, empty the bibcode
             bibcode = ''
         else:
             cita_author, cita_year = self.__tokenize_cita(cita)
@@ -231,7 +236,10 @@ class CSL:
             'aspc': u'\\bibitem[{}({})]{{{}}} {}{}',
             'aasj': u'\\bibitem[{}({})]{{{}}} {}{}',
             'apsj': u'{}{}{}{}{}',
-            'ieee': u'{}{}{}{}{}'
+            'ieee': u'{}{}{}{}{}',
+            'agu': u'{}{}{}{}{}',
+            'gsa': u'{}{}{}{}{}',
+            'ams': u'{}{}{}{}{}',
         }
         return format_style[self.csl_style].format(cita_author, cita_year, bibcode, biblio_author, biblio_rest)
 
@@ -255,7 +263,7 @@ class CSL:
             return result_dict
         if (export_organizer == adsOrganizer.citation_bibliography):
             for cita, item, bibcode in zip(self.citation_item, self.bibliography.bibliography(), self.bibcode_list):
-                results.append(bibcode + '\n' + str(self.bibliography.cite(cita, '')) + '\n' + str(item) + '\n')
+                results.append("%s\n%s\n%s\n"%(bibcode, str(self.bibliography.cite(cita, '')), str(item)))
             return ''.join(result for result in results)
         if (export_organizer == adsOrganizer.bibliography):
             for item in self.bibliography.bibliography():

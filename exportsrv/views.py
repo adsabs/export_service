@@ -707,6 +707,188 @@ def csl_soph_format_export_get(bibcode):
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/aspc', methods=['POST'])
+def csl_aspc_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = export_post(request, 'aspc', 2)
+    if status == 200:
+        return return_csl_format_export(solr_data=results,
+                                        csl_style='aspc', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/aspc/<bibcode>', methods=['GET'])
+def csl_aspc_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'aspc', 2),
+                                    csl_style='aspc', export_format=adsFormatter.latex, journal_format=3, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/aasj', methods=['POST'])
+def csl_aasj_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = export_post(request, 'aasj', 2)
+    if status == 200:
+        return return_csl_format_export(solr_data=results,
+                                        csl_style='aasj', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/aasj/<bibcode>', methods=['GET'])
+def csl_aasj_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'aasj', 2),
+                                    csl_style='aasj', export_format=adsFormatter.latex, journal_format=3, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/apsj', methods=['POST'])
+def csl_apsj_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = export_post(request, 'apsj', 2)
+    if status == 200:
+        return return_csl_format_export(solr_data=results,
+                                        csl_style='apsj', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/apsj/<bibcode>', methods=['GET'])
+def csl_apsj_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'apsj', 2),
+                                    csl_style='apsj', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/ieee', methods=['POST'])
+def csl_ieee_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = export_post(request, 'ieee', 2)
+    if status == 200:
+        return return_csl_format_export(solr_data=results,
+                                        csl_style='ieee', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/ieee/<bibcode>', methods=['GET'])
+def csl_ieee_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'ieee', 2),
+                                    csl_style='ieee', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/agu', methods=['POST'])
+def csl_agu_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = export_post(request, 'agu', 2)
+    if status == 200:
+        return return_csl_format_export(solr_data=results,
+                                        csl_style='agu', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/agu/<bibcode>', methods=['GET'])
+def csl_agu_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'agu', 2),
+                                    csl_style='agu', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/gsa', methods=['POST'])
+def csl_gsa_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = export_post(request, 'gsa', 2)
+    if status == 200:
+        return return_csl_format_export(solr_data=results,
+                                        csl_style='gsa', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/gsa/<bibcode>', methods=['GET'])
+def csl_gsa_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'gsa', 2),
+                                    csl_style='gsa', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/ams', methods=['POST'])
+def csl_ams_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = export_post(request, 'ams', 2)
+    if status == 200:
+        return return_csl_format_export(solr_data=results,
+                                        csl_style='ams', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/ams/<bibcode>', methods=['GET'])
+def csl_ams_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'ams', 2),
+                                    csl_style='ams', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/csl', methods=['POST'])
 def csl_format_export():
     try:
@@ -851,29 +1033,3 @@ def rss_format_export_get(bibcode, link):
     :return:
     """
     return return_rss_format_export(solr_data=export_get(bibcode, 'RSS'), link=link, request_type='GET')
-
-
-@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/ieee', methods=['POST'])
-def csl_ieee_format_export_post():
-    """
-
-    :return:
-    """
-    results, status = export_post(request, 'ieee', 2)
-    if status == 200:
-        return return_csl_format_export(solr_data=results,
-                                        csl_style='ieee', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='POST')
-    return return_response(results, status)
-
-
-@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/ieee/<bibcode>', methods=['GET'])
-def csl_ieee_format_export_get(bibcode):
-    """
-
-    :param bibcode:
-    :return:
-    """
-    return return_csl_format_export(solr_data=export_get(bibcode, 'ieee', 2),
-                                    csl_style='ieee', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='GET')
