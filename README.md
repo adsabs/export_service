@@ -63,21 +63,6 @@ To return the records in the exact order of input bibcode list, set `sort` to `n
 * **/refworks** *RefWorks format*
 * **/medlars** *MEDLARS format*
 
-###### 2. For the following endpoints output is in latex format:
-* **/aastex** *AASTeX format*
-* **/icarus** *Icarus format*
-* **/mnras** *MNRAS format*
-* **/soph** *SoPh format*
-
-Note that for the endpoints `/aastex` there is an optional parameter `journalformat` which allows user to decide on the format of journal name. `1` indicates to use AASTeX macros if there are any (default), otherwise full journal name is exported. `2` means use journal abbreviations and `3` means use full journal name.
-
-###### 3. For the following endpoints output is in xml format:
-* **/dcxml** *Dublin Core XML*
-* **/refxml** *XML references*
-* **/refabsxml** *XML with abstracts*
-* **/votable** *VOTables*
-* **/rss** *RSS*
-* **/jatsxml** *JATS Journal Publishing XML*
 
 Note that for endpoints `/bibtex` and `/bibtexabs` optional parameters `maxauthor`, `authorcutoff`, `keyformat` and `journalformat` can be passed in. 
 * `maxauthor` is maxinum number of authors displayed. The default values for `maxauthor` for `/bibtex` and `/bibtexabs` respectivley are 10 and 0, where 0 means all.
@@ -98,7 +83,15 @@ Note that for endpoints `/bibtex` and `/bibtexabs` optional parameters `maxautho
         Accomazzi2019AAS            -- %1H%Y%q
         AccomazziKurtz2019          -- %2H%Y
 
-* `journalformat` allows user to decide on the format of journal name. `1` indicates to use AASTeX macros if there are any (default), otherwise full journal name is exported. `2` means use journal abbreviations and `3` means use full journal name.
+
+###### 2. For the following endpoints output is in xml format:
+* **/dcxml** *Dublin Core XML*
+* **/refxml** *XML references*
+* **/refabsxml** *XML with abstracts*
+* **/votable** *VOTables*
+* **/rss** *RSS*
+* **/jatsxml** *JATS Journal Publishing XML*
+
 
 Note that for endpoint `/rss` an optional parameter `link` can be passed in. `link` is the query url that generated the bibcodes. 
 
@@ -113,16 +106,37 @@ at the end of March 2018, returns the following 4 bibcodes, and generates the ur
 which can be passed as payload to `/rss` endpoint.
 
 
-###### 4. Using endpoint /csl allows various styles and output formats to be defined in payload as follows:
+###### 3. For the following Citation Style Language Format endpoints output is in latex format:
+* **/aastex** *AASTeX format*
+* **/icarus** *Icarus format*
+* **/mnras** *MNRAS format*
+* **/soph** *SoPh format*
+* **/aspc** *ASP Conference Series format*
+* **/aasj** *AAS Journals format*
 
-    {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"", "format":"", sort:"date desc, bibcode, desc"}
 
-    where style can be: aastex, icarus, mnras, soph, aspc, apsj, aasj or ieee, and format can be: 1, 2 or 3, for output formats Unicode, HTML or LaTeX respectively. There is an optional parameter journalformat applicable to the three formats: aastex, aspc, and aasj, which allows user to decide on the format of journal name, with values 1, 2, and 3 respectively to indicate uses AASTeX macros (default), use journal abbreviations, or use full journal name.
+Note that for the endpoints `/aastex` there is an optional parameter `journalformat` which allows user to decide on the format of journal name. `1` indicates to use AASTeX macros if there are any (default), otherwise full journal name is exported. `2` means use journal abbreviations and `3` means use full journal name.
 
 
-###### 5. Using endpoint /ieee output is in ieee format, unicode encoded
+###### 4. For the following Citation Style Language Format endpoints output is in text format:
+* **/apsj** *APS Journals format*
+* **/ieee** *IEEE format*
+* **/agu** *AGU Journals format*
+* **/gsa** *GSA format*
+* **/ams** *AMS (Meteorological) format*
 
-    note that IEEE format can be both accessed through its own endpoint /ieee, and /csl with style set to ieee.
+
+###### 5. Using the /csl endpoint for Citation Style Language Formats:
+
+The /csl endpoint allows various citation style language (CSL) and output formats to be defined in the payload as follows:
+
+    {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "style":"", "format":"", "sort":"date desc, bibcode, desc"}
+
+The style parameter can be any of the CSL formats listed in sections 3 and 4 (e.g., aastex, icarus, mnras, soph, aspc, apsj, ieee, agu, gsa, ams). The format specifies the output type: 1 (Unicode), 2 (HTML), or 3 (LaTeX). Additionally, there is an optional journalformat parameter for certain styles (aastex, aspc, and aasj) to specify the journal name format, with values 1 (AASTeX macros, default), 2 (journal abbreviations), or 3 (full journal name).
+
+Note that, as mentioned above, all the CSL formats can also be accessed through their dedicated endpoints, as listed earlier, using a payload like:
+
+    {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "sort":"date desc, bibcode, desc"}
 
 
 ###### 6. For endpoint /custom define payload as:
@@ -148,6 +162,18 @@ For example:
 
     curl -H "Authorization: Bearer <your API token>" -H "Content-Type: application/json" -X POST -d '{"format":"\\\\bibitem[%\\2m%(y)]\\{%za1%y} %\\8l %\\Y,%\\j,%\\V,%\\p"}' https://api.adsabs.harvard.edu/v1/export/convert
 
+
+## Limiting number of authors and affilations from the UI
+
+A new optional parameter, `authorlimit`, has been introduced to limit the number of authors and their affiliations returned in exported records. This parameter addresses the growing issue of excessively large author lists, which are becoming increasingly common, with some papers featuring thousands of authors.
+
+The `authorlimit` parameter specifies the maximum number of authors and affiliations to retrieve from Solr and format in the service.
+
+This parameter will be utilized in the ADS UI. However, when using the API, it is optional. If omitted, the service will return all authors and affiliations.
+
+
+    {"bibcode": ["1980ApJS...44..137K", "1980ApJS...44..489B"], "authorlimit": 500}
+    
 
 ## Maintainers
 
