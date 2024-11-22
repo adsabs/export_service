@@ -67,13 +67,18 @@ class TestExportsError(TestCase):
         """
         Ensure that all of the payload params were passed in, otherwise returns 400
         """
+        endpoints = ['/csl', '/custom']
         payload = {'bibcode': '', 'style': '', 'format': ''}
-        for route in ['/csl', '/custom']:
-            r = self.client.post(route, data=json.dumps(payload))
+        expected_errors = [
+            b'{"error": "unrecognizable style (supprted formats are: aastex, icarus, mnras, soph, aspc, apsj, aasj, ieee, agu, gsa, ams)"}',
+            b'{"error": "invalid custom format"}'
+        ]
+        for endpoint, expected_error in zip(endpoints, expected_errors):
+            r = self.client.post(endpoint, data=json.dumps(payload))
             status = r.status_code
             response = r.data
             self.assertEqual(status, 400)
-            self.assertEqual(response, b'{"error": "not all the needed information received"}')
+            self.assertEqual(response, expected_error)
 
 
     def test_non_exist_style(self):

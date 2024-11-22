@@ -196,14 +196,14 @@ class BibTexFormat(Format):
         return OrderedDict(fields)
 
 
-    def __get_author_list(self, a_doc, field, maxauthor, authorcutoff):
+    def __get_author_list(self, a_doc, field, max_author, author_cutoff):
         """
         format authors/editors
 
         :param a_doc:
         :param field: author or editor
-        :param maxauthor:
-        :param authorcutoff:
+        :param max_author:
+        :param author_cutoff:
         :return:
         """
         if field not in a_doc:
@@ -211,8 +211,8 @@ class BibTexFormat(Format):
         and_str = ' and '
         author_list = ''
         # if number of authors exceed the maximum that we display, cut to shorter list
-        # only if maxauthor is none zero, zero is indication of return all available authors
-        cut_authors = (len(a_doc[field]) > authorcutoff) and not maxauthor == 0
+        # only if max_author is none zero, zero is indication of return all available authors
+        cut_authors = (len(a_doc[field]) > author_cutoff) and not max_author == 0
         for author, i in zip(a_doc[field], range(len(a_doc[field]))):
             # there should be up to only two commas, just in case there is not
             author_parts = encode_laTex_author(author).split(',', 2)
@@ -222,7 +222,7 @@ class BibTexFormat(Format):
             # there is suffix, insert it first
             elif (len(author_parts) == 3):
                 author_list += ',' + author_parts[2] + ',' + author_parts[1]
-            if cut_authors and i + 1 == maxauthor:
+            if cut_authors and i + 1 == max_author:
                 # if reached number of required authors return
                 return author_list + " and et al."
             author_list += and_str
@@ -230,13 +230,13 @@ class BibTexFormat(Format):
         return author_list
 
 
-    def __get_author_lastname_list(self, a_doc, maxauthor):
+    def __get_author_lastname_list(self, a_doc, max_author):
         """
         format authors
 
         :param a_doc:
         :param field:
-        :param maxauthor:
+        :param max_author:
         :return:
         """
         if 'author' not in a_doc:
@@ -247,12 +247,12 @@ class BibTexFormat(Format):
             author_parts = author.split(',', 1)
             author_list += author_parts[0]
             author_count += 1
-            if author_count == maxauthor:
+            if author_count == max_author:
                 return author_list
         return author_list
 
 
-    def __get_affiliation_list(self, a_doc, maxauthor, authorcutoff):
+    def __get_affiliation_list(self, a_doc, max_author, author_cutoff):
         """
         format affiliation
 
@@ -265,16 +265,16 @@ class BibTexFormat(Format):
         separator = ', '
         affiliation_list = ''
         # if number of affiliations exceed the maximum that we display, cut to shorter list
-        # only if maxauthor is none zero (note number of authors and number of affiliations displayed should match),
+        # only if max_author is none zero (note number of authors and number of affiliations displayed should match),
         # zero is indication of return all available affiliations
-        cut_affiliations = (len(a_doc['aff']) > authorcutoff) and not maxauthor == 0
+        cut_affiliations = (len(a_doc['aff']) > author_cutoff) and not max_author == 0
         addCount = not (a_doc.get('doctype', '') in ['phdthesis', 'mastersthesis'])
         for affiliation, i in zip(a_doc['aff'], range(len(a_doc['aff']))):
             if (addCount):
                 affiliation_list += counter[i] + '(' + affiliation + ')' + separator
             else:
                 affiliation_list += affiliation + separator
-            if cut_affiliations and i + 1 == maxauthor:
+            if cut_affiliations and i + 1 == max_author:
                 # if reached number of required affiliations stop
                 break
         # do not need the last separator
@@ -295,13 +295,13 @@ class BibTexFormat(Format):
         return encode_laTex(', '.join(a_doc.get('keyword', '')))
 
 
-    def __get_journal(self, a_doc, journalformat):
+    def __get_journal(self, a_doc, journal_format):
         """
         let client decide on the format of journal, macro if one is available, abbreviated journal name, or full journal name
         note that for doctype = software this field is ignored
 
         :param a_doc:
-        :param journalformat
+        :param journal_format
         :return:
         """
         doctype = a_doc.get('doctype', '')
@@ -316,12 +316,12 @@ class BibTexFormat(Format):
             return encode_laTex(''.join(a_doc.get('pub', '')))
 
         # use macro (default)
-        if journalformat == adsJournalFormat.macro or journalformat == adsJournalFormat.default:
+        if journal_format == adsJournalFormat.macro or journal_format == adsJournalFormat.default:
             journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
             return journal_macros.get(self.get_bibstem(a_doc.get('bibstem', '')), encode_laTex(''.join(a_doc.get('pub', ''))))
-        elif journalformat == adsJournalFormat.abbreviated:
+        elif journal_format == adsJournalFormat.abbreviated:
             return encode_laTex(Format(None).get_pub_abbrev(a_doc.get('bibstem', '')))
-        elif journalformat == adsJournalFormat.full:
+        elif journal_format == adsJournalFormat.full:
             return encode_laTex(''.join(a_doc.get('pub', '')))
 
 
@@ -434,10 +434,10 @@ class BibTexFormat(Format):
             if (field[2] == 'author'):
                 match = re.search(r'%(\d)H', field[1])
                 if match:
-                    maxauthor = int(match.group(1))
+                    max_author = int(match.group(1))
                 else:
-                    maxauthor = 1
-                authors = self.__get_author_lastname_list(a_doc, maxauthor)
+                    max_author = 1
+                authors = self.__get_author_lastname_list(a_doc, max_author)
                 # need to make sure the key is returned in ascii format
                 key = key.replace(field[1], unidecode(authors))
             elif (field[2] == 'year'):
@@ -468,15 +468,15 @@ class BibTexFormat(Format):
         return self.__format_key(self.from_solr['response'].get('docs')[index])
 
 
-    def __get_doc(self, index, include_abs, maxauthor, authorcutoff, journalformat):
+    def __get_doc(self, index, include_abs, max_author, author_cutoff, journal_format):
         """
         for each document from Solr, get the fields, and format them accordingly
 
         :param index:
         :param include_abs:
-        :param maxauthor:
-        :param authorcutoff:
-        :param journalformat:
+        :param max_author:
+        :param author_cutoff:
+        :param journal_format:
         :return:
         """
         format_style_bracket_quotes = u'{0:>13} = "{{{1}}}"'
@@ -490,11 +490,11 @@ class BibTexFormat(Format):
         fields = self.__get_fields(a_doc)
         for field in fields:
             if (field == 'author') or (field == 'editor'):
-                text += self.__add_in(fields[field], self.__get_author_list(a_doc, field, maxauthor, authorcutoff), format_style_bracket)
+                text += self.__add_in(fields[field], self.__get_author_list(a_doc, field, max_author, author_cutoff), format_style_bracket)
             elif (field == 'title'):
                 text += self.__add_in(fields[field], encode_laTex(''.join(a_doc.get(field, ''))), format_style_bracket_quotes)
             elif (field == 'aff'):
-                text += self.__field_wrapped(fields[field], self.__get_affiliation_list(a_doc, maxauthor, authorcutoff), format_style_bracket)
+                text += self.__field_wrapped(fields[field], self.__get_affiliation_list(a_doc, max_author, author_cutoff), format_style_bracket)
             elif (field == 'pub_raw'):
                 # pub_raw goes to howpublished when doc_type is @misc
                 # we want to display pub_raw in howpublished only if publisher data is not available
@@ -503,7 +503,7 @@ class BibTexFormat(Format):
                     continue
                 text += self.__add_in(fields[field], self.__add_clean_pub_raw(a_doc), format_style_bracket)
             elif (field == 'pub'):
-                text += self.__add_in(fields[field], self.__get_journal(a_doc, journalformat), format_style_bracket)
+                text += self.__add_in(fields[field], self.__get_journal(a_doc, journal_format), format_style_bracket)
             elif (field == 'doi'):
                 # 8/5/22 checked couple of sites including https://citation.crosscite.org/ that do not escape doi
                 # so remove escaping doi, and let the underscore be dealt with on the latex side
@@ -566,13 +566,13 @@ class BibTexFormat(Format):
         return self.enumerated_keys
 
 
-    def get(self, include_abs, maxauthor, authorcutoff, journalformat=adsJournalFormat.macro):
+    def get(self, include_abs, max_author, author_cutoff, journal_format=adsJournalFormat.macro):
         """
         
         :param include_abs: if ture include abstract
-        :param maxauthor:
-        :param authorcutoff:
-        :param journalformat:
+        :param max_author:
+        :param author_cutoff:
+        :param journal_format:
         :return: result of formatted records in a dict
         """
         num_docs = 0
@@ -582,7 +582,7 @@ class BibTexFormat(Format):
             if self.enumeration:
                 self.__enumerate_keys()
             for index in range(num_docs):
-                ref_BibTex.append(self.__get_doc(index, include_abs, maxauthor, authorcutoff, journalformat))
+                ref_BibTex.append(self.__get_doc(index, include_abs, max_author, author_cutoff, journal_format))
         result_dict = {}
         result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
         result_dict['export'] = ''.join(record for record in ref_BibTex)
