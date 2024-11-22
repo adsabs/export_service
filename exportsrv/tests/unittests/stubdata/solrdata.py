@@ -1417,9 +1417,9 @@ data_15 = \
          }
     },
     u'response': {
-        'numFound': 3,
-        'start': 0,
-        'docs': [
+        u'numFound': 3,
+        u'start': 0,
+        u'docs': [
             {
                 u'bibcode': u'2019Sci...365..565B',
                 u'comment': [u'Galaxies B and C from figures 2 are not in SIMBAD.'],
@@ -1434,7 +1434,6 @@ data_15 = \
         ]
     }
 }
-
 
 data_16 = \
 {
@@ -1658,4 +1657,272 @@ data_17 = \
       }
     ]
   }
+}
+
+data_18 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 141,
+        u'params': {
+            u'q': u'bibcode:(2001physics...2042S OR 2017isra.book.....T OR 1990ApJ...355..726W OR 1978Navig..25..121S OR 2013Ecogr..36.1058M OR 2009AGUFMPP31D1382A OR 1992ApJ...392..310W OR 1971ApJ...164..399S)',
+            u'fl': u'bibcode,author',
+            u'_': u'1731959426353'
+        }
+    },
+    u'response':{
+        u'numFound':8,
+        u'start':0,
+        u'docs':[
+          {
+            u'bibcode': u'2001physics...2042S',
+            u'author':[u'Smith, Frank D., Jr']},
+          {
+            u'bibcode': u'2017isra.book.....T',
+            u'author':[u'Thompson, A. Richard', u'Moran, James M.', u'Swenson, George W., Jr.']},
+          {
+            u'bibcode': u'1990ApJ...355..726W',
+            u'author':[u'Wang, Y. -M.', u'Sheeley, N. R., Jr.']},
+          {
+            u'bibcode': u'1978Navig..25..121S',
+            u'author':[u'Spilker, J. J., Jr.']},
+          {
+            u'bibcode': u'2009AGUFMPP31D1382A',
+            u'author':[u'Anderson, D. G.', u'Goodyear, A. C.', u'Stafford, T. W., Jr.', u'Kennett, J.', u'West, A.']},
+          {
+            u'bibcode': u'1992ApJ...392..310W',
+            u'author':[u'Wang, Y. -M.', u'Sheeley, N. R., Jr.']},
+          {
+            u'bibcode': u'1971ApJ...164..399S',
+            u'author':[u'Spitzer, Lyman, Jr.', u'Hart, Michael H.']},
+          {
+            u'bibcode': u'2013Ecogr..36.1058M',
+            u'author':[u'Merow, Cory', u'Smith, Matthew J.', u'Silander, John A., Jr.']}
+        ]
+    }
+}
+
+data_19 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 42,
+        u'params': {
+            'q':'author:\'shapurian,g\'',
+            u'fl': u'bibcode,author,pub_raw,year',
+            u'_': u'1732120045561'
+        }
+    },
+    u'response':{
+        u'numFound':3,
+        u'start':0,
+        u'docs':[
+          {
+            u'bibcode': u'2023arXiv231208579S',
+            u'author':[u'Shapurian, Golnaz', u'Kurtz, Michael J', u'Accomazzi, Alberto'],
+            u'pub_raw': u'eprint arXiv:2312.08579',
+            u'year': u'2023'},
+          {
+            u'bibcode': u'2024arXiv240611400S',
+            u'author':[u'Shapurian, Golnaz'],
+            u'pub_raw': u'eprint arXiv:2406.11400',
+            u'year': u'2024'},
+          {
+            u'bibcode': u'2023AAS...24117714K',
+            u'author':[u'Koch, Jennifer', u'Shapurian, Golnaz', u'Grant, Carolyn', u'Thompson, Donna', u'ADS Team'],
+            u'pub_raw': u'American Astronomical Society Meeting #241, id. 177.14. <ALTJOURNAL>Bulletin of the American Astronomical Society, Vol. 55, No. 2 e-id 2023n2i177p14</ALTJOURNAL>',
+            u'year': u'2023'}
+        ]
+    }
+}
+
+data_20 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 163,
+        u'params': {
+            'q':'author:\'^André\'',
+            u'fl': u'bibcode,author,pub_raw,year',
+            u'_': u'1732120045561'
+        }
+    },
+    u'response':{
+        u'numFound':1,
+        u'start':0,
+        u'docs':[
+            {
+                u'bibcode': u'2014prpl.conf...27A',
+                u'author': [u'André, P.', u'Di Francesco, J.', u'Ward-Thompson, D.', u'Inutsuka, S. -I.', u'Pudritz, R. E.', u'Pineda, J. E.'],
+                u'pub_raw': u'Protostars and Planets VI, Henrik Beuther, Ralf S. Klessen, Cornelis P. Dullemond, and Thomas Henning (eds.), University of Arizona Press, Tucson, p.27-51',
+                u'year': u'2014'}
+        ]
+    }
+}
+
+data_21 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 51,
+        u'params': {
+            u'q': u'author:"^accomazzi" year:2019',
+            u'indent': u'on',
+            u'fl': u'bibcode,author,pub,year',
+            u'wt': u'json',
+            u'_': u'1560183872951'
+        }
+    },
+    u'response': {
+        u'numFound': 3,
+        u'start': 0,
+        u'docs': [
+            {
+                u'year': u'2019',
+                u'bibcode': u'2019AAS...23338108A',
+                u'bibstem': [u'AAS', u'AAS...233'],
+                u'author': [u'Accomazzi, Alberto', u'Kurtz, Michael J.', u'Henneken, Edwin', u'Grant, Carolyn S.',
+                            u'Thompson, Donna M.', u'Chyla, Roman', u'McDonald, Stephen',
+                            u'Blanco-Cuaresma, Sergi', u'Shapurian, Golnaz', u'Hostetler, Timothy',
+                            u'Templeton, Matthew', u'Lockhart, Kelly'],
+                u'pub': u'American Astronomical Society Meeting Abstracts #233'
+            },
+            {
+                u'year': u'2019',
+                u'bibcode': u'2019AAS...23320704A',
+                u'bibstem': [u'AAS', u'AAS...233'],
+                u'author': [u'Accomazzi, Alberto'],
+                u'pub': u'American Astronomical Society Meeting Abstracts #233'
+            },
+            {
+                u'year': u'2019',
+                u'bibcode': u'2019hsax.conf..526G',
+                u'author': [u'Garzón, F.', u'Patrick, L.', u'Hammersley, P.', u'Streblyanska, A.',
+                            u'Insausti, M.', u'Barreto, M.', u'Fernández, P.', u'Joven, E.',
+                            u'López, P.', u'Mato, A.', u'Moreno, H.', u'Núñez, M.', u'Patrón, J.',
+                            u'Pascual, S.', u'Cardiel, N.'],
+                u'pub': u'Highlights on Spanish Astrophysics X',
+                u'bibstem': [u'hsax', u'hsax.conf']
+            }
+        ]
+    }
+}
+
+data_22 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 29,
+        u'params': {
+            u'q': u'author:"accomazzi" AND doctype:eprint AND year:2021',
+            u'fl': u'bibcode,eid,eprint',
+            u'sort': u'bibcode desc',
+            u'rows': u'300',
+            u'_': u'1642527401469'
+        }
+    },
+    u'response': {
+        u'numFound': 2,
+        u'start': 0,
+        u'docs': [
+            {
+                u'bibcode': u'2021arXiv211200590G',
+                u'eid': u'arXiv:2112.00590'
+            },
+            {
+                u'bibcode': u'2021arXiv210601477C',
+                u'eid': u'arXiv:2106.01477'
+            }
+        ]
+    }
+}
+
+data_23 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 1,
+        u'params': {
+            u'sort': u'date desc',
+            u'fq': u'{!bitset}',
+            u'rows': u'19',
+            u'q': u'*:*',
+            u'start': u'0',
+            u'wt': u'json',
+            u'fl': u'author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,num_citations,read_count,bibcode,identification,copyright,keyword,doctype,num_references,comment,property,esources,data'
+        }
+    },
+    u'response': {
+        u'start': 0,
+        u'numFound': 4,
+        u'docs': [
+            {
+                u'title': [u'A Microwave Free-Space Method Using Artificial Lens with Anti-reflection Layer'],
+                u'author': [ u'Zhang, Yangjun', u'Aratani, Yuki', u'Nakazima, Hironari' ]
+            },
+            {
+                u'author': [u'Ryan, R. E.', u'McCullough, P. R.']
+            },
+            {
+                u'title': [ u'Resolving Gas-Phase Metallicity In Galaxies']
+            },
+            {
+                u'bibcode': u'2017ascl.soft06009C'
+            }
+        ]
+    }
+}
+
+data_24 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 2,
+        u'params': {
+            u'q': u'title:"lt;"',
+            u'indent': u'on',
+            u'fl': u'bibcode,title,abstract',
+            u'wt': u'json',
+            u'_': u'1592510843440'
+        }
+    },
+    u'response': {
+        u'numFound': 4,
+        u'start': 0,
+        u'docs': [
+            {
+                u'bibcode': u'2016JLwT...34.4926L',
+                u'title': [u'Study of SiO{}_{{{x}}} (1 &lt; x lt; 2) Thin-Film Optical Waveguides']
+            },
+            {
+                u'bibcode': u'2016ApJ...832..124B',
+                u'abstract': u'Using Hubble Space Telescope Cosmic Origins Spectrograph observations of 89 QSO sightlines through the Sloan Digital Sky Survey footprint, we study the relationships between C IV absorption systems and the properties of nearby galaxies, as well as the large-scale environment. To maintain sensitivity to very faint galaxies, we restrict our sample to 0.0015&lt; z&lt; 0.015, which defines a complete galaxy survey to L≳ 0.01 L\\ast or stellar mass {M}<SUB>* </SUB>≳ {10}<SUP>8</SUP> {M}<SUB>☉ </SUB>. We report two principal findings. First, for galaxies with impact parameter ρ &lt; 1 {r}<SUB>{vir</SUB>}, C IV detection strongly depends on the luminosity/stellar mass of the nearby galaxy. C IV is preferentially associated with galaxies with {M}<SUB>* </SUB>&gt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB>; lower-mass galaxies rarely exhibit significant C IV absorption (covering fraction {f}<SUB>C</SUB>={9}<SUB>-6</SUB><SUP>+12</SUP> % for 11 galaxies with {M}<SUB>* </SUB>&lt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB>). Second, C IV detection within the {M}<SUB>* </SUB>&gt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB> population depends on environment. Using a fixed-aperture environmental density metric for galaxies with ρ &lt; 160 kpc at z&lt; 0.055, we find that {57}<SUB>-13</SUB><SUP>+12</SUP> % (8/14) of galaxies in low-density regions (regions with fewer than seven L&gt; 0.15 L\\ast galaxies within 1.5 Mpc) have affiliated C IV absorption; however, none (0/7) of the galaxies in denser regions show C IV. Similarly, the C IV detection rate is lower for galaxies residing in groups with dark matter halo masses of {M}<SUB>{halo</SUB>}&gt; {10}<SUP>12.5</SUP> {M}<SUB>☉ </SUB>. In contrast to C IV, H I is pervasive in the circumgalactic medium without regard to mass or environment. These results indicate that C IV absorbers with {log} N({{C}} {{IV}})≳ 13.5 {{cm}}<SUP>-2</SUP> trace the halos of {M}<SUB>* </SUB>&gt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB> galaxies but also reflect larger-scale environmental conditions.'
+            },
+            {
+                u'bibcode': u'2015hst..prop14424B',
+                u'title': [u'STIS CCD Amp A, C, &amp; D Gains']
+            },
+            {
+                u'bibcode': u'2016BaltA..25..310K',
+                u'abstract': u'We use the Apparent Motion Parameters (AMP) method for the determination of orbits of visual double stars (Kiselev &amp; Kiyaeva 1980). The quality of AMP orbits is completely dependent on the precision of parameters of relative positions and motions at the same instant. They are calculated on the basis of a short arc of observations. To determine these parameters, we use recent high precision observations obtained with the best modern techniques. New orbits of three stars are presented.'
+            }
+        ]
+    }
+}
+
+data_25 = \
+{
+    u'responseHeader': {
+        u'status': 1,
+        u'QTime': 1,
+        u'params': {
+            u'sort': u'date desc',
+            u'fq': u'{!bitset}',
+            u'rows': u'19',
+            u'q': u'*:*',
+            u'start': u'0',
+            u'wt': u'json',
+            u'fl': u'author,title,year,date,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,num_citations,read_count,bibcode,identification,copyright,keyword,doctype,num_references,comment,property,esources,data'
+        }
+    }
 }

@@ -21,14 +21,21 @@ bp = Blueprint('export_service', __name__)
 
 
 
-def default_solr_fields():
+def default_solr_fields(author_limit=0):
     """
 
+    :param author_limit:
     :return: list of fields needed from solr
     """
+    if author_limit == 0:
+        return 'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,aff_canonical,doi,abstract,' \
+               'read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,pubnote,version,' \
+               'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem,page_count,orcid_pub'
+    # if the limit is specified, include it in
     return 'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,aff_canonical,doi,abstract,' \
            'read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,pubnote,version,' \
-           'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem,page_count,orcid_pub'
+           'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem,page_count,orcid_pub,' \
+           f'[fields author={author_limit}],[fields aff={author_limit}],[fields aff_canonical={author_limit}]'
 
 
 def return_response(results, status, request_type=''):
@@ -61,7 +68,7 @@ def return_response(results, status, request_type=''):
     return None
 
 
-def return_bibTex_format_export(solr_data, include_abs, keyformat, maxauthor, authorcutoff, journalformat, request_type='POST'):
+def return_bibTex_format_export(solr_data, include_abs, keyformat, max_author, author_cutoff, journal_format, request_type='POST'):
     """
 
     :param include_abs:
@@ -69,7 +76,7 @@ def return_bibTex_format_export(solr_data, include_abs, keyformat, maxauthor, au
     """
     if (solr_data is not None):
         bibTex_export = BibTexFormat(solr_data, keyformat=keyformat)
-        return return_response(bibTex_export.get(include_abs=include_abs, maxauthor=maxauthor, authorcutoff=authorcutoff, journalformat=journalformat),
+        return return_response(bibTex_export.get(include_abs=include_abs, max_author=max_author, author_cutoff=author_cutoff, journal_format=journal_format),
                                200, request_type)
     return return_response({'error': 'no result from solr'}, 404)
 
@@ -164,25 +171,11 @@ def return_rss_format_export(solr_data, link, request_type='POST'):
     return return_response({'error': 'no result from solr'}, 404)
 
 
-def read_value_list_or_not(payload, field):
+def get_payload(request):
     """
-
-    :param payload:
-    :param field:
-    :return:
-    """
-    if type(payload[field]) is list:
-        return payload[field][0]
-    return payload[field]
-
-
-def export_post(request, style, format=-1):
-    """
-
-    :param request:
-    :param style:
-    :param format:
-    :return:
+    
+    :param request: 
+    :return: 
     """
     try:
         payload = request.get_json(force=True)  # post data in json
@@ -193,12 +186,61 @@ def export_post(request, style, format=-1):
         return {'error': 'no information received'}, 400
     if 'bibcode' not in payload:
         return {'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400
+    
+    return {'payload': payload}, 200
+
+def get_a_payload_value(payload, key):
+    """
+
+    :param payload:
+    :param key:
+    :return:
+    """
+    if type(payload[key]) is list:
+        return payload[key][0]
+    return payload[key]
+
+
+def get_export_journal_format_from_payload(payload):
+    """
+    local method to read journal format parameter
+        1: Use AASTeX macros (default)
+        2: Use Journal Abbreviations
+        3: Use Full Journal Name
+    :param payload:
+    :return:
+    """
+    if 'journalformat' in payload:
+        journal_format = get_a_payload_value(payload, 'journalformat')
+        if not adsJournalFormat().verify(journal_format):
+            journal_format = adsJournalFormat.default
+    else:
+        journal_format = adsJournalFormat.default
+    return journal_format
+
+
+def export_post_payload_base(payload, style, format=-1):
+    """
+
+    :param payload:
+    :param style:
+    :param format:
+    :return:
+    """
     if 'sort' in payload:
-        sort = read_value_list_or_not(payload, 'sort')
+        sort = get_a_payload_value(payload, 'sort')
     else:
         sort = 'date desc, bibcode desc'
+    if 'authorlimit' in payload:
+        author_limit = get_a_payload_value(payload, 'authorlimit')
+    else:
+        author_limit = 0
 
     bibcodes = payload['bibcode']
+
+    # verify bibcode is a list and has at least one non empty element
+    if not isinstance(bibcodes, list) or not any(bibcodes):
+        return return_response({'error': 'at least one bibcode is needed in the list'}, 400)
 
     if format == -1:
         current_app.logger.info('received request with bibcodes={bibcodes} to export in {style} style using sort order={sort}'.
@@ -211,73 +253,56 @@ def export_post(request, style, format=-1):
     if current_app.config['EXPORT_SERVICE_TEST_BIBCODE_GET'] == bibcodes:
         return solrdata.data, 200
 
-    return get_solr_data(bibcodes=bibcodes, fields=default_solr_fields(), sort=sort, encode_style=adsFormatter().native_encoding(format)), 200
+    return get_solr_data(bibcodes=bibcodes, fields=default_solr_fields(author_limit), sort=sort, encode_style=adsFormatter().native_encoding(format)), 200
 
-def export_post_extras(request, style):
+
+def export_post_payload_BibTex(payload, style):
     """
 
-    :param request:
+    :param payload:
     :param style:
     :return:
     """
 
-    def read_journal_format_param(payload):
-        """
-        local method to read journal format parameter
-            1: Use AASTeX macros (default)
-            2: Use Journal Abbreviations
-            3: Use Full Journal Name
-        :param payload:
-        :return:
-        """
-        if 'journalformat' in payload:
-            journalformat = read_value_list_or_not(payload, 'journalformat')
-            if not adsJournalFormat().verify(journalformat):
-                journalformat = adsJournalFormat.default
-        else:
-            journalformat = adsJournalFormat.default
-        return journalformat
+    if 'maxauthor' in payload:
+        max_author = get_a_payload_value(payload, 'maxauthor')
+        if max_author < 0:
+            max_author = 0
+    elif style == 'BibTex':
+        max_author = 10
+    else:
+        # for BibTex Abs default is to display all authors and hence 0
+        max_author = 0
+    if 'keyformat' in payload:
+        keyformat = get_a_payload_value(payload, 'keyformat')
+    else:
+        keyformat = '%R'
+    if 'authorcutoff' in payload:
+        author_cutoff = get_a_payload_value(payload, 'authorcutoff')
+        if author_cutoff <= 0:
+            author_cutoff = 200
+    else:
+        author_cutoff = 200
+    journal_format = get_export_journal_format_from_payload(payload)
+    return max_author, keyformat, author_cutoff, journal_format
 
 
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
+def get_export_format_for_journal_style(payload, style):
+    """
 
-    if style in ['BibTex', 'BibTex Abs']:
-        if payload:
-            if 'maxauthor' in payload:
-                maxauthor = read_value_list_or_not(payload, 'maxauthor')
-                if maxauthor < 0:
-                    maxauthor = 0
-            elif style == 'BibTex':
-                maxauthor = 10
-            else:
-                # for BibTex Abs default is to display all authors and hence 0
-                maxauthor = 0
-            if 'keyformat' in payload:
-                keyformat = read_value_list_or_not(payload, 'keyformat')
-            else:
-                keyformat = '%R'
-            if 'authorcutoff' in payload:
-                authorcutoff = read_value_list_or_not(payload, 'authorcutoff')
-                if authorcutoff <= 0:
-                    authorcutoff = 200
-            else:
-                authorcutoff = 200
-            journalformat = read_journal_format_param(payload)
-            return maxauthor, keyformat, authorcutoff, journalformat
-        return None, None, None
-
-    # for /cls formats default for the following 3 is to turn into macro
+    :param payload:
+    :param style:
+    :return:
+    """
+    # for the following 3 there is a param to specify if journal should be turn into the macro
     if style in ['aastex', 'aspc', 'aasj']:
         if payload:
-            return read_journal_format_param(payload)
-        return None
+            return get_export_journal_format_from_payload(payload)
+
     # default for the following four is to keep the full journal name, and hence 3
     if style in ['icarus', 'mnras', 'soph', 'apsj']:
         return 3
-
+    
     return -1
 
 
@@ -311,12 +336,15 @@ def bibTex_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'BibTex')
+    results, status = get_payload(request)
     if status == 200:
-        maxauthor, keyformat, authorcutoff, journalformat = export_post_extras(request, 'BibTex')
-        return return_bibTex_format_export(solr_data=results, include_abs=False,
-                                           keyformat=keyformat, maxauthor=maxauthor, authorcutoff=authorcutoff,
-                                           journalformat=journalformat)
+        payload = results['payload']
+        results, status = export_post_payload_base(payload, 'BibTex')
+        if status == 200:
+            max_author, keyformat, author_cutoff, journal_format = export_post_payload_BibTex(payload, 'BibTex')
+            return return_bibTex_format_export(solr_data=results, include_abs=False,
+                                               keyformat=keyformat, max_author=max_author, author_cutoff=author_cutoff,
+                                               journal_format=journal_format)
     return return_response(results, status)
 
 
@@ -329,7 +357,7 @@ def bibTex_format_export_get(bibcode):
     :return:
     """
     return return_bibTex_format_export(solr_data=export_get(bibcode, 'BibTex'), include_abs=False,
-                                       keyformat='%R', maxauthor=10, authorcutoff=200, journalformat=1, request_type='GET')
+                                       keyformat='%R', max_author=10, author_cutoff=200, journal_format=1, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -339,12 +367,15 @@ def bibTex_abs_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'BibTex Abs')
+    results, status = get_payload(request)
     if status == 200:
-        maxauthor, keyformat, authorcutoff, journalformat = export_post_extras(request, 'BibTex Abs')
-        return return_bibTex_format_export(solr_data=results, include_abs=True,
-                                           keyformat=keyformat, maxauthor=maxauthor, authorcutoff=authorcutoff,
-                                           journalformat=journalformat)
+        payload = results['payload']
+        results, status = export_post_payload_base(payload, 'BibTex Abs')
+        if status == 200:
+            max_author, keyformat, author_cutoff, journal_format = export_post_payload_BibTex(payload, 'BibTex Abs')
+            return return_bibTex_format_export(solr_data=results, include_abs=True,
+                                               keyformat=keyformat, max_author=max_author, author_cutoff=author_cutoff,
+                                               journal_format=journal_format)
     return return_response(results, status)
 
 
@@ -357,7 +388,7 @@ def bibTex_abs_format_export_get(bibcode):
     :return:
     """
     return return_bibTex_format_export(solr_data=export_get(bibcode, 'BibTex Abs'), include_abs=True,
-                                       keyformat='%R', maxauthor=0, authorcutoff=200, journalformat=1, request_type='GET')
+                                       keyformat='%R', max_author=0, author_cutoff=200, journal_format=1, request_type='GET')
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -367,9 +398,11 @@ def fielded_ads_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'ADS')
+    results, status = get_payload(request)
     if status == 200:
-        return return_fielded_format_export(solr_data=results, fielded_style='ADS', request_type='POST')
+        results, status = export_post_payload_base(results['payload'], 'ADS')
+        if status == 200:
+            return return_fielded_format_export(solr_data=results, fielded_style='ADS', request_type='POST')
     return return_response(results, status)
 
 
@@ -391,9 +424,11 @@ def fielded_endnote_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'EndNote')
+    results, status = get_payload(request)
     if status == 200:
-        return return_fielded_format_export(solr_data=results, fielded_style='EndNote', request_type='POST')
+        results, status = export_post_payload_base(results['payload'], 'EndNote')
+        if status == 200:
+            return return_fielded_format_export(solr_data=results, fielded_style='EndNote', request_type='POST')
     return return_response(results, status)
 
 
@@ -415,9 +450,11 @@ def fielded_procite_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'ProCite')
+    results, status = get_payload(request)
     if status == 200:
-        return return_fielded_format_export(solr_data=results, fielded_style='ProCite', request_type='POST')
+        results, status = export_post_payload_base(results['payload'], 'ProCite')
+        if status == 200:
+            return return_fielded_format_export(solr_data=results, fielded_style='ProCite', request_type='POST')
     return return_response(results, status)
 
 
@@ -439,9 +476,11 @@ def fielded_refman_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'Refman')
+    results, status = get_payload(request)
     if status == 200:
-        return return_fielded_format_export(solr_data=results, fielded_style='Refman', request_type='POST')
+        results, status = export_post_payload_base(results['payload'], 'Refman')
+        if status == 200:
+            return return_fielded_format_export(solr_data=results, fielded_style='Refman', request_type='POST')
     return return_response(results, status)
 
 
@@ -463,9 +502,11 @@ def fielded_refworks_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'RefWorks')
+    results, status = get_payload(request)
     if status == 200:
-        return return_fielded_format_export(solr_data=results, fielded_style='RefWorks', request_type='POST')
+        results, status = export_post_payload_base(results['payload'], 'RefWorks')
+        if status == 200:
+            return return_fielded_format_export(solr_data=results, fielded_style='RefWorks', request_type='POST')
     return return_response(results, status)
 
 
@@ -487,9 +528,11 @@ def fielded_medlars_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'MEDLARS')
+    results, status = get_payload(request)
     if status == 200:
-        return return_fielded_format_export(solr_data=results, fielded_style='MEDLARS', request_type='POST')
+        results, status = export_post_payload_base(results['payload'], 'MEDLARS')
+        if status == 200:
+            return return_fielded_format_export(solr_data=results, fielded_style='MEDLARS', request_type='POST')
     return return_response(results, status)
 
 
@@ -511,9 +554,11 @@ def xml_dublincore_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'DublinCore')
+    results, status = get_payload(request)
     if status == 200:
-        return return_xml_format_export(solr_data=results, xml_style='DublinCore')
+        results, status = export_post_payload_base(results['payload'], 'DublinCore')
+        if status == 200:
+            return return_xml_format_export(solr_data=results, xml_style='DublinCore')
     return return_response(results, status)
 
 
@@ -535,9 +580,11 @@ def xml_ref_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'Reference')
+    results, status = get_payload(request)
     if status == 200:
-        return return_xml_format_export(solr_data=results, xml_style='Reference')
+        results, status = export_post_payload_base(results['payload'], 'Reference')
+        if status == 200:
+            return return_xml_format_export(solr_data=results, xml_style='Reference')
     return return_response(results, status)
 
 
@@ -559,9 +606,11 @@ def xml_refabs_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'ReferenceAbs')
+    results, status = get_payload(request)
     if status == 200:
-        return return_xml_format_export(solr_data=results, xml_style='ReferenceAbs')
+        results, status = export_post_payload_base(results['payload'], 'ReferenceAbs')
+        if status == 200:
+            return return_xml_format_export(solr_data=results, xml_style='ReferenceAbs')
     return return_response(results, status)
 
 
@@ -583,9 +632,11 @@ def xml_jats_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'JATS')
+    results, status = get_payload(request)
     if status == 200:
-        return return_xml_format_export(solr_data=results, xml_style='JATS')
+        results, status = export_post_payload_base(results['payload'], 'JATS')
+        if status == 200:
+            return return_xml_format_export(solr_data=results, xml_style='JATS')
     return return_response(results, status)
 
 
@@ -607,12 +658,15 @@ def csl_aastex_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'aastex', 2)
+    results, status = get_payload(request)
     if status == 200:
-        journal_format = export_post_extras(request, 'aastex')
-        return return_csl_format_export(solr_data=results,
-                                        csl_style='aastex', export_format=adsFormatter.latex, journal_format=journal_format,
-                                        request_type='POST')
+        payload = results['payload']
+        results, status = export_post_payload_base(payload, 'aastex', 2)
+        if status == 200:
+            journal_format = get_export_journal_format_from_payload(payload)
+            return return_csl_format_export(solr_data=results,
+                                            csl_style='aastex', export_format=adsFormatter.latex, journal_format=journal_format,
+                                            request_type='POST')
     return return_response(results, status)
 
 
@@ -635,10 +689,12 @@ def csl_icarus_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'icarus', 2)
+    results, status = get_payload(request)
     if status == 200:
-        return return_csl_format_export(solr_data=results,
-                                        csl_style='icarus', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='POST')
+        results, status = export_post_payload_base(results['payload'], 'icarus', 2)
+        if status == 200:
+            return return_csl_format_export(solr_data=results,
+                                            csl_style='icarus', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='POST')
     return return_response(results, status)
 
 
@@ -661,10 +717,12 @@ def csl_mnras_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'mnras', 2)
+    results, status = get_payload(request)
     if status == 200:
-        return return_csl_format_export(solr_data=results,
-                                        csl_style='mnras', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='POST')
+        results, status = export_post_payload_base(results['payload'], 'mnras', 2)
+        if status == 200:
+            return return_csl_format_export(solr_data=results,
+                                            csl_style='mnras', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='POST')
     return return_response(results, status)
 
 
@@ -687,10 +745,12 @@ def csl_soph_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'soph', 2)
+    results, status = get_payload(request)
     if status == 200:
-        return return_csl_format_export(solr_data=results,
-                                        csl_style='soph', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='POST')
+        results, status = export_post_payload_base(results['payload'], 'soph', 2)
+        if status == 200:
+            return return_csl_format_export(solr_data=results,
+                                            csl_style='soph', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='POST')
     return return_response(results, status)
 
 
@@ -707,90 +767,263 @@ def csl_soph_format_export_get(bibcode):
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/aspc', methods=['POST'])
+def csl_aspc_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = get_payload(request)
+    if status == 200:
+        results, status = export_post_payload_base(results['payload'], 'aspc', 2)
+        if status == 200:
+            return return_csl_format_export(solr_data=results,
+                                            csl_style='aspc', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/aspc/<bibcode>', methods=['GET'])
+def csl_aspc_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'aspc', 2),
+                                    csl_style='aspc', export_format=adsFormatter.latex, journal_format=3, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/aasj', methods=['POST'])
+def csl_aasj_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = get_payload(request)
+    if status == 200:
+        results, status = export_post_payload_base(results['payload'], 'aasj', 2)
+        if status == 200:
+            return return_csl_format_export(solr_data=results,
+                                            csl_style='aasj', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/aasj/<bibcode>', methods=['GET'])
+def csl_aasj_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'aasj', 2),
+                                    csl_style='aasj', export_format=adsFormatter.latex, journal_format=3, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/apsj', methods=['POST'])
+def csl_apsj_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = get_payload(request)
+    if status == 200:
+        results, status = export_post_payload_base(results['payload'], 'apsj', 2)
+        if status == 200:
+            return return_csl_format_export(solr_data=results,
+                                            csl_style='apsj', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/apsj/<bibcode>', methods=['GET'])
+def csl_apsj_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'apsj', 2),
+                                    csl_style='apsj', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/ieee', methods=['POST'])
+def csl_ieee_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = get_payload(request)
+    if status == 200:
+        results, status = export_post_payload_base(results['payload'], 'ieee', 2)
+        if status == 200:
+            return return_csl_format_export(solr_data=results,
+                                            csl_style='ieee', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/ieee/<bibcode>', methods=['GET'])
+def csl_ieee_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'ieee', 2),
+                                    csl_style='ieee', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/agu', methods=['POST'])
+def csl_agu_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = get_payload(request)
+    if status == 200:
+        results, status = export_post_payload_base(results['payload'], 'agu', 2)
+        if status == 200:
+            return return_csl_format_export(solr_data=results,
+                                            csl_style='agu', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/agu/<bibcode>', methods=['GET'])
+def csl_agu_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'agu', 2),
+                                    csl_style='agu', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/gsa', methods=['POST'])
+def csl_gsa_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = get_payload(request)
+    if status == 200:
+        results, status = export_post_payload_base(results['payload'], 'gsa', 2)
+        if status == 200:
+            return return_csl_format_export(solr_data=results,
+                                            csl_style='gsa', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/gsa/<bibcode>', methods=['GET'])
+def csl_gsa_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'gsa', 2),
+                                    csl_style='gsa', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/ams', methods=['POST'])
+def csl_ams_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = get_payload(request)
+    if status == 200:
+        results, status = export_post_payload_base(results['payload'], 'ams', 2)
+        if status == 200:
+            return return_csl_format_export(solr_data=results,
+                                            csl_style='ams', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/ams/<bibcode>', methods=['GET'])
+def csl_ams_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'ams', 2),
+                                    csl_style='ams', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='GET')
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/csl', methods=['POST'])
 def csl_format_export():
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
+    """
 
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-    if 'style' not in payload:
-        return return_response({'error': 'no style found in payload (parameter name is `style`)'}, 400)
-    if 'format' not in payload:
-        return return_response({'error': 'no output format found in payload (parameter name is `format`)'}, 400)
-    if 'sort' in payload:
-        sort = read_value_list_or_not(payload, 'sort')
-    else:
-        sort = 'date desc, bibcode desc'
+    :return:
+    """
+    results, status = get_payload(request)
+    if status == 200:
+        payload = results['payload']
 
-    bibcodes = payload['bibcode']
-    csl_style = payload['style']
-    export_format = payload['format']
+        if 'style' not in payload:
+            return return_response({'error': 'no style found in payload (parameter name is `style`)'}, 400)
+        if 'format' not in payload:
+            return return_response({'error': 'no output format found in payload (parameter name is `format`)'}, 400)
 
-    if (len(bibcodes) == 0) or (len(csl_style) == 0)  or (export_format == None):
-        return return_response({'error': 'not all the needed information received'}, 400)
+        csl_style = payload['style']
+        export_format = payload['format']
 
-    if (not adsCSLStyle().verify(csl_style)):
-        return return_response({'error': 'unrecognizable style (supprted formats are: ' + adsCSLStyle().get() + ')'}, 400)
-    if (not adsFormatter().verify(export_format)):
-        return return_response({'error': 'unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)'}, 400)
+        if (not adsCSLStyle().verify(csl_style)):
+            return return_response({'error': 'unrecognizable style (supprted formats are: ' + adsCSLStyle().get() + ')'}, 400)
+        if (not adsFormatter().verify(export_format)):
+            return return_response({'error': 'unrecognizable format (supprted formats are: unicode=1, html=2, latex=3)'}, 400)
 
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in {csl_style} style with output format {export_format}  style using sort order={sort}'.
-                 format(bibcodes=','.join(bibcodes), csl_style=csl_style, export_format=export_format, sort=sort))
+        results, status = export_post_payload_base(payload, csl_style, export_format)
+        if status == 200:
+            export_journal_format = get_export_format_for_journal_style(payload, csl_style)
+            return return_csl_format_export(results, csl_style, export_format, export_journal_format)
 
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=default_solr_fields(), sort=sort, encode_style=export_format)
-    journal_format = export_post_extras(request, csl_style)
-    return return_csl_format_export(solr_data, csl_style, export_format, journal_format)
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/custom', methods=['POST'])
 def custom_format_export():
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
+    """
 
-    if not payload:
-        return return_response({'error': 'no information received'}, 400)
-    if 'bibcode' not in payload:
-        return return_response({'error': 'no bibcode found in payload (parameter name is `bibcode`)'}, 400)
-    if 'format' not in payload:
-        return return_response({'error': 'no custom format found in payload (parameter name is `format`)'}, 400)
-    if 'sort' in payload:
-        sort = read_value_list_or_not(payload, 'sort')
-    else:
-        sort = 'date desc, bibcode desc'
+    :return:
+    """
+    results, status = get_payload(request)
+    if status == 200:
+        payload = results['payload']
 
-    bibcodes = payload['bibcode']
-    try:
-        custom_format_str = read_value_list_or_not(payload, 'format')
-    except Exception as e:
-        return return_response({'error': 'unable to read custom format'}, 400)
+        if 'format' not in payload:
+            return return_response({'error': 'no custom format found in payload (parameter name is `format`)'}, 400)
 
-    current_app.logger.info('received request with bibcodes={bibcodes} to export in a custom format: {custom_format_str}  style using sort order={sort}'.
-                 format(bibcodes=','.join(bibcodes), custom_format_str=custom_format_str.encode('utf8'), sort=sort))
+        custom_format_str = get_a_payload_value(payload, 'format')
 
-    if (len(bibcodes) == 0) or (len(custom_format_str) == 0):
-        return return_response({'error': 'not all the needed information received'}, 400)
+        if (len(custom_format_str) == 0):
+            return return_response({'error': 'invalid custom format'}, 400)
 
-    # pass the user defined format to CustomFormat to parse and we would be able to get which fields
-    # in Solr we need to query on
-    custom_export = CustomFormat(custom_format=custom_format_str)
-    fields = custom_export.get_solr_fields()
+        # pass the user defined format to CustomFormat to parse and we would be able to get which fields
+        # in Solr we need to query on
+        custom_export = CustomFormat(custom_format=custom_format_str)
+        fields = custom_export.get_solr_fields()
 
-    # now get the required data from Solr and send it to customFormat for formatting
-    solr_data = get_solr_data(bibcodes=bibcodes, fields=fields, sort=sort)
-    if (solr_data is not None):
-        if ('error' in solr_data):
-            return return_response({'error': 'unable to query solr'}, 400)
-        custom_export.set_json_from_solr(solr_data)
-        return return_response(custom_export.get(), 200, 'POST')
-    return return_response({'error': 'no result from solr'}, 404)
+        results, status = export_post_payload_base(payload, 'custom')
+        if status == 200:
+            custom_export.set_json_from_solr(results)
+            return return_response(custom_export.get(), 200, 'POST')
+
+    return return_response(results, status)
 
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
@@ -800,9 +1033,11 @@ def votable_format_export_post():
 
     :return:
     """
-    results, status = export_post(request, 'VOTable')
+    results, status = get_payload(request)
     if status == 200:
-        return return_votable_format_export(solr_data=results, request_type='POST')
+        results, status = export_post_payload_base(results['payload'], 'VOTable')
+        if status == 200:
+            return return_votable_format_export(solr_data=results, request_type='POST')
     return return_response(results, status)
 
 
@@ -824,19 +1059,16 @@ def rss_format_export_post():
 
     :return:
     """
-    try:
-        payload = request.get_json(force=True)  # post data in json
-    except:
-        payload = dict(request.form)  # post data in form encoding
-
-    if 'link' in payload:
-        link = read_value_list_or_not(payload, 'link')
-    else:
-        link = ''
-
-    results, status = export_post(request, 'RSS')
+    results, status = get_payload(request)
     if status == 200:
-        return return_rss_format_export(solr_data=results, link=link)
+        payload = results['payload']
+        results, status = export_post_payload_base(payload, 'RSS')
+        if status == 200:
+            if 'link' in payload:
+                link = get_a_payload_value(payload, 'link')
+            else:
+                link = ''
+            return return_rss_format_export(solr_data=results, link=link)
     return return_response(results, status)
 
 
@@ -851,29 +1083,3 @@ def rss_format_export_get(bibcode, link):
     :return:
     """
     return return_rss_format_export(solr_data=export_get(bibcode, 'RSS'), link=link, request_type='GET')
-
-
-@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/ieee', methods=['POST'])
-def csl_ieee_format_export_post():
-    """
-
-    :return:
-    """
-    results, status = export_post(request, 'ieee', 2)
-    if status == 200:
-        return return_csl_format_export(solr_data=results,
-                                        csl_style='ieee', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='POST')
-    return return_response(results, status)
-
-
-@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/ieee/<bibcode>', methods=['GET'])
-def csl_ieee_format_export_get(bibcode):
-    """
-
-    :param bibcode:
-    :return:
-    """
-    return return_csl_format_export(solr_data=export_get(bibcode, 'ieee', 2),
-                                    csl_style='ieee', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full, request_type='GET')
