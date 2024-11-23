@@ -773,7 +773,7 @@ class CustomFormat(Format):
                     elif char == right:
                         count -= 1
                 if count != 0:
-                    if char == '"':
+                    if left == '"':
                         if count % 2 != 0:
                             str = str.replace(left, '')
                     else:

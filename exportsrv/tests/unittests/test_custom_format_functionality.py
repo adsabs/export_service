@@ -18,10 +18,14 @@ class TestExportsCustomFormat(TestCase):
     maxDiff = None
 
     def create_app(self):
+        """ create app"""
+
         self.current_app = app.create_app()
         return self.current_app
 
+
     def test_export_format(self):
+        """ test using different output formats (ie, unicode, html, latex) """
         custom_format = CustomFormat(custom_format=r'')
         # init unicode (also accepting UTF-8 for backward compatibility)
         custom_format._CustomFormat__set_export_format('utf-8')
@@ -34,12 +38,17 @@ class TestExportsCustomFormat(TestCase):
         # init latex
         custom_format._CustomFormat__set_export_format('latex')
         assert (custom_format.export_format == adsFormatter.latex)
+        # init csv
+        custom_format._CustomFormat__set_export_format('csv')
+        assert (custom_format.export_format == adsFormatter.csv)
         # anything else is init to unicode
         custom_format._CustomFormat__set_export_format('')
         assert (custom_format.export_format == adsFormatter.unicode)
 
 
     def test_parse_enumeration(self):
+        """ test parsing the enumeration out of custom format specified by the user """
+
         # enumeration is included
         custom_format = CustomFormat(custom_format=r'%zn%10i %(Y), %T,%\J,%\V,%\p')
         custom_format._CustomFormat__parse_enumeration()
@@ -52,6 +61,8 @@ class TestExportsCustomFormat(TestCase):
 
 
     def test_parse_command(self):
+        """ test encoding and header as part of custom format specified by the user """
+
         # command is included
         custom_format = CustomFormat(custom_format=r'%ZEncoding:latex %ZHeader:"at the top of the page" %ZFooter:"at the bottom of the page" %ZLinelength:100 %zn\\item %N,%Y,{\\em %J\}, \{\\bf %V\}, %p--%P (%c citations)\n')
         custom_format._CustomFormat__parse_command()
@@ -70,6 +81,8 @@ class TestExportsCustomFormat(TestCase):
 
 
     def test_format_date(self):
+        """ test formating the date """
+
         custom_format = CustomFormat(custom_format=r'')
 
         # format year
@@ -79,6 +92,8 @@ class TestExportsCustomFormat(TestCase):
 
 
     def test_format_url(self):
+        """ test formating the url """
+
         custom_format = CustomFormat(custom_format=r'')
 
         # long format
@@ -91,6 +106,8 @@ class TestExportsCustomFormat(TestCase):
 
 
     def test_get_affiliation_list(self):
+        """ test formating the affilations """
+
         custom_format = CustomFormat(custom_format=r'')
         custom_format.set_json_from_solr(solrdata.data_3)
 
@@ -111,6 +128,8 @@ class TestExportsCustomFormat(TestCase):
 
 
     def test_get_affiliation_list_limit(self):
+        """ test formating the affilations, when user has set limits """
+
         custom_format = CustomFormat(custom_format=r'%2F')
         custom_format.set_json_from_solr(solrdata.data_3)
 
@@ -122,6 +141,8 @@ class TestExportsCustomFormat(TestCase):
 
 
     def test_get_author_list(self):
+        """ verify all authors format with and without limits """
+
         # Optional parameters for author field: n.m
         # If the number of authors in the list is larger than n, the list will be truncated and m authors are returned
         custom_format = CustomFormat(custom_format=r'%A,%3.2A,%a,%3.2a,%E,%3.2E,%e,%3.2e,'
@@ -203,6 +224,8 @@ class TestExportsCustomFormat(TestCase):
 
 
     def test_get_keywords(self):
+        """ test formatting the keywords """
+
         custom_format = CustomFormat(custom_format=r'')
         custom_format.set_json_from_solr(solrdata.data_3)
 
@@ -218,6 +241,8 @@ class TestExportsCustomFormat(TestCase):
 
 
     def test_add_clean_pub_raw(self):
+        """ test getting and cleaning up the publication field """
+
         custom_format = CustomFormat(custom_format=r'')
         custom_format.set_json_from_solr(solrdata.data)
 
@@ -231,6 +256,8 @@ class TestExportsCustomFormat(TestCase):
 
 
     def test_get_publication(self):
+        """ test formating publication field for different formats """
+
         custom_format = CustomFormat(custom_format=r'')
         custom_format.set_json_from_solr(solrdata.data_3)
 
@@ -245,7 +272,10 @@ class TestExportsCustomFormat(TestCase):
         for key, value in publication_format.items():
             assert (custom_format._CustomFormat__get_publication(key, a_doc) == value)
 
+
     def test_encode(self):
+        """ test encoding, for the entire reference string """
+
         custom_format = CustomFormat(custom_format=r'')
 
         # encoding is unicode, pass in abstract
@@ -277,7 +307,10 @@ class TestExportsCustomFormat(TestCase):
         comment_latex = u"The NASA Astrophysics Data System is phasing out support for its legacy interface (``ADS Classic'') in favor of a more modern, featureful system (``the new ADS'')."
         assert (custom_format._CustomFormat__encode(value=comment, field='comment') == comment_latex)
 
+
     def test_author_sep(self):
+        """ test AuthorSep param """
+
         # verify when missing it is False
         custom_format = CustomFormat(custom_format=r'%ZEncoding:latex %ZHeader:"at the top of the page" %ZFooter:"at the bottom of the page" %ZLinelength:100 %zn\\item %N,%Y,{\\em %J\}, \{\\bf %V\}, %p--%P (%c citations)\n')
         custom_format._CustomFormat__parse_command()
@@ -289,7 +322,10 @@ class TestExportsCustomFormat(TestCase):
         author_list_with_new_sep = u'English, Jayanne; Taylor, A. R.; Mashchenko, S. Y.; Irwin, Judith A.; Basu, Shantanu; and Johnstone, Doug'
         assert (custom_format._CustomFormat__get_author_list('%A', index=0) == author_list_with_new_sep)
 
+
     def test_markup_strip(self):
+        """ test markup param """
+
         # verify when missing it is False
         custom_format = CustomFormat(custom_format=r'%ZEncoding:latex %ZHeader:"at the top of the page" %ZFooter:"at the bottom of the page" %ZLinelength:100 %zn\\item %N,%Y,{\\em %J\}, \{\\bf %V\}, %p--%P (%c citations)\n')
         custom_format._CustomFormat__parse_command()
@@ -310,7 +346,10 @@ class TestExportsCustomFormat(TestCase):
         abstract_without_markup = u"We present a large grid of stellar evolutionary tracks, which are suitable to modelling star clusters and galaxies by means of population synthesis. The tracks are presented for the initial chemical compositions [Z=0.0004, Y=0.23], [Z=0.001, Y=0.23], [Z=0.004, Y=0.24], [Z=0.008, Y=0.25], [Z=0.019, Y=0.273] (solar composition), and [Z=0.03, Y=0.30]. They are computed with updated opacities and equation of state, and a moderate amount of convective overshoot. The range of initial masses goes from 0.15 Msun to 7 Msun, and the evolutionary phases extend from the zero age main sequence (ZAMS) till either the thermally pulsing AGB regime or carbon ignition. We also present an additional set of models with solar composition, computed using the classical Schwarzschild criterion for convective boundaries. From all these tracks, we derive the theoretical isochrones in the Johnson-Cousins UBVRIJHK broad-band photometric system."
         assert (custom_format._CustomFormat__encode(value=abstract, field='abstract') == abstract_without_markup)
 
+
     def test_field_encoding(self):
+        """ test encoding for individual fields"""
+
         # latex field encoding
         custom_format = CustomFormat(custom_format=r'%\A')
         custom_format.set_json_from_solr(solrdata.data_4)
@@ -336,7 +375,10 @@ class TestExportsCustomFormat(TestCase):
         assert (custom_format._CustomFormat__encode(value=custom_format._CustomFormat__get_author_list(format=r'%<1H', index=0),
                                                     field='author', field_format=r'%<1H') == author_ascii_encoded)
 
+
     def test_end_record_insert(self):
+        """ test EOL param"""
+
         # verify string specified with %ZEOL gets inserted after each record
         # no EOL string
         custom_format = CustomFormat(custom_format=r'%ZEOL:"" %R')
@@ -351,7 +393,10 @@ class TestExportsCustomFormat(TestCase):
         custom_format.set_json_from_solr(solrdata.data_6)
         assert (custom_format.get().get('export', '') == "2020AAS...23528705A--END2019EPSC...13.1911A--END2015scop.confE...3A--END2019AAS...23338108A--END2019AAS...23320704A--END2018EPJWC.18608001A--END2018AAS...23221409A--END2017ASPC..512...45A--END2018AAS...23136217A--END2018AAS...23130709A--END")
 
+
     def test_page_count(self):
+        """ test page_count field """
+
         # verify %pc outputs page_count properly
         formatted = [u'Yang, Huihui and Chen, Hongshan. (2017). 71, 191, 9 pp.\n',
                      u'Knapp, Wilfried and Thuemen, Chris. (2017). 13, 25, 6 pp.\n']
@@ -359,20 +404,30 @@ class TestExportsCustomFormat(TestCase):
         custom_format.set_json_from_solr(solrdata.data_8)
         assert (custom_format.get().get('export', '') == ''.join(formatted))
 
+
     def test_page_range(self):
+        """ test page_range field """
+
         # verify %p, %P, and %PP outputs page, lastpage, and page range, respectively, properly
         custom_formats = [r'%A. (%Y). %q, %V, %p-%P pp.',
                           r'%A. (%Y). %q, %V, %p',
-                          r'%A. (%Y). %q, %V, %pp pp.']
+                          r'%A. (%Y). %q, %V, %pp pp.',
+                          r'%A. (%Y). %q, %V, %pp']
         formatted_records = [u'English, Jayanne, Taylor, A. R., Mashchenko, S. Y., Irwin, Judith A., Basu, Shantanu, and Johnstone, Doug. (2000). ApJL, 533, L25-L28 pp.\n',
                              u'English, Jayanne, Taylor, A. R., Mashchenko, S. Y., Irwin, Judith A., Basu, Shantanu, and Johnstone, Doug. (2000). ApJL, 533, L25\n',
-                             u'English, Jayanne, Taylor, A. R., Mashchenko, S. Y., Irwin, Judith A., Basu, Shantanu, and Johnstone, Doug. (2000). ApJL, 533, L25-L28 pp.\n']
-        for custom_format, formatted_record in zip(custom_formats, formatted_records):
+                             u'English, Jayanne, Taylor, A. R., Mashchenko, S. Y., Irwin, Judith A., Basu, Shantanu, and Johnstone, Doug. (2000). ApJL, 533, L25-L28 pp.\n',
+                             u'Pustilnik, M., van Heck, B., Lutchyn, R. M., and Glazman, L. I.. (2018). PhRvL, 120, 029901\n']
+        solrdata_set = [solrdata.data_3, solrdata.data_3, solrdata.data_3, solrdata.data_5]
+        for custom_format, formatted_record, data in zip(custom_formats, formatted_records, solrdata_set):
             custom_format = CustomFormat(custom_format=custom_format)
-            custom_format.set_json_from_solr(solrdata.data_3)
+            custom_format.set_json_from_solr(data)
+            print(custom_format.get().get('export', ''))
             assert (custom_format.get().get('export', '') == formatted_record)
 
+
     def test_num_citiations(self):
+        """ test num_citations field """
+
         # verify %c and %r outputs respectively for num_citations and num_references
         with mock.patch.object(self.current_app.client, 'get') as get_mock:
             get_mock.return_value = mock_response = mock.Mock()
@@ -386,7 +441,10 @@ class TestExportsCustomFormat(TestCase):
         custom_format.set_json_from_solr(solrdata.data_11)
         assert (custom_format.get().get('export', '') == "2016ApJ...818L..26F: 29|40\n")
 
+
     def test_escaping_literal(self):
+        """ test escape having %% """
+
         # verify for example %%R is translated to %R and not recognized as field ID bibcode
         formatted = [u'%R 2017EPJD...71..191Y\n%D 2017\n',
                      u'%R 2017JDSO...13...25K\n%D 2017\n']
@@ -396,6 +454,7 @@ class TestExportsCustomFormat(TestCase):
 
 
     def test_author_without_firstname(self):
+        """ test when author has is identified with last name only """
         # verify author with only lastname is formatted properly
         formatted = [u"\\bibitem[Sameer, Kaur et al.\(2015)]{Sameer2015}\ Sameer, Kaur, N., Ganesh, S., Kumar, V., & Baliyan, K. S.\ 2015\,The Astronomer's Telegram\,7495\,1\n",
                      u"\\bibitem[Sameer, Ganesh et al.\(2015)]{Sameer2015}\ Sameer, Ganesh, S., Kaur, N., Kumar, V., & Baliyan, K. S.\ 2015\,The Astronomer's Telegram\,7494\,1\n"]
@@ -405,6 +464,8 @@ class TestExportsCustomFormat(TestCase):
 
 
     def test_comment_and_pubnote(self):
+        """ test comment and pubnote fields """
+
         # verify the new specifier xe which should output putnote
         formatted = [u'2019Sci...365..565B\n comment:Galaxies B and C from figures 2 are not in SIMBAD.\n eprint_comment: Published online in Science 27 June 2019; doi:10.1126/science.aaw5903\n',
                      u'2023JSMTE2023b3301M\n comment:\n eprint_comment: doi:10.1088/1742-5468/acaf82\n',
@@ -412,6 +473,63 @@ class TestExportsCustomFormat(TestCase):
         custom_format = CustomFormat(custom_format=r'%R\n comment:%x\n eprint_comment: %xe')
         custom_format.set_json_from_solr(solrdata.data_15)
         assert (custom_format.get().get('export', '') == r''.join(formatted))
+
+
+    def test_match_punctuation(self):
+        """ test match_punctuation method """
+
+        input = [
+            '"Unmatched (parenthesis in the middle -> remove it"',
+            '{Matched brackets should stay unchanged}',
+            'Valid string with "quotes" -- unchanged',
+            'Another [valid] string',
+            'Unmatched quote at the end" -> remove it',
+            '[Unmatched bracket at the beginning -> remove it',
+            'Unmatched curly bracket at the end -> remove it}'
+        ]
+
+        expected = [
+            '"Unmatched parenthesis in the middle -> remove it"',
+            '{Matched brackets should stay unchanged}',
+            'Valid string with "quotes" -- unchanged',
+            'Another [valid] string',
+            'Unmatched quote at the end -> remove it',
+            'Unmatched bracket at the beginning -> remove it',
+            'Unmatched curly bracket at the end -> remove it'
+        ]
+
+        custom_format = CustomFormat(custom_format=r'%R')
+        result = custom_format._CustomFormat__match_punctuation(input)
+        self.assertEqual(result, expected)
+
+
+    def test_for_csv(self):
+        """ test the method for_csv """
+
+        # test when the user has provided the header line
+        custom_format = CustomFormat(custom_format=r'%ZEncoding:csv %ZHeader:"Bibcode,Author" %R,%H')
+        custom_format.set_json_from_solr(solrdata.data_17)
+        expected = 'Bibcode,Author\n"2024zndo..10908474S","Schade"\n"2024wsp..conf...20V","Vidmachenko"\n"2024asal.book..204V","Vidmachenko"\n"2018scrp.conf.....K","Kent"\n"2023uwff.book.....R","Renwick"\n'
+        assert (custom_format.get().get('export', '') == expected)
+
+        # test when the user has no provided the header line
+        custom_format = CustomFormat(custom_format=r'%ZEncoding:csv %R,%H')
+        custom_format.set_json_from_solr(solrdata.data_17)
+        expected = '"bibcode","author"\n"2024zndo..10908474S","Schade"\n"2024wsp..conf...20V","Vidmachenko"\n"2024asal.book..204V","Vidmachenko"\n"2018scrp.conf.....K","Kent"\n"2023uwff.book.....R","Renwick"\n'
+        assert (custom_format.get().get('export', '') == expected)
+
+
+    def test_format_line_wrapped(self):
+        """ test format_line_wrapped when the Linelength is specified"""
+
+        custom_format = CustomFormat(custom_format=r'%ZLinelength:100 %R')
+
+        abstract = u'Using Hubble Space Telescope Cosmic Origins Spectrograph observations of 89 QSO sightlines through the Sloan Digital Sky Survey footprint, we study the relationships between C IV absorption systems and the properties of nearby galaxies, as well as the large-scale environment. To maintain sensitivity to very faint galaxies, we restrict our sample to 0.0015&lt; z&lt; 0.015, which defines a complete galaxy survey to L≳ 0.01 L\\ast or stellar mass {M}<SUB>* </SUB>≳ {10}<SUP>8</SUP> {M}<SUB>☉ </SUB>. We report two principal findings. First, for galaxies with impact parameter ρ &lt; 1 {r}<SUB>{vir</SUB>}, C IV detection strongly depends on the luminosity/stellar mass of the nearby galaxy. C IV is preferentially associated with galaxies with {M}<SUB>* </SUB>&gt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB>; lower-mass galaxies rarely exhibit significant C IV absorption (covering fraction {f}<SUB>C</SUB>={9}<SUB>-6</SUB><SUP>+12</SUP> % for 11 galaxies with {M}<SUB>* </SUB>&lt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB>). Second, C IV detection within the {M}<SUB>* </SUB>&gt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB> population depends on environment. Using a fixed-aperture environmental density metric for galaxies with ρ &lt; 160 kpc at z&lt; 0.055, we find that {57}<SUB>-13</SUB><SUP>+12</SUP> % (8/14) of galaxies in low-density regions (regions with fewer than seven L&gt; 0.15 L\\ast galaxies within 1.5 Mpc) have affiliated C IV absorption; however, none (0/7) of the galaxies in denser regions show C IV. Similarly, the C IV detection rate is lower for galaxies residing in groups with dark matter halo masses of {M}<SUB>{halo</SUB>}&gt; {10}<SUP>12.5</SUP> {M}<SUB>☉ </SUB>. In contrast to C IV, H I is pervasive in the circumgalactic medium without regard to mass or environment. These results indicate that C IV absorbers with {log} N({{C}} {{IV}})≳ 13.5 {{cm}}<SUP>-2</SUP> trace the halos of {M}<SUB>* </SUB>&gt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB> galaxies but also reflect larger-scale environmental conditions.'
+
+        expected = u'Using Hubble Space Telescope Cosmic Origins Spectrograph observations of 89 QSO sightlines through\n            the Sloan Digital Sky Survey footprint, we study the relationships between C IV\n            absorption systems and the properties of nearby galaxies, as well as the large-scale\n            environment. To maintain sensitivity to very faint galaxies, we restrict our sample to\n            0.0015&lt; z&lt; 0.015, which defines a complete galaxy survey to L≳ 0.01 L\\ast or\n            stellar mass {M}<SUB>* </SUB>≳ {10}<SUP>8</SUP> {M}<SUB>☉ </SUB>. We report two\n            principal findings. First, for galaxies with impact parameter ρ &lt; 1\n            {r}<SUB>{vir</SUB>}, C IV detection strongly depends on the luminosity/stellar mass of\n            the nearby galaxy. C IV is preferentially associated with galaxies with {M}<SUB>*\n            </SUB>&gt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB>; lower-mass galaxies rarely exhibit\n            significant C IV absorption (covering fraction\n            {f}<SUB>C</SUB>={9}<SUB>-6</SUB><SUP>+12</SUP> % for 11 galaxies with {M}<SUB>*\n            </SUB>&lt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB>). Second, C IV detection within the\n            {M}<SUB>* </SUB>&gt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB> population depends on\n            environment. Using a fixed-aperture environmental density metric for galaxies with ρ\n            &lt; 160 kpc at z&lt; 0.055, we find that {57}<SUB>-13</SUB><SUP>+12</SUP> % (8/14) of\n            galaxies in low-density regions (regions with fewer than seven L&gt; 0.15 L\\ast galaxies\n            within 1.5 Mpc) have affiliated C IV absorption; however, none (0/7) of the galaxies in\n            denser regions show C IV. Similarly, the C IV detection rate is lower for galaxies\n            residing in groups with dark matter halo masses of {M}<SUB>{halo</SUB>}&gt;\n            {10}<SUP>12.5</SUP> {M}<SUB>☉ </SUB>. In contrast to C IV, H I is pervasive in the\n            circumgalactic medium without regard to mass or environment. These results indicate that\n            C IV absorbers with {log} N({{C}} {{IV}})≳ 13.5 {{cm}}<SUP>-2</SUP> trace the halos of\n            {M}<SUB>* </SUB>&gt; {10}<SUP>9.5</SUP> {M}<SUB>☉ </SUB> galaxies but also reflect\n            larger-scale environmental conditions.'
+
+        assert (custom_format._CustomFormat__format_line_wrapped(abstract, index=0) == expected)
+
 
 
 if __name__ == '__main__':
