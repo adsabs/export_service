@@ -1,6 +1,5 @@
 [![Build Status](https://travis-ci.org/adsabs/export_service.svg)](https://travis-ci.org/adsabs/export_service)
-[![Coverage Status](https://coveralls.io/repos/adsabs/export_service/badge.svg)](https://coveralls.io/r/adsabs/export_service?branch=master)
-
+[![Coverage Status](https://coveralls.io/repos/github/adsabs/export_service/badge.svg?branch=master)](https://coveralls.io/github/adsabs/export_service?branch=master)
 
 # ADS Export Service
 
@@ -174,6 +173,8 @@ This parameter will be utilized in the ADS UI. However, when using the API, it i
 
     {"bibcode": ["1980ApJS...44..137K", "1980ApJS...44..489B"], "authorlimit": 500}
     
+To retrieve all records without this limit using the API, you can use the provided script: https://github.com/adsabs/export_service/blob/master/export_with_api.py.
+
 
 ## Maintainers
 
