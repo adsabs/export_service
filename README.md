@@ -173,6 +173,8 @@ This parameter will be utilized in the ADS UI. However, when using the API, it i
 
     {"bibcode": ["1980ApJS...44..137K", "1980ApJS...44..489B"], "authorlimit": 500}
     
+To retrieve all records without this limit using the API, you can use the provided script: https://github.com/adsabs/export_service/blob/master/export_with_api.py.
+
 
 ## Maintainers
 

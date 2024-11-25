@@ -40,7 +40,7 @@ def query_solr(query, start=1, rows=2000, fl='bibcode'):
 def get_records_export(data, endpoint):
     """
     call export service with data to format it using the endpoint format
-    
+
     :param data
     :param endpoint:
     :return:
