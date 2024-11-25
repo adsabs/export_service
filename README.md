@@ -1,6 +1,5 @@
 [![Build Status](https://travis-ci.org/adsabs/export_service.svg)](https://travis-ci.org/adsabs/export_service)
-[![Coverage Status](https://coveralls.io/repos/adsabs/export_service/badge.svg)](https://coveralls.io/r/adsabs/export_service?branch=master)
-
+[![Coverage Status](https://coveralls.io/repos/github/adsabs/export_service/badge.svg?branch=master)](https://coveralls.io/github/adsabs/export_service?branch=master)
 
 # ADS Export Service
 
