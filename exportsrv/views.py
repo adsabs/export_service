@@ -234,7 +234,7 @@ def export_post_payload_base(payload, style, format=-1):
     if 'authorlimit' in payload:
         author_limit = get_a_payload_value(payload, 'authorlimit')
     else:
-        author_limit = 0
+        author_limit = 200
 
     bibcodes = payload['bibcode']
 
