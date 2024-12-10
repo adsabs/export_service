@@ -166,7 +166,7 @@ A new parameter, `authorlimit`, has been introduced to limit the number of autho
 
 At the request of stakeholders, the `authorlimit` parameter has been set to a default value of 200 in the service. While this default is hardcoded, it remains configurable through both the ADS UI and the API, ensuring flexibility in controlling the number of authors and affiliations displayed based on user needs.
 
-If the authorlimit parameter is omitted when using the API, the default value of 200 will apply. However, as mentioned, users can override this limit by explicitly specifying their desired value in the API request.
+If the `authorlimit` parameter is omitted when using the API, the default value of 200 will apply. However, as mentioned, users can override this limit by explicitly specifying their desired value in the API request.
 
     {"bibcode": ["1980ApJS...44..137K", "1980ApJS...44..489B"], "authorlimit": 500}
     
