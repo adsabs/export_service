@@ -162,14 +162,11 @@ For example:
     curl -H "Authorization: Bearer <your API token>" -H "Content-Type: application/json" -X POST -d '{"format":"\\\\bibitem[%\\2m%(y)]\\{%za1%y} %\\8l %\\Y,%\\j,%\\V,%\\p"}' https://api.adsabs.harvard.edu/v1/export/convert
 
 
-## Limiting number of authors and affilations from the UI
+A new parameter, `authorlimit`, has been introduced to limit the number of authors and their affiliations returned in exported records. This addresses the growing issue of excessively large author lists, with some papers featuring thousands of authors.
 
-A new optional parameter, `authorlimit`, has been introduced to limit the number of authors and their affiliations returned in exported records. This parameter addresses the growing issue of excessively large author lists, which are becoming increasingly common, with some papers featuring thousands of authors.
+At the request of stakeholders, the `authorlimit` parameter has been set to a default value of 200 in the service. While this default is hardcoded, it remains configurable through both the ADS UI and the API, ensuring flexibility in controlling the number of authors and affiliations displayed based on user needs.
 
-The `authorlimit` parameter specifies the maximum number of authors and affiliations to retrieve from Solr and format in the service.
-
-This parameter will be utilized in the ADS UI. However, when using the API, it is optional. If omitted, the service will return all authors and affiliations.
-
+If the authorlimit parameter is omitted when using the API, the default value of 200 will apply. However, as mentioned, users can override this limit by explicitly specifying their desired value in the API request.
 
     {"bibcode": ["1980ApJS...44..137K", "1980ApJS...44..489B"], "authorlimit": 500}
     
