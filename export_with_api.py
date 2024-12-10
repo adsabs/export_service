@@ -72,8 +72,9 @@ if __name__ == "__main__":
         identifiers = [doc['bibcode'] for doc in docs]
         data = {"bibcode": identifiers}
 
-        # 2- include optional parameters (the same for all the formats), skip otherwise
-        data.update({"sort": "date desc, bibcode desc", "authorlimit": 500})
+        # 2 - include optional parameters (applicable to all formats); skip if not needed
+        # default values for these optional parameters are set below and can be modified as needed
+        data.update({"sort": "date desc, bibcode desc", "authorlimit": 200})
 
         # 3- optional/required parameters for some of the export formats (ie, BibTex has an optional parameter keyformat)
         # check the readme for the parameter(s) of your selected format
