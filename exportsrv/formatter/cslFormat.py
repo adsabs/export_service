@@ -13,12 +13,12 @@ from exportsrv.formatter.format import Format
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author, html_to_laTex, encode_latex_doi
 
 # This class accepts JSON and sends it to citeproc library to get reformated
-# We are supporting 7 complete cls (formatting all the fields) and 13 syles that
+# We are supporting, as of end of 2024, 11 complete cls (formatting all the fields) and 20 syles that
 # only format authors, used for custom format
 # citeproc provides the plain and html export format, and for export we also need
 # latex that is implemented.
 
-class CSL:
+class CSLFormat:
 
     REGEX_TOKENIZE_CITA = re.compile(r'^(.*)\(?(\d{4})\)?')
     REGEX_TOKENIZE_BIBLIO = re.compile(r'^(.*?)(\\?\s*\d+.*)')

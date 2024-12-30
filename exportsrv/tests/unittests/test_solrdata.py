@@ -12,6 +12,7 @@ from exportsrv.utils import get_solr_data
 from exportsrv.tests.unittests.stubdata import solrdata
 
 class TestSolrData(TestCase):
+
     def create_app(self):
         # set the number of bibcodes to switch between query and bigquery
         self.current_app = app.create_app(**{'EXPORT_SERVICE_MAX_RECORDS_SOLR_QUERY': 10})
@@ -93,7 +94,6 @@ class TestSolrData(TestCase):
             solr_data = get_solr_data(bibcodes=bibcodes, fields='bibcode,author,year,pub,bibstem',
                                       sort=self.current_app.config['EXPORT_SERVICE_NO_SORT_SOLR'])
             self.assertEqual(len(solr_data['response']['docs']), len(bibcodes))
-
 
     def test_switch_to_canonical_affilation(self):
         """

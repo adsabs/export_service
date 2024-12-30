@@ -13,6 +13,7 @@ from exportsrv.formatter.strftime import strftime
 from exportsrv.formatter.latexencode import utf8tolatex
 
 class TestExportsError(TestCase):
+
     def create_app(self):
         app_ = app.create_app()
         return app_
@@ -135,6 +136,7 @@ class TestExportsError(TestCase):
 
         with self.assertRaises(TypeError):
             strftime(dt, illegal_format)
+
 
     def test_utf8tolatex_when_empty_string(self):
         """

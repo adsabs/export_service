@@ -8,7 +8,7 @@ import json
 from exportsrv.utils import get_solr_data
 from exportsrv.formatter.ads import adsFormatter, adsCSLStyle, adsJournalFormat
 from exportsrv.formatter.cslJson import CSLJson
-from exportsrv.formatter.csl import CSL
+from exportsrv.formatter.cslFormat import CSLFormat
 from exportsrv.formatter.xmlFormat import XMLFormat
 from exportsrv.formatter.bibTexFormat import BibTexFormat
 from exportsrv.formatter.fieldedFormat import FieldedFormat
@@ -35,7 +35,7 @@ def default_solr_fields(author_limit=0):
     return 'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,aff_canonical,doi,abstract,' \
            'read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,pubnote,version,' \
            'property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem,page_count,orcid_pub,' \
-           f'[fields author={author_limit}],[fields aff={author_limit}],[fields aff_canonical={author_limit}]'
+           f'[fields author={author_limit} aff={author_limit} aff_canonical={author_limit}]'
 
 
 def return_response(results, status, request_type=''):
@@ -139,7 +139,7 @@ def return_csl_format_export(solr_data, csl_style, export_format, journal_format
     :return:
     """
     if (solr_data is not None):
-        csl_export = CSL(CSLJson(solr_data).get(), csl_style, export_format, journal_format)
+        csl_export = CSLFormat(CSLJson(solr_data).get(), csl_style, export_format, journal_format)
         return return_response(csl_export.get(), 200, request_type)
     return return_response({'error': 'no result from solr'}, 404)
 

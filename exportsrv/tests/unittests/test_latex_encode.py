@@ -9,9 +9,11 @@ from exportsrv.formatter.latexencode import utf8tolatex
 
 
 class TestLatexEncode(TestCase):
+
     def create_app(self):
         app_ = app.create_app()
         return app_
+
 
     def test_ascii_characters(self):
         text = u'  ! " # $ % \\ \' ( ) * + , - . / 0 1 2 3 4 5 6 7 8 9 : ; < = > ? @ ' + \
@@ -62,7 +64,6 @@ class TestLatexEncode(TestCase):
                 u'{\\r{U}} {\\r{u}} {\\H{U}} {\\H{u}} ' + \
                 u'{\\k{U}} {\\k{u}} {\\^{W}} {\\^{w}} {\\^{Y}} {\\^{y}} {\\"Y} {\\\'Z} {\\\'z} {\\.Z} {\\.z} {\\v{Z}} {\\v{z}} ſ'
         assert (utf8tolatex(text, ascii_no_brackets=True) == latex)
-
 
 
 if __name__ == '__main__':

@@ -1926,3 +1926,223 @@ data_25 = \
         }
     }
 }
+
+# records with various doctypes having doi
+# note that as of end of 2024 there no records with doi for the following doctypes
+# proposal, pressrelease, talk
+data_26 = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 3310,
+        u'params': {
+            u'q': u'doi:"10.*"',
+            u'fl': u'doc_type,bibcode,author,year,pub_raw,doi',
+            u'start': u'0',
+            u'internal_logging_params': u'X-Amzn-Trace-Id=Root=1-676448cf-4ba786881db5c3346f632766',
+            u'boost': u'add(doctype_boost, 1)',
+            u'sort': u'date desc',
+            u'rows': u'1',
+            u'wt': 'json'
+        }
+    },
+    u'response': {
+        u'numFound': 20,
+        u'start': 0,
+        u'numFoundExact': True,
+        u'docs': [
+            {
+                u'bibcode': u'2025NML....17...42Y',
+                u'author': [u'Yin, Hao', u'Li, Yanting', u'Tian, Zhiying', u'Li, Qichao', u'Jiang, Chenhui',
+                            u'Liang, Enfu', u'Guo, Yiping'],
+                u'doctype': u'article',
+                u'doi': [u'10.1007/s40820-024-01539-6'],
+                u'pub_raw': u'Nano-Micro Letters, Volume 17, Issue 1, id.42',
+                u'pub': u'Nano-Micro Letters',
+                u'year': u'2025'
+            },
+            {
+                u'bibcode': '2024E3SWC.50307004O',
+                u'author': [u'Okselni, Tia', u'Efdi, Mai'],
+                u'doctype': u'inproceedings',
+                u'doi': [u'10.1051/e3sconf/202450307004'],
+                u'pub_raw': u'The 9th International Symposium on Applied Chemistry in conjuction with the 5th International Conference on Chemical and Material Engineering (ISAC-ICCME 2023), Serpong, Banten, Indonesia, Edited by Dwi Anggoro, D.; Kumoro, A.C.; Dahnum, D.; Restu, W.K.; Sembiring, K.C.; Indriyati, ; Ndruru, S.T.C.L.; Putri, A.M.H.; E3S Web of Conferences, Volume 503, id.07004',
+                u'pub': u'E3S Web of Conferences',
+                u'year': u'2024'
+            },
+            {
+                u'bibcode': '2024arXiv241203744G',
+                u'author': [u'Gadhia, Nandini', u'Smyrnakis, Michalis', u'Liu, Po-Yu', u'Blake, Damer', u'Hay, Melanie',
+                            u'Nguyen, Anh', u'Richards, Dominic', u'Xia, Dong', u'Krishna, Ritesh'],
+                u'doctype': u'eprint',
+                u'doi': [u'10.48550/arXiv.2412.03744'],
+                u'pub_raw': u'eprint arXiv:2412.03744',
+                u'pub': u'arXiv e-prints',
+                u'year': u'2024'
+            },
+            {
+                u'bibcode': '2024AbICA...8....1A',
+                u'author': [u'Adolf, Albert', u'Karsznia, Izabela'],
+                u'doctype': u'abstract',
+                u'doi': [u'10.5194/ica-abs-8-1-2024'],
+                u'pub_raw': u'Abstracts of the ICA, Volume 8, page 1',
+                u'pub': u'Abstracts of the ICA',
+                u'year': u'2024'
+            },
+            {
+                u'bibcode': '2024sisy.rept...14Z',
+                u'author': [u'Zusi, Michele', u'Simioni, Emanuele', u'Vincenzo, Della Corte', u'Andrea, Cicchetti',
+                            u'Politi, Romolo', u'Cremonese, Gabriele', u'Capaccioni, Fabrizio', u'Doressoundiram, Alain',
+                            u'Palumbo, Pasquale', u'Re, Cristina', u'Vincendon, Mathieu'],
+                u'doctype': u'techreport',
+                u'doi': [u'10.5281/zenodo.13890990'],
+                u'pub_raw': u'SIMBIO-SYS Instrument Documentation, id. 14',
+                u'pub': u'SIMBIO-SYS Instrument Documentation',
+                u'year': u'2024'
+            },
+            {
+                u'bibcode': '2024PhDT........20B',
+                u'author': [u'Braemer, Adrian Lukas'],
+                u'doctype': u'phdthesis',
+                u'doi': [u'10.11588/heidok.00035657'],
+                u'pub_raw': u'PhD thesis from Heidelberg University, Combined Faculty of Mathematics, Engineering and Natural Sciences',
+                u'pub': u'Ph.D. Thesis',
+                u'year': u'2024'
+            },
+            {
+                u'bibcode': '2024CSSP...43.7972Y',
+                u'author': [u'Yuan, Sihan', u'Ning, Gengxin', u'Lin, Yushen'],
+                u'doctype': u'circular',
+                u'doi': [u'10.1007/s00034-024-02838-4'],
+                u'pub_raw': u'Circuits, Systems, and Signal Processing, Volume 43, Issue 12, pp. 7972-7988',
+                u'pub': u'Circuits Systems and Signal Processing',
+                u'year': u'2024'
+            },
+            {
+                u'bibcode': '2024oenh.book..506D',
+                u'author': [u'Dormady, Noah'],
+                u'doctype': u'inbook',
+                u'doi': [u'10.1093/acrefore/9780199389407.013.506'],
+                u'pub_raw': u'Oxford Research Encyclopedia of Natural Hazard Science.  Edited by Djillali Benouar et al. ISBN: 978-0-199-38940-7. Oxford University Press, article id. 506',
+                u'pub': u'Oxford Research Encyclopedia of Natural Hazard Science',
+                u'year': u'2024'
+            },
+            {
+                u'bibcode': '2024PRegS.103j0043A',
+                u'author': [u'Alifah, Julia Nurul', u'Fauziyah, Annisa Salma', u'Pranoto, Joko', u'Miu, Iwan'],
+                u'doctype': u'bookreview',
+                u'doi': [u'10.1016/j.pirs.2024.100043'],
+                u'pub_raw': u'Papers in Regional Science, vol. 103, issue 6, p. 100043',
+                u'pub': u'Papers in Regional Science',
+                u'year': u'2024'
+            },
+            {
+                u'bibcode': '2025psge.book.....B',
+                u'author': [u'Byun, Sung-Soo', u'Forrester, Peter J.'],
+                u'doctype': u'book',
+                u'doi': [u'10.1007/978-981-97-5173-0'],
+                u'pub_raw': u'Progress on the Study of the Ginibre Ensembles, by Sung-Soo Byun and Peter J. Forrester. KIAS Springer Series in Mathematics, volume 3, 2025',
+                u'pub': u'Progress on the Study of the Ginibre Ensembles',
+                u'year': u'2025'
+            },
+            {
+                u'bibcode': '2025NuPhA105322966M',
+                u'author': [u'Moumene, Imane', u'Bonaccorso, Angela'],
+                u'doctype': u'erratum',
+                u'doi': [u'10.1016/j.nuclphysa.2024.122966'],
+                u'pub_raw': u'Nuclear Physics, Section A, Volume 1053, id.122966',
+                u'pub': u'Nuclear Physics A',
+                u'year': u'2025'
+            },
+            {
+                u'bibcode': '2024SPIE13420E....X',
+                u'author': [u'Xu, Jinyang', u'Davim, J. Paulo'],
+                u'doctype': u'proceedings',
+                u'doi': [u'10.1117/12.3055927'],
+                u'pub_raw': u'Third International Conference on New Materials, Machinery, and Vehicle Engineering (NMMVE 2024). Edited by Xu, Jinyang; Davim, J. Paulo. Proceedings of the SPIE, Volume 13420 (2024).',
+                u'pub': u'Third International Conference on New Materials, Machinery, and Vehicle Engineering (NMMVE 2024)',
+                u'year': u'2024'
+            },
+            {
+                u'bibcode': '2025JTerr.11701032T',
+                u'author': [u'Tekeste, Mehari'],
+                u'doctype': u'editorial',
+                u'doi': [u'10.1016/j.jterra.2024.101032'],
+                u'pub_raw': u'Journal of Terramechanics, Volume 117, id.101032',
+                u'pub': u'Journal of Terramechanics',
+                u'year': u'2025'
+            },
+            {
+                u'bibcode': '2019GCN.25753....1L',
+                u'author': [u'LIGO Scientific Collaboration', u'Virgo Collaboration'],
+                u'doctype': u'newsletter',
+                u'doi': [u'10.1007/s11433-010-4137-4'],
+                u'pub_raw': u'GRB Coordinates Network, Circular Service, No. 25753',
+                u'pub': u'GRB Coordinates Network',
+                u'year': u'2019'
+            },
+            {
+                u'bibcode': '2024zndo..10053554S',
+                u'author': [u'susannawinkelbauer'],
+                u'doctype': u'software',
+                u'doi': [u'10.5281/zenodo.10053554'],
+                u'pub_raw': u'Zenodo',
+                u'pub': u'Zenodo',
+                u'year': u'2024'
+            },
+            {
+                u'bibcode': '2024pds..data...79T',
+                u'author': [u'Tedesco, Edward', u'Davis, Donald R.'],
+                u'doctype': u'dataset',
+                u'doi': [u'10.26033/ms2j-v867'],
+                u'pub_raw': u'NASA Planetary Data System, urn:nasa:pds:gbo.ast.loneos.survey::1.0',
+                u'pub': u'NASA Planetary Data System',
+                u'year': u'2024'
+            },
+            {
+                u'bibcode': '2024MsT..........5R',
+                u'author': [u'Reynoso, Armando'],
+                u'doctype': u'mastersthesis',
+                u'doi': [u'10.48550/arXiv.2312.10071'],
+                u'pub_raw': u'ProQuest Dissertations And Thesis; Thesis (M.S.)--California State University, Long Beach, 2024.; Publication Number: AAT 31336259; ISBN: 9798384481096; Source: Masters Abstracts International, Volume: 86-04.; 66 p.',
+                u'pub': u'Masters Thesis',
+                u'year': u'2024'
+            },
+            {
+                u'bibcode': '2024JLum..27620834B',
+                u'author': [u'Bettinelli, Marco'],
+                u'doctype': u'obituary',
+                u'doi': [u'10.1016/j.jlumin.2024.120834'],
+                u'pub_raw': u'Journal of Luminescence, Volume 276, id.120834',
+                u'pub': u'Journal of Luminescence',
+                u'year': u'2024'
+            },
+            {
+                u'bibcode': '2024..............S',
+                u'author': [u'Stovall, J. Willis'],
+                u'doctype': u'misc',
+                u'doi': [u'10.2475/001c.118656'],
+                u'pub_raw': u'American Journal of Science, issue 202',
+                u'pub': u'American Journal of Science',
+                u'year': u'2024'
+            },
+            {
+                u'bibcode': '2024MPEC....C....9B',
+                u'author': [u'Beuden, T.', u'Carvajal, V. F.', u'Fay, D.', u'Fazekas, J. B.', u'Fuls, D. C.',
+                            u'Gibbs, A. R.', u'Grauer, A. D.', u'Groeller, H.', u'Hogan, J. K.', u'Kowalski, R. A.',
+                            u'Larson, S. M.', u'Leonard, G. J.', u'Rankin, D.', u'Seaman, R. L.', u'Shelly, F. C.',
+                            u'Wierzchos, K. W.', u'Watanabe, H.', u'Kozhukhov, A. M.', u'Kechin, Y.', u'Lipunov, V.',
+                            u'Gorbovskoy, E.', u'Tiurina, N.', u'Balanutsa, P.', u'Kornilov, V.', u'Kuznetsov, A.',
+                            u'Gress, O.', u'Zimnukhov, D.', u'Yazev, S.', u'Budnev, N.', u'Hahn, R.', u'Ursache, F.',
+                            u'Dupouy, P.', u'Buzzi, L.', u'Hug, G.', u'Linder, T.', u'Holmes, R.', u'Horn, L.',
+                            u'Denneau, L.', u'Erasmus, N.', u'Fitzsimmons, A.', u'Lawrence, A.', u'Robinson, J.',
+                            u'Siverd, R.', u'Tonry, J.', u'Weiland, H.'],
+                u'doctype': u'catalog',
+                u'doi': [u'10.48377/MPEC/2024-C09'],
+                u'pub_raw': u'Minor Planet Electronic Circ., No. 2024-C09',
+                u'pub': u'Minor Planet Electronic Circulars',
+                u'year': u'2024'
+            },
+        ]
+    }
+}
