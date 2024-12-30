@@ -9,7 +9,7 @@ from collections import OrderedDict
 import exportsrv.app as app
 
 from exportsrv.tests.unittests.stubdata import solrdata
-from exportsrv.formatter.csl import CSL, adsFormatter
+from exportsrv.formatter.cslFormat import CSLFormat, adsFormatter
 from exportsrv.formatter.customFormat import CustomFormat
 from exportsrv.utils import get_solr_data
 

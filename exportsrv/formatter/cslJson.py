@@ -11,23 +11,24 @@ from exportsrv.formatter.format import Format
 
 class CSLJson(Format):
 
-    def __get_cls_author_list(self, a_doc):
+    def __get_cls_author_editor_list(self, a_doc, field='author'):
         """
-        format authors
+        format authors/editors
         
         :param a_doc: 
         :return: 
         """
         author_list = []
-        if 'author' in a_doc:
-            for author in a_doc['author']:
+        if field in a_doc:
+            for author in a_doc[field]:
                 author_parts = author.split(', ')
                 oneAuthor = {}
                 oneAuthor['family'] = author_parts[0]
                 if (len(author_parts) >= 2):
                     oneAuthor['given'] = author_parts[1]
                 author_list.append(oneAuthor)
-        if len(author_list) == 0:
+        # only for author, if no author list available, include placeholder
+        if len(author_list) == 0 and field == 'author':
             author_list.append({'family':'No author'})
         return author_list
 
@@ -76,7 +77,7 @@ class CSLJson(Format):
         a_doc = self.from_solr['response'].get('docs')[index]
         data = {}
         data['id'] = 'ITEM-{0}'.format(index + 1)
-        data['author'] = self.__get_cls_author_list(a_doc)
+        data['author'] = self.__get_cls_author_editor_list(a_doc)
         data['type'] = self.__get_doc_type(a_doc.get('doctype', ''))
         return data
 
@@ -93,11 +94,15 @@ class CSLJson(Format):
         data['id'] = 'ITEM-{0}'.format(index + 1)
         data['issued'] = ({'date-parts': [[int(a_doc['year'])]]})
         data['title'] = ''.join(a_doc.get('title', ''))
-        data['author'] = self.__get_cls_author_list(a_doc)
+        data['author'] = self.__get_cls_author_editor_list(a_doc, field='author')
+        editor = self.__get_cls_author_editor_list(a_doc, field='editor')
+        if editor:
+            data['editor'] = editor
         data['container-title'] = self.__get_doc_pub(a_doc)
         data['container-title-short'] = ''
         data['volume'] = a_doc.get('volume', '')
         data['issue'] = a_doc.get('issue', '')
+        data['series'] = a_doc.get('series', '')
         # both eid and page go into the page field in solr
         page = ''.join(a_doc.get('page', ''))
         eid = a_doc.get('eid', '')
@@ -114,6 +119,9 @@ class CSLJson(Format):
         data['locator'] = a_doc.get('bibcode')
         data['genre'] = str(a_doc.get('bibcode')[4:13]).strip('.')
         data['publisher'] = a_doc.get('publisher', '')
+        # to fill the school field for thesis types
+        if a_doc.get('doctype') in ['phdthesis', 'mastersthesis']:
+            data['publisher-place'] = ''.join(a_doc.get('aff', []))
         data['version'] = a_doc.get('version', '')
         data['DOI'] = ''.join(a_doc.get('doi', ''))
         if len(data['DOI']) > 0:
@@ -132,11 +140,9 @@ class CSLJson(Format):
         # \bibitem[...]{bibcode}  {authors} {year}, {title}, {version}, {publisher}, (doi:{doi}|{eid})
         # there is no best variable to assign this either of these to, so go with 'keyword' for now
         # 1/31/2024 adding dataset doctype as per Edwin
-        if data['type'] in ['software', 'dataset']:
-            if len(data['DOI']) == 0 and len(a_doc.get('eid', '')) > 0:
-                data['DOI'] = a_doc.get('eid', '')
-            else:
-                data['DOI'] = ''
+        if data['type'] == 'software':
+            if len(data['DOI']) == 0 and len(eid) > 0:
+                data['DOI'] = eid
         data['bibstem'] = a_doc.get('bibstem', [''])
         return data
 

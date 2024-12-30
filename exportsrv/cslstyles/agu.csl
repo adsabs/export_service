@@ -718,7 +718,7 @@
         </group>
         <text macro="legal-cites"/>
         <text macro="locators"/>
-        <group delimiter=", " prefix=". ">
+        <group delimiter=", " prefix=", ">
           <text macro="event"/>
           <text macro="publisher"/>
         </group>

@@ -10,7 +10,7 @@ from unidecode import unidecode
 from exportsrv.formatter.format import Format
 from exportsrv.formatter.ads import adsFormatter, adsOrganizer
 from exportsrv.formatter.cslJson import CSLJson
-from exportsrv.formatter.csl import CSL
+from exportsrv.formatter.cslFormat import CSLFormat
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
 from exportsrv.formatter.strftime import strftime
 from exportsrv.utils import get_eprint, replace_html_entity
@@ -147,7 +147,7 @@ class CustomFormat(Format):
                 else:
                     csl_file_name = 'ads-author-' + element[1][-1] + element[1][-1]
                 key = element[1]
-                self.from_csl[key] = CSL(json_for_csl, csl_file_name).get(adsOrganizer.bibliography)
+                self.from_csl[key] = CSLFormat(json_for_csl, csl_file_name).get(adsOrganizer.bibliography)
                 self.author_count[key] = self.__get_num_authors()
 
 
