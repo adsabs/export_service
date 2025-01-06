@@ -162,6 +162,8 @@ For example:
     curl -H "Authorization: Bearer <your API token>" -H "Content-Type: application/json" -X POST -d '{"format":"\\\\bibitem[%\\2m%(y)]\\{%za1%y} %\\8l %\\Y,%\\j,%\\V,%\\p"}' https://api.adsabs.harvard.edu/v1/export/convert
 
 
+### Optional parameter for all export formats :
+
 A new parameter, `authorlimit`, has been introduced to limit the number of authors and their affiliations returned in exported records. This addresses the growing issue of excessively large author lists, with some papers featuring thousands of authors.
 
 At the request of stakeholders, the `authorlimit` parameter has been set to a default value of 200 in the service. While this default is hardcoded, it remains configurable through both the ADS UI and the API, ensuring flexibility in controlling the number of authors and affiliations displayed based on user needs.
@@ -171,6 +173,52 @@ If the `authorlimit` parameter is omitted when using the API, the default value 
     {"bibcode": ["1980ApJS...44..137K", "1980ApJS...44..489B"], "authorlimit": 500}
     
 To retrieve all records without this limit using the API, you can use the provided script: https://github.com/adsabs/export_service/blob/master/export_with_api.py.
+
+
+Another optional parameter added in 2024 is `outputformat`, which determines the structure and content of exported bibliographic records. Two formats are currently supported: `classic` and `individual`.
+
+The classic format includes two fields:
+
+    msg: A message summarizing the number of retrieved records.
+    export: A single string containing all references, formatted for copy-pasting.
+
+Example Response:
+
+    {
+        "msg": "Retrieved 2 abstracts, starting with number 1.",
+        "export": "Reference 1\nReference 2\n..."
+    }
+
+The individual format separates records into distinct entries, allowing for more structured data handling.
+
+The individual format includes six fields:
+
+    num_docs: The number of documents retrieved.
+    docs: A list of dictionaries, each containing:
+        bibcode: ADS identifier for the record
+        reference: The formatted reference for the record
+    header: Content that appears before the data records. For XML formats, this includes metadata or structure before the data records tag (ie, <records>). For custom formats like CSV, this includes the header line, and any user-specified header.
+    footer: Content that appears after the data records. For XML formats, this includes closing XML tags. For custom formats, this includes any user-specified footer.
+
+Example Response:
+
+    {
+        "num_docs": 2,
+        "docs": [
+            {"bibcode": "1980ApJS...44..137K", "reference": "Formatted Reference 1"},
+            {"bibcode": "1980ApJS...44..489B", "reference": "Formatted Reference 2"}
+        ],
+        "header": "Custom header or XML top content",
+        "footer": "Custom footer or XML bottom content"
+    }
+
+To specify this parameters:
+
+    {"bibcode":["1980ApJS...44..137K","1980ApJS...44..489B"], "sort":"date desc, bibcode, desc", "outputformat": ""}
+
+The `outputformat` field accepts the values `1` for `classic` and `2` for `individual`.
+
+By default, if `outputformat` is not specified, the service will use the classic format.
 
 
 ## Maintainers

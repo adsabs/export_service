@@ -5,58 +5,13 @@ from datetime import datetime
 from flask import current_app
 
 from exportsrv.formatter.format import Format
+from exportsrv.formatter.ads import adsOutputFormat
 from exportsrv.formatter.strftime import strftime
 
 class VOTableFormat(Format):
 
     def __get_BBB_base_url(self):
         return current_app.config.get('EXPORT_SERVICE_FROM_BBB_URL').rsplit('/', 1)[0]
-
-
-    def __tostring(self, data, num_docs):
-        """
-
-        :param data:
-        :return:
-        """
-        # add schema
-        votable = ET.Element("VOTABLE")
-        votable.set("version", "1.1")
-        description = ET.SubElement(votable, "DESCRIPTION")
-        description.text = "\n   Results generated from the NASA Astrophysics Data System: {base_url}" \
-                           "\n   For more information and support please contact ads@cfa.harvard.edu"\
-                           "\n".format(base_url=self.__get_BBB_base_url())
-        resource = ET.SubElement(votable, "RESOURCE")
-        resource.set("type", "results")
-        table = ET.SubElement(resource, "TABLE")
-        description = ET.SubElement(table, "DESCRIPTION")
-        description.text = "\n   ADS Search Results." \
-                           "\n   Selected and retrieved {num_docs} records."\
-                           "\n".format(num_docs=num_docs)
-        fields = [("bibcode", "char" , "19", "The bibcode identifier for the record"), 
-                  ("title", "char" , "*", "Title of the paper"), 
-                  ("creator", "char" , "*", "List of authors"), 
-                  ("source", "char" , "*", "Publication infromation"), 
-                  ("date", "char" , "10", "Publication Date"), 
-                  ("url", "char" , "*", "Resource URL")]
-        for f in fields:
-            field = ET.SubElement(table, "FIELD")
-            field.set("ID", f[0])
-            field.set("datatype", f[1])
-            field.set("arraysize", f[2])
-            description = ET.SubElement(field, "DESCRIPTION")
-            description.text = f[3]
-        # append the data and trun to string
-        table.append(data)
-        format_xml = ET.tostring(votable, encoding='utf8', method='xml')
-        # apprently the functionality to add in the doctype is not avaialble in ET
-        # so have to add it manually after the first line <?xml version='1.0' encoding='utf8'?>
-        format_xml = format_xml.replace(b'?>', b'?><!DOCTYPE VOTABLE SYSTEM "http://cdsweb.u-strasbg.fr/xml/VOTable.dtd" >')
-        # insert linefeed
-        format_xml = (b'>\n<'.join(format_xml.split(b'><')))
-        format_xml = format_xml.replace(b'</TR>', b'</TR>\n')
-        # return the formatted string
-        return format_xml.decode('utf8')
 
 
     def __get_fields(self):
@@ -108,7 +63,7 @@ class VOTableFormat(Format):
             ET.SubElement(parent, 'TD')
 
 
-    def __get_doc(self, index, parent):
+    def __get_doc(self, index):
         """
         for each document from Solr, get the fields, and format them
 
@@ -118,45 +73,95 @@ class VOTableFormat(Format):
         """
         a_doc = self.from_solr['response'].get('docs')[index]
         fields = self.__get_fields()
-        row = ET.SubElement(parent, 'TR')
+        item = ET.Element('TR')
         for field in fields:
             if (field == 'bibcode'):
-                self.__add_in_table_data(row, a_doc.get(field, ''))
+                self.__add_in_table_data(item, a_doc.get(field, ''))
             elif (field == 'title'):
-                self.__add_in_table_data(row, ''.join(a_doc.get(field, '')))
+                self.__add_in_table_data(item, ''.join(a_doc.get(field, '')))
             elif (field == 'author'):
-                self.__add_in_table_data(row, '; '.join(a_doc.get(field, '')))
+                self.__add_in_table_data(item, '; '.join(a_doc.get(field, '')))
             elif (field == 'pub_raw'):
-                self.__add_in_table_data(row, self.__add_clean_pub_raw(a_doc))
+                self.__add_in_table_data(item, self.__add_clean_pub_raw(a_doc))
             elif (field == 'pubdate'):
-                self.__add_in_table_data(row, self.__format_date(a_doc.get(field, '')))
+                self.__add_in_table_data(item, self.__format_date(a_doc.get(field, '')))
             elif (field == 'url'):
-                self.__add_in_table_data(row, current_app.config.get('EXPORT_SERVICE_FROM_BBB_URL') + '/' + a_doc.get('bibcode', ''))
+                self.__add_in_table_data(item, current_app.config.get('EXPORT_SERVICE_FROM_BBB_URL') + '/' + a_doc.get('bibcode', ''))
+        return item
 
-
-    def __get_votable(self):
+    def __to_string(self, element, declaration=True):
         """
 
+        :param element:
+        :param declaration:
         :return:
         """
-        num_docs = 0
-        format = ''
-        if (self.status == 0):
-            num_docs = self.get_num_docs()
-            data = ET.Element("DATA")
-            table = ET.SubElement(data, "TABLEDATA")
-            for index in range(num_docs):
-                self.__get_doc(index, table)
-            format = self.__tostring(data, num_docs)
-        result_dict = {}
-        result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
-        result_dict['export'] = format
-        return result_dict
+        str_element = ET.tostring(element, encoding='utf8', method='xml', xml_declaration=declaration).decode('utf-8')
+        str_element = '>\n<'.join(str_element.split('><'))
+        return str_element
 
-
-    def get(self):
+    def __get_outer_structure(self, num_docs):
         """
 
+        :param num_docs:
+        :return:
+        """
+        # add header nodes
+        votable = ET.Element("VOTABLE")
+        votable.set("version", "1.1")
+        description = ET.SubElement(votable, "DESCRIPTION")
+        description.text = "\n   Results generated from the NASA Astrophysics Data System: {base_url}" \
+                           "\n   For more information and support please contact ads@cfa.harvard.edu"\
+                           "\n".format(base_url=self.__get_BBB_base_url())
+        resource = ET.SubElement(votable, "RESOURCE")
+        resource.set("type", "results")
+        table = ET.SubElement(resource, "TABLE")
+        description = ET.SubElement(table, "DESCRIPTION")
+        description.text = "\n   ADS Search Results." \
+                           "\n   Selected and retrieved {num_docs} records."\
+                           "\n".format(num_docs=num_docs)
+        fields = [("bibcode", "char" , "19", "The bibcode identifier for the record"),
+                  ("title", "char" , "*", "Title of the paper"),
+                  ("creator", "char" , "*", "List of authors"),
+                  ("source", "char" , "*", "Publication infromation"),
+                  ("date", "char" , "10", "Publication Date"),
+                  ("url", "char" , "*", "Resource URL")]
+        for f in fields:
+            field = ET.SubElement(table, "FIELD")
+            field.set("ID", f[0])
+            field.set("datatype", f[1])
+            field.set("arraysize", f[2])
+            description = ET.SubElement(field, "DESCRIPTION")
+            description.text = f[3]
+
+        table_data = ET.SubElement(ET.SubElement(table, "DATA"), "TABLEDATA")
+
+        # add placeholder to references
+        self.add_xml_placeholder_references(table_data, "references")
+
+        format_xml = self.__to_string(votable)
+        # apprently the functionality to add in the doctype is not avaialble in ET
+        # so have to add it manually after the first line <?xml version='1.0' encoding='utf8'?>
+        format_xml = format_xml.replace('?>', '?>\n<!DOCTYPE VOTABLE SYSTEM "http://cdsweb.u-strasbg.fr/xml/VOTable.dtd" >')
+
+        return format_xml
+
+    def get(self, output_format):
+        """
+
+        :param output_format:
         :return: votable format
         """
-        return self.__get_votable()
+        num_docs = 0
+        references = []
+        bibcodes = []
+        header = footer = ''
+        if (self.status == 0):
+            num_docs = self.get_num_docs()
+            outer_structure = self.__get_outer_structure(num_docs)
+            header, footer = self.get_top_and_bottom_xml_references(outer_structure)
+            # add data nodes
+            for index in range(num_docs):
+                references.append(self.__to_string(self.__get_doc(index), False))
+                bibcodes.append(self.from_solr['response'].get('docs')[index]['bibcode'])
+        return self.formatted_export(output_format, num_docs, references, bibcodes, '\n', header, footer)

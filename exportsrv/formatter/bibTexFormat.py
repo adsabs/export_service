@@ -8,9 +8,9 @@ import re
 import json
 from unidecode import unidecode
 
-from exportsrv.formatter.ads import adsJournalFormat
-from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author, encode_latex_doi
 from exportsrv.formatter.format import Format
+from exportsrv.formatter.ads import adsJournalFormat, adsOutputFormat
+from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author, encode_latex_doi
 from exportsrv.utils import get_eprint
 from exportsrv.formatter.strftime import strftime
 
@@ -537,7 +537,7 @@ class BibTexFormat(Format):
         # remove the last comma,
         text = text[:-len(',\n')] + '\n'
 
-        return text + '}\n\n'
+        return text + '}'
 
 
     def __enumerate_keys(self):
@@ -566,7 +566,7 @@ class BibTexFormat(Format):
         return self.enumerated_keys
 
 
-    def get(self, include_abs, max_author, author_cutoff, journal_format=adsJournalFormat.macro):
+    def get(self, include_abs, max_author, author_cutoff, journal_format, output_format):
         """
         
         :param include_abs: if ture include abstract
@@ -576,14 +576,13 @@ class BibTexFormat(Format):
         :return: result of formatted records in a dict
         """
         num_docs = 0
-        ref_BibTex = []
+        references = []
+        bibcodes = []
         if (self.status == 0):
             num_docs = self.get_num_docs()
             if self.enumeration:
                 self.__enumerate_keys()
             for index in range(num_docs):
-                ref_BibTex.append(self.__get_doc(index, include_abs, max_author, author_cutoff, journal_format))
-        result_dict = {}
-        result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
-        result_dict['export'] = ''.join(record for record in ref_BibTex)
-        return result_dict
+                references.append(self.__get_doc(index, include_abs, max_author, author_cutoff, journal_format))
+                bibcodes.append(self.from_solr['response'].get('docs')[index]['bibcode'])
+        return self.formatted_export(output_format, num_docs, references, bibcodes, '\n\n')

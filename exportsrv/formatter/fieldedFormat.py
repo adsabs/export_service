@@ -8,6 +8,7 @@ from textwrap import fill
 import re
 
 from exportsrv.formatter.format import Format
+from exportsrv.formatter.ads import adsOutputFormat
 from exportsrv.utils import get_eprint
 from exportsrv.formatter.strftime import strftime
 
@@ -631,28 +632,8 @@ class FieldedFormat(Format):
                 result += self.__add_in(fields[field], a_doc.get(field, ''))
             else:
                 result += self.__add_in(fields[field], a_doc.get(field, ''))
-        # line feed once the doc is complete
-        return result + '\n\n'
 
-
-    def __get_fielded(self, export_format):
-        """
-        for each document from Solr, get the fields, and format them accordingly
-
-        :param export_format:
-        :return:
-        """
-        num_docs = 0
-        results = []
-        if (self.status == 0):
-            fields = self.__get_tags(export_format)
-            num_docs = self.get_num_docs()
-            for index in range(num_docs):
-                results += self.__get_doc(index, fields, export_format)
-        result_dict = {}
-        result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
-        result_dict['export'] = ''.join(result for result in results)
-        return result_dict
+        return result
 
 
     def __setup_conf_loc(self):
@@ -671,45 +652,77 @@ class FieldedFormat(Format):
             current_app.logger.error('Error: unable to read conference location data file.')
             self.re_conference_locations = None
 
-    def get_ads_fielded(self):
+
+    def __get_fielded(self, export_format, output_format):
         """
+        for each document from Solr, get the fields, and format them accordingly
+
+        :param export_format:
+        :return:
+        """
+        num_docs = 0
+        references = []
+        bibcodes = []
+        if (self.status == 0):
+            fields = self.__get_tags(export_format)
+            num_docs = self.get_num_docs()
+            for index in range(num_docs):
+                references.append(self.__get_doc(index, fields, export_format))
+                bibcodes.append(self.from_solr['response'].get('docs')[index]['bibcode'])
+        return self.formatted_export(output_format, num_docs, references, bibcodes, '\n\n')
+
+
+    def get_ads_fielded(self, output_format):
+        """
+
+        :param output_format:
         :return: ads formatted export
         """
-        return self.__get_fielded(self.EXPORT_FORMAT_ADS)
+        return self.__get_fielded(self.EXPORT_FORMAT_ADS, output_format)
 
 
-    def get_endnote_fielded(self):
+    def get_endnote_fielded(self, output_format):
         """
+
+        :param output_format:
         :return: endnote formatted export
         """
         self.__setup_conf_loc()
-        return self.__get_fielded(self.EXPORT_FORMAT_ENDNOTE)
+        return self.__get_fielded(self.EXPORT_FORMAT_ENDNOTE, output_format)
 
 
-    def get_procite_fielded(self):
+    def get_procite_fielded(self, output_format):
         """
+
+        :param output_format:
         :return: procite formatted export
         """
-        return self.__get_fielded(self.EXPORT_FORMAT_PROCITE)
+        return self.__get_fielded(self.EXPORT_FORMAT_PROCITE, output_format)
 
 
-    def get_refman_fielded(self):
+    def get_refman_fielded(self, output_format):
         """
+
+        :param output_format:
         :return: refman formatted export
         """
-        return self.__get_fielded(self.EXPORT_FORMAT_REFMAN)
+        return self.__get_fielded(self.EXPORT_FORMAT_REFMAN, output_format)
 
 
-    def get_refworks_fielded(self):
+    def get_refworks_fielded(self, output_format):
         """
+
+        :param output_format:
         :return: refworks formatted export
         """
-        return self.__get_fielded(self.EXPORT_FORMAT_REFWORKS)
+        return self.__get_fielded(self.EXPORT_FORMAT_REFWORKS, output_format)
 
 
-    def get_medlars_fielded(self):
+    def get_medlars_fielded(self, output_format):
         """
+
+        :param output_format:
         :return: medlars formatted export
         """
-        return self.__get_fielded(self.EXPORT_FORMAT_MEDLARS)
+        return self.__get_fielded(self.EXPORT_FORMAT_MEDLARS, output_format)
 

@@ -8,7 +8,7 @@ from html import escape
 from unidecode import unidecode
 
 from exportsrv.formatter.format import Format
-from exportsrv.formatter.ads import adsFormatter, adsOrganizer
+from exportsrv.formatter.ads import adsFormatter, adsOrganizer, adsOutputFormat
 from exportsrv.formatter.cslJson import CSLJson
 from exportsrv.formatter.cslFormat import CSLFormat
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author
@@ -147,7 +147,7 @@ class CustomFormat(Format):
                 else:
                     csl_file_name = 'ads-author-' + element[1][-1] + element[1][-1]
                 key = element[1]
-                self.from_csl[key] = CSLFormat(json_for_csl, csl_file_name).get(adsOrganizer.bibliography)
+                self.from_csl[key] = CSLFormat(json_for_csl, csl_file_name).get(adsOrganizer.bibliography, adsOutputFormat.default)
                 self.author_count[key] = self.__get_num_authors()
 
 
@@ -372,10 +372,9 @@ class CustomFormat(Format):
             # \n not at the end of string, if there were any
             result = fill(text+'<END>', width=self.line_length, replace_whitespace=False, subsequent_indent=' ' * 12)
             result = result[:-len('<END>')]
-        # in csv format there is a comma at the very end, remove that before adding the linefeed
-        # also remove any linefeed and space at the end
+        # eliminate the last comma
         if (self.export_format == adsFormatter.csv):
-            result = result.rstrip(", \n\r") + "\n"
+            result = result[:-1]
 
         return result
 
@@ -862,28 +861,22 @@ class CustomFormat(Format):
                 result = self.__add_in(result, field, get_eprint(a_doc))
             elif field[2] in ['page,page_range', 'lastpage', 'page_range,page']:
                 result = self.__add_in(result, field, self.__get_page(field[2], a_doc))
-        result += self.line_feed
 
         return self.__format_line_wrapped(result, index)
 
 
-    def get(self):
+    def get(self, output_format):
         """
         
         :return: result of formatted records in a dict
         """
         num_docs = 0
-        results = []
+        references = []
+        bibcodes = []
         if (self.status == 0):
-            if len(self.header) > 0:
-                results.append(self.header + self.__get_linefeed())
             num_docs = self.get_num_docs()
             for index in range(num_docs):
-                results.append(self.__get_doc(index))
-            if len(self.footer) > 0:
-                results.append(self.__get_linefeed() + self.footer)
-        result_dict = {}
-        result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
-        # if there was any %% that was replaced by the placeholder change it at once here before returning
-        result_dict['export'] = self.REGEX_LITERAL_PLACE_HOLDER.sub('%', ''.join(result for result in results))
-        return result_dict
+                # if there was any %% that was replaced by the placeholder change it here before adding to references
+                references.append(self.REGEX_LITERAL_PLACE_HOLDER.sub('%', self.__get_doc(index)))
+                bibcodes.append(self.from_solr['response'].get('docs')[index]['bibcode'])
+        return self.formatted_export(output_format, num_docs, references, bibcodes, self.line_feed, self.header, self.footer)
