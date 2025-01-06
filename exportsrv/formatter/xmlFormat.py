@@ -8,6 +8,7 @@ from textwrap import fill
 import re
 
 from exportsrv.formatter.format import Format
+from exportsrv.formatter.ads import adsOutputFormat
 from exportsrv.utils import get_eprint
 from exportsrv.formatter.strftime import strftime
 
@@ -50,17 +51,17 @@ class XMLFormat(Format):
 
     re_xml_header = re.compile(u"\<\?xml .+?>")
 
-    def __format_date(self, solr_date, export_format):
+    def __format_date(self, solr_date, xml_export_format):
         """
 
         :param solr_date:
-        :param export_format:
+        :param xml_export_format:
         :return:
         """
         # solr_date has the format 2017-12-01
         dateTime = datetime.strptime(solr_date.replace('-00', '-01'), '%Y-%m-%d')
         formats = {self.EXPORT_FORMAT_DUBLIN_XML: '%Y-%m-%d', self.EXPORT_FORMAT_REF_XML: '%b %Y', self.EXPORT_FORMAT_REF_ABS_XML: '%b %Y'}
-        return strftime(dateTime, formats[export_format])
+        return strftime(dateTime, formats[xml_export_format])
 
 
     def __format_line_wrapped(self, text):
@@ -71,7 +72,7 @@ class XMLFormat(Format):
         """
         # 3/2 for now do not wrap text, it is way too slow
         return text
-        return fill(text, width=72, break_on_hyphens=False)
+        # return fill(text, width=72, break_on_hyphens=False)
 
 
     def __add_author_list(self, a_doc, parent, tag):
@@ -276,22 +277,22 @@ class XMLFormat(Format):
         self.__add_doc_links_data(a_doc, parent)
 
 
-    def __add_keywords(self, a_doc, parent, export_format):
+    def __add_keywords(self, a_doc, parent, xml_export_format):
         """
         format keyword
 
         :param a_doc:
         :param parent:
-        :param export_format:
+        :param xml_export_format:
         :return:
         """
         if 'keyword' not in a_doc:
             return
-        if (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
+        if (xml_export_format == self.EXPORT_FORMAT_REF_ABS_XML):
             record = ET.SubElement(parent, "keywords")
             for keyword in a_doc['keyword']:
                 ET.SubElement(record, 'keyword').text = keyword
-        elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
+        elif (xml_export_format == self.EXPORT_FORMAT_DUBLIN_XML):
             ET.SubElement(parent, 'dc:subject').text = self.__format_line_wrapped(', '.join(a_doc.get('keyword', '')))
 
 
@@ -310,23 +311,23 @@ class XMLFormat(Format):
         return pub_raw
 
 
-    def __add_pub_raw(self, a_doc, parent, field, export_format):
+    def __add_pub_raw(self, a_doc, parent, field, xml_export_format):
         """
         format pub_raw
 
         :param a_doc:
         :param parent:
         :param field:
-        :param export_format:
+        :param xml_export_format:
         :return:
         """
         if 'pub_raw' not in a_doc:
             return
         pub_raw = self.__add_clean_pub_raw(a_doc)
-        if (export_format == self.EXPORT_FORMAT_REF_XML) or (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
+        if (xml_export_format == self.EXPORT_FORMAT_REF_XML) or (xml_export_format == self.EXPORT_FORMAT_REF_ABS_XML):
             ET.SubElement(parent, field).text = pub_raw
 
-        elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
+        elif (xml_export_format == self.EXPORT_FORMAT_DUBLIN_XML):
             # for dublin both types of pub_raw are exported
             # we could have something like this is Solr
             # "pub_raw":"Sensing and Imaging, Volume 18, Issue 1, article id. #17, <NUMPAGES>12</NUMPAGES> pp."
@@ -337,19 +338,19 @@ class XMLFormat(Format):
             ET.SubElement(parent, field).text = self.__format_line_wrapped(pub_raw)
 
 
-    def __get_fields(self, export_format):
+    def __get_fields(self, xml_export_format):
         """
         from solr to each types' tags
 
-        :param export_format:
+        :param xml_export_format:
         :return:
         """
-        if (export_format == self.EXPORT_FORMAT_REF_XML):
+        if (xml_export_format == self.EXPORT_FORMAT_REF_XML):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
                       ('pub_raw', 'journal'), ('pubdate', 'pubdate'), ('link', 'link'),
                       ('', 'score'), ('num_citations', 'citations'), ('doi', 'DOI'),
                       ('eprintid', 'eprintid')]
-        elif (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
+        elif (xml_export_format == self.EXPORT_FORMAT_REF_ABS_XML):
             fields = [('bibcode', 'bibcode'), ('title', 'title'), ('author', 'author'),
                       ('aff', 'affiliation'), ('pub_raw', 'journal'), ('volume', 'volume'),
                       ('pubdate', 'pubdate'), ('page', 'page'), ('page_range', 'lastpage'),
@@ -357,12 +358,12 @@ class XMLFormat(Format):
                       ('copyright', 'copyright'), ('link', 'link'), ('url', 'url'),
                       ('comment', 'comment'), ('', 'score'), ('num_citations', 'citations'),
                       ('abstract', 'abstract'), ('doi', 'DOI'), ('eprintid', 'eprintid')]
-        elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
+        elif (xml_export_format == self.EXPORT_FORMAT_DUBLIN_XML):
             fields = [('bibcode', 'dc:identifier'), ('title', 'dc:title'), ('author', 'dc:creator'),
                       ('pub_raw', 'dc:source'), ('pubdate', 'dc:date'), ('keyword', 'dc:subject'),
                       ('copyright', 'dc:rights'), ('url', 'dc:relation'), ('num_citations', 'dc:relation'),
                       ('abstract', 'dc:description'), ('doi', 'dc:identifier'), ('publisher', 'dc:publisher')]
-        elif (export_format == self.EXPORT_FORMAT_JATS_XML):
+        elif (xml_export_format == self.EXPORT_FORMAT_JATS_XML):
             # note that order matters here
             fields = [('front_tag', 'front'), # first top level tag, with two middle level tags (level 1)
                       ('journal-meta_tag', 'journal-meta'), # first sub element of `front` (level 1_i)
@@ -389,16 +390,16 @@ class XMLFormat(Format):
         return ''
 
 
-    def __get_citation(self, num_citations, export_format):
+    def __get_citation(self, num_citations, xml_export_format):
         """
 
         :param num_citations:
         :return:
         """
         if num_citations != 0:
-            if (export_format == self.EXPORT_FORMAT_REF_XML) or (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
+            if (xml_export_format == self.EXPORT_FORMAT_REF_XML) or (xml_export_format == self.EXPORT_FORMAT_REF_ABS_XML):
                 return str(num_citations)
-            if (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
+            if (xml_export_format == self.EXPORT_FORMAT_DUBLIN_XML):
                 return 'citations:' + str(num_citations)
         return ''
 
@@ -438,19 +439,19 @@ class XMLFormat(Format):
             ET.SubElement(parent, field).text = value
 
 
-    def __get_attrib(self, export_format):
+    def __get_attrib(self, xml_export_format):
         """
 
-        :param export_format:
+        :param xml_export_format:
         :return:
         """
-        if (export_format == self.EXPORT_FORMAT_REF_XML):
+        if (xml_export_format == self.EXPORT_FORMAT_REF_XML):
             return OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML_REF)
-        if (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
+        if (xml_export_format == self.EXPORT_FORMAT_REF_ABS_XML):
             return OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML_REF_ABS)
-        if (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
+        if (xml_export_format == self.EXPORT_FORMAT_DUBLIN_XML):
             return OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML_DUBLIN)
-        if (export_format == self.EXPORT_FORMAT_JATS_XML):
+        if (xml_export_format == self.EXPORT_FORMAT_JATS_XML):
             return OrderedDict(self.EXPORT_SERVICE_RECORDS_SET_XML_JATS)
         return OrderedDict([])
 
@@ -466,17 +467,16 @@ class XMLFormat(Format):
         return num_citations
 
 
-    def __get_doc_dublin_xml(self, index, parent):
+    def __get_doc_dublin_xml(self, index):
         """
         for each document from Solr, get the fields, and format them accordingly for Dublin format
 
         :param index:
-        :param parent:
         :return:
         """
         a_doc = self.from_solr['response'].get('docs')[index]
         fields = self.__get_fields(self.EXPORT_FORMAT_DUBLIN_XML)
-        record = ET.SubElement(parent, "record")
+        record = ET.Element("record")
         for field in fields:
             if field in ['bibcode', 'copyright']:
                 self.__add_in(record, fields[field], a_doc.get(field, ''))
@@ -500,20 +500,21 @@ class XMLFormat(Format):
                 self.__add_in(record, fields[field], self.__get_citation(int(a_doc.get(field, 0)), self.EXPORT_FORMAT_DUBLIN_XML))
             elif (field == 'publisher'):
                 self.__add_in(record, fields[field], a_doc.get(field, ''))
+        return record
 
-    def __get_doc_reference_xml(self, index, parent, export_format):
+
+    def __get_doc_reference_xml(self, index, xml_export_format):
         """
         for each document from Solr, get the fields, and format them accordingly for Reference format
 
-        :param index:
-        :param parent:
-        :param export_format:
+        :param index
+        :param xml_export_format:
         :return:
         """
         a_doc = self.from_solr['response'].get('docs')[index]
-        fields = self.__get_fields(export_format)
-        record = ET.SubElement(parent, "record")
-        if (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
+        fields = self.__get_fields(xml_export_format)
+        record = ET.Element("record")
+        if (xml_export_format == self.EXPORT_FORMAT_REF_ABS_XML):
             property = a_doc.get('property', [])
             if 'REFEREED' in property:
                 record.set('refereed', 'true')
@@ -530,17 +531,17 @@ class XMLFormat(Format):
             elif (field == 'aff'):
                 self.__add_affiliation_list(a_doc, record, fields[field])
             elif (field == 'pubdate'):
-                self.__add_in(record, fields[field], self.__format_date(a_doc.get(field, ''), export_format))
+                self.__add_in(record, fields[field], self.__format_date(a_doc.get(field, ''), xml_export_format))
             elif (field == 'pub_raw'):
-                self.__add_pub_raw(a_doc, record, fields[field], export_format)
+                self.__add_pub_raw(a_doc, record, fields[field], xml_export_format)
             elif field in ['page', 'page_range']:
                 self.__add_page(a_doc, record, fields[field])
             elif (field == 'keyword'):
-                self.__add_keywords(a_doc, record, export_format)
+                self.__add_keywords(a_doc, record, xml_export_format)
             elif (field == 'url'):
                 self.__add_in(record, fields[field], current_app.config.get('EXPORT_SERVICE_FROM_BBB_URL') + '/' + a_doc.get('bibcode', ''))
             elif (field == 'num_citations'):
-                self.__add_in(record, fields[field], self.__get_citation(int(a_doc.get(field, 0)), export_format))
+                self.__add_in(record, fields[field], self.__get_citation(int(a_doc.get(field, 0)), xml_export_format))
             elif (field == 'abstract'):
                 self.__add_in(record, fields[field], self.__format_line_wrapped(a_doc.get(field, '')))
             elif (field == 'link'):
@@ -549,6 +550,8 @@ class XMLFormat(Format):
                 self.__add_in(record, fields[field], get_eprint(a_doc))
             elif (field == 'publisher'):
                 self.__add_in(record, fields[field], a_doc.get(field, ''))
+        return record
+
 
     def __add_author_list_jats_xml(self, doc, parent):
         """
@@ -558,25 +561,22 @@ class XMLFormat(Format):
         :param parent:
         :return:
         """
-        try:
-            for author, affiliation, orcid in zip(doc.get('author', []), doc.get('aff', []), doc.get('orcid_pub', [])):
-                # add contrib tag, parent to name, aff, and orcid
-                contrib = ET.SubElement(parent, 'contrib', {"contrib-type": "author"})
-                # add orcid id first, if available
-                if orcid != '-':
-                    ET.SubElement(contrib, 'contrib-id', {"contrib-id-type": "orcid"}).text = orcid
-                # add name tag, parent to surname and given-names
-                name = ET.SubElement(contrib, 'name')
-                try:
-                    surname, given_names = author.split(', ')
-                    ET.SubElement(name, 'surname').text = surname
-                    ET.SubElement(name, 'given-names').text = given_names
-                except ValueError:
-                    ET.SubElement(name, 'surname').text = author
-                if affiliation != '-':
-                    ET.SubElement(contrib, 'aff').text = affiliation
-        except:
-            pass
+        for author, affiliation, orcid in zip(doc.get('author', []), doc.get('aff', []), doc.get('orcid_pub', [])):
+            # add contrib tag, parent to name, aff, and orcid
+            contrib = ET.SubElement(parent, 'contrib', {"contrib-type": "author"})
+            # add orcid id first, if available
+            if orcid != '-':
+                ET.SubElement(contrib, 'contrib-id', {"contrib-id-type": "orcid"}).text = orcid
+            # add name tag, parent to surname and given-names
+            name = ET.SubElement(contrib, 'name')
+            try:
+                surname, given_names = author.split(', ')
+                ET.SubElement(name, 'surname').text = surname
+                ET.SubElement(name, 'given-names').text = given_names
+            except ValueError:
+                ET.SubElement(name, 'surname').text = author
+            if affiliation != '-':
+                ET.SubElement(contrib, 'aff').text = affiliation
 
 
     def __add_date_jats_xml(self, doc, parent):
@@ -587,28 +587,79 @@ class XMLFormat(Format):
         :return:
         """
         try:
+            iso_date = doc.get('pubdate', '')
+            year, month, day = iso_date.split('-')
+
             # electronic version or print version
             format = "electronic" if doc.get('eid', None) else "print"
-            iso_date = doc.get('pubdate', '')
-            pub_date_attributes = {"publication-format": "%s"%format,
-                                  "date-type": "pub",
-                                  "iso-8601-date": "%s"%iso_date}
+            pub_date_attributes = {"publication-format": "%s" % format,
+                                   "date-type": "pub",
+                                   "iso-8601-date": "%s" % iso_date}
+
             pub_date = ET.SubElement(parent, "pub-date", attrib=pub_date_attributes)
 
-            year, month, day = iso_date.split('-')
             ET.SubElement(pub_date, "day").text = day
             ET.SubElement(pub_date, "month").text = month
             ET.SubElement(pub_date, "year").text = year
-        except:
-            pass
+        except ValueError:
+            current_app.logger.error(f"Invalid date format: {iso_date}")
 
 
-    def __get_doc_jats_xml(self, index, parent):
+    def __to_string(self, element, declaration=True):
+        """
+
+        :param element:
+        :param declaration:
+        :return:
+        """
+        str_element = ET.tostring(element, encoding='utf8', method='xml', xml_declaration=declaration).decode('utf-8')
+        str_element = '>\n<'.join(str_element.split('><'))
+        return str_element
+
+
+    def __add_specific_header_jats_xml(self, format):
+        """
+
+        :param format:
+        :return:
+        """
+        new_header_lines = [
+            '<?xml version="1.0" encoding="UTF-8" ?>',
+            '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.2 20190208//EN" "https://jats.nlm.nih.gov/publishing/1.2/JATS-journalpublishing1.dtd">'
+        ]
+        return self.re_xml_header.sub('\n'.join(new_header_lines), format)
+
+
+    def __get_outer_structure(self, xml_export_format, num_docs):
+        """
+
+        :param xml_export_format:
+        :param num_docs:
+        :return:
+        """
+        records = ET.Element("records")
+        attribs = self.__get_attrib(xml_export_format)
+        for attrib in attribs:
+            records.set(attrib, attribs[attrib])
+        records.set('retrieved', str(num_docs))
+        records.set('start', str(1))
+        records.set('selected', str(num_docs))
+        num_citations = self.__get_num_citations()
+        if num_citations > 0 and xml_export_format != self.EXPORT_FORMAT_JATS_XML:
+            records.set('citations', str(num_citations))
+
+        # add placeholder to references
+        self.add_xml_placeholder_references(records, "references")
+
+        return self.__to_string(records)
+
+
+
+    def __get_doc_jats_xml(self, index):
         """
         for each document from Solr, get the fields, and format them accordingly for JATS `Journal Publishing` format
 
         :param index:
-        :param parent:
         :return:
         """
         # source: https://jats.nlm.nih.gov/publishing/tag-library/1.3/attribute/article-type.html
@@ -629,11 +680,7 @@ class XMLFormat(Format):
         article_attributes = {"xmlns:xlink": "http://www.w3.org/1999/xlink",
                               "xmlns:mml": "http://www.w3.org/1998/Math/MathML",
                               "article-type": "%s"%article_type}
-        # if no parent, created and return it
-        if parent is None:
-            article = parent = ET.Element("article", article_attributes)
-        else:
-            article = ET.SubElement(parent, "article", article_attributes)
+        article = ET.Element("article", article_attributes)
 
         front_section = journal_meta_section = article_meta_section = None
         for field in fields:
@@ -653,10 +700,6 @@ class XMLFormat(Format):
                 article_meta_section = ET.SubElement(front_section, fields[field])
             elif (field == 'bibcode'):
                 ET.SubElement(article_meta_section, fields[field], {"pub-id-type": "archive"}).text = a_doc.get(field, '')
-            elif (field == 'identifier'):
-                arXiv_id = [id for id in a_doc.get(field, []) if 'arXiv:' in id]
-                if arXiv_id:
-                    ET.SubElement(article_meta_section, fields[field], {"pub-id-type": "arxiv"}).text = arXiv_id[0]
             elif (field == 'doi'):
                 if a_doc.get(field, ''):
                     ET.SubElement(article_meta_section, fields[field], {"pub-id-type": "doi"}).text = '; '.join(a_doc.get(field, ''))
@@ -680,86 +723,78 @@ class XMLFormat(Format):
             elif field in ['page', 'page_range']:
                 self.__add_page(a_doc, article_meta_section, fields[field])
 
-        return parent
+        return article
 
 
-    def __get_xml(self, export_format):
+    def __get_xml(self, xml_export_format, output_format):
         """
         setup the outer xml structure
 
-        :param export_format:
+        :param xml_export_format:
+        :param output_format:
         :return:
         """
         num_docs = 0
-        format_xml = ''
+        references = []
+        bibcodes = []
         if (self.status == 0):
             num_docs = self.get_num_docs()
             # from Alberto:
             # we should drop the <records> wrapper when a single record is output, since this element is not part of the JATS DTD
             # when multiple records are output, we can keep the <records> element in there as the third line in the output
-            if export_format == self.EXPORT_FORMAT_JATS_XML and num_docs == 1:
-                records = self.__get_doc_jats_xml(0, None)
+            if xml_export_format == self.EXPORT_FORMAT_JATS_XML and num_docs == 1:
+                references.append(self.__add_specific_header_jats_xml(self.__to_string(self.__get_doc_jats_xml(0))))
+                bibcodes.append(self.from_solr['response'].get('docs')[0]['bibcode'])
+                return self.formatted_export(output_format, num_docs, references, bibcodes, '')
             else:
-                records = ET.Element("records")
-                attribs = self.__get_attrib(export_format)
-                for attrib in attribs:
-                    records.set(attrib, attribs[attrib])
-                records.set('retrieved', str(num_docs))
-                records.set('start', str(1))
-                records.set('selected', str(num_docs))
-                num_citations = self.__get_num_citations()
-                if num_citations > 0 and export_format != self.EXPORT_FORMAT_JATS_XML:
-                    records.set('citations', str(num_citations))
-                if (export_format == self.EXPORT_FORMAT_REF_XML) or (export_format == self.EXPORT_FORMAT_REF_ABS_XML):
-                    for index in range(num_docs):
-                        self.__get_doc_reference_xml(index, records, export_format)
-                elif (export_format == self.EXPORT_FORMAT_DUBLIN_XML):
-                    for index in range(num_docs):
-                        self.__get_doc_dublin_xml(index, records)
-                elif (export_format == self.EXPORT_FORMAT_JATS_XML):
-                    for index in range(num_docs):
-                        self.__get_doc_jats_xml(index, records)
-            format_xml = ET.tostring(records, encoding='utf8', method='xml')
-            format_xml = (b'>\n<'.join(format_xml.split(b'><')))
-            format_xml = format_xml.replace(b'</record>', b'</record>\n')
+                outer_structure = self.__get_outer_structure(xml_export_format, num_docs)
 
-        export = format_xml.decode('utf8')
-        # needs an extra header line here
-        if export_format == self.EXPORT_FORMAT_JATS_XML:
-            new_header_lines = [
-                '<?xml version="1.0" encoding="UTF-8" ?>',
-                '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.2 20190208//EN" "https://jats.nlm.nih.gov/publishing/1.2/JATS-journalpublishing1.dtd">'
-            ]
-            export = self.re_xml_header.sub('\n'.join(new_header_lines), export)
-        result_dict = {}
-        result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
-        result_dict['export'] = export
-        return result_dict
+                if (xml_export_format == self.EXPORT_FORMAT_REF_XML) or (xml_export_format == self.EXPORT_FORMAT_REF_ABS_XML):
+                    for index in range(num_docs):
+                        references.append(self.__to_string(self.__get_doc_reference_xml(index, xml_export_format), False) + '\n\n')
+                        bibcodes.append(self.from_solr['response'].get('docs')[index]['bibcode'])
+                elif (xml_export_format == self.EXPORT_FORMAT_DUBLIN_XML):
+                    for index in range(num_docs):
+                        references.append(self.__to_string(self.__get_doc_dublin_xml(index), False) + '\n\n')
+                        bibcodes.append(self.from_solr['response'].get('docs')[index]['bibcode'])
+                elif (xml_export_format == self.EXPORT_FORMAT_JATS_XML):
+                    outer_structure = self.__add_specific_header_jats_xml(outer_structure)
+                    for index in range(num_docs):
+                        references.append(self.__to_string(self.__get_doc_jats_xml(index), False) + '\n')
+                        bibcodes.append(self.from_solr['response'].get('docs')[index]['bibcode'])
+                header, footer = self.get_top_and_bottom_xml_references(outer_structure)
+
+        return self.formatted_export(output_format, num_docs, references, bibcodes, '', header, footer)
 
 
-    def get_reference_xml(self, include_abs=False):
+
+
+    def get_reference_xml(self, include_abs, output_format):
         """
 
         :param include_abs:
+        :param output_format:
         :return: reference xml format with or without abstract
         """
         if include_abs:
-            return self.__get_xml(self.EXPORT_FORMAT_REF_ABS_XML)
-        return self.__get_xml(self.EXPORT_FORMAT_REF_XML)
+            return self.__get_xml(self.EXPORT_FORMAT_REF_ABS_XML, output_format)
+        return self.__get_xml(self.EXPORT_FORMAT_REF_XML, output_format)
 
 
-    def get_dublincore_xml(self):
+    def get_dublincore_xml(self, output_format):
         """
 
+        :param output_format:
         :return: dublin xml format
         """
-        return self.__get_xml(self.EXPORT_FORMAT_DUBLIN_XML)
+        return self.__get_xml(self.EXPORT_FORMAT_DUBLIN_XML, output_format)
 
 
-    def get_jats_xml(self):
+    def get_jats_xml(self, output_format):
         """
 
+        :param output_format:
         :return: jats xml format
         """
-        return self.__get_xml(self.EXPORT_FORMAT_JATS_XML)
+        return self.__get_xml(self.EXPORT_FORMAT_JATS_XML, output_format)
 

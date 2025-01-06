@@ -81,7 +81,52 @@ class adsJournalFormat:
     ads_journal_Format = default, macro, abbreviated, full = range(4)
 
     def verify(self, style):
+        """
+
+        :param style:
+        :return:
+        """
+        # allow `style` to be an integer (ie, 0, 1, ...)
+        if isinstance(style, int):
+            if 0 <= style < 3:
+                return True
+
+        # allow `style` to be a string (ie, '0', '1', ...)
+        if isinstance(style, str):
+            format = int(style)
+            if 0 <= format < 3:
+                return True
+
         if (style in self.ads_journal_Format):
             return True
+
         return False
 
+
+class adsOutputFormat:
+    ads_output_format = default, classic, individual = range(3)
+
+    def verify(self, format):
+        """
+
+        :param format:
+        :return:
+        """
+        # allow `format` to be an integer (ie, 0, 1, ...)
+        if isinstance(format, int):
+            if 0 <= format < 3:
+                return self.ads_output_format[format]
+
+        # allow `format` to be a string (ie, '0', '1', ...)
+        if isinstance(format, str):
+            format = int(format)
+            if 0 <= format < 3:
+                return self.ads_output_format[format]
+
+        if (format in self.ads_output_format):
+            return format
+
+        return None
+
+
+adsOutputFormat().verify("2")

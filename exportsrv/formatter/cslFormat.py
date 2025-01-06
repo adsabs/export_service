@@ -8,8 +8,8 @@ from citeproc.source.json import CiteProcJSON
 import re
 import os
 
-from exportsrv.formatter.ads import adsFormatter, adsOrganizer, adsJournalFormat
 from exportsrv.formatter.format import Format
+from exportsrv.formatter.ads import adsFormatter, adsOrganizer, adsJournalFormat, adsOutputFormat
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author, html_to_laTex, encode_latex_doi
 
 # This class accepts JSON and sends it to citeproc library to get reformated
@@ -18,7 +18,7 @@ from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author, html_
 # citeproc provides the plain and html export format, and for export we also need
 # latex that is implemented.
 
-class CSLFormat:
+class CSLFormat(Format):
 
     REGEX_TOKENIZE_CITA = re.compile(r'^(.*)\(?(\d{4})\)?')
     REGEX_TOKENIZE_BIBLIO = re.compile(r'^(.*?)(\\?\s*\d+.*)')
@@ -244,29 +244,26 @@ class CSLFormat:
         return format_style[self.csl_style].format(cita_author, cita_year, bibcode, biblio_author, biblio_rest)
 
 
-    def get(self, export_organizer=adsOrganizer.plain):
+    def get(self, export_organizer, output_format):
         """
 
         :param export_organizer: output format, default is plain
         :return: for adsOrganizer.plain returns the result of formatted records in a dict
         """
-        results = []
+        references = []
         if (export_organizer == adsOrganizer.plain):
             num_docs = 0
             if (self.export_format == adsFormatter.unicode) or (self.export_format == adsFormatter.latex):
                 num_docs = len(self.bibcode_list)
                 for cita, item, bibcode, i in zip(self.citation_item, self.bibliography.bibliography(), self.bibcode_list, range(len(self.bibcode_list))):
-                    results.append(self.__format_output(str(self.bibliography.cite(cita, '')), str(item), bibcode, i+1) + '\n')
-            result_dict = {}
-            result_dict['msg'] = 'Retrieved {} abstracts, starting with number 1.'.format(num_docs)
-            result_dict['export'] = ''.join(result for result in results)
-            return result_dict
+                    references.append(self.__format_output(str(self.bibliography.cite(cita, '')), str(item), bibcode, i+1))
+            return self.formatted_export(output_format, num_docs, references, self.bibcode_list, '\n')
         if (export_organizer == adsOrganizer.citation_bibliography):
             for cita, item, bibcode in zip(self.citation_item, self.bibliography.bibliography(), self.bibcode_list):
-                results.append("%s\n%s\n%s\n"%(bibcode, str(self.bibliography.cite(cita, '')), str(item)))
-            return ''.join(result for result in results)
+                references.append("%s\n%s\n%s\n"%(bibcode, str(self.bibliography.cite(cita, '')), str(item)))
+            return ''.join(references)
         if (export_organizer == adsOrganizer.bibliography):
             for item in self.bibliography.bibliography():
-                results.append(str(item).replace('&amp;', '&'))
-            return results
-        return None
+                references.append(str(item).replace('&amp;', '&'))
+            return references
+        return []

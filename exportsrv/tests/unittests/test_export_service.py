@@ -14,7 +14,7 @@ import exportsrv.app as app
 import exportsrv.views as views
 
 from exportsrv.tests.unittests.stubdata import solrdata, bibTexTest, fieldedTest, xmlTest, cslTest, customTest, voTableTest, rssTest
-from exportsrv.formatter.ads import adsCSLStyle, adsJournalFormat, adsOrganizer
+from exportsrv.formatter.ads import adsCSLStyle, adsJournalFormat, adsOrganizer, adsOutputFormat
 from exportsrv.formatter.format import Format
 from exportsrv.formatter.bibTexFormat import BibTexFormat
 from exportsrv.formatter.fieldedFormat import FieldedFormat
@@ -57,7 +57,7 @@ class TestExports(TestCase):
         """ test Bibtex format """
 
         # format the stubdata using the code
-        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=1)
+        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=1, output_format=1)
         # now compare it with an already formatted data that we know is correct
         assert (bibtex_export == bibTexTest.data)
 
@@ -66,7 +66,7 @@ class TestExports(TestCase):
         """ test BibTex with abstract format """
 
         # format the stubdata using the code
-        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=True, max_author=0, author_cutoff=200, journal_format=1)
+        bibtex_export = BibTexFormat(solrdata.data, "%R").get(include_abs=True, max_author=0, author_cutoff=200, journal_format=1, output_format=1)
         # now compare it with an already formatted data that we know is correct
         assert (bibtex_export == bibTexTest.data_with_abs)
 
@@ -75,7 +75,7 @@ class TestExports(TestCase):
         """ test fielded format ADS """
 
         # format the stubdata using the code
-        fielded_export = FieldedFormat(solrdata.data).get_ads_fielded()
+        fielded_export = FieldedFormat(solrdata.data).get_ads_fielded(output_format=1)
         # now compare it with an already formatted data that we know is correct
         assert (fielded_export == fieldedTest.data_ads)
 
@@ -84,7 +84,7 @@ class TestExports(TestCase):
         """ test fielded format endnote """
 
         # format the stubdata using the code
-        fielded_export = FieldedFormat(solrdata.data).get_endnote_fielded()
+        fielded_export = FieldedFormat(solrdata.data).get_endnote_fielded(output_format=1)
         # now compare it with an already formatted data that we know is correct
         assert (fielded_export == fieldedTest.data_endnote)
 
@@ -93,7 +93,7 @@ class TestExports(TestCase):
         """ test fielded format procite """
 
         # format the stubdata using the code
-        fielded_export = FieldedFormat(solrdata.data).get_procite_fielded()
+        fielded_export = FieldedFormat(solrdata.data).get_procite_fielded(output_format=1)
         # now compare it with an already formatted data that we know is correct
         assert (fielded_export == fieldedTest.data_procite)
 
@@ -102,7 +102,7 @@ class TestExports(TestCase):
         """ test fielded format refman """
 
         # format the stubdata using the code
-        fielded_export = FieldedFormat(solrdata.data).get_refman_fielded()
+        fielded_export = FieldedFormat(solrdata.data).get_refman_fielded(output_format=1)
         # now compare it with an already formatted data that we know is correct
         assert (fielded_export == fieldedTest.data_refman)
 
@@ -111,7 +111,7 @@ class TestExports(TestCase):
         """ test fielded format refworks """
 
         # format the stubdata using the code
-        fielded_export = FieldedFormat(solrdata.data).get_refworks_fielded()
+        fielded_export = FieldedFormat(solrdata.data).get_refworks_fielded(output_format=1)
         # now compare it with an already formatted data that we know is correct
         assert (fielded_export == fieldedTest.data_refworks)
 
@@ -120,7 +120,7 @@ class TestExports(TestCase):
         """ test fielded format medlars """
 
         # format the stubdata using the code
-        fielded_export = FieldedFormat(solrdata.data).get_medlars_fielded()
+        fielded_export = FieldedFormat(solrdata.data).get_medlars_fielded(output_format=1)
         # now compare it with an already formatted data that we know is correct
         assert (fielded_export == fieldedTest.data_medlars)
 
@@ -129,7 +129,7 @@ class TestExports(TestCase):
         """ test xml format Dublin """
 
         # format the stubdata using the code
-        xml_export = XMLFormat(solrdata.data).get_dublincore_xml()
+        xml_export = XMLFormat(solrdata.data).get_dublincore_xml(output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_dublin_core)
 
@@ -138,7 +138,7 @@ class TestExports(TestCase):
         """ test xml format Reference """
 
         # format the stubdata using the code
-        xml_export = XMLFormat(solrdata.data).get_reference_xml(include_abs=False)
+        xml_export = XMLFormat(solrdata.data).get_reference_xml(include_abs=False, output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_ref)
 
@@ -147,7 +147,7 @@ class TestExports(TestCase):
         """ test xml format Reference with abstract"""
 
         # format the stubdata using the code
-        xml_export = XMLFormat(solrdata.data).get_reference_xml(include_abs=True)
+        xml_export = XMLFormat(solrdata.data).get_reference_xml(include_abs=True, output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_ref_with_abs)
 
@@ -156,7 +156,7 @@ class TestExports(TestCase):
         """ test xml format Jats """
 
         # format the stubdata using the code
-        xml_export = XMLFormat(solrdata.data).get_jats_xml()
+        xml_export = XMLFormat(solrdata.data).get_jats_xml(output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_jats)
 
@@ -165,7 +165,7 @@ class TestExports(TestCase):
         """ test xml format Jats when there is only one record """
 
         # format the stubdata using the code
-        xml_export = XMLFormat(solrdata.data_2).get_jats_xml()
+        xml_export = XMLFormat(solrdata.data_2).get_jats_xml(output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_jats_one_record)
 
@@ -174,7 +174,7 @@ class TestExports(TestCase):
         """ test csl format aastex """
 
         # format the stubdata using the code
-        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'aastex', adsFormatter.latex).get()
+        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'aastex', adsFormatter.latex).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_AASTex)
 
@@ -183,7 +183,7 @@ class TestExports(TestCase):
         """ test csl format icarus """
 
         # format the stubdata using the code
-        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'icarus', adsFormatter.latex).get()
+        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'icarus', adsFormatter.latex).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_Icarus)
 
@@ -192,7 +192,7 @@ class TestExports(TestCase):
         """ test csl format mnras """
 
         # format the stubdata using the code
-        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'mnras', adsFormatter.latex).get()
+        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'mnras', adsFormatter.latex).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert(csl_export == cslTest.data_MNRAS)
 
@@ -201,7 +201,7 @@ class TestExports(TestCase):
         """ test csl format soph """
 
         # format the stubdata using the code
-        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'soph', adsFormatter.latex).get()
+        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'soph', adsFormatter.latex).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_SoPh)
 
@@ -210,7 +210,7 @@ class TestExports(TestCase):
         """ test csl format aspc """
 
         # format the stubdata using the code
-        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'aspc', adsFormatter.latex).get()
+        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'aspc', adsFormatter.latex).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_ASPC)
 
@@ -219,7 +219,7 @@ class TestExports(TestCase):
         """ test csl format apsj """
 
         # format the stubdata using the code
-        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'apsj', adsFormatter.latex).get()
+        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'apsj', adsFormatter.latex).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_APSJ)
 
@@ -228,7 +228,7 @@ class TestExports(TestCase):
         """ test csl format aasj """
 
         # format the stubdata using the code
-        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'aasj', adsFormatter.latex).get()
+        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'aasj', adsFormatter.latex).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_AASJ)
 
@@ -237,7 +237,7 @@ class TestExports(TestCase):
         """ test csl format ieee """
 
         # format the stubdata using the code
-        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'ieee', adsFormatter.unicode).get()
+        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'ieee', adsFormatter.unicode).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_ieee)
 
@@ -246,7 +246,7 @@ class TestExports(TestCase):
         """ test csl format agu """
 
         # format the stubdata using the code
-        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'agu', adsFormatter.unicode).get()
+        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'agu', adsFormatter.unicode).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_agu)
 
@@ -255,7 +255,7 @@ class TestExports(TestCase):
         """ test csl format gsa """
 
         # format the stubdata using the code
-        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'gsa', adsFormatter.unicode).get()
+        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'gsa', adsFormatter.unicode).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_gsa)
 
@@ -264,7 +264,7 @@ class TestExports(TestCase):
         """ test csl format ams """
 
         # format the stubdata using the code
-        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'ams', adsFormatter.unicode).get()
+        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'ams', adsFormatter.unicode).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_ams)
 
@@ -276,7 +276,7 @@ class TestExports(TestCase):
         custom_format = CustomFormat(custom_format=r'%ZEncoding:latex\\bibitem[%2.1m\\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p ')
         custom_format.set_json_from_solr(solrdata.data)
         # now compare it with an already formatted data that we know is correct
-        assert (custom_format.get() == customTest.data)
+        assert (custom_format.get(adsOutputFormat.classic) == customTest.data)
         # verify correct solr fields are fetched
         assert (custom_format.get_solr_fields() == 'author,year,pub,volume,page,page_range,bibcode,bibstem')
 
@@ -307,14 +307,14 @@ class TestExports(TestCase):
     def test_bibtex_success(self):
         """ test views return_bibTex_format_export when succeed """
 
-        response = views.return_bibTex_format_export(solrdata.data, False, '%R', 10, 200, 1)
+        response = views.return_bibTex_format_export(solrdata.data, False, '%R', 10, 200, 1, 1)
         assert(response._status_code == 200)
 
 
     def test_bibtex_no_data(self):
         """ test views return_bibTex_format_export when error """
 
-        response = views.return_bibTex_format_export(None, False, '', 0, 0, 1)
+        response = views.return_bibTex_format_export(None, False, '', 0, 0, 1, 1)
         assert(response._status_code == 404)
 
 
@@ -322,7 +322,7 @@ class TestExports(TestCase):
         """ test views return_fielded_format_export when succeed for each fielded format """
 
         for fielded_style in ['ADS','EndNote','ProCite','Refman','RefWorks','MEDLARS']:
-            response = views.return_fielded_format_export(solrdata.data, fielded_style)
+            response = views.return_fielded_format_export(solrdata.data, fielded_style, adsOutputFormat.classic)
             assert(response._status_code == 200)
 
 
@@ -330,7 +330,7 @@ class TestExports(TestCase):
         """ test views return_fielded_format_export when error for each fielded format """
 
         for fielded_style in ['ADS','EndNote','ProCite','Refman','RefWorks','MEDLARS']:
-            response = views.return_fielded_format_export(None, fielded_style)
+            response = views.return_fielded_format_export(None, fielded_style, adsOutputFormat.classic)
             assert(response._status_code == 404)
 
 
@@ -338,7 +338,7 @@ class TestExports(TestCase):
         """ test views return_xml_format_export when succeed for each format """
 
         for xml_style in ['DublinCore','Reference','ReferenceAbs']:
-            response = views.return_xml_format_export(solrdata.data, xml_style)
+            response = views.return_xml_format_export(solrdata.data, xml_style, adsOutputFormat.classic)
             assert(response._status_code == 200)
 
 
@@ -346,7 +346,7 @@ class TestExports(TestCase):
         """ test views return_xml_format_export when error for each format """
 
         for xml_style in ['DublinCore','Reference','ReferenceAbs']:
-            response = views.return_xml_format_export(None, xml_style)
+            response = views.return_xml_format_export(None, xml_style, adsOutputFormat.classic)
             assert(response._status_code == 404)
 
 
@@ -356,7 +356,7 @@ class TestExports(TestCase):
         export_format = 2
         journal_macro = 1
         for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj', 'ieee', 'agu', 'gsa', 'ams']:
-            response = views.return_csl_format_export(solrdata.data, csl_style, export_format, journal_macro)
+            response = views.return_csl_format_export(solrdata.data, csl_style, export_format, journal_macro, adsOutputFormat.classic)
             assert(response._status_code == 200)
 
 
@@ -366,7 +366,7 @@ class TestExports(TestCase):
         export_format = 2
         journal_macro = 1
         for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj', 'ieee', 'agu', 'gsa', 'ams']:
-            response = views.return_csl_format_export(None, csl_style, export_format, journal_macro)
+            response = views.return_csl_format_export(None, csl_style, export_format, journal_macro, adsOutputFormat.classic)
             assert(response._status_code == 404)
 
 
@@ -426,7 +426,7 @@ class TestExports(TestCase):
         """ test votable export format """
 
         # format the stubdata using the code
-        votable_export = VOTableFormat(solrdata.data).get()
+        votable_export = VOTableFormat(solrdata.data).get(output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (votable_export == voTableTest.data)
 
@@ -435,7 +435,7 @@ class TestExports(TestCase):
         """ test rss export format """
 
         # format the stubdata using the code
-        rss_export = RSSFormat(solrdata.data).get()
+        rss_export = RSSFormat(solrdata.data).get(link='', output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (rss_export == rssTest.data)
 
@@ -443,28 +443,28 @@ class TestExports(TestCase):
     def test_views_return_votable_format_export_success(self):
         """ test views module return_votable_format_export method when successed"""
 
-        response = views.return_votable_format_export(solrdata.data)
+        response = views.return_votable_format_export(solrdata.data, adsOutputFormat.classic)
         assert(response._status_code == 200)
 
 
     def test_views_return_votable_format_export_no_data(self):
         """ test views module return_votable_format_export method when errors """
 
-        response = views.return_votable_format_export(None)
+        response = views.return_votable_format_export(None, adsOutputFormat.classic)
         assert(response._status_code == 404)
 
 
     def test_views_return_rss_format_export_success(self):
         """ test views module return_rss_format_export method when successed"""
 
-        response = views.return_rss_format_export(solrdata.data, '')
+        response = views.return_rss_format_export(solrdata.data, '', adsOutputFormat.classic)
         assert(response._status_code == 200)
 
 
     def test_views_return_rss_format_export_no_data(self):
         """ test views module return_rss_format_export method when errors """
 
-        response = views.return_rss_format_export(None, '')
+        response = views.return_rss_format_export(None, '', adsOutputFormat.classic)
         assert(response._status_code == 404)
 
 
@@ -473,15 +473,15 @@ class TestExports(TestCase):
 
         rss_export = RSSFormat(solrdata.data)
         # both author and title exists
-        assert(rss_export._RSSFormat__get_author_title(solrdata.data_23['response'].get('docs')[0]) ==
+        assert(rss_export._RSSFormat__get_author_title(solrdata.data_23['response'].get('docs', adsOutputFormat.classic)[0]) ==
                'Zhang, Yangjun: A Microwave Free-Space Method Using Artificial Lens with Anti-reflection Layer')
         # only author
-        assert(rss_export._RSSFormat__get_author_title(solrdata.data_23['response'].get('docs')[1]) == 'Ryan, R. E.')
+        assert(rss_export._RSSFormat__get_author_title(solrdata.data_23['response'].get('docs', adsOutputFormat.classic)[1]) == 'Ryan, R. E.')
         # only title
-        assert(rss_export._RSSFormat__get_author_title(solrdata.data_23['response'].get('docs')[2]) ==
+        assert(rss_export._RSSFormat__get_author_title(solrdata.data_23['response'].get('docs', adsOutputFormat.classic)[2]) ==
                'Resolving Gas-Phase Metallicity In Galaxies')
         # neither author nor title exists
-        assert(rss_export._RSSFormat__get_author_title(solrdata.data_23['response'].get('docs')[3]) == '')
+        assert(rss_export._RSSFormat__get_author_title(solrdata.data_23['response'].get('docs', adsOutputFormat.classic)[3]) == '')
 
 
     def test_all_gets(self):
@@ -521,7 +521,7 @@ class TestExports(TestCase):
             '/bibtex': {'maxauthor': 0, 'authorcutoff': 0},
             '/rss': {'link': ''},
             '/custom': {'format': '%R'},
-            '/csl': {'style': 'aastex', 'format': '1', 'journalformat': '2'}
+            '/csl': {'style': 'aastex', 'format': '1', 'journalformat': '2', 'outputformat': '1', 'sort': 'date desc', 'authorlimit': 10}
         }
 
         for ep in endpoints:
@@ -578,36 +578,36 @@ class TestExports(TestCase):
 
         # bibTex format
         # display full journal name
-        bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=3).get('export', '')
+        bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=3, output_format=1).get('export', '')
         bibtex_full_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {Physical Review Letters},\n         year = 2018,\n        month = jan,\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
         assert (bibtex_export == bibtex_full_journal_name)
         # display abbreviated journal name
-        bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=2).get('export', '')
+        bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=2, output_format=1).get('export', '')
         bibtex_abbrev_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {PhRvL},\n         year = 2018,\n        month = jan,\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
         assert (bibtex_export == bibtex_abbrev_journal_name)
         # macro (default)
-        bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=0).get('export', '')
+        bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=0, output_format=1).get('export', '')
         bibtex_default_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {\\prl},\n         year = 2018,\n        month = jan,\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
         assert (bibtex_export == bibtex_default_journal_name)
 
         # aastex format
         # display full journal name
-        csl_export = CSLFormat(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.full).get().get('export', '')
+        csl_export = CSLFormat(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.full).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic).get('export', '')
         # now compare it with an already formatted data that we know is correct
         aastex_full_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, Physical Review Letters, Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)], 120, 2, 029901. doi:10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_full_journal_name)
         # display abbreviated journal name
-        csl_export = CSLFormat(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get().get('export', '')
+        csl_export = CSLFormat(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic).get('export', '')
         # now compare it with an already formatted data that we know is correct
         aastex_abbrev_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, PhRvL, Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)], 120, 2, 029901. doi:10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_abbrev_journal_name)
         # display default journal name, which is the macro option
-        csl_export = CSLFormat(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.default).get().get('export', '')
+        csl_export = CSLFormat(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.default).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic).get('export', '')
         # now compare it with an already formatted data that we know is correct
         aastex_default_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, \\prl, Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)], 120, 2, 029901. doi:10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_default_journal_name)
         # display abbreviated journal name that needs to be escaped
-        csl_export = CSLFormat(CSLJson(solrdata.data_9).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get().get('export', '')
+        csl_export = CSLFormat(CSLJson(solrdata.data_9).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic).get('export', '')
         # now compare it with an already formatted data that we know is correct
         aastex_abbrev_journal_name = u'\\bibitem[Ajani et al.(2021)]{2021A&A...645L..11A} Ajani, V., Starck, J.-L., \\& Pettorino, V.\\ 2021, A\\&A, Starlet {\ensuremath{\ell}}$_{1}$-norm for weak lensing cosmology, 645, L11. doi:10.1051/0004-6361/202039988\n'
         assert (csl_export == aastex_abbrev_journal_name)
@@ -641,7 +641,7 @@ class TestExports(TestCase):
         cls_default_formats = [adsFormatter.latex] * 6 + [adsFormatter.unicode] * 5
 
         for style, format in zip(adsCSLStyle.ads_CLS, cls_default_formats):
-            csl_export = CSLFormat(CSLJson(solrdata.data_7).get(), style, format).get().get('export', '')
+            csl_export = CSLFormat(CSLJson(solrdata.data_7).get(), style, format).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic).get('export', '')
             assert (csl_export == csl_export_output[style])
 
 
@@ -663,7 +663,7 @@ class TestExports(TestCase):
         }
         cls_default_formats = [adsFormatter.latex] * 6 + [adsFormatter.unicode] * 5
         for style, format in zip(adsCSLStyle.ads_CLS, cls_default_formats):
-            csl_export = CSLFormat(CSLJson(solrdata.data_10).get(), style, format).get().get('export', '')
+            csl_export = CSLFormat(CSLJson(solrdata.data_10).get(), style, format).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic).get('export', '')
             assert (csl_export == csl_export_output[style])
 
 
@@ -680,14 +680,14 @@ class TestExports(TestCase):
 
         # if publisher, display it, if not, format pub_raw in howpublished
         expected_bibtex_export = u'@software{2023zndo...8083529K,\n       author = {{Karras}, Oliver},\n        title = "{Analysis of the State and Evolution of Empirical Research in Requirements Engineering}",\n         year = 2023,\n        month = jun,\n          eid = {10.5281/zenodo.8083529},\n          doi = {10.5281/zenodo.8083529},\n      version = {v1.0},\n    publisher = {Zenodo},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2023zndo...8083529K},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n@MISC{2023BoSAB..34......,\n        title = "{Proceedings da XLV Reuni{\\~a}o Anual da SAB}",\n howpublished = {Boletim da Sociedade Astr{\\^o}nomica Brasileira. Proceedings da XLV Reuni{\\~a}o Anual da SAB},\n         year = 2023,\n        month = jan,\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2023BoSAB..34......},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n@dataset{2012ddsw.rept.....T,\n       author = {{Thornton}, P.~E. and {Thornton}, M.~M. and {Mayer}, B.~W. and {Wilhelmi}, N. and {Wei}, Y. and {Devarakonda}, R. and {Cook}, R.},\n        title = "{Daymet: Daily surface weather on a 1 km grid for North America, 1980-2008}",\n howpublished = {Oak Ridge National Laboratory (ORNL) Distributed Active Archive Center for Biogeochemical Dynamics (DAAC)},\n         year = 2012,\n        month = apr,\n          doi = {10.3334/ORNLDAAC/1219},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2012ddsw.rept.....T},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
-        bibtex_export = BibTexFormat(solrdata.data_16, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=3).get('export', '')
+        bibtex_export = BibTexFormat(solrdata.data_16, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=3, output_format=1).get('export', '')
         assert(bibtex_export == expected_bibtex_export)
 
 
     def test_bibtex_publisher(self):
         """ format the publisher stubdata using the code """
 
-        bibtex_export = BibTexFormat(solrdata.data_17, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=1)
+        bibtex_export = BibTexFormat(solrdata.data_17, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=1, output_format=1)
         # now compare it with an already formatted data that we know is correct
         assert (bibtex_export == bibTexTest.data_publisher)
 
@@ -695,7 +695,7 @@ class TestExports(TestCase):
     def test_bibtex_with_abs_publisher(self):
         """ format the publisher stubdata using the code """
 
-        bibtex_export = BibTexFormat(solrdata.data_17, "%R").get(include_abs=True, max_author=0, author_cutoff=200, journal_format=1)
+        bibtex_export = BibTexFormat(solrdata.data_17, "%R").get(include_abs=True, max_author=0, author_cutoff=200, journal_format=1, output_format=1)
         # now compare it with an already formatted data that we know is correct
         assert (bibtex_export == bibTexTest.data_with_abs_publisher)
 
@@ -706,7 +706,7 @@ class TestExports(TestCase):
         custom_format = CustomFormat(custom_format=r'%ZEncoding:latex\\bibitem[%2.1m\\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p\,Publisher:%pb ')
         custom_format.set_json_from_solr(solrdata.data_17)
         # now compare it with an already formatted data that we know is correct
-        assert (custom_format.get() == customTest.data_publisher)
+        assert (custom_format.get(adsOutputFormat.classic) == customTest.data_publisher)
         # verify correct solr fields are fetched
         assert (custom_format.get_solr_fields() == 'author,year,pub,volume,publisher,page,page_range,bibcode,bibstem')
 
@@ -714,7 +714,7 @@ class TestExports(TestCase):
     def test_ads_publisher(self):
         """ format the publisher stubdata using the code """
 
-        fielded_export = FieldedFormat(solrdata.data_17).get_ads_fielded()
+        fielded_export = FieldedFormat(solrdata.data_17).get_ads_fielded(output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (fielded_export == fieldedTest.data_ads_publisher)
 
@@ -722,7 +722,7 @@ class TestExports(TestCase):
     def test_endnote_publisher(self):
         """ format the publisher stubdata using the code """
 
-        fielded_export = FieldedFormat(solrdata.data_17).get_endnote_fielded()
+        fielded_export = FieldedFormat(solrdata.data_17).get_endnote_fielded(output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (fielded_export == fieldedTest.data_endnote_publisher)
 
@@ -730,7 +730,7 @@ class TestExports(TestCase):
     def test_procite_publisher(self):
         """ format the publisher stubdata using the code """
 
-        fielded_export = FieldedFormat(solrdata.data_17).get_procite_fielded()
+        fielded_export = FieldedFormat(solrdata.data_17).get_procite_fielded(output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (fielded_export == fieldedTest.data_procite_publisher)
 
@@ -738,7 +738,7 @@ class TestExports(TestCase):
     def test_refman_publisher(self):
         """ format the publisher stubdata using the code """
 
-        fielded_export = FieldedFormat(solrdata.data_17).get_refman_fielded()
+        fielded_export = FieldedFormat(solrdata.data_17).get_refman_fielded(output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (fielded_export == fieldedTest.data_refman_publisher)
 
@@ -746,7 +746,7 @@ class TestExports(TestCase):
     def test_refworks_publisher(self):
         """ format the publisher stubdata using the code """
 
-        fielded_export = FieldedFormat(solrdata.data_17).get_refworks_fielded()
+        fielded_export = FieldedFormat(solrdata.data_17).get_refworks_fielded(output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (fielded_export == fieldedTest.data_refworks_publisher)
 
@@ -754,7 +754,7 @@ class TestExports(TestCase):
     def test_dublinxml_publisher(self):
         """ format the publisher stubdata using the code """
 
-        xml_export = XMLFormat(solrdata.data_17).get_dublincore_xml()
+        xml_export = XMLFormat(solrdata.data_17).get_dublincore_xml(output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_dublin_core_publisher)
 
@@ -762,7 +762,7 @@ class TestExports(TestCase):
     def test_refxml_with_abs_publisher(self):
         """ format the publisher stubdata using the code """
 
-        xml_export = XMLFormat(solrdata.data_17).get_reference_xml(include_abs=True)
+        xml_export = XMLFormat(solrdata.data_17).get_reference_xml(include_abs=True, output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert (xml_export == xmlTest.data_ref_with_abs_publisher)
 
@@ -770,7 +770,7 @@ class TestExports(TestCase):
     def test_jatsxml_publisher(self):
         """ format the publisher stubdata using the code """
 
-        xml_export = XMLFormat(solrdata.data_17).get_jats_xml()
+        xml_export = XMLFormat(solrdata.data_17).get_jats_xml(output_format=adsOutputFormat.classic)
         # now compare it with an already formatted data that we know is correct
         assert(xml_export == xmlTest.data_jats_publisher)
 
@@ -839,7 +839,7 @@ class TestExports(TestCase):
     def test_adsOrganizer_citation_bibliography(self):
         """ test adsOrganizer's citation_bibliography option """
 
-        csl_export = CSLFormat(CSLJson(solrdata.data_16).get(), 'ieee', adsFormatter.latex).get(adsOrganizer.citation_bibliography)
+        csl_export = CSLFormat(CSLJson(solrdata.data_16).get(), 'ieee', adsFormatter.latex).get(export_organizer=adsOrganizer.citation_bibliography, output_format=adsOutputFormat.classic)
         expected_results = [
             '2023zndo...8083529K', '', '[1]Karras, O., “Analysis of the State and Evolution of Empirical Research in Requirements Engineering”, <i>Zenodo</i>, Art. no. 10.5281/zenodo.8083529, Zenodo, 2023. doi:10.5281/zenodo.8083529.',
             '2023BoSAB..34......', '', '[2]No author, “Proceedings da XLV Reunião Anual da SAB”, BoSAB..34, 2023.',
@@ -849,7 +849,7 @@ class TestExports(TestCase):
         self.assertEqual(csl_export.split('\n'), expected_results)
 
         # send it an unrecognizable export_organizer id
-        self.assertEqual(CSLFormat(CSLJson(solrdata.data_16).get(), 'ieee', adsFormatter.latex).get(export_organizer=10), None)
+        self.assertEqual(CSLFormat(CSLJson(solrdata.data_16).get(), 'ieee', adsFormatter.latex).get(export_organizer=10, output_format=adsOutputFormat.classic), [])
 
 
     def test_adsFormatter_is_number(self):
@@ -999,7 +999,7 @@ class TestExports(TestCase):
     def test_bibtex_keyformat_enumeration(self):
         """ text Bibtex format's get method check for keyformat enumeration """
 
-        bibtex_export = BibTexFormat(solrdata.data_19, "%zm%H").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=1)
+        bibtex_export = BibTexFormat(solrdata.data_19, "%zm%H").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=1, output_format=1)
 
         assert (bibtex_export == {'msg': 'Retrieved 3 abstracts, starting with number 1.', 'export': '{Shapuriana\n}\n\n{Shapurianb\n}\n\n{Koch\n}\n\n'})
 
@@ -1007,7 +1007,7 @@ class TestExports(TestCase):
     def test_bibtex_keyformat_ascii(self):
         """ text Bibtex format's get method check for keyformat being ascii """
 
-        bibtex_export = BibTexFormat(solrdata.data_20, "%H").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=1)
+        bibtex_export = BibTexFormat(solrdata.data_20, "%H").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=1, output_format=1)
 
         assert (bibtex_export == {'msg': 'Retrieved 1 abstracts, starting with number 1.', 'export': '{Andre\n}\n\n'})
 
@@ -1053,10 +1053,47 @@ class TestExports(TestCase):
         formats = ['aastex']
         for format in formats:
             # format the stubdata using the code
-            csl_export = CSLFormat(CSLJson(solrdata.data_26).get(), format, adsFormatter.latex).get()
+            csl_export = CSLFormat(CSLJson(solrdata.data_26).get(), format, adsFormatter.latex).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic)
             for doc in csl_export['export'][:-1].split('\n'):
                 # now verify that it found it
                 assert (re_doi.search(doc))
+
+
+    def test_output_format_individual(self):
+        """ test the new output format that displays bibcodes and references individually """
+
+        # custom format csv when there is a header only
+        custom_format = CustomFormat(custom_format=r'%ZEncoding:csv %R,%H')
+        custom_format.set_json_from_solr(solrdata.data_17)
+        expected = {
+            'num_docs': 5,
+            'docs': [
+                {'bibcode': '2024zndo..10908474S', 'reference': '"2024zndo..10908474S","Schade"'},
+                {'bibcode': '2024wsp..conf...20V', 'reference': '"2024wsp..conf...20V","Vidmachenko"'},
+                {'bibcode': '2024asal.book..204V', 'reference': '"2024asal.book..204V","Vidmachenko"'},
+                {'bibcode': '2018scrp.conf.....K', 'reference': '"2018scrp.conf.....K","Kent"'},
+                {'bibcode': '2023uwff.book.....R', 'reference': '"2023uwff.book.....R","Renwick"'}
+            ],
+            'header': '"bibcode","author"'
+        }
+        assert (custom_format.get(adsOutputFormat.individual) == expected)
+
+        # ieee format when there is no header or footer
+        exported = CSLFormat(CSLJson(solrdata.data_17).get(), 'ieee', adsFormatter.unicode).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.individual)
+        expected = {
+            'num_docs': 5,
+            'docs': [
+                {'bibcode': '2024zndo..10908474S', 'reference': '[1]Schade, R., “pc2/pqdts: v2024.2”, <i>Zenodo</i>, Art. no. 10.5281/zenodo.10908474, Zenodo, 2024. doi:10.5281/zenodo.10908474.'},
+                {'bibcode': '2024wsp..conf...20V', 'reference': '[2]Vidmachenko, A., “A modern view of former rivers on Mars.”, in <i>Proceedings of the VIII International Scientific and Practical Conference. World science priorities (February 08 – 09</i>, 2024, pp. 20–25.'},
+                {'bibcode': '2024asal.book..204V', 'reference': '[3]Vidmachenko, A., “New generation telescopes for the astronomy of the future.”, in <i>In book: Astronomical almanac</i>, Kyiv, 2024, pp. 204–209.'},
+                {'bibcode': '2018scrp.conf.....K', 'reference': '[4]Kent, B. R., “Science and Computing with Raspberry Pi”, in <i>Science and Computing with Raspberry Pi</i>, 2018.'},
+                {'bibcode': '2023uwff.book.....R', 'reference': '[5]Renwick, J. A., <i>Under the weather: a future forecast for New Zealand</i>. HarperCollins, 2023.'}]
+        }
+        assert (exported == expected)
+
+        # dublin xml when there is both header and footer
+        exported = XMLFormat(solrdata.data).get_dublincore_xml(output_format=adsOutputFormat.individual)
+        assert (exported == xmlTest.data_dublin_core_individual)
 
 
 if __name__ == '__main__':

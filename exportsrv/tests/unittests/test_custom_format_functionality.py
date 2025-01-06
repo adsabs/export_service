@@ -8,6 +8,7 @@ from collections import OrderedDict
 
 import exportsrv.app as app
 
+from exportsrv.formatter.ads import adsCSLStyle, adsJournalFormat, adsOrganizer, adsOutputFormat
 from exportsrv.tests.unittests.stubdata import solrdata
 from exportsrv.formatter.cslFormat import CSLFormat, adsFormatter
 from exportsrv.formatter.customFormat import CustomFormat
@@ -383,15 +384,15 @@ class TestExportsCustomFormat(TestCase):
         # no EOL string
         custom_format = CustomFormat(custom_format=r'%ZEOL:"" %R')
         custom_format.set_json_from_solr(solrdata.data_6)
-        assert (custom_format.get().get('export', '') == "2020AAS...23528705A2019EPSC...13.1911A2015scop.confE...3A2019AAS...23338108A2019AAS...23320704A2018EPJWC.18608001A2018AAS...23221409A2017ASPC..512...45A2018AAS...23136217A2018AAS...23130709A")
+        assert (custom_format.get(adsOutputFormat.classic).get('export', '') == "2020AAS...23528705A2019EPSC...13.1911A2015scop.confE...3A2019AAS...23338108A2019AAS...23320704A2018EPJWC.18608001A2018AAS...23221409A2017ASPC..512...45A2018AAS...23136217A2018AAS...23130709A")
         # do not specify EOL string, and default linefeed is added in
         custom_format = CustomFormat(custom_format=r'%R')
         custom_format.set_json_from_solr(solrdata.data_6)
-        assert (custom_format.get().get('export', '') == "2020AAS...23528705A\n2019EPSC...13.1911A\n2015scop.confE...3A\n2019AAS...23338108A\n2019AAS...23320704A\n2018EPJWC.18608001A\n2018AAS...23221409A\n2017ASPC..512...45A\n2018AAS...23136217A\n2018AAS...23130709A\n")
+        assert (custom_format.get(adsOutputFormat.classic).get('export', '') == "2020AAS...23528705A\n2019EPSC...13.1911A\n2015scop.confE...3A\n2019AAS...23338108A\n2019AAS...23320704A\n2018EPJWC.18608001A\n2018AAS...23221409A\n2017ASPC..512...45A\n2018AAS...23136217A\n2018AAS...23130709A\n")
         # specify EOL string
         custom_format = CustomFormat(custom_format=r'%ZEOL:"--END" %R')
         custom_format.set_json_from_solr(solrdata.data_6)
-        assert (custom_format.get().get('export', '') == "2020AAS...23528705A--END2019EPSC...13.1911A--END2015scop.confE...3A--END2019AAS...23338108A--END2019AAS...23320704A--END2018EPJWC.18608001A--END2018AAS...23221409A--END2017ASPC..512...45A--END2018AAS...23136217A--END2018AAS...23130709A--END")
+        assert (custom_format.get(adsOutputFormat.classic).get('export', '') == "2020AAS...23528705A--END2019EPSC...13.1911A--END2015scop.confE...3A--END2019AAS...23338108A--END2019AAS...23320704A--END2018EPJWC.18608001A--END2018AAS...23221409A--END2017ASPC..512...45A--END2018AAS...23136217A--END2018AAS...23130709A--END")
 
 
     def test_page_count(self):
@@ -402,7 +403,7 @@ class TestExportsCustomFormat(TestCase):
                      u'Knapp, Wilfried and Thuemen, Chris. (2017). 13, 25, 6 pp.\n']
         custom_format = CustomFormat(custom_format=r'%A. (%Y). %q, %V, %p, %pc pp.')
         custom_format.set_json_from_solr(solrdata.data_8)
-        assert (custom_format.get().get('export', '') == ''.join(formatted))
+        assert (custom_format.get(adsOutputFormat.classic).get('export', '') == ''.join(formatted))
 
 
     def test_page_range(self):
@@ -421,8 +422,7 @@ class TestExportsCustomFormat(TestCase):
         for custom_format, formatted_record, data in zip(custom_formats, formatted_records, solrdata_set):
             custom_format = CustomFormat(custom_format=custom_format)
             custom_format.set_json_from_solr(data)
-            print(custom_format.get().get('export', ''))
-            assert (custom_format.get().get('export', '') == formatted_record)
+            assert (custom_format.get(adsOutputFormat.classic).get('export', '') == formatted_record)
 
 
     def test_num_citiations(self):
@@ -439,7 +439,7 @@ class TestExportsCustomFormat(TestCase):
             self.assertEqual(solr_data['response']['docs'][0]['num_references'], 40)
         custom_format = CustomFormat(custom_format=r'%R: %c|%r')
         custom_format.set_json_from_solr(solrdata.data_11)
-        assert (custom_format.get().get('export', '') == "2016ApJ...818L..26F: 29|40\n")
+        assert (custom_format.get(adsOutputFormat.classic).get('export', '') == "2016ApJ...818L..26F: 29|40\n")
 
 
     def test_escaping_literal(self):
@@ -450,7 +450,7 @@ class TestExportsCustomFormat(TestCase):
                      u'%R 2017JDSO...13...25K\n%D 2017\n']
         custom_format = CustomFormat(custom_format=u'%%R %R\n%%D %Y')
         custom_format.set_json_from_solr(solrdata.data_8)
-        assert (custom_format.get().get('export', '') == r''.join(formatted))
+        assert (custom_format.get(adsOutputFormat.classic).get('export', '') == r''.join(formatted))
 
 
     def test_author_without_firstname(self):
@@ -460,7 +460,7 @@ class TestExportsCustomFormat(TestCase):
                      u"\\bibitem[Sameer, Ganesh et al.\(2015)]{Sameer2015}\ Sameer, Ganesh, S., Kaur, N., Kumar, V., & Baliyan, K. S.\ 2015\,The Astronomer's Telegram\,7494\,1\n"]
         custom_format = CustomFormat(custom_format=r'\\bibitem[%3.2m\\(%Y)]{%2H%Y}\ %5.3l\ %Y\,%j\,%V\,%p')
         custom_format.set_json_from_solr(solrdata.data_14)
-        assert (custom_format.get().get('export', '') == r''.join(formatted))
+        assert (custom_format.get(adsOutputFormat.classic).get('export', '') == r''.join(formatted))
 
 
     def test_comment_and_pubnote(self):
@@ -472,7 +472,7 @@ class TestExportsCustomFormat(TestCase):
                      u'2023yCat..19220186H\n comment:fig1.dat 6946x39 Keck/NIRES near-IR spectrum of peculiar type Ia; SN2020qxp/ASASSN-20jq taken at +191d past the epoch ; of rest-frame B-band maximum (MJD=59277.50)\n eprint_comment:\n']
         custom_format = CustomFormat(custom_format=r'%R\n comment:%x\n eprint_comment: %xe')
         custom_format.set_json_from_solr(solrdata.data_15)
-        assert (custom_format.get().get('export', '') == r''.join(formatted))
+        assert (custom_format.get(adsOutputFormat.classic).get('export', '') == r''.join(formatted))
 
 
     def test_match_punctuation(self):
@@ -510,13 +510,13 @@ class TestExportsCustomFormat(TestCase):
         custom_format = CustomFormat(custom_format=r'%ZEncoding:csv %ZHeader:"Bibcode,Author" %R,%H')
         custom_format.set_json_from_solr(solrdata.data_17)
         expected = 'Bibcode,Author\n"2024zndo..10908474S","Schade"\n"2024wsp..conf...20V","Vidmachenko"\n"2024asal.book..204V","Vidmachenko"\n"2018scrp.conf.....K","Kent"\n"2023uwff.book.....R","Renwick"\n'
-        assert (custom_format.get().get('export', '') == expected)
+        assert (custom_format.get(adsOutputFormat.classic).get('export', '') == expected)
 
         # test when the user has no provided the header line
         custom_format = CustomFormat(custom_format=r'%ZEncoding:csv %R,%H')
         custom_format.set_json_from_solr(solrdata.data_17)
         expected = '"bibcode","author"\n"2024zndo..10908474S","Schade"\n"2024wsp..conf...20V","Vidmachenko"\n"2024asal.book..204V","Vidmachenko"\n"2018scrp.conf.....K","Kent"\n"2023uwff.book.....R","Renwick"\n'
-        assert (custom_format.get().get('export', '') == expected)
+        assert (custom_format.get(adsOutputFormat.classic).get('export', '') == expected)
 
 
     def test_format_line_wrapped(self):

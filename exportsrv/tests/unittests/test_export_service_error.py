@@ -8,7 +8,10 @@ from datetime import datetime
 import xml.etree.ElementTree as ET
 
 import exportsrv.app as app
+from exportsrv.tests.unittests.stubdata import solrdata
+from exportsrv.formatter.ads import adsOutputFormat
 from exportsrv.formatter.rssFormat import RSSFormat
+from exportsrv.formatter.xmlFormat import XMLFormat
 from exportsrv.formatter.strftime import strftime
 from exportsrv.formatter.latexencode import utf8tolatex
 
@@ -144,6 +147,18 @@ class TestExportsError(TestCase):
         """
         self.assertTrue(utf8tolatex("") == "")
 
+
+    def test_add_date_jats_xml_invalid_pub_date(self):
+        """
+        test for jats xml when pub_date is invalid
+        """
+        # missing day part
+        solrdata.data_2["response"]["docs"][0]["pubdate"] = "2024-12"
+        xml_export = XMLFormat(solrdata.data_2).get_jats_xml(output_format=adsOutputFormat.classic)
+
+        # check that there is no pub-date
+        root = ET.fromstring(xml_export['export'])
+        self.assertEqual(root.find(".//pub-date"), None)
 
 if __name__ == "__main__":
     unittest.main()
