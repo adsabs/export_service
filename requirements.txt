@@ -5,4 +5,4 @@ itsdangerous==2.0.1
 jinja2==3.0.3
 lxml==4.6.5
 unidecode==1.2.0
-werkzeug==2.0.2
+werkzeug==2.2.3
