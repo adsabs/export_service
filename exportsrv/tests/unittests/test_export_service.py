@@ -2,6 +2,7 @@
 
 from flask_testing import TestCase
 import unittest
+import mock
 
 import json
 import re
@@ -581,14 +582,67 @@ class TestExports(TestCase):
         bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=3, output_format=1).get('export', '')
         bibtex_full_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {Physical Review Letters},\n         year = 2018,\n        month = jan,\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
         assert (bibtex_export == bibtex_full_journal_name)
+
+        # check the endpoint as well
+        with mock.patch('exportsrv.views.get_solr_data') as get_mock:
+            get_mock.return_value = solrdata.data_5
+
+            payload = {
+                'bibcode': ['2018PhRvL.120b9901P'],
+                'journalformat': [3],
+                'max_author': 10,
+                'author_cutoff': 200,
+                'output_format': 1,
+            }
+            response = self.client.post('/bibtex', data=json.dumps(payload))
+
+            expected_journal_format = "journal = {Physical Review Letters}"
+            assert expected_journal_format in response.json['export']
+            assert (response._status_code == 200)
+
         # display abbreviated journal name
         bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=2, output_format=1).get('export', '')
         bibtex_abbrev_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {PhRvL},\n         year = 2018,\n        month = jan,\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
         assert (bibtex_export == bibtex_abbrev_journal_name)
+
+        # check the endpoint as well
+        with mock.patch('exportsrv.views.get_solr_data') as get_mock:
+            get_mock.return_value = solrdata.data_5
+
+            payload = {
+                'bibcode': ['2018PhRvL.120b9901P'],
+                'journalformat': [2],
+                'max_author': 10,
+                'author_cutoff': 200,
+                'output_format': 1,
+            }
+            response = self.client.post('/bibtex', data=json.dumps(payload))
+
+            expected_journal_format = "journal = {PhRvL}"
+            assert expected_journal_format in response.json['export']
+            assert (response._status_code == 200)
+
         # macro (default)
         bibtex_export = BibTexFormat(solrdata.data_5, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=0, output_format=1).get('export', '')
         bibtex_default_journal_name = u'@ARTICLE{2018PhRvL.120b9901P,\n       author = {{Pustilnik}, M. and {van Heck}, B. and {Lutchyn}, R.~M. and {Glazman}, L.~I.},\n        title = "{Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)]}",\n      journal = {\\prl},\n         year = 2018,\n        month = jan,\n       volume = {120},\n       number = {2},\n          eid = {029901},\n        pages = {029901},\n          doi = {10.1103/PhysRevLett.120.029901},\n       adsurl = {https://ui.adsabs.harvard.edu/abs/2018PhRvL.120b9901P},\n      adsnote = {Provided by the SAO/NASA Astrophysics Data System}\n}\n\n'
         assert (bibtex_export == bibtex_default_journal_name)
+
+        # check the endpoint as well
+        with mock.patch('exportsrv.views.get_solr_data') as get_mock:
+            get_mock.return_value = solrdata.data_5
+
+            payload = {
+                'bibcode': ['2018PhRvL.120b9901P'],
+                'journalformat': [0],
+                'max_author': 10,
+                'author_cutoff': 200,
+                'output_format': 1,
+            }
+            response = self.client.post('/bibtex', data=json.dumps(payload))
+
+            expected_journal_format = "journal = {\\prl}"
+            assert expected_journal_format in response.json['export']
+            assert (response._status_code == 200)
 
         # aastex format
         # display full journal name
@@ -596,21 +650,92 @@ class TestExports(TestCase):
         # now compare it with an already formatted data that we know is correct
         aastex_full_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, Physical Review Letters, Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)], 120, 2, 029901. doi:10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_full_journal_name)
+
+        # check the endpoint as well
+        with mock.patch('exportsrv.views.get_solr_data') as get_mock:
+            get_mock.return_value = solrdata.data_5
+
+            payload = {
+                'bibcode': ['2018PhRvL.120b9901P'],
+                'journalformat': [3], # equivalent to adsJournalFormat.full
+                'max_author': 10,
+                'author_cutoff': 200,
+                'output_format': 1,
+            }
+            response = self.client.post('/aastex', data=json.dumps(payload))
+
+            expected_journal_format = ", Physical Review Letters,"
+            assert expected_journal_format in response.json['export']
+            assert (response._status_code == 200)
+
         # display abbreviated journal name
         csl_export = CSLFormat(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic).get('export', '')
         # now compare it with an already formatted data that we know is correct
         aastex_abbrev_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, PhRvL, Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)], 120, 2, 029901. doi:10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_abbrev_journal_name)
+
+        # check the endpoint as well
+        with mock.patch('exportsrv.views.get_solr_data') as get_mock:
+            get_mock.return_value = solrdata.data_5
+
+            payload = {
+                'bibcode': ['2018PhRvL.120b9901P'],
+                'journalformat': [2], # equivalent to adsJournalFormat.abbreviated
+                'max_author': 10,
+                'author_cutoff': 200,
+                'output_format': 1,
+            }
+            response = self.client.post('/aastex', data=json.dumps(payload))
+
+            expected_journal_format = ", PhRvL,"
+            assert expected_journal_format in response.json['export']
+            assert (response._status_code == 200)
+
         # display default journal name, which is the macro option
         csl_export = CSLFormat(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.default).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic).get('export', '')
         # now compare it with an already formatted data that we know is correct
         aastex_default_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, \\prl, Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)], 120, 2, 029901. doi:10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_default_journal_name)
+
+        # check the endpoint as well
+        with mock.patch('exportsrv.views.get_solr_data') as get_mock:
+            get_mock.return_value = solrdata.data_5
+
+            payload = {
+                'bibcode': ['2018PhRvL.120b9901P'],
+                'journalformat': [0],  # equivalent to adsJournalFormat.default
+                'max_author': 10,
+                'author_cutoff': 200,
+                'output_format': 1,
+            }
+            response = self.client.post('/aastex', data=json.dumps(payload))
+
+            expected_journal_format = ", \\prl,"
+            assert expected_journal_format in response.json['export']
+            assert (response._status_code == 200)
+
         # display abbreviated journal name that needs to be escaped
         csl_export = CSLFormat(CSLJson(solrdata.data_9).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic).get('export', '')
         # now compare it with an already formatted data that we know is correct
         aastex_abbrev_journal_name = u'\\bibitem[Ajani et al.(2021)]{2021A&A...645L..11A} Ajani, V., Starck, J.-L., \\& Pettorino, V.\\ 2021, A\\&A, Starlet {\ensuremath{\ell}}$_{1}$-norm for weak lensing cosmology, 645, L11. doi:10.1051/0004-6361/202039988\n'
         assert (csl_export == aastex_abbrev_journal_name)
+
+        # check the endpoint as well
+        with mock.patch('exportsrv.views.get_solr_data') as get_mock:
+            get_mock.return_value = solrdata.data_9
+
+            payload = {
+                'bibcode': ['2018PhRvL.120b9901P'],
+                'journalformat': [2],  # equivalent to adsJournalFormat.abbreviated
+                'max_author': 10,
+                'author_cutoff': 200,
+                'output_format': 1,
+            }
+            response = self.client.post('/aastex', data=json.dumps(payload))
+
+            expected_journal_format = ", A\\&A,"
+            assert expected_journal_format in response.json['export']
+            assert (response._status_code == 200)
 
 
     def test_bibtex_enumeration(self):

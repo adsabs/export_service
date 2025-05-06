@@ -226,7 +226,8 @@ def get_export_journal_format_from_payload(payload):
     """
     if 'journalformat' in payload:
         journal_format = get_a_payload_value(payload, 'journalformat')
-        journal_format = adsJournalFormat().verify(journal_format)
+        if not adsJournalFormat().verify(journal_format):
+            journal_format = adsJournalFormat.default
     else:
         journal_format = adsJournalFormat.default
     return journal_format

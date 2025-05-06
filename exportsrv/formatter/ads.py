@@ -88,13 +88,13 @@ class adsJournalFormat:
         """
         # allow `style` to be an integer (ie, 0, 1, ...)
         if isinstance(style, int):
-            if 0 <= style < 3:
+            if 0 <= style < 4:
                 return True
 
         # allow `style` to be a string (ie, '0', '1', ...)
         if isinstance(style, str):
             format = int(style)
-            if 0 <= format < 3:
+            if 0 <= format < 4:
                 return True
 
         if (style in self.ads_journal_Format):
