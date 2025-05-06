@@ -1,5 +1,9 @@
 *.py[co]
 local_config.py
 venv
+*.coverage
+.idea
+logs
 # Mac specific files
 .DS_Store
+
