@@ -179,6 +179,13 @@ class TestExports(TestCase):
         # now compare it with an already formatted data that we know is correct
         assert (csl_export == cslTest.data_AASTex)
 
+    def test_aastex_psj(self):
+        """ test csl format aastex """
+
+        # format the stubdata using the code
+        csl_export = CSLFormat(CSLJson(solrdata.data).get(), 'aastex-psj', adsFormatter.latex).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic)
+        # now compare it with an already formatted data that we know is correct
+        assert (csl_export == cslTest.data_AASTex_PSJ)
 
     def test_icarus(self):
         """ test csl format icarus """
@@ -648,7 +655,7 @@ class TestExports(TestCase):
         # display full journal name
         csl_export = CSLFormat(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.full).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic).get('export', '')
         # now compare it with an already formatted data that we know is correct
-        aastex_full_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, Physical Review Letters, Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)], 120, 2, 029901. doi:10.1103/PhysRevLett.120.029901\n'
+        aastex_full_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, Physical Review Letters, 120, 2, 029901. doi:10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_full_journal_name)
 
         # check the endpoint as well
@@ -671,7 +678,7 @@ class TestExports(TestCase):
         # display abbreviated journal name
         csl_export = CSLFormat(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic).get('export', '')
         # now compare it with an already formatted data that we know is correct
-        aastex_abbrev_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, PhRvL, Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)], 120, 2, 029901. doi:10.1103/PhysRevLett.120.029901\n'
+        aastex_abbrev_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, PhRvL, 120, 2, 029901. doi:10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_abbrev_journal_name)
 
         # check the endpoint as well
@@ -694,7 +701,7 @@ class TestExports(TestCase):
         # display default journal name, which is the macro option
         csl_export = CSLFormat(CSLJson(solrdata.data_5).get(), 'aastex', adsFormatter.latex, adsJournalFormat.default).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic).get('export', '')
         # now compare it with an already formatted data that we know is correct
-        aastex_default_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, \\prl, Erratum: Quantum Criticality in Resonant Andreev Conduction [Phys. Rev. Lett. 119, 116802 (2017)], 120, 2, 029901. doi:10.1103/PhysRevLett.120.029901\n'
+        aastex_default_journal_name = u'\\bibitem[Pustilnik et al.(2018)]{2018PhRvL.120b9901P} Pustilnik, M., van Heck, B., Lutchyn, R.~M., et al.\\ 2018, \\prl, 120, 2, 029901. doi:10.1103/PhysRevLett.120.029901\n'
         assert (csl_export == aastex_default_journal_name)
 
         # check the endpoint as well
@@ -717,7 +724,7 @@ class TestExports(TestCase):
         # display abbreviated journal name that needs to be escaped
         csl_export = CSLFormat(CSLJson(solrdata.data_9).get(), 'aastex', adsFormatter.latex, adsJournalFormat.abbreviated).get(export_organizer=adsOrganizer.plain, output_format=adsOutputFormat.classic).get('export', '')
         # now compare it with an already formatted data that we know is correct
-        aastex_abbrev_journal_name = u'\\bibitem[Ajani et al.(2021)]{2021A&A...645L..11A} Ajani, V., Starck, J.-L., \\& Pettorino, V.\\ 2021, A\\&A, Starlet {\ensuremath{\ell}}$_{1}$-norm for weak lensing cosmology, 645, L11. doi:10.1051/0004-6361/202039988\n'
+        aastex_abbrev_journal_name = u'\\bibitem[Ajani et al.(2021)]{2021A&A...645L..11A} Ajani, V., Starck, J.-L., \\& Pettorino, V.\\ 2021, A\\&A, 645, L11. doi:10.1051/0004-6361/202039988\n'
         assert (csl_export == aastex_abbrev_journal_name)
 
         # check the endpoint as well
@@ -751,7 +758,8 @@ class TestExports(TestCase):
         """ test bibcodes that have no volume and page but doi for all CSLFormat formats """
 
         csl_export_output = {
-            'aastex': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters, Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico. doi:10.1007/s00367-005-0006-y\n',
+            'aastex': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters. doi:10.1007/s00367-005-0006-y\n',
+            'aastex-psj': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters, Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico. doi:10.1007/s00367-005-0006-y\n',
             'icarus': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005.\\ Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico.\\ Geo-Marine Letters. doi:10.1007/s00367-005-0006-y\n',
             'mnras': u'\\bibitem[\\protect\\citeauthoryear{Aharon}{2005}]{2005GML...tmp....1A} Aharon P., 2005, GML...tmp. doi:10.1007/s00367-005-0006-y\n',
             'soph': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A}Aharon, P.: 2005, {\\it Geo-Marine Letters}. doi:10.1007/s00367-005-0006-y.\n',
@@ -774,7 +782,8 @@ class TestExports(TestCase):
         """ test doi that is encoded properly """
 
         csl_export_output = {
-            'aastex': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003, Information Handling in Astronomy - Historical Vistas, AIPS, the VLA, and the VLBA, 285, 109. doi:10.1007/0-306-48080-8\_7\n',
+            'aastex': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003, Information Handling in Astronomy - Historical Vistas, 285, 109. doi:10.1007/0-306-48080-8\_7\n',
+            'aastex-psj': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003, Information Handling in Astronomy - Historical Vistas, AIPS, the VLA, and the VLBA, 285, 109. doi:10.1007/0-306-48080-8\_7\n',
             'icarus': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003.\\ AIPS, the VLA, and the VLBA.\\ Information Handling in Astronomy - Historical Vistas 109. doi:10.1007/0-306-48080-8\\_7\n',
             'mnras': u'\\bibitem[\\protect\\citeauthoryear{Greisen}{2003}]{2003ASSL..285..109G} Greisen E.~W., 2003, ASSL, 285, 109. doi:10.1007/0-306-48080-8\\_7\n',
             'soph': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G}Greisen, E.W.: 2003, {\\it Information Handling in Astronomy - Historical Vistas}, 109. doi:10.1007/0-306-48080-8\\_7.\n',

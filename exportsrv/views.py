@@ -737,6 +737,37 @@ def csl_aastex_format_export_get(bibcode):
                                     csl_style='aastex', export_format=adsFormatter.latex, journal_format=adsJournalFormat.macro,
                                     export_output_format=adsOutputFormat.default, request_type='GET')
 
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/aastex-psj', methods=['POST'])
+def csl_aastex_psj_format_export_post():
+    """
+
+    :return:
+    """
+    results, status = get_payload(request)
+    if status == 200:
+        payload = results['payload']
+        results, status = export_post_payload_base(payload, 'aastex-psj', 2)
+        if status == 200:
+            journal_format = get_export_journal_format_from_payload(payload)
+            export_output_format = get_export_output_format_from_payload(payload)
+            return return_csl_format_export(solr_data=results,
+                                            csl_style='aastex-psj', export_format=adsFormatter.latex, journal_format=journal_format,
+                                            export_output_format=export_output_format, request_type='POST')
+    return return_response(results, status)
+
+
+@advertise(scopes=[], rate_limit=[1000, 3600 * 24])
+@bp.route('/aastex-psj/<bibcode>', methods=['GET'])
+def csl_aastex_psj_format_export_get(bibcode):
+    """
+
+    :param bibcode:
+    :return:
+    """
+    return return_csl_format_export(solr_data=export_get(bibcode, 'aastex-psj', 2),
+                                    csl_style='aastex-psj', export_format=adsFormatter.latex, journal_format=adsJournalFormat.macro,
+                                    export_output_format=adsOutputFormat.default, request_type='GET')
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/icarus', methods=['POST'])

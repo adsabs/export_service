@@ -46,7 +46,11 @@ class CSLFormat(Format):
         csl_style_fullpath = os.path.realpath(__file__ + "/../../cslstyles")
 
         # load a CSL style (from the current directory)
-        bib_style = CitationStylesStyle(os.path.join(csl_style_fullpath + '/' + csl_style), validate=False)
+        # aastex-psj uses the aastex CSL file
+        if csl_style == 'aastex-psj':
+            bib_style = CitationStylesStyle(os.path.join(csl_style_fullpath + '/' + 'aastex'), validate=False)
+        else:
+            bib_style = CitationStylesStyle(os.path.join(csl_style_fullpath + '/' + csl_style), validate=False)
 
         # Create the citaproc-py bibliography, passing it the:
         # * CitationStylesStyle,
@@ -85,25 +89,37 @@ class CSLFormat(Format):
                 data['container-title-short'] = encode_laTex(Format(None).get_pub_abbrev(data['bibstem']))
                 if data.get('DOI', None) is not None:
                     data['DOI'] = encode_latex_doi(data['DOI'])
-        elif (self.csl_style == 'aastex') or (self.csl_style == 'aasj') or (self.csl_style == 'aspc'):
+        elif (self.csl_style == 'aastex') or (self.csl_style == 'aastex-psj') or (self.csl_style == 'aasj') or (self.csl_style == 'aspc'):
             # use macro (default)
             if self.journal_format == adsJournalFormat.macro or self.journal_format == adsJournalFormat.default:
                 journal_macros = dict([(k, v) for k, v in current_app.config['EXPORT_SERVICE_AASTEX_JOURNAL_MACRO']])
                 for data in self.for_cls:
+                    if self.csl_style == 'aastex':
+                        # regular aastex does not include the title
+                        tmp = data.pop('title')
                     data['container-title'] = journal_macros.get(Format(None).get_bibstem(data['bibstem']), encode_laTex(data['container-title']))
-                    data['title'] = encode_laTex(data['title'])
+                    if data.get('title') is not None:
+                        data['title'] = encode_laTex(data['title'])
                     if data.get('DOI', None) is not None:
                         data['DOI'] = encode_latex_doi(data['DOI'])
             elif self.journal_format == adsJournalFormat.abbreviated:
                 for data in self.for_cls:
+                    if self.csl_style == 'aastex':
+                        # regular aastex does not include the title
+                        tmp = data.pop('title')
                     data['container-title'] = encode_laTex(Format(None).get_pub_abbrev(data['bibstem']))
-                    data['title'] = encode_laTex(data['title'])
+                    if data.get('title') is not None:
+                        data['title'] = encode_laTex(data['title'])
                     if data.get('DOI', None) is not None:
                         data['DOI'] = encode_latex_doi(data['DOI'])
             elif self.journal_format == adsJournalFormat.full:
                 for data in self.for_cls:
+                    if self.csl_style == 'aastex':
+                        # regular aastex does not include the title
+                        tmp = data.pop('title')
                     data['container-title'] = encode_laTex(data['container-title'])
-                    data['title'] = encode_laTex(data['title'])
+                    if data.get('title') is not None:
+                        data['title'] = encode_laTex(data['title'])
                     if data.get('DOI', None) is not None:
                         data['DOI'] = encode_latex_doi(data['DOI'])
         # for SoPh we use journal abbreviation for some special journals only
@@ -233,6 +249,7 @@ class CSLFormat(Format):
             'icarus': u'\\bibitem[{}({})]{{{}}} {}{}',
             'soph': u'\\bibitem[{}({})]{{{}}}{}{}',
             'aastex': u'\\bibitem[{}({})]{{{}}} {}{}',
+            'aastex-psj': u'\\bibitem[{}({})]{{{}}} {}{}',
             'aspc': u'\\bibitem[{}({})]{{{}}} {}{}',
             'aasj': u'\\bibitem[{}({})]{{{}}} {}{}',
             'apsj': u'{}{}{}{}{}',
