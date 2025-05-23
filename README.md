@@ -106,7 +106,8 @@ which can be passed as payload to `/rss` endpoint.
 
 
 ###### 3. For the following Citation Style Language Format endpoints output is in latex format:
-* **/aastex** *AASTeX format*
+* **/aastex** *AASTeX format* (excludes record title)
+* **/aastex-psj** *AASTeX format for PSJ* (exact same as `/aastex` but includes record title)
 * **/icarus** *Icarus format*
 * **/mnras** *MNRAS format*
 * **/soph** *SoPh format*
