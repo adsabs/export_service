@@ -746,6 +746,7 @@ def csl_aastex_format_export_get(bibcode):
                                     csl_style='aastex', export_format=adsFormatter.latex, journal_format=adsJournalFormat.macro,
                                     export_output_format=adsOutputFormat.default, request_type='GET')
 
+@register_endpoint('AASTeX (PSJ)', 'LaTeX')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/aastex-psj', methods=['POST'])
 def csl_aastex_psj_format_export_post():
@@ -765,7 +766,7 @@ def csl_aastex_psj_format_export_post():
                                             export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-
+@register_endpoint('AASTeX (PSJ)', 'LaTeX')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/aastex-psj/<bibcode>', methods=['GET'])
 def csl_aastex_psj_format_export_get(bibcode):
