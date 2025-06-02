@@ -19,13 +19,15 @@ from exportsrv.tests.unittests.stubdata import solrdata
 
 bp = Blueprint('export_service', __name__)
 
-endpoint_registry = {}
-def register_endpoint(format: str, type_: str):
+endpoint_registry = {} # name -> { type, handlers, routes }
+def register_endpoint(name: str, type_: str):
     types = ['tagged', 'LaTeX', 'XML', 'text', 'custom']
     def decorator(func):
         if type_ not in types:
-            raise ValueError(f"Type {type_} for format {format} is not an allowed value.")
-        endpoint_registry[format] = {"type": type_, "handler": func}
+            raise ValueError(f"Type {type_} for format {name} is not an allowed value.")
+        entry = endpoint_registry.setdefault(name, {"type": type_, "handlers": [], "routes": []})
+        if func not in entry["handlers"]:
+            entry["handlers"].append(func)
         return func
     return decorator
 
@@ -1227,15 +1229,20 @@ def rss_format_export_get(bibcode, link):
     return return_rss_format_export(solr_data=export_get(bibcode, 'RSS'), link=link, export_output_format=adsOutputFormat.default, request_type='GET')
 
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
-@bp.route('/toc', methods=['GET'])
-def export_toc_get():
+@bp.route('/manifest', methods=['GET'])
+def export_manifest_get():
     """
     Returns dict of available export formats with their format type
     """
-    results = {
-        route: {"type": info["type"]}
-        for route, info in endpoint_registry.items()
-    }
+    results = []
+    for name, info in endpoint_registry.items():
+        routes = info.get("routes", [])
+        route = routes[0] if routes else None
+        results.append({
+            "name": name,
+            "type": info.get("type"),
+            "route": route
+        })
 
     # using POST here returns JSON
     return return_response(results, 200, request_type='POST')
