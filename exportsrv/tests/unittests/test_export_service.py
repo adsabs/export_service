@@ -1229,6 +1229,69 @@ class TestExports(TestCase):
         exported = XMLFormat(solrdata.data).get_dublincore_xml(output_format=adsOutputFormat.individual)
         assert (exported == xmlTest.data_dublin_core_individual)
 
+    def test_manifest(self):
+        response = self.client.get('/manifest')
+        assert (response.json[0] == {'name': 'BibTeX', 'type': 'tagged', 'route': '/bibtex'})
+
+class TestRegistryCoverage(unittest.TestCase):
+    def setUp(self):
+        self.current_app = app.create_app()
+        app.attach_routes_to_registry(self.current_app)
+        self.endpoint_registry = views.endpoint_registry
+
+        # Collect view functions from Flask that are relevant (excluding static, /manifest)
+        self.flask_view_funcs = {
+            rule.endpoint: self.current_app.view_functions[rule.endpoint]
+            for rule in self.current_app.url_map.iter_rules()
+            if rule.endpoint != 'static' and not rule.rule.startswith("/manifest")
+        }
+
+        # Set of handlers from Flask
+        self.flask_view_set = set(self.flask_view_funcs.values())
+
+        # Set of handlers from the registry
+        self.registry_handler_set = set(
+            handler
+            for entry in self.endpoint_registry.values()
+            for handler in entry.get("handlers", [])
+        )
+
+    def test_all_registered_handlers_are_in_flask(self):
+        """All handlers in the registry must be real Flask view functions."""
+        missing = []
+        for name, entry in self.endpoint_registry.items():
+            for handler in entry.get("handlers", []):
+                if handler not in self.flask_view_set:
+                    missing.append((name, handler.__name__))
+        if missing:
+            self.fail(f"The following registry entries are not registered Flask views: {missing}")
+
+    def test_all_flask_views_are_in_registry(self):
+        """All relevant Flask view functions must appear in the endpoint registry."""
+        # Acceptable views that are intentionally not decorated/registered
+        ignored_names = {"ready", "alive", "<lambda>"}
+
+        # we have one registry entry for every pair of GET/POST endpoints
+        ignored_suffixes = ("_get", "_post")
+        missing_handlers = [
+            func for func in self.flask_view_set
+            if func not in self.registry_handler_set
+               and not func.__name__.endswith(ignored_suffixes)
+               and func.__name__ not in ignored_names
+        ]
+        if missing_handlers:
+            missing_names = [func.__name__ for func in missing_handlers]
+            self.fail(f"These Flask view functions are not in the endpoint registry: {missing_names}")
+
+    def test_all_registry_entries_have_routes(self):
+        """Ensure that each endpoint in the registry has at least one route recorded."""
+        missing = []
+        for name, entry in self.endpoint_registry.items():
+            if not entry.get("routes"):
+                missing.append(name)
+        if missing:
+            self.fail(f"The following registry entries are missing route information: {missing}")
+
 
 if __name__ == '__main__':
   unittest.main()
