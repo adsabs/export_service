@@ -3,6 +3,6 @@ citeproc-py==0.5.1
 future==0.18.2
 itsdangerous==2.0.1
 jinja2==3.0.3
-lxml==4.6.5
+lxml==4.9.1
 unidecode==1.2.0
 werkzeug==2.0.2
