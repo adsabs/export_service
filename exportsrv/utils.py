@@ -7,6 +7,7 @@ from builtins import str
 from flask import current_app, request
 import requests
 import re
+from lxml import etree
 
 from exportsrv.formatter.ads import adsFormatter
 
@@ -162,3 +163,33 @@ def replace_html_entity(text, encode_style):
         text = re.sub(entity, html_entity_to_encode.get(entity, ''), text)
 
     return text
+
+def mathml_to_plaintext(text):
+    REGEX_MATHML = re.compile(r"<inline-formula.*?</inline-formula>", re.DOTALL)
+    def replace_mathml(match):
+        chunk = match.group(0)
+
+        # Insert namespace so mml: tags are parsed properly
+        cleaned = (
+            chunk
+            .replace("<inline-formula", "<div xmlns:mml=\"http://www.w3.org/1998/Math/MathML\"")
+            .replace("</inline-formula>", "</div>")
+            .replace("``", "\"")
+            .replace("''", "\"")
+        )
+
+        parser = etree.XMLParser(recover=True)
+        try:
+            root = etree.fromstring(cleaned.encode(), parser=parser)
+            if root is None:
+                return ""
+            # Find the <math> element
+            math_el = root.xpath(".//*[local-name()='math']")
+            if math_el:
+                # Extract all text inside <math>
+                return "".join(math_el[0].itertext()).strip()
+        except Exception as e:
+            return ""
+        return ""
+
+    return REGEX_MATHML.sub(replace_mathml, text)

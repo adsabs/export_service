@@ -7,6 +7,7 @@ from textwrap import fill
 
 from exportsrv.formatter.format import Format
 from exportsrv.formatter.ads import adsOutputFormat
+from exportsrv.utils import mathml_to_plaintext
 
 class RSSFormat(Format):
 
@@ -37,7 +38,7 @@ class RSSFormat(Format):
         first_author = ''
         if 'author' in a_doc:
             first_author = a_doc['author'][0]
-        title = ''.join(a_doc.get('title', ''))
+        title = mathml_to_plaintext(''.join(a_doc.get('title', '')))
         if len(first_author) > 0 and len(title) > 0:
             return first_author + ': ' + title
         if len(first_author) > 0:
@@ -87,7 +88,7 @@ class RSSFormat(Format):
             elif (field == 'url'):
                 self.__add_in(item, fields[field], current_app.config.get('EXPORT_SERVICE_FROM_BBB_URL') + '/' + a_doc.get('bibcode', ''))
             elif (field == 'abstract'):
-                self.__add_in(item, fields[field], self.__format_line_wrapped(a_doc.get(field, '')))
+                self.__add_in(item, fields[field], self.__format_line_wrapped(mathml_to_plaintext(a_doc.get(field, ''))))
         return item
 
 

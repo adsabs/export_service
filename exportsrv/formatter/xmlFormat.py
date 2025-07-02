@@ -9,7 +9,7 @@ import re
 
 from exportsrv.formatter.format import Format
 from exportsrv.formatter.ads import adsOutputFormat
-from exportsrv.utils import get_eprint
+from exportsrv.utils import get_eprint, mathml_to_plaintext
 from exportsrv.formatter.strftime import strftime
 
 # This class accepts JSON object created by Solr and can reformat it
@@ -481,7 +481,7 @@ class XMLFormat(Format):
             if field in ['bibcode', 'copyright']:
                 self.__add_in(record, fields[field], a_doc.get(field, ''))
             elif (field == 'title'):
-                self.__add_in(record, fields[field], ''.join(a_doc.get(field, '')))
+                self.__add_in(record, fields[field], mathml_to_plaintext(''.join(a_doc.get(field, ''))))
             elif (field == 'author'):
                 self.__add_author_list(a_doc, record, fields[field])
             elif (field == 'pub_raw'):
@@ -493,7 +493,7 @@ class XMLFormat(Format):
             elif (field == 'url'):
                 self.__add_in(record, fields[field], current_app.config.get('EXPORT_SERVICE_FROM_BBB_URL') + '/' + a_doc.get('bibcode', ''))
             elif (field == 'abstract'):
-                self.__add_in(record, fields[field], self.__format_line_wrapped(a_doc.get(field, '')))
+                self.__add_in(record, fields[field], self.__format_line_wrapped(mathml_to_plaintext(a_doc.get(field, ''))))
             elif (field == 'doi'):
                 self.__add_in(record, fields[field], self.__get_doi('; '.join(a_doc.get(field, ''))))
             elif (field == 'num_citations'):
@@ -525,7 +525,7 @@ class XMLFormat(Format):
             if field in ['bibcode', 'pub', 'volume', 'copyright']:
                 self.__add_in(record, fields[field], a_doc.get(field, ''))
             elif field in ['title', 'doi']:
-                self.__add_in(record, fields[field], ''.join(a_doc.get(field, '')))
+                self.__add_in(record, fields[field], mathml_to_plaintext(''.join(a_doc.get(field, ''))))
             elif (field == 'author'):
                 self.__add_author_list(a_doc, record, fields[field])
             elif (field == 'aff'):
@@ -543,7 +543,7 @@ class XMLFormat(Format):
             elif (field == 'num_citations'):
                 self.__add_in(record, fields[field], self.__get_citation(int(a_doc.get(field, 0)), xml_export_format))
             elif (field == 'abstract'):
-                self.__add_in(record, fields[field], self.__format_line_wrapped(a_doc.get(field, '')))
+                self.__add_in(record, fields[field], self.__format_line_wrapped(mathml_to_plaintext(a_doc.get(field, ''))))
             elif (field == 'link'):
                 self.__add_doc_links(a_doc, record)
             elif (field == 'eprintid'):
@@ -705,7 +705,7 @@ class XMLFormat(Format):
                     ET.SubElement(article_meta_section, fields[field], {"pub-id-type": "doi"}).text = '; '.join(a_doc.get(field, ''))
             elif (field == 'title'):
                 title = ET.SubElement(article_meta_section, fields[field])
-                ET.SubElement(title, 'article-title').text = '; '.join(a_doc.get(field, ''))
+                ET.SubElement(title, 'article-title').text = mathml_to_plaintext('; '.join(a_doc.get(field, '')))
             elif (field == 'author'):
                 # add `contrib-group` tag and call the function to add list of authors to this tag
                 self.__add_author_list_jats_xml(a_doc, ET.SubElement(article_meta_section, fields[field]))
@@ -719,7 +719,7 @@ class XMLFormat(Format):
                 ET.SubElement(article_meta_section, "permissions").text = ""
                 # add abstract tag, then paragraph tag around the abstract (required)
                 abstract = ET.SubElement(article_meta_section, fields[field])
-                self.__add_in(abstract, "p", a_doc.get(field, ''))
+                self.__add_in(abstract, "p", mathml_to_plaintext(a_doc.get(field, '')))
             elif field in ['page', 'page_range']:
                 self.__add_page(a_doc, article_meta_section, fields[field])
 

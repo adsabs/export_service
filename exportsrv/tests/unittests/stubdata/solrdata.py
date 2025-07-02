@@ -26,7 +26,7 @@ data = \
     },
     u'response': {
         u'start': 0,
-        u'numFound': 23,
+        u'numFound': 24,
         u'docs': [
             {
                 u'read_count': 0,
@@ -541,6 +541,43 @@ data = \
                 u'identifier': [u'2012ddsw.rept.....T', u'10.3334/ORNLDAAC/1219'],
                 u'aff': [u'-', u'-', u'-', u'-', u'-', u'-', u'-'],
                 u'num_references': 0
+            },
+            {
+                "bibcode":"2020EPJC...80...96D",
+                "abstract":"Recently Pomme et al. (Solar Phys 292:162, 2017) did an analysis of <inline-formula id=\"IEq3\"><mml:math><mml:mrow><mml:msup><mml:mrow></mml:mrow><mml:mn>36</mml:mn></mml:msup><mml:mtext>Cl</mml:mtext></mml:mrow></mml:math></inline-formula> radioactive decay data from measurements at the Physikalisch-Technische Bundesanstalt (PTB), in order to verify the claims by Sturrock and collaborators of an influence on beta-decay rates measured at Brookhaven National Lab (BNL) due to the rotation-induced modulation of the solar neutrino flux. Their analysis excluded any sinusoidal modulations in the frequency range from 0.2 to 20/year. We carry out an independent analysis of the same PTB and BNL data, using the generalized Lomb–Scargle periodogram to look for any statistically significant peaks in the range from 0 to 14 per year, and by evaluating the significance of every peak using multiple methods. Our results for the PTB data are in agreement with those by Pomme et al. For BNL data, we do find peaks at some of the same frequencies as Sturrock et al., but the significance is much lower. All our analysis codes and datasets have been made publicly available.",
+                "aff":["Department of Physics, IIT Hyderabad, 502285, Kandi, Telangana, India",
+                  "Department of Physics, IIT Hyderabad, 502285, Kandi, Telangana, India ;"],
+                "author":["Dhaygude, Akanksha",
+                  "Desai, Shantanu"],
+                "bibstem":["EPJC",
+                  "EPJC...80"],
+                "copyright":"© The Author(s) 2020",
+                "doctype":"article",
+                "doi":["10.1140/epjc/s10052-020-7683-6",
+                  "10.48550/arXiv.1912.06970"],
+                "identifier":["2019arXiv191206970D",
+                  "10.48550/arXiv.1912.06970",
+                  "10.1140/epjc/s10052-020-7683-6",
+                  "2020EPJC...80...96D",
+                  "arXiv:1912.06970"],
+                "keyword":["Astrophysics - High Energy Astrophysical Phenomena",
+                  "Astrophysics - Instrumentation and Methods for Astrophysics",
+                  "Nuclear Experiment"],
+                "pub":"European Physical Journal C",
+                "pub_raw":"The European Physical Journal C, Volume 80, Issue 2, article id.96",
+                "pubdate":"2020-02-00",
+                "title":["Generalized Lomb–Scargle analysis of <inline-formula id=\"IEq1\"><mml:math><mml:mrow><mml:msup><mml:mrow></mml:mrow><mml:mn>36</mml:mn></mml:msup><mml:mi mathvariant=\"normal\">Cl</mml:mi></mml:mrow></mml:math></inline-formula> decay rate measurements at PTB and BNL"],
+                "year":"2020",
+                "read_count":168,
+                "esources":["EPRINT_HTML",
+                  "EPRINT_PDF",
+                  "PUB_HTML"],
+                "property":["ARTICLE",
+                  "EPRINT_OPENACCESS",
+                  "ESOURCE",
+                  "OPENACCESS",
+                  "PUB_OPENACCESS",
+                  "REFEREED"]
             },
         ]
     }
