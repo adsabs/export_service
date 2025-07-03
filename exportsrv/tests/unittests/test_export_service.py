@@ -948,6 +948,10 @@ class TestExports(TestCase):
         expected2 = "This is a $ math mode $ example."
         self.assertEqual(encode_laTex(text2), expected2)
 
+        # text with mathML markup
+        text3 = "Generalized Lomb-Scargle analysis of <inline-formula id=``IEq1''><mml:math><mml:mrow><mml:msup><mml:mrow></mml:mrow><mml:mn>36</mml:mn></mml:msup><mml:mi mathvariant=``normal''>Cl</mml:mi></mml:mrow></mml:math></inline-formula> decay rate measurements at PTB and BNL"
+        expected3 = "Generalized Lomb-Scargle analysis of 36Cl decay rate measurements at PTB and BNL"
+        self.assertEqual(encode_laTex(text3), expected3)
 
     def test_utf8tolatex(self):
         """ test the main loop of utf8tolatex function to ensure correct processing of ASCII and non-ASCII characters """

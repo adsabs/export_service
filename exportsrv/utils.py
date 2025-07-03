@@ -7,6 +7,7 @@ from builtins import str
 from flask import current_app, request
 import requests
 import re
+from lxml import etree
 
 from exportsrv.formatter.ads import adsFormatter
 
@@ -162,3 +163,78 @@ def replace_html_entity(text, encode_style):
         text = re.sub(entity, html_entity_to_encode.get(entity, ''), text)
 
     return text
+
+def process_mathml(text, converter_func):
+    """
+    Generic processor: Replaces all MathML inline formulas
+    using the provided converter_func.
+    """
+    REGEX_MATHML = re.compile(r"<inline-formula.*?</inline-formula>", re.DOTALL)
+    def replace_mathml(match):
+        chunk = match.group(0)
+
+        cleaned = (
+            chunk
+            .replace("<inline-formula", "<div xmlns:mml=\"http://www.w3.org/1998/Math/MathML\"")
+            .replace("</inline-formula>", "</div>")
+            .replace("``", "\"")
+            .replace("''", "\"")
+        )
+
+        parser = etree.XMLParser(recover=True)
+        try:
+            root = etree.fromstring(cleaned.encode(), parser=parser)
+            if root is None:
+                return ""
+            math_el = root.xpath(".//*[local-name()='math']")
+            if math_el:
+                return converter_func(math_el[0])
+        except Exception:
+            return ""
+        return ""
+
+    return REGEX_MATHML.sub(replace_mathml, text)
+
+def convert_to_plaintext(el):
+    """
+    Simply concatenates all text content inside the MathML element.
+    """
+    return "".join(el.itertext()).strip()
+
+def convert_to_latex(el):
+    """
+    Recursively converts MathML elements into LaTeX.
+    """
+    if not isinstance(el, etree._Element):
+        return ""
+
+    # Safer tag handling
+    if el.tag.startswith("{"):
+        tag = el.tag.split("}", 1)[1]
+    else:
+        tag = el.tag
+
+    if tag == "msup":
+        base = convert_to_latex(el[0]).strip() or "{}"
+        exp = convert_to_latex(el[1]).strip()
+        return f"{base}$^{{{exp}}}$"
+
+    if tag == "msub":
+        base = convert_to_latex(el[0]).strip() or "{}"
+        sub = convert_to_latex(el[1]).strip()
+        return f"{base}$_{{{sub}}}$"
+
+    if tag in ("mn", "mi", "mtext"):
+        return "".join(el.itertext()).strip()
+
+    if tag == "mrow":
+        return "".join([convert_to_latex(child) for child in el])
+
+    # Fallback
+    return "".join(el.itertext()).strip()
+
+def mathml_to_plaintext(text):
+    return process_mathml(text, convert_to_plaintext)
+
+def mathml_to_latex(text):
+    return process_mathml(text, convert_to_latex)

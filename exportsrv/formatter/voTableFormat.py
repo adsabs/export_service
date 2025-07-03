@@ -7,6 +7,7 @@ from flask import current_app
 from exportsrv.formatter.format import Format
 from exportsrv.formatter.ads import adsOutputFormat
 from exportsrv.formatter.strftime import strftime
+from exportsrv.utils import mathml_to_plaintext
 
 class VOTableFormat(Format):
 
@@ -78,7 +79,7 @@ class VOTableFormat(Format):
             if (field == 'bibcode'):
                 self.__add_in_table_data(item, a_doc.get(field, ''))
             elif (field == 'title'):
-                self.__add_in_table_data(item, ''.join(a_doc.get(field, '')))
+                self.__add_in_table_data(item, mathml_to_plaintext(''.join(a_doc.get(field, ''))))
             elif (field == 'author'):
                 self.__add_in_table_data(item, '; '.join(a_doc.get(field, '')))
             elif (field == 'pub_raw'):

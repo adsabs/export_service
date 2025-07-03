@@ -3,6 +3,7 @@
 import re
 from collections import OrderedDict
 from exportsrv.formatter.latexencode import utf8tolatex
+from exportsrv.utils import mathml_to_latex
 
 # this module contains methods to encode for latex output
 
@@ -34,6 +35,9 @@ def encode_laTex(text):
     :return:
     """
     if (len(text) > 1):
+        # first remove/convert any mathML markup
+        text = mathml_to_latex(text)
+
         # if any greek letter macro map it here
         # convert something like \\Sigma\\ to \textbackslash{}Sigma\textbackslash{}
         # however needs to go through utf8tolatex so add placeholder to be replaced afterward
@@ -114,3 +118,4 @@ def html_to_laTex(text):
     for key in REGEX_HTML_TAG.keys():
         text = key.sub(REGEX_HTML_TAG[key], text)
     return text
+

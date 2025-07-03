@@ -9,7 +9,7 @@ import re
 
 from exportsrv.formatter.format import Format
 from exportsrv.formatter.ads import adsOutputFormat
-from exportsrv.utils import get_eprint
+from exportsrv.utils import get_eprint, mathml_to_plaintext
 from exportsrv.formatter.strftime import strftime
 
 # This class accepts JSON object created by Solr and can reformats it
@@ -132,6 +132,7 @@ class FieldedFormat(Format):
         :return:
         """
         return fill(text, width=72)
+
 
 
     def __get_tags(self, export_format):
@@ -537,6 +538,7 @@ class FieldedFormat(Format):
         """
         if ((isinstance(value, str) or isinstance(value, bytes)) and (len(value) > 0)) or \
            (isinstance(value, int) and (value is not None)):
+            value = mathml_to_plaintext(value)
             return field + ' ' + value + '\n'
         return ''
 

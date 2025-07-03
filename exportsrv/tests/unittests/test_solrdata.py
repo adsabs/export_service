@@ -38,7 +38,7 @@ class TestSolrData(TestCase):
                     matched += 1
             self.assertEqual(matched, len(bibcodes))
 
-        # the mock is for solr call bigquery, with 23 bibcodes
+        # the mock is for solr call bigquery, with 24 bibcodes
         with mock.patch.object(self.current_app.client, 'post') as post_mock:
             post_mock.return_value = mock_response = mock.Mock()
             mock_response.json.return_value = solrdata.data
@@ -48,7 +48,7 @@ class TestSolrData(TestCase):
                         "2017ascl.soft06009C", "2017yCat.113380453S", "2017AAVSN.429....1W", "2017sptz.prop13168Y",
                         "2017MsT..........2A", "2016emo6.rept.....R", "2016iac..talk..872V", "2009bcet.book...65L",
                         "2007AAS...210.2104M", "2007RJPh....1...35.", "1995ans..agar..390M", "1995anda.book.....N",
-                        "1991hep.th....8028G", "1983aiaa.meetY....K", "2012ddsw.rept.....T"]
+                        "1991hep.th....8028G", "1983aiaa.meetY....K", "2012ddsw.rept.....T", "2020EPJC...80...96D"]
             solr_data = get_solr_data(bibcodes=bibcodes, fields='bibcode,author,year,pub,bibstem',
                                       sort='')
             matched = 0

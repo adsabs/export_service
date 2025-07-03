@@ -11,6 +11,7 @@ import os
 from exportsrv.formatter.format import Format
 from exportsrv.formatter.ads import adsFormatter, adsOrganizer, adsJournalFormat, adsOutputFormat
 from exportsrv.formatter.toLaTex import encode_laTex, encode_laTex_author, html_to_laTex, encode_latex_doi
+from exportsrv.utils import mathml_to_plaintext
 
 # This class accepts JSON and sends it to citeproc library to get reformated
 # We are supporting, as of end of 2024, 11 complete cls (formatting all the fields) and 20 syles that
@@ -146,6 +147,10 @@ class CSLFormat(Format):
             for data in self.for_cls:
                 if len(data.get('DOI', '')) > 0:
                     data['DOI'] = data['DOI'].lstrip('doi:')
+        # remove MathML markup
+        elif (self.csl_style == 'ieee'):
+            for data in self.for_cls:
+                data['title'] = mathml_to_plaintext(data['title'])
 
 
     def __update_author_etal(self, author, the_rest, bibcode):
