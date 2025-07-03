@@ -193,3 +193,57 @@ def mathml_to_plaintext(text):
         return ""
 
     return REGEX_MATHML.sub(replace_mathml, text)
+
+def mathml_to_latex(text):
+    # Regex to find <inline-formula>...</inline-formula> blocks
+    pattern = re.compile(r"<inline-formula.*?</inline-formula>", re.DOTALL)
+
+    def convert_mathml_element(el):
+        if not isinstance(el, etree._Element):
+            return ""
+
+        tag = etree.QName(el).localname
+
+        if tag == "msup":
+            base = convert_mathml_element(el[0]).strip() or "{}"
+            exp = convert_mathml_element(el[1]).strip()
+            return f"{base}$^{{{exp}}}$"
+
+        if tag == "msub":
+            base = convert_mathml_element(el[0]).strip() or "{}"
+            sub = convert_mathml_element(el[1]).strip()
+            return f"{base}$_{{{sub}}}$"
+
+        if tag == "mn" or tag == "mi":
+            return "".join(el.itertext()).strip()
+
+        if tag == "mrow":
+            return "".join([convert_mathml_element(child) for child in el])
+
+        # fallback
+        return "".join(el.itertext()).strip()
+
+    def replace_mathml(match):
+        chunk = match.group(0)
+        # Clean the chunk so it's parseable
+        cleaned = (
+            chunk
+            # have to squish the mathML markup into an XML format for lxml to work
+            .replace("<inline-formula", "<div xmlns:mml=\"http://www.w3.org/1998/Math/MathML\"")
+            .replace("</inline-formula>", "</div>")
+            .replace("``", "\"").replace("''", "\"")
+        )
+
+        parser = etree.XMLParser(recover=True)
+        try:
+            root = etree.fromstring(cleaned.encode(), parser=parser)
+            mml_math = root.xpath(".//*[local-name()='math']")  # this will return an array
+            if mml_math:
+                return convert_mathml_element(mml_math[0])
+            else:
+                return "[MATHML]"
+        except Exception as e:
+            return "[MATHML_ERROR]"
+
+    # Substitute all MathML chunks with LaTeX equivalents
+    return pattern.sub(replace_mathml, text)
