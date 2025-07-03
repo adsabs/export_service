@@ -164,12 +164,15 @@ def replace_html_entity(text, encode_style):
 
     return text
 
-def mathml_to_plaintext(text):
+def process_mathml(text, converter_func):
+    """
+    Generic processor: Replaces all MathML inline formulas
+    using the provided converter_func.
+    """
     REGEX_MATHML = re.compile(r"<inline-formula.*?</inline-formula>", re.DOTALL)
     def replace_mathml(match):
         chunk = match.group(0)
 
-        # Insert namespace so mml: tags are parsed properly
         cleaned = (
             chunk
             .replace("<inline-formula", "<div xmlns:mml=\"http://www.w3.org/1998/Math/MathML\"")
@@ -183,67 +186,55 @@ def mathml_to_plaintext(text):
             root = etree.fromstring(cleaned.encode(), parser=parser)
             if root is None:
                 return ""
-            # Find the <math> element
             math_el = root.xpath(".//*[local-name()='math']")
             if math_el:
-                # Extract all text inside <math>
-                return "".join(math_el[0].itertext()).strip()
-        except Exception as e:
+                return converter_func(math_el[0])
+        except Exception:
             return ""
         return ""
 
     return REGEX_MATHML.sub(replace_mathml, text)
 
-def mathml_to_latex(text):
-    # Regex to find <inline-formula>...</inline-formula> blocks
-    pattern = re.compile(r"<inline-formula.*?</inline-formula>", re.DOTALL)
+def convert_to_plaintext(el):
+    """
+    Simply concatenates all text content inside the MathML element.
+    """
+    return "".join(el.itertext()).strip()
 
-    def convert_mathml_element(el):
-        if not isinstance(el, etree._Element):
-            return ""
+def convert_to_latex(el):
+    """
+    Recursively converts MathML elements into LaTeX.
+    """
+    if not isinstance(el, etree._Element):
+        return ""
 
-        tag = etree.QName(el).localname
+    # Safer tag handling
+    if el.tag.startswith("{"):
+        tag = el.tag.split("}", 1)[1]
+    else:
+        tag = el.tag
 
-        if tag == "msup":
-            base = convert_mathml_element(el[0]).strip() or "{}"
-            exp = convert_mathml_element(el[1]).strip()
-            return f"{base}$^{{{exp}}}$"
+    if tag == "msup":
+        base = convert_to_latex(el[0]).strip() or "{}"
+        exp = convert_to_latex(el[1]).strip()
+        return f"{base}$^{{{exp}}}$"
 
-        if tag == "msub":
-            base = convert_mathml_element(el[0]).strip() or "{}"
-            sub = convert_mathml_element(el[1]).strip()
-            return f"{base}$_{{{sub}}}$"
+    if tag == "msub":
+        base = convert_to_latex(el[0]).strip() or "{}"
+        sub = convert_to_latex(el[1]).strip()
+        return f"{base}$_{{{sub}}}$"
 
-        if tag == "mn" or tag == "mi":
-            return "".join(el.itertext()).strip()
-
-        if tag == "mrow":
-            return "".join([convert_mathml_element(child) for child in el])
-
-        # fallback
+    if tag in ("mn", "mi", "mtext"):
         return "".join(el.itertext()).strip()
 
-    def replace_mathml(match):
-        chunk = match.group(0)
-        # Clean the chunk so it's parseable
-        cleaned = (
-            chunk
-            # have to squish the mathML markup into an XML format for lxml to work
-            .replace("<inline-formula", "<div xmlns:mml=\"http://www.w3.org/1998/Math/MathML\"")
-            .replace("</inline-formula>", "</div>")
-            .replace("``", "\"").replace("''", "\"")
-        )
+    if tag == "mrow":
+        return "".join([convert_to_latex(child) for child in el])
 
-        parser = etree.XMLParser(recover=True)
-        try:
-            root = etree.fromstring(cleaned.encode(), parser=parser)
-            mml_math = root.xpath(".//*[local-name()='math']")  # this will return an array
-            if mml_math:
-                return convert_mathml_element(mml_math[0])
-            else:
-                return "[MATHML]"
-        except Exception as e:
-            return "[MATHML_ERROR]"
+    # Fallback
+    return "".join(el.itertext()).strip()
 
-    # Substitute all MathML chunks with LaTeX equivalents
-    return pattern.sub(replace_mathml, text)
+def mathml_to_plaintext(text):
+    return process_mathml(text, convert_to_plaintext)
+
+def mathml_to_latex(text):
+    return process_mathml(text, convert_to_latex)
