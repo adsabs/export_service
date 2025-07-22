@@ -94,7 +94,7 @@ class BibTexFormat(Format):
                   'misc':'@MISC', 'proposal':'@MISC', 'pressrelease':'@MISC',
                   'talk':'@MISC', 'software':'@software', 'dataset':'@dataset',
                   'phdthesis':'@PHDTHESIS','mastersthesis':'@MASTERSTHESIS',
-                  'techreport':'@MISC', 'intechreport':'@MISC'}
+                  'techreport':'@MISC', 'intechreport':'@MISC','instrument':'@MISC','service':'@MISC'}
         return fields.get(solr_type, '')
 
 

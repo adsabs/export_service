@@ -65,7 +65,7 @@ class FieldedFormat(Format):
                       'catalog':'Journal Article', 'phdthesis':'Thesis', 'mastersthesis':'Thesis',
                       'techreport':'Report', 'intechreport':'Report',
                       'bookreview': 'Journal Article', 'erratum': 'Journal Article', 'obituary': 'Journal Article',
-                      'editorial': 'Journal Article'}
+                      'editorial': 'Journal Article','instrument':'Miscellaneous', 'service':'Miscellaneous'}
         elif (export_format == self.EXPORT_FORMAT_PROCITE):
             fields = {'article': 'Journal', 'book': 'Book, Whole', 'inbook': 'Book Chapter',
                       'proceedings': 'Journal', 'inproceedings': 'Conference',
@@ -75,7 +75,8 @@ class FieldedFormat(Format):
                       'pressrelease':'Journal', 'circular':'Journal', 'newsletter':'Journal',
                       'catalog':'Journal', 'phdthesis':'Thesis/Dissertation', 'mastersthesis':'Thesis/Dissertation',
                       'techreport':'Report', 'intechreport':'Report',
-                      'bookreview': 'Journal', 'erratum': 'Journal', 'obituary': 'Journal', 'editorial': 'Journal'}
+                      'bookreview': 'Journal', 'erratum': 'Journal', 'obituary': 'Journal', 'editorial': 'Journal',
+                      'instrument':'Miscellaneous', 'service':'Miscellaneous'}
         elif (export_format == self.EXPORT_FORMAT_REFMAN):
             fields = {'article': 'JOUR', 'book': 'BOOK', 'inbook': 'CHAP',
                       'proceedings': 'JOUR', 'inproceedings': 'CONF',
@@ -85,7 +86,8 @@ class FieldedFormat(Format):
                       'pressrelease':'JOUR', 'circular':'JOUR', 'newsletter':'JOUR',
                       'catalog':'JOUR', 'phdthesis':'Thesis/Dissertation', 'mastersthesis':'Thesis/Dissertation',
                       'techreport':'RPRT', 'intechreport':'RPRT',
-                      'bookreview': 'JOUR', 'erratum': 'JOUR', 'obituary': 'JOUR', 'editorial': 'JOUR'}
+                      'bookreview': 'JOUR', 'erratum': 'JOUR', 'obituary': 'JOUR', 'editorial': 'JOUR',
+                      'instrument':'MISC', 'service':'MISC'}
         elif (export_format == self.EXPORT_FORMAT_REFWORKS):
             fields = {'article': 'Journal', 'book': 'Book, Whole', 'inbook': 'Book, Chapter',
                       'proceedings': 'Journal', 'inproceedings': 'Conference Proceeding',
@@ -95,7 +97,8 @@ class FieldedFormat(Format):
                       'pressrelease':'Journal', 'circular':'Journal', 'newsletter':'Journal',
                       'catalog':'Journal', 'phdthesis':'Thesis/Dissertation', 'mastersthesis':'Thesis/Dissertation',
                       'techreport':'Report', 'intechreport':'Report',
-                      'bookreview': 'Journal', 'erratum': 'Journal', 'obituary': 'Journal', 'editorial': 'Journal'}
+                      'bookreview': 'Journal', 'erratum': 'Journal', 'obituary': 'Journal', 'editorial': 'Journal',
+                      'instrument':'Generic', 'service':'Generic'}
         elif (export_format == self.EXPORT_FORMAT_MEDLARS):
             fields = {'article': 'Journal Article', 'book': 'Book', 'inbook': 'Book Chapter',
                       'proceedings': 'Journal Article', 'inproceedings': 'Conference',
@@ -106,7 +109,7 @@ class FieldedFormat(Format):
                       'catalog':'Journal Article', 'phdthesis':'Thesis', 'mastersthesis':'Thesis',
                       'techreport':'Report', 'intechreport':'Report',
                       'bookreview': 'Journal Article', 'erratum': 'Journal Article', 'obituary': 'Journal Article',
-                      'editorial': 'Journal Article'}
+                      'editorial': 'Journal Article', 'instrument':'Miscellaneous', 'service':'Miscellaneous'}
         return fields.get(solr_type, '')
 
 
