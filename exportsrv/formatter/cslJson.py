@@ -50,7 +50,7 @@ class CSLJson(Format):
                   'phdthesis':'thesis','mastersthesis':'thesis',
                   'proposal':'personal_communication', 'editorial':'personal_communication', 
                   'erratum':'personal_communication', 'obituary':'personal_communication',
-                  'dataset':'software'}
+                  'dataset':'software','instrument':'software','service':'software'}
         return fields.get(doc_type, '')
 
 

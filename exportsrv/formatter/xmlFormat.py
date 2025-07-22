@@ -671,6 +671,7 @@ class XMLFormat(Format):
             'editorial': 'editorial', 'newsletter': 'news', 'obituary': 'obituary',
             'book': 'other', 'catalog': 'other', 'circular': 'other', 'misc': 'other',
             'proposal': 'other', 'software': 'other', 'talk': 'other', 'techreport': 'other', 'dataset': 'other',
+            'instrument':'other', 'service':'other'
         }
         a_doc = self.from_solr['response'].get('docs')[index]
         fields = self.__get_fields(self.EXPORT_FORMAT_JATS_XML)
