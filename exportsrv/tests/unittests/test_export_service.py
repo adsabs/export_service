@@ -1235,7 +1235,7 @@ class TestExports(TestCase):
 
     def test_manifest(self):
         response = self.client.get('/manifest')
-        assert (response.json[0] == {'name': 'BibTeX', 'type': 'tagged', 'route': '/bibtex'})
+        assert (response.json[0] == {'name': 'BibTeX', 'type': 'tagged', 'route': '/bibtex', 'extension': 'bib'})
 
 class TestRegistryCoverage(unittest.TestCase):
     def setUp(self):

@@ -19,13 +19,16 @@ from exportsrv.tests.unittests.stubdata import solrdata
 
 bp = Blueprint('export_service', __name__)
 
-endpoint_registry = {} # name -> { type, handlers, routes }
-def register_endpoint(name: str, type_: str):
-    types = ['tagged', 'LaTeX', 'XML', 'text', 'custom']
+endpoint_registry = {} # name -> { type, handlers, routes, extensions }
+def register_endpoint(name: str, type_: str, extension: str):
+    types = ['tagged', 'LaTeX', 'XML', 'HTML', 'custom']
+    extensions = ['txt', 'rtf', 'bib', 'xml', 'enw', 'rss']
     def decorator(func):
         if type_ not in types:
             raise ValueError(f"Type {type_} for format {name} is not an allowed value.")
-        entry = endpoint_registry.setdefault(name, {"type": type_, "handlers": [], "routes": []})
+        if extension not in extensions:
+            raise ValueError(f"Extension {extension} for format {name} is not an allowed value.")
+        entry = endpoint_registry.setdefault(name, {"type": type_, "handlers": [], "routes": [], "extension": extension})
         if func not in entry["handlers"]:
             entry["handlers"].append(func)
         return func
@@ -369,7 +372,7 @@ def export_get(bibcode, style, format=-1):
 
     return get_solr_data(bibcodes=[bibcode], fields=default_solr_fields(), sort=sort, encode_style=adsFormatter().native_encoding(format))
 
-@register_endpoint('BibTeX', 'tagged')
+@register_endpoint('BibTeX', 'tagged', 'bib')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/bibtex', methods=['POST'])
 def bibTex_format_export_post():
@@ -389,7 +392,7 @@ def bibTex_format_export_post():
                                                journal_format=journal_format, export_output_format=export_output_format)
     return return_response(results, status)
 
-@register_endpoint('BibTeX', 'tagged')
+@register_endpoint('BibTeX', 'tagged', 'bib')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/bibtex/<bibcode>', methods=['GET'])
 def bibTex_format_export_get(bibcode):
@@ -402,7 +405,7 @@ def bibTex_format_export_get(bibcode):
                                        keyformat='%R', max_author=10, author_cutoff=200, journal_format=1,
                                        export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('BibTeX ABS', 'tagged')
+@register_endpoint('BibTeX ABS', 'tagged', 'bib')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/bibtexabs', methods=['POST'])
 def bibTex_abs_format_export_post():
@@ -422,7 +425,7 @@ def bibTex_abs_format_export_post():
                                                journal_format=journal_format, export_output_format=export_output_format)
     return return_response(results, status)
 
-@register_endpoint('BibTeX ABS', 'tagged')
+@register_endpoint('BibTeX ABS', 'tagged', 'bib')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/bibtexabs/<bibcode>', methods=['GET'])
 def bibTex_abs_format_export_get(bibcode):
@@ -435,7 +438,7 @@ def bibTex_abs_format_export_get(bibcode):
                                        keyformat='%R', max_author=0, author_cutoff=200, journal_format=1,
                                        export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('ADS', 'tagged')
+@register_endpoint('ADS', 'tagged', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/ads', methods=['POST'])
 def fielded_ads_format_export_post():
@@ -452,7 +455,7 @@ def fielded_ads_format_export_post():
             return return_fielded_format_export(solr_data=results, fielded_style='ADS', export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('ADS', 'tagged')
+@register_endpoint('ADS', 'tagged', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/ads/<bibcode>', methods=['GET'])
 def fielded_ads_format_export_get(bibcode):
@@ -463,7 +466,7 @@ def fielded_ads_format_export_get(bibcode):
     """
     return return_fielded_format_export(solr_data=export_get(bibcode, 'ADS'), fielded_style='ADS', export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('EndNote', 'tagged')
+@register_endpoint('EndNote', 'tagged', 'enw')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/endnote', methods=['POST'])
 def fielded_endnote_format_export_post():
@@ -480,7 +483,7 @@ def fielded_endnote_format_export_post():
             return return_fielded_format_export(solr_data=results, fielded_style='EndNote', export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('EndNote', 'tagged')
+@register_endpoint('EndNote', 'tagged', 'enw')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/endnote/<bibcode>', methods=['GET'])
 def fielded_endnote_format_export_get(bibcode):
@@ -491,7 +494,7 @@ def fielded_endnote_format_export_get(bibcode):
     """
     return return_fielded_format_export(solr_data=export_get(bibcode, 'EndNote'), fielded_style='EndNote', export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('ProCite', 'tagged')
+@register_endpoint('ProCite', 'tagged', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/procite', methods=['POST'])
 def fielded_procite_format_export_post():
@@ -508,7 +511,7 @@ def fielded_procite_format_export_post():
             return return_fielded_format_export(solr_data=results, fielded_style='ProCite', export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('ProCite', 'tagged')
+@register_endpoint('ProCite', 'tagged', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/procite/<bibcode>', methods=['GET'])
 def fielded_procite_format_export_get(bibcode):
@@ -519,7 +522,7 @@ def fielded_procite_format_export_get(bibcode):
     """
     return return_fielded_format_export(solr_data=export_get(bibcode, 'ProCite'), fielded_style='ProCite', export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('RIS', 'tagged')
+@register_endpoint('RIS', 'tagged', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/ris', methods=['POST'])
 def fielded_refman_format_export_post():
@@ -536,7 +539,7 @@ def fielded_refman_format_export_post():
             return return_fielded_format_export(solr_data=results, fielded_style='Refman', export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('RIS', 'tagged')
+@register_endpoint('RIS', 'tagged', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/ris/<bibcode>', methods=['GET'])
 def fielded_refman_format_export_get(bibcode):
@@ -547,7 +550,7 @@ def fielded_refman_format_export_get(bibcode):
     """
     return return_fielded_format_export(solr_data=export_get(bibcode, 'Refman'), fielded_style='Refman', export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('RefWorks', 'tagged')
+@register_endpoint('RefWorks', 'tagged', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/refworks', methods=['POST'])
 def fielded_refworks_format_export_post():
@@ -564,7 +567,7 @@ def fielded_refworks_format_export_post():
             return return_fielded_format_export(solr_data=results, fielded_style='RefWorks', export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('RefWorks', 'tagged')
+@register_endpoint('RefWorks', 'tagged', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/refworks/<bibcode>', methods=['GET'])
 def fielded_refworks_format_export_get(bibcode):
@@ -575,7 +578,7 @@ def fielded_refworks_format_export_get(bibcode):
     """
     return return_fielded_format_export(solr_data=export_get(bibcode, 'RefWorks'), fielded_style='RefWorks', export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('MEDLARS', 'tagged')
+@register_endpoint('MEDLARS', 'tagged', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/medlars', methods=['POST'])
 def fielded_medlars_format_export_post():
@@ -592,7 +595,7 @@ def fielded_medlars_format_export_post():
             return return_fielded_format_export(solr_data=results, fielded_style='MEDLARS', export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('MEDLARS', 'tagged')
+@register_endpoint('MEDLARS', 'tagged', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/medlars/<bibcode>', methods=['GET'])
 def fielded_medlars_format_export_get(bibcode):
@@ -603,7 +606,7 @@ def fielded_medlars_format_export_get(bibcode):
     """
     return return_fielded_format_export(solr_data=export_get(bibcode, 'MEDLARS'), fielded_style='MEDLARS', export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('DC-XML', 'XML')
+@register_endpoint('DC-XML', 'XML', 'xml')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/dcxml', methods=['POST'])
 def xml_dublincore_format_export_post():
@@ -620,7 +623,7 @@ def xml_dublincore_format_export_post():
             return return_xml_format_export(solr_data=results, xml_style='DublinCore', export_output_format=export_output_format)
     return return_response(results, status)
 
-@register_endpoint('DC-XML', 'XML')
+@register_endpoint('DC-XML', 'XML', 'xml')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/dcxml/<bibcode>', methods=['GET'])
 def xml_dublincore_format_export_get(bibcode):
@@ -631,7 +634,7 @@ def xml_dublincore_format_export_get(bibcode):
     """
     return return_xml_format_export(solr_data=export_get(bibcode, 'DublinCore'), xml_style='DublinCore', export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('REF-XML', 'XML')
+@register_endpoint('REF-XML', 'XML', 'xml')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/refxml', methods=['POST'])
 def xml_ref_format_export_post():
@@ -648,7 +651,7 @@ def xml_ref_format_export_post():
             return return_xml_format_export(solr_data=results, xml_style='Reference', export_output_format=export_output_format)
     return return_response(results, status)
 
-@register_endpoint('REF-XML', 'XML')
+@register_endpoint('REF-XML', 'XML', 'xml')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/refxml/<bibcode>', methods=['GET'])
 def xml_ref_format_export_get(bibcode):
@@ -659,7 +662,7 @@ def xml_ref_format_export_get(bibcode):
     """
     return return_xml_format_export(solr_data=export_get(bibcode, 'Reference'), xml_style='Reference', export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('REFABS-XML', 'XML')
+@register_endpoint('REFABS-XML', 'XML', 'xml')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/refabsxml', methods=['POST'])
 def xml_refabs_format_export_post():
@@ -676,7 +679,7 @@ def xml_refabs_format_export_post():
             return return_xml_format_export(solr_data=results, xml_style='ReferenceAbs', export_output_format=export_output_format)
     return return_response(results, status)
 
-@register_endpoint('REFABS-XML', 'XML')
+@register_endpoint('REFABS-XML', 'XML', 'xml')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/refabsxml/<bibcode>', methods=['GET'])
 def xml_refabs_format_export_get(bibcode):
@@ -687,7 +690,7 @@ def xml_refabs_format_export_get(bibcode):
     """
     return return_xml_format_export(solr_data=export_get(bibcode, 'ReferenceAbs'), xml_style='ReferenceAbs', export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('JATS-XML', 'XML')
+@register_endpoint('JATS-XML', 'XML', 'xml')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/jatsxml', methods=['POST'])
 def xml_jats_format_export_post():
@@ -704,7 +707,7 @@ def xml_jats_format_export_post():
             return return_xml_format_export(solr_data=results, xml_style='JATS', export_output_format=export_output_format)
     return return_response(results, status)
 
-@register_endpoint('JATS-XML', 'XML')
+@register_endpoint('JATS-XML', 'XML', 'xml')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/jatsxml/<bibcode>', methods=['GET'])
 def xml_jats_format_export_get(bibcode):
@@ -715,7 +718,7 @@ def xml_jats_format_export_get(bibcode):
     """
     return return_xml_format_export(solr_data=export_get(bibcode, 'JATS'), xml_style='JATS', export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('AASTeX', 'LaTeX')
+@register_endpoint('AASTeX', 'LaTeX', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/aastex', methods=['POST'])
 def csl_aastex_format_export_post():
@@ -735,7 +738,7 @@ def csl_aastex_format_export_post():
                                             export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('AASTeX', 'LaTeX')
+@register_endpoint('AASTeX', 'LaTeX', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/aastex/<bibcode>', methods=['GET'])
 def csl_aastex_format_export_get(bibcode):
@@ -748,7 +751,7 @@ def csl_aastex_format_export_get(bibcode):
                                     csl_style='aastex', export_format=adsFormatter.latex, journal_format=adsJournalFormat.macro,
                                     export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('AASTeX (PSJ)', 'LaTeX')
+@register_endpoint('AASTeX (PSJ)', 'LaTeX', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/aastex-psj', methods=['POST'])
 def csl_aastex_psj_format_export_post():
@@ -768,7 +771,7 @@ def csl_aastex_psj_format_export_post():
                                             export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('AASTeX (PSJ)', 'LaTeX')
+@register_endpoint('AASTeX (PSJ)', 'LaTeX', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/aastex-psj/<bibcode>', methods=['GET'])
 def csl_aastex_psj_format_export_get(bibcode):
@@ -781,7 +784,7 @@ def csl_aastex_psj_format_export_get(bibcode):
                                     csl_style='aastex-psj', export_format=adsFormatter.latex, journal_format=adsJournalFormat.macro,
                                     export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('Icarus', 'LaTeX')
+@register_endpoint('Icarus', 'LaTeX', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/icarus', methods=['POST'])
 def csl_icarus_format_export_post():
@@ -800,7 +803,7 @@ def csl_icarus_format_export_post():
                                             export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('Icarus', 'LaTeX')
+@register_endpoint('Icarus', 'LaTeX', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/icarus/<bibcode>', methods=['GET'])
 def csl_icarus_format_export_get(bibcode):
@@ -813,7 +816,7 @@ def csl_icarus_format_export_get(bibcode):
                                     csl_style='icarus', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full,
                                     export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('MNRAS', 'LaTeX')
+@register_endpoint('MNRAS', 'LaTeX', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/mnras', methods=['POST'])
 def csl_mnras_format_export_post():
@@ -832,7 +835,7 @@ def csl_mnras_format_export_post():
                                             export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('MNRAS', 'LaTeX')
+@register_endpoint('MNRAS', 'LaTeX', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/mnras/<bibcode>', methods=['GET'])
 def csl_mnras_format_export_get(bibcode):
@@ -845,7 +848,7 @@ def csl_mnras_format_export_get(bibcode):
                                     csl_style='mnras', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full,
                                     export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('Solar Physics', 'LaTeX')
+@register_endpoint('Solar Physics', 'LaTeX', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/soph', methods=['POST'])
 def csl_soph_format_export_post():
@@ -864,7 +867,7 @@ def csl_soph_format_export_post():
                                             export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('Solar Physics', 'LaTeX')
+@register_endpoint('Solar Physics', 'LaTeX', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/soph/<bibcode>', methods=['GET'])
 def csl_soph_format_export_get(bibcode):
@@ -877,7 +880,7 @@ def csl_soph_format_export_get(bibcode):
                                     csl_style='soph', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full,
                                     export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('ASPC', 'LaTeX')
+@register_endpoint('ASP Conference', 'LaTeX', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/aspc', methods=['POST'])
 def csl_aspc_format_export_post():
@@ -896,7 +899,7 @@ def csl_aspc_format_export_post():
                                             export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('ASP Conference', 'LaTeX')
+@register_endpoint('ASP Conference', 'LaTeX', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/aspc/<bibcode>', methods=['GET'])
 def csl_aspc_format_export_get(bibcode):
@@ -909,7 +912,7 @@ def csl_aspc_format_export_get(bibcode):
                                     csl_style='aspc', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full,
                                     export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('AAS Journals', 'LaTeX')
+@register_endpoint('AAS Journals', 'LaTeX', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/aasj', methods=['POST'])
 def csl_aasj_format_export_post():
@@ -928,7 +931,7 @@ def csl_aasj_format_export_post():
                                             export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('AAS Journals', 'LaTeX')
+@register_endpoint('AAS Journals', 'LaTeX', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/aasj/<bibcode>', methods=['GET'])
 def csl_aasj_format_export_get(bibcode):
@@ -941,7 +944,7 @@ def csl_aasj_format_export_get(bibcode):
                                     csl_style='aasj', export_format=adsFormatter.latex, journal_format=adsJournalFormat.full,
                                     export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('APS Journals', 'text')
+@register_endpoint('APS Journals', 'HTML', 'rtf')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/apsj', methods=['POST'])
 def csl_apsj_format_export_post():
@@ -960,7 +963,7 @@ def csl_apsj_format_export_post():
                                             export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('APS Journals', 'text')
+@register_endpoint('APS Journals', 'HTML', 'rtf')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/apsj/<bibcode>', methods=['GET'])
 def csl_apsj_format_export_get(bibcode):
@@ -973,7 +976,7 @@ def csl_apsj_format_export_get(bibcode):
                                     csl_style='apsj', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full,
                                     export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('IEEE', 'text')
+@register_endpoint('IEEE', 'HTML', 'rtf')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/ieee', methods=['POST'])
 def csl_ieee_format_export_post():
@@ -992,7 +995,7 @@ def csl_ieee_format_export_post():
                                             export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('IEEE', 'text')
+@register_endpoint('IEEE', 'HTML', 'rtf')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/ieee/<bibcode>', methods=['GET'])
 def csl_ieee_format_export_get(bibcode):
@@ -1005,7 +1008,7 @@ def csl_ieee_format_export_get(bibcode):
                                     csl_style='ieee', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full,
                                     export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('AGU', 'text')
+@register_endpoint('AGU', 'HTML', 'rtf')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/agu', methods=['POST'])
 def csl_agu_format_export_post():
@@ -1024,7 +1027,7 @@ def csl_agu_format_export_post():
                                             export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('AGU', 'text')
+@register_endpoint('AGU', 'HTML', 'rtf')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/agu/<bibcode>', methods=['GET'])
 def csl_agu_format_export_get(bibcode):
@@ -1037,7 +1040,7 @@ def csl_agu_format_export_get(bibcode):
                                     csl_style='agu', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full,
                                     export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('GSA', 'text')
+@register_endpoint('GSA', 'HTML', 'rtf')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/gsa', methods=['POST'])
 def csl_gsa_format_export_post():
@@ -1056,7 +1059,7 @@ def csl_gsa_format_export_post():
                                             export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('GSA', 'text')
+@register_endpoint('GSA', 'HTML', 'rtf')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/gsa/<bibcode>', methods=['GET'])
 def csl_gsa_format_export_get(bibcode):
@@ -1069,7 +1072,7 @@ def csl_gsa_format_export_get(bibcode):
                                     csl_style='gsa', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full,
                                     export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('AMS (Meteorological)', 'text')
+@register_endpoint('AMS (Meteorological)', 'HTML', 'rtf')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/ams', methods=['POST'])
 def csl_ams_format_export_post():
@@ -1088,7 +1091,7 @@ def csl_ams_format_export_post():
                                             export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('AMS (Meteorological)', 'text')
+@register_endpoint('AMS (Meteorological)', 'HTML', 'rtf')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/ams/<bibcode>', methods=['GET'])
 def csl_ams_format_export_get(bibcode):
@@ -1101,7 +1104,7 @@ def csl_ams_format_export_get(bibcode):
                                     csl_style='ams', export_format=adsFormatter.unicode, journal_format=adsJournalFormat.full,
                                     export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('CSL', 'custom')
+@register_endpoint('CSL', 'custom', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/csl', methods=['POST'])
 def csl_format_export():
@@ -1134,7 +1137,7 @@ def csl_format_export():
 
     return return_response(results, status)
 
-@register_endpoint('custom', 'custom')
+@register_endpoint('custom', 'custom', 'txt')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/custom', methods=['POST'])
 def custom_format_export():
@@ -1166,7 +1169,7 @@ def custom_format_export():
 
     return return_response(results, status)
 
-@register_endpoint('VOTable', 'XML')
+@register_endpoint('VOTable', 'XML', 'xml')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/votable', methods=['POST'])
 def votable_format_export_post():
@@ -1183,7 +1186,7 @@ def votable_format_export_post():
             return return_votable_format_export(solr_data=results, export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('VOTable', 'XML')
+@register_endpoint('VOTable', 'XML', 'xml')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/votable/<bibcode>', methods=['GET'])
 def votable_format_export_get(bibcode):
@@ -1194,7 +1197,7 @@ def votable_format_export_get(bibcode):
     """
     return return_votable_format_export(solr_data=export_get(bibcode, 'VOTable'), export_output_format=adsOutputFormat.default, request_type='GET')
 
-@register_endpoint('RSS', 'XML')
+@register_endpoint('RSS', 'XML', 'rss')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/rss', methods=['POST'])
 def rss_format_export_post():
@@ -1215,7 +1218,7 @@ def rss_format_export_post():
             return return_rss_format_export(solr_data=results, link=link, export_output_format=export_output_format, request_type='POST')
     return return_response(results, status)
 
-@register_endpoint('RSS', 'XML')
+@register_endpoint('RSS', 'XML', 'rss')
 @advertise(scopes=[], rate_limit=[1000, 3600 * 24])
 @bp.route('/rss/<bibcode>/', defaults={'link': ''}, methods=['GET'])
 @bp.route('/rss/<bibcode>/<path:link>', methods=['GET'])
@@ -1241,7 +1244,8 @@ def export_manifest_get():
         results.append({
             "name": name,
             "type": info.get("type"),
-            "route": route
+            "route": route,
+            "extension": info.get("extension")
         })
 
     # using POST here returns JSON
