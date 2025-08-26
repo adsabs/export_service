@@ -715,6 +715,137 @@ data_4 = \
     }
 }
 
+data_4_publisher = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 12,
+        u'params': {
+            u'q': u'bibcode:2025romanrept..742B',
+            u'indent': u'true',
+            u'fl': u'*',
+            u'q.op': u'OR',
+            u'useParams': u'',
+            u'_': u'1755860969651'
+        }
+    },
+    u'response': {
+        u'numFound': 1,
+        u'start': 0,
+        u'docs': [
+            {
+                u'bibcode': u'2025romanrept..742B',
+                u'abstract': u'The Nancy Grace Roman Space Telescope has ...',
+                u'aff': [
+                    u'Space Telescope Science Institute'
+                ],
+                u'author': [
+                    u'Brandt, Timothy'
+                ],
+                u'author_count': 1,
+                u'author_norm': [
+                    u'Brandt, T'
+                ],
+                u'bibstem': [
+                    u'roman',
+                    u'romanrept'
+                ],
+                u'comment': [
+                    u'In publications, please refer to this document as: Brandt, Timothy. 2025, Quantifying the Science Performance of Multi-Accumulation (MA) Tables, Technical Report Roman-STScI-000742 (Baltimore: STScI)'
+                ],
+                u'database': [
+                    u'astronomy'
+                ],
+                u'date': u'2025-01-01T00:00:00Z',
+                u'doctype': u'techreport',
+                u'doctype_facet_hier': [
+                    u'0/Non-Article',
+                    u'1/Non-Article/Tech Report'
+                ],
+                u'eid': u'Technical Report Roman-STScI-000742',
+                u'email': [
+                    u'-'
+                ],
+                u'first_author': u'Brandt, Timothy',
+                u'first_author_norm': u'Brandt, T',
+                u'id': u'35435758',
+                u'recid': 35435758,
+                u'identifier': [
+                    u'2025romanrept..742B'
+                ],
+                u'orcid_pub': [
+                    u'-'
+                ],
+                u'page': [
+                    u'Technical Report Roman-STScI-000742'
+                ],
+                u'pub': u'Nancy Grace Roman Space Telescope Technical Report Roman-STScI-000742',
+                u'pub_raw': u'Nancy Grace Roman Space Telescope Technical Report Roman-STScI-000742, 10 pp.',
+                u'pubdate': u'2025-01-00',
+                u'title': [
+                    u'Quantifying the Science Performance of Multi-Accumulation (MA) Tables'
+                ],
+                u'year': u'2025',
+                u'page_count': 10,
+                u'entry_date': u'2025-07-20T00:00:00Z',
+                u'publisher': u'STScI',
+                u'aff_abbrev': [
+                    u'STScI/STScI'
+                ],
+                u'aff_canonical': [
+                    u'Space Telescope Science Institute, Baltimore, Maryland'
+                ],
+                u'aff_id': [
+                    u'A03671'
+                ],
+                u'institution': [
+                    u'STScI/STScI'
+                ],
+                u'read_count': 0,
+                u'cite_read_boost': 0.16,
+                u'classic_factor': 0,
+                u'esources': [
+                    u'PUB_PDF'
+                ],
+                u'property': [
+                    u'ESOURCE',
+                    u'NONARTICLE',
+                    u'NOT REFEREED',
+                    u'OPENACCESS',
+                    u'PUB_OPENACCESS'
+                ],
+                u'citation_count': 0,
+                u'citation_count_norm': 0.0,
+                u'metadata_mtime': u'2025-08-18T13:34:31.905Z',
+                u'nonbib_mtime': u'2025-08-22T08:18:27.099Z',
+                u'metrics_mtime': u'2025-08-22T08:18:27.100Z',
+                u'update_timestamp': u'2025-08-22T08:18:27.100Z',
+                u'scix_id': u'scix:5DNS-FKRY-8FDH',
+                u'doctype_boost': 0.71428573,
+                u'has': [
+                    u'abstract',
+                    u'aff',
+                    u'aff_id',
+                    u'author',
+                    u'comment',
+                    u'database',
+                    u'doctype',
+                    u'first_author',
+                    u'identifier',
+                    u'institution',
+                    u'property',
+                    u'pub',
+                    u'pub_raw',
+                    u'publisher',
+                    u'title'
+                ],
+                u'_version_': 1841146643046465536,
+                u'indexstamp': u'2025-08-22T09:17:45.465Z'
+            }
+        ]
+    }
+}
+
 data_5 = \
 {
     u'responseHeader': {

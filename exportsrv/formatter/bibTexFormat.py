@@ -84,6 +84,11 @@ class BibTexFormat(Format):
         :param solr_type:
         :return:
         """
+        try:
+            has_publisher = self.from_solr['response'].get('docs')[0].get('publisher')
+        except:
+            has_publisher = None
+
         fields = {'article':'@ARTICLE', 'circular':'@ARTICLE', 'newsletter':'@ARTICLE',
                   'bookreview':'@ARTICLE', 'erratum':'@ARTICLE', 'obituary':'@ARTICLE',
                   'eprint':'@ARTICLE', 'catalog':'@ARTICLE', 'editorial':'@ARTICLE',
@@ -94,8 +99,11 @@ class BibTexFormat(Format):
                   'misc':'@MISC', 'proposal':'@MISC', 'pressrelease':'@MISC',
                   'talk':'@MISC', 'software':'@software', 'dataset':'@dataset',
                   'phdthesis':'@PHDTHESIS','mastersthesis':'@MASTERSTHESIS',
-                  'techreport':'@MISC', 'intechreport':'@MISC','instrument':'@MISC','service':'@MISC'}
-        return fields.get(solr_type, '')
+                  'techreport':'@TECHREPORT', 'intechreport':'@MISC','instrument':'@MISC','service':'@MISC'}
+        doc_type = fields.get(solr_type, '')
+        if doc_type == '@TECHREPORT' and not has_publisher:
+            doc_type = '@MISC'
+        return doc_type
 
 
     def __format_date(self, solr_date):
@@ -176,13 +184,11 @@ class BibTexFormat(Format):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('aff', 'school'), ('year', 'year'), ('month', 'month'),
                       ('bibcode', 'adsurl'),('adsnotes', 'adsnote')]
-        # 2/14 mapping techreport and intechreport to @MISC per Markus request for now
-        # elif (doc_type_bibtex == '@TECHREPORT'):
-        #     fields = [('author', 'author'), ('title', 'title'), ('pub_raw', 'journal'),
-        #               ('keyword', 'keywords'), ('pub', 'booktitle'), ('year', 'year'),
-        #               ('editor', 'editor'), ('series', 'series'), ('month', 'month'),
-        #               ('eid', 'eid'), ('page_range', 'pages'), ('volume', 'volume'),
-        #               ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
+        elif (doc_type_bibtex == '@TECHREPORT'):
+             fields = [('author', 'author'), ('title', 'title'), ('publisher', 'institution'),
+                       ('keyword', 'keywords'), ('year', 'year'),
+                       ('eid', 'number'), ('pub_raw', 'howpublished'),
+                       ('doi', 'doi'), ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
         # 1/31/2024 as per Edwin adding software and dataset export format
         elif doc_type_bibtex in ['@software', '@dataset']:
             fields = [('author', 'author'), ('title', 'title'),
@@ -486,7 +492,6 @@ class BibTexFormat(Format):
 
         a_doc = self.from_solr['response'].get('docs')[index]
         text = self.__get_doc_type(a_doc.get('doctype', '')) + '{' + self.__get_key(index) + ',\n'
-
         fields = self.__get_fields(a_doc)
         for field in fields:
             if (field == 'author') or (field == 'editor'):
@@ -536,7 +541,6 @@ class BibTexFormat(Format):
 
         # remove the last comma,
         text = text[:-len(',\n')] + '\n'
-
         return text + '}'
 
 
