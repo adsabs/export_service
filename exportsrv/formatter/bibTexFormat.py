@@ -184,7 +184,6 @@ class BibTexFormat(Format):
             fields = [('author', 'author'), ('title', 'title'), ('keyword', 'keywords'),
                       ('aff', 'school'), ('year', 'year'), ('month', 'month'),
                       ('bibcode', 'adsurl'),('adsnotes', 'adsnote')]
-        # 2/14 mapping techreport and intechreport to @MISC per Markus request for now
         elif (doc_type_bibtex == '@TECHREPORT'):
              fields = [('author', 'author'), ('title', 'title'), ('publisher', 'institution'),
                        ('keyword', 'keywords'), ('year', 'year'),
