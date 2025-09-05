@@ -194,6 +194,7 @@ class BibTexFormat(Format):
             fields = [('author', 'author'), ('title', 'title'),
                       ('pub_raw', 'howpublished'), ('year', 'year'), ('month', 'month'),
                       ('eid', 'eid'), ('doi', 'doi'),
+                      ('eprintid', 'archivePrefix|eprint'),
                       ('version', 'version'), ('publisher', 'publisher'),
                       ('bibcode', 'adsurl'), ('adsnotes', 'adsnote')]
 
