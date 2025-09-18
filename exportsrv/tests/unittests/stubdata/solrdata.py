@@ -2314,3 +2314,72 @@ data_26 = \
         ]
     }
 }
+
+data_software = \
+{
+    u'responseHeader': {
+        u'status': 0,
+        u'QTime': 13,
+        u'params': {
+            u'sort': u'date desc, bibcode desc',
+            u'x-amzn-trace-id': u'Root=1-5dd330a9-5dda490348b6637c4f990929;-',
+            u'rows': u'23',
+            u'fq': u'{!bitset}',
+            u'q': u'*:*',
+            u'start': u'0',
+            u'wt': u'json',
+            u'fl': u'author,title,year,pubdate,pub,pub_raw,issue,volume,page,page_range,aff,doi,abstract,read_count,bibcode,identifier,copyright,keyword,doctype,[citations],comment,version,property,esources,data,isbn,eid,issn,arxiv_class,editor,series,publisher,bibstem'
+        }
+    },
+    u'response': {
+        u'start': 0,
+        u'numFound': 2,
+        u'docs': [
+            {
+                u'read_count': 0,
+                u'bibcode': u'2017ascl.soft06009C',
+                u'num_references': 0,
+                u'keyword': [u'Software'],
+                u'pubdate': u'2017-06-00',
+                u'bibstem': [u'ascl', u'ascl.soft'],
+                u'property': [u'ASSOCIATED', u'ESOURCE', u'NONARTICLE', u'NOT REFEREED', u'PUB_OPENACCESS', u'OPENACCESS'],
+                u'abstract': u'sick infers astrophysical parameters from noisy observed spectra. Phenomena that can alter the data (e.g., redshift, continuum, instrumental broadening, outlier pixels) are modeled and simultaneously inferred with the astrophysical parameters of interest. This package relies on emcee (ascl:1303.002); it is best suited for situations where a grid of model spectra already exists, and one would like to infer model parameters given some data. <P />',
+                u'author': [u'Casey, Andrew R.'],
+                u'doctype': u'software',
+                u'pub': u'Astrophysics Source Code Library',
+                u'pub_raw': u'Astrophysics Source Code Library, record ascl:1706.009',
+                u'esources': [u'PUB_HTML'],
+                u'num_citations': 0,
+                u'eid': u'ascl:1706.009',
+                u'year': u'2017',
+                u'title': [u'sick: Spectroscopic inference crank'],
+                u'identifier': [u'2017ascl.soft06009C', u'ascl:1706.009'],
+                u'page': [u'ascl:1706.009'],
+                u'aff': [u'-']
+            },
+            {
+                u'bibcode': u'2023zndo...8083529K',
+                u'abstract': u'Abstract...',
+                u'aff': [u'TIB - Leibniz Information Centre for Science and Technology <ORCID>0000-0001-5336-6899</ORCID>'],
+                u'author': [u'Karras, Oliver'],
+                u'bibstem': [u'zndo'],
+                u'doctype': u'software',
+                u'doi': ['10.5281/zenodo.8083529'],
+                u'eid': '10.5281/zenodo.8083529',
+                u'identifier': [u'2023zndo...8083529K', u'10.5281/zenodo.8083529'],
+                u'keyword': [u'Python', u'Jupyter notebook', u'Analysis', u'Empirical research', u'Requirements engineering'],
+                u'property': [u'ESOURCE', u'NONARTICLE', u'NOT REFEREED', u'PUB_OPENACCESS', u'OPENACCESS', u'RELEASE'],
+                u'pub': u'Zenodo',
+                u'pub_raw': u'Zenodo',
+                u'pubdate': u'2023-06-26',
+                u'title': [u'Analysis of the State and Evolution of Empirical Research in Requirements Engineering'],
+                u'year': '2023',
+                u'esources': [u'PUB_HTML'],
+                u'publisher': u'Zenodo',
+                u'version': u'v1.0',
+                u'read_count': 0,
+                u'[citations]': {u'num_references': 0, u'num_citations': 1}
+        }
+        ]
+    }
+}

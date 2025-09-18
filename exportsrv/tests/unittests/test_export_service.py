@@ -827,6 +827,11 @@ class TestExports(TestCase):
         bibtex_export = BibTexFormat(solrdata.data_4_publisher, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=3, output_format=1)
         assert(bibtex_export == bibTexTest.data_techreport_with_publisher)
 
+    def test_bibtex_software(self):
+        # Testing BibTeX output for software records
+        bibtex_export = BibTexFormat(solrdata.data_software, "%R").get(include_abs=False, max_author=10, author_cutoff=200, journal_format=1, output_format=1)
+        assert(bibtex_export == bibTexTest.data_software)
+
     def test_bibtex_publisher(self):
         """ format the publisher stubdata using the code """
 
