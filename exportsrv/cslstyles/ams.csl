@@ -235,7 +235,7 @@
             <text macro="title" prefix=" "/>
           </group>
           <group prefix=" " suffix="" delimiter=" ">
-            <text variable="container-title" form="short" font-style="italic" suffix=","/>
+            <text variable="container-title" font-style="italic" suffix=","/>
             <group delimiter=", ">
               <text variable="volume" font-weight="bold"/>
               <text variable="page"/>
@@ -249,7 +249,7 @@
             <text macro="title" prefix=" "/>
           </group>
           <group prefix=" " suffix="" delimiter=" ">
-            <text variable="container-title" form="short" font-style="italic" suffix=","/>
+            <text variable="container-title" font-style="italic" suffix=","/>
             <group delimiter=", ">
               <text variable="volume" font-weight="bold"/>
               <text variable="page"/>
