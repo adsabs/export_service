@@ -759,7 +759,7 @@ class TestExports(TestCase):
 
         csl_export_output = {
             'aastex': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters. doi:10.1007/s00367-005-0006-y\n',
-            'aastex-psj': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters, Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico. doi:10.1007/s00367-005-0006-y\n',
+            'aastex-psj': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico, Geo-Marine Letters. doi:10.1007/s00367-005-0006-y\n',
             'icarus': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005.\\ Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico.\\ Geo-Marine Letters. doi:10.1007/s00367-005-0006-y\n',
             'mnras': u'\\bibitem[\\protect\\citeauthoryear{Aharon}{2005}]{2005GML...tmp....1A} Aharon P., 2005, GML...tmp. doi:10.1007/s00367-005-0006-y\n',
             'soph': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A}Aharon, P.: 2005, {\\it Geo-Marine Letters}. doi:10.1007/s00367-005-0006-y.\n',
@@ -783,7 +783,7 @@ class TestExports(TestCase):
 
         csl_export_output = {
             'aastex': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003, Information Handling in Astronomy - Historical Vistas, 285, 109. doi:10.1007/0-306-48080-8\_7\n',
-            'aastex-psj': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003, Information Handling in Astronomy - Historical Vistas, AIPS, the VLA, and the VLBA, 285, 109. doi:10.1007/0-306-48080-8\_7\n',
+            'aastex-psj': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003, AIPS, the VLA, and the VLBA, Information Handling in Astronomy - Historical Vistas, 285, 109. doi:10.1007/0-306-48080-8\_7\n',
             'icarus': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E.~W.\\ 2003.\\ AIPS, the VLA, and the VLBA.\\ Information Handling in Astronomy - Historical Vistas 109. doi:10.1007/0-306-48080-8\\_7\n',
             'mnras': u'\\bibitem[\\protect\\citeauthoryear{Greisen}{2003}]{2003ASSL..285..109G} Greisen E.~W., 2003, ASSL, 285, 109. doi:10.1007/0-306-48080-8\\_7\n',
             'soph': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G}Greisen, E.W.: 2003, {\\it Information Handling in Astronomy - Historical Vistas}, 109. doi:10.1007/0-306-48080-8\\_7.\n',
