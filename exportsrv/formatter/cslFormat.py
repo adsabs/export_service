@@ -147,6 +147,17 @@ class CSLFormat(Format):
             for data in self.for_cls:
                 if len(data.get('DOI', '')) > 0:
                     data['DOI'] = data['DOI'].lstrip('doi:')
+        # make sure the author list has a final period (if there's a given name, it'll get a period when the name is
+        # converted to initials - this counts as the final period; we need to account for the situation where a
+        # period is not introduced at that point)
+        if self.csl_style == 'agu':
+            for data in self.for_cls:
+                author = data.get('author')
+                if author:
+                    last = author[-1]
+                    if "family" in last and "given" not in last:
+                        if not last["family"].endswith("."):
+                            last["family"] += "."
         # remove MathML markup
         elif (self.csl_style == 'ieee'):
             for data in self.for_cls:

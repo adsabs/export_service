@@ -768,7 +768,7 @@ class TestExports(TestCase):
             'apsj': u'P. Aharon, (2005). doi:10.1007/s00367-005-0006-y.\n',
             'aasj': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters. doi:10.1007/s00367-005-0006-y.\n',
             'ieee': u'[1]Aharon, P., “Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico”, <i>Geo-Marine Letters</i>, 2005. doi:10.1007/s00367-005-0006-y.\n',
-            'agu': u'Aharon, P.. (2005). Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico. <i>Geo-marine Letters</i>. https://doi.org/10.1007/s00367-005-0006-y\n',
+            'agu': u'Aharon, P. (2005). Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico. <i>Geo-marine Letters</i>. https://doi.org/10.1007/s00367-005-0006-y\n',
             'gsa': u'Aharon, P., 2005, Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico: Geo-Marine Letters,, doi:10.1007/s00367-005-0006-y.\n',
             'ams': u'Aharon, P., 2005: Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico <i>Geo-Marine Letters</i>, https://doi.org/10.1007/s00367-005-0006-y.\n',
         }
@@ -792,7 +792,7 @@ class TestExports(TestCase):
             'apsj': u'E.~W. Greisen, in {\\bf 285}, 109. doi:10.1007/0-306-48080-8_7.\n',
             'aasj': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E. W.\\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\\_7.\n',
             'ieee': u'[1]Greisen, E. W., “AIPS, the VLA, and the VLBA”, in <i>Information Handling in Astronomy - Historical Vistas</i>, vol. 285, A. Heck, Ed. 2003, p. 109. doi:10.1007/0-306-48080-8_7.\n',
-            'agu': u'Greisen, E. W.. (2003). AIPS, the VLA, and the VLBA. In A. Heck (Ed.), <i>Information Handling in Astronomy - Historical Vistas</i> (Vol. 285, p. 109). https://doi.org/10.1007/0-306-48080-8_7\n',
+            'agu': u'Greisen, E. W. (2003). AIPS, the VLA, and the VLBA. In A. Heck (Ed.), <i>Information Handling in Astronomy - Historical Vistas</i> (Vol. 285, p. 109). https://doi.org/10.1007/0-306-48080-8_7\n',
             'gsa': u'Greisen, E.W., 2003, AIPS, the VLA, and the VLBA, <i>in</i> Heck, A. ed., Information Handling in Astronomy - Historical Vistas, doi:10.1007/0-306-48080-8_7.\n',
             'ams': u'Greisen, E. W., 2003: AIPS, the VLA, and the VLBA. <i>Information Handling in Astronomy - Historical Vistas</i>, A. Heck, Ed., Vol. 285 of, p. 109, https://doi.org/10.1007/0-306-48080-8_7.\n',
         }
