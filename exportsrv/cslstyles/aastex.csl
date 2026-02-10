@@ -50,39 +50,40 @@
       </else>
     </choose>
   </macro>
+  <macro name="title-only">
+    <text variable="title"/>
+  </macro>
   <macro name="locators">
     <choose>
       <if type="article paper-conference personal_communication review-book article-journal speech report" match="any">
-        <group prefix="">
-        <text variable="title" prefix=", "/>
-          <text variable="volume" prefix=", "/>
-          <text variable="issue" prefix=", "/>
-          <text variable="page-first" prefix=", "/>
-          <text variable="number" prefix=", "/>
+        <group delimiter=", ">
+          <text variable="volume"/>
+          <text variable="issue"/>
+          <text variable="page-first"/>
+          <text variable="number"/>
         </group>
       </if>
       <else-if type="book chapter" match="any">
-        <text variable="title" prefix=", "/>
-        <text variable="volume" prefix=", "/>
-        <text variable="page-first" prefix=", "/>
-        <text variable="number" prefix=", "/>
+        <group delimiter=", ">
+          <text variable="volume"/>
+          <text variable="page-first"/>
+          <text variable="number"/>
+        </group>
       </else-if>
       <else-if type="manuscript entry" match="any">
-        <text variable="title" prefix=", "/>
-        <text variable="number" prefix=", "/>
+        <text variable="number"/>
       </else-if>
       <else-if type="thesis" match="any">
-        <text variable="title" prefix=", "/>
-        <text variable="publisher-place" prefix=", "/>
+        <text variable="publisher-place"/>
       </else-if>
       <else-if type="software" match="any">
-        <text variable="title" prefix=", "/>
-        <text variable="volume" prefix=", "/>
-        <text variable="version" prefix=", "/>
+        <group delimiter=", ">
+          <text variable="volume"/>
+          <text variable="version"/>
+        </group>
       </else-if>
       <else-if type="entry" match="any">
-        <text variable="title" prefix=", "/>
-        <text variable="number" prefix=", "/>
+        <text variable="number"/>
       </else-if>
     </choose>
   </macro>
@@ -112,7 +113,8 @@
           <group suffix="">
             <text macro="author" suffix="\ "/>
             <text macro="issued"/>
-            <group>
+            <group delimiter=", ">
+              <text macro="title-only"/>
               <text macro="container"/>
               <text macro="locators"/>
             </group>
