@@ -361,17 +361,18 @@ class TestExports(TestCase):
     def test_csl(self):
         """ test views return_csl_format_export when succeed for each format """
 
-        export_format = 2
+        export_format = adsFormatter.unicode
         journal_macro = 1
         for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj', 'ieee', 'agu', 'gsa', 'ams']:
             response = views.return_csl_format_export(solrdata.data, csl_style, export_format, journal_macro, adsOutputFormat.classic)
             assert(response._status_code == 200)
+            assert(response.json['msg'] == "Retrieved 24 abstracts, starting with number 1.")
 
 
     def test_csl_no_data(self):
         """ test views return_csl_format_export when error for each format """
 
-        export_format = 2
+        export_format = adsFormatter.unicode
         journal_macro = 1
         for csl_style in ['aastex','icarus','mnras', 'soph', 'aspc', 'apsj', 'aasj', 'ieee', 'agu', 'gsa', 'ams']:
             response = views.return_csl_format_export(None, csl_style, export_format, journal_macro, adsOutputFormat.classic)
@@ -767,9 +768,9 @@ class TestExports(TestCase):
             'apsj': u'P. Aharon, (2005). doi:10.1007/s00367-005-0006-y.\n',
             'aasj': u'\\bibitem[Aharon(2005)]{2005GML...tmp....1A} Aharon, P.\\ 2005, Geo-Marine Letters. doi:10.1007/s00367-005-0006-y.\n',
             'ieee': u'[1]Aharon, P., “Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico”, <i>Geo-Marine Letters</i>, 2005. doi:10.1007/s00367-005-0006-y.\n',
-            'agu': u'Aharon, P. (2005) Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico <i>Geo-marine Letters</i>. https://doi.org/10.1007/s00367-005-0006-y\n',
+            'agu': u'Aharon, P. (2005). Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico. <i>Geo-marine Letters</i>. https://doi.org/10.1007/s00367-005-0006-y\n',
             'gsa': u'Aharon, P., 2005, Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico: Geo-Marine Letters,, doi:10.1007/s00367-005-0006-y.\n',
-            'ams': u'Aharon, P., 2005: Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico https://doi.org/10.1007/s00367-005-0006-y.\n',
+            'ams': u'Aharon, P., 2005: Catastrophic flood outbursts in mid-continent left imprints in the Gulf of Mexico <i>Geo-Marine Letters</i>, https://doi.org/10.1007/s00367-005-0006-y.\n',
         }
         cls_default_formats = [adsFormatter.latex] * 6 + [adsFormatter.unicode] * 5
 
@@ -791,7 +792,7 @@ class TestExports(TestCase):
             'apsj': u'E.~W. Greisen, in {\\bf 285}, 109. doi:10.1007/0-306-48080-8_7.\n',
             'aasj': u'\\bibitem[Greisen(2003)]{2003ASSL..285..109G} Greisen, E. W.\\ 2003, Information Handling in Astronomy - Historical Vistas, 109. doi:10.1007/0-306-48080-8\\_7.\n',
             'ieee': u'[1]Greisen, E. W., “AIPS, the VLA, and the VLBA”, in <i>Information Handling in Astronomy - Historical Vistas</i>, vol. 285, A. Heck, Ed. 2003, p. 109. doi:10.1007/0-306-48080-8_7.\n',
-            'agu': u'Greisen, E. W. (2003) AIPS, the VLA, and the VLBA In A. Heck (Ed.), <i>Information Handling in Astronomy - Historical Vistas</i> (Vol. 285, p. 109). https://doi.org/10.1007/0-306-48080-8_7\n',
+            'agu': u'Greisen, E. W. (2003). AIPS, the VLA, and the VLBA. In A. Heck (Ed.), <i>Information Handling in Astronomy - Historical Vistas</i> (Vol. 285, p. 109). https://doi.org/10.1007/0-306-48080-8_7\n',
             'gsa': u'Greisen, E.W., 2003, AIPS, the VLA, and the VLBA, <i>in</i> Heck, A. ed., Information Handling in Astronomy - Historical Vistas, doi:10.1007/0-306-48080-8_7.\n',
             'ams': u'Greisen, E. W., 2003: AIPS, the VLA, and the VLBA. <i>Information Handling in Astronomy - Historical Vistas</i>, A. Heck, Ed., Vol. 285 of, p. 109, https://doi.org/10.1007/0-306-48080-8_7.\n',
         }

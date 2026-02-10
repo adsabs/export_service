@@ -710,8 +710,8 @@
     </sort>
     <layout>
       <group suffix=".">
-        <group delimiter=" ">
-          <text macro="author"/>
+        <text macro="author" suffix=" "/>
+        <group delimiter=". ">
           <text macro="issued"/>
           <text macro="title-plus-extra"/>
           <text macro="container"/>
